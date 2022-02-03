@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twaila", "Twaila.csproj", "{C8ED02FF-0810-4B76-8DF6-4EE1EE1E0455}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tModLoader", "..\..\TMod 1.3.5.3\tModLoader.csproj", "{317E8C95-EC7D-4214-8DBA-999E9A7D6507}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8ED02FF-0810-4B76-8DF6-4EE1EE1E0455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8ED02FF-0810-4B76-8DF6-4EE1EE1E0455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8ED02FF-0810-4B76-8DF6-4EE1EE1E0455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8ED02FF-0810-4B76-8DF6-4EE1EE1E0455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{317E8C95-EC7D-4214-8DBA-999E9A7D6507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{317E8C95-EC7D-4214-8DBA-999E9A7D6507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{317E8C95-EC7D-4214-8DBA-999E9A7D6507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{317E8C95-EC7D-4214-8DBA-999E9A7D6507}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C27F61AD-1B7A-4239-86B3-5FD3E66006F3}
+	EndGlobalSection
+EndGlobal
