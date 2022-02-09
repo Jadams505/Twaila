@@ -13,10 +13,6 @@ namespace Twaila
             if (Keybinds.toggleUI.JustPressed)
             {
                 TwailaUI.ToggleVisibility(null);
-                foreach (var i in Main.tile){
-                    ModLoader.GetMod("Twaila").Logger.Info(i.ToString() + ", ");
-                }
-                
             }
         }
     }

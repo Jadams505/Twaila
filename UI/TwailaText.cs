@@ -1,0 +1,55 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using Terraria;
+using Terraria.Localization;
+using Terraria.UI;
+
+namespace Twaila.UI
+{
+    public class TwailaText : UIElement
+    {
+        public string Text { get; private set; }
+        public Color Color;
+        public float Scale;
+        public DynamicSpriteFont Font;
+
+        public TwailaText(string text, DynamicSpriteFont font, Color color, float scale)
+        {
+            Font = font;
+            Color = color;
+            SetText(text, scale);
+        }
+
+        public TwailaText(string text) : this(text, Main.fontCombatText[0], Color.White, 1f)
+        {
+
+        }
+
+        public TwailaText(string text, Color color) : this(text)
+        {
+            Color = color;
+        }
+        public Vector2 GetTextSize()
+        {
+            return Font.MeasureString(Text) * Scale;
+        }
+
+        public void SetText(string text, float scale = 1)
+        {
+            Text = text;
+            Scale = scale;
+            Width.Set(GetTextSize().X, 0);
+            Height.Set(GetTextSize().Y, 0);
+            //MinWidth.Set(GetTextSize().X + PaddingLeft + PaddingRight, 0f);
+            //MinHeight.Set(GetTextSize().Y + PaddingTop + PaddingBottom, 0f);
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, GetDimensions().Position(), Color);
+        }
+
+
+    }
+}

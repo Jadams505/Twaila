@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -13,9 +14,7 @@ namespace Twaila.UI
     {
         private static UserInterface _interface;
         private static UIState _state;
-        private static UIPanel _panel;
-        private static UIText _text;
-        private static UIImage _image;
+        private static TwailaPanel _panel;
 
         public static bool Enabled { get; private set; }
         public static void Initialize()
@@ -23,17 +22,8 @@ namespace Twaila.UI
             Enabled = true;
 
             _interface = new UserInterface();
-            _panel = new UIPanel();
+            _panel = new TwailaPanel();
             _state = new UIState();
-            _text = new UIText("Test");
-            _image = new UIImage(TextureManager.BlankTexture);
-            _image.VAlign = 0.5f;
-            _panel.Append(_text);
-            _panel.Append(_image);
-            _panel.Width.Set(300, 0);
-            _panel.Height.Set(100, 0);
-            _panel.HAlign = 0.5f;
-            _panel.Top.Set(0, 0);
 
             _state.Append(_panel);
             ToggleVisibility(Enabled);
@@ -61,37 +51,32 @@ namespace Twaila.UI
                 }
                 else
                 {
-                    if (tile.active())
+                    if (tile.active() && Enabled)
                     {
-                        for (int i = 0; i < ItemID.Count; ++i)
-                        {
-                            Item item = new Item();
-                            item.SetDefaults(i);
-                            if (item.createTile == tile.type)
-                            {
-                                message = Lang.GetItemNameValue(i);
-                                _image.SetImage(Main.itemTexture[i]);
-                            }
-                        }
+                        ToggleVisibility(true);
+                        TileDataUtil.UpdateUI(_panel, tile);
+                        return;
+                    }
+                    else
+                    {
+                        _panel.Image.SetImage(TextureManager.BlankTexture);
                     }
                 }
             }
-            _text.SetText(message);
-            
-            
+            _interface?.SetState(null);
         }
 
         public static void ToggleVisibility(bool? visible)
         {
-            if(visible == null)
+            Enabled = visible == null ? !Enabled : visible.Value;
+            if (Enabled)
             {
-                Enabled = !Enabled;
+                _interface?.SetState(_state);
             }
             else
             {
-                Enabled = visible.Value;               
-            }
-            _interface?.SetState(_state);
+                _interface?.SetState(null);
+            } 
         }
 
         public static void Load()
@@ -107,8 +92,6 @@ namespace Twaila.UI
             _interface = null;
             _panel = null;
             _state = null;
-            _text = null;
-            _image = null;
         }
 
         public static void Draw(GameTime time)
