@@ -1,8 +1,9 @@
-Displays the name of the tile you are looking at in the world
+Displays the name and mod of the tile you are looking at in the world
 
 This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is intended to function in a similar way
 
 Important Notes:
-This mod is currently in development and is in no way complete
-Currently only works for a few Vanilla tiles (Modded tiles have not been implemented yet)
+This mod is currently in development and is not complete
+Use 100% UI Scale to avoid texture glitches
+
 

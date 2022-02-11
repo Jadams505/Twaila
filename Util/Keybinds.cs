@@ -9,7 +9,7 @@ namespace Twaila.Util
 
         public static void RegisterKeybinds(Mod mod)
         {
-            toggleUI = mod.RegisterHotKey("Toggle UI", "P");
+            toggleUI = mod.RegisterHotKey("Toggle UI", "Mouse3");
         }
 
         public static void Unload()

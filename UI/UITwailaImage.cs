@@ -27,18 +27,18 @@ namespace Twaila.UI
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             bool drawSuccess = false;
-            if(TwailaConfig.Get().UseItemTextures)
+            if (TwailaConfig.Get().UseItemTextures)
             {
                 drawSuccess = !DrawFromItemData(spriteBatch) && !DrawFromTileData(spriteBatch) && !DrawFromTile(spriteBatch);
                 return;
             }
-            drawSuccess = !DrawFromTileData(spriteBatch) && !DrawFromTile(spriteBatch);
+            drawSuccess = !DrawFromTileData(spriteBatch) && !DrawFromTile(spriteBatch) && !DrawFromItemData(spriteBatch);
         }
         private bool DrawFromTileData(SpriteBatch spriteBatch)
         {
             TileObjectData data = TileObjectData.GetTileData(Tile);
             Texture2D texture = GetTileTexture();
-            if (data != null && texture != null && texture != TextureManager.BlankTexture)
+            if (data != null && texture != null && !texture.Equals(TextureManager.BlankTexture))
             {
                 SetSizeFromTileData();
                 int fullWidth = GetSpriteWidth() + (data.Width * data.CoordinatePadding);
@@ -75,13 +75,14 @@ namespace Twaila.UI
         }
         private bool DrawFromTile(SpriteBatch spriteBatch)
         {
-            SetSizeFromTile();
+            
             CalculatedStyle dim = GetDimensions();
             int size = 16;
             int padding = 2;
             Texture2D texture = GetTileTexture();
             if(texture != null && !texture.Equals(TextureManager.BlankTexture))
             {
+                SetSizeFromTile();
                 for (int row = 0; row < 2; ++row)
                 {
                     for (int col = 0; col < 2; ++col)
@@ -159,8 +160,7 @@ namespace Twaila.UI
         }
         private Texture2D GetModdedItemTexture()
         {
-            ModTile mTile = TileLoader.GetTile(Tile.type);
-            ModItem mItem = ModContent.GetModItem(mTile.drop);
+            ModItem mItem = ModContent.GetModItem(ItemId);
             if (mItem != null)
             {
                 try
@@ -199,7 +199,9 @@ namespace Twaila.UI
         }
         public void Set(Tile tile, int itemId = -1, float scale = 1)
         {
-            Tile = tile;
+            Tile copy = new Tile();
+            copy.CopyFrom(tile);
+            Tile = copy;
             ItemId = itemId;
             Scale = scale;
         }
