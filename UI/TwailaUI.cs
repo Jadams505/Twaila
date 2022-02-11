@@ -40,30 +40,17 @@ namespace Twaila.UI
 
         private static void UpdateText()
         {
-            string message = "";
             if(Main.tile[Player.tileTargetX, Player.tileTargetY] != null)
             {
                 Tile tile = Main.tile[Player.tileTargetX,Player.tileTargetY];
-                ModTile mTile = TileLoader.GetTile(tile.type);
-                if (mTile != null)
+                if (tile.active() && Enabled)
                 {
-                    message = mTile.Name;
-                }
-                else
-                {
-                    if (tile.active() && Enabled)
-                    {
-                        ToggleVisibility(true);
-                        TileDataUtil.UpdateUI(_panel, tile);
-                        return;
-                    }
-                    else
-                    {
-                        _panel.Image.SetImage(TextureManager.BlankTexture);
-                    }
+                    ToggleVisibility(true);
+                    TwailaUtil.UpdateUI(_panel, tile);
+                    return;
                 }
             }
-            _interface?.SetState(null);
+            //_interface?.SetState(null);
         }
 
         public static void ToggleVisibility(bool? visible)

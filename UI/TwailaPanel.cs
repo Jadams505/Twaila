@@ -16,18 +16,17 @@ namespace Twaila.UI
     {
         public TwailaText Name, Mod;
         private List<TwailaText> _lines;
-        public TwailaImage Image;        
+        public UITwailaImage Image;        
 
         public TwailaPanel()
         {
             _lines = new List<TwailaText>();
-            Name = new TwailaText("Unknown Name");
+            Name = new TwailaText("Default Name");
             
-            Image = new TwailaImage();
+            Image = new UITwailaImage();
             Image.VAlign = 0.5f;
             Image.MarginRight = 10;
-            Mod = new TwailaText("Terraria", Main.fontItemStack, Color.White, 0.8f);
-            
+            Mod = new TwailaText("Terraria", Main.fontItemStack, Color.White, 1f);
             
             Width.Set(0, 0);
             Height.Set(0, 0);

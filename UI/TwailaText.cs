@@ -18,7 +18,8 @@ namespace Twaila.UI
         {
             Font = font;
             Color = color;
-            SetText(text, scale);
+            Scale = scale;
+            SetText(text);
         }
 
         public TwailaText(string text) : this(text, Main.fontCombatText[0], Color.White, 1f)
@@ -35,19 +36,17 @@ namespace Twaila.UI
             return Font.MeasureString(Text) * Scale;
         }
 
-        public void SetText(string text, float scale = 1)
+        public void SetText(string text)
         {
             Text = text;
-            Scale = scale;
             Width.Set(GetTextSize().X, 0);
             Height.Set(GetTextSize().Y, 0);
-            //MinWidth.Set(GetTextSize().X + PaddingLeft + PaddingRight, 0f);
-            //MinHeight.Set(GetTextSize().Y + PaddingTop + PaddingBottom, 0f);
+            Recalculate();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, GetDimensions().Position(), Color);
+            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, GetDimensions().Position(), Color, 0, Vector2.Zero, Scale, 0, 0);
         }
 
 

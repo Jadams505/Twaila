@@ -1,3 +1,4 @@
-displayName = TWAILA
+displayName = TWAILA (WIP)
 author = Jadams
-version = 0.1
+version = 0.0.1.0
+side = Client
