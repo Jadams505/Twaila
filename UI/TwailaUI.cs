@@ -46,7 +46,7 @@ namespace Twaila.UI
                 if (tile.active() && Enabled)
                 {
                     ToggleVisibility(true);
-                    TwailaUtil.UpdateUI(_panel, tile);
+                    TwailaUtil.UpdateUI(_panel, new Point(Player.tileTargetX, Player.tileTargetY));
                     return;
                 }
             }
