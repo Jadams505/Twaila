@@ -2,8 +2,22 @@ Displays the name and mod of the tile you are looking at in the world
 
 This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is intended to function in a similar way
 
-Important Notes:
+[IMPORTANT NOTES]
 This mod is currently in development and is not complete
 Use 100% UI Scale to avoid texture glitches
+
+[Config Options]
+- UseItemTextures: Priotizes displaying the texture of the item that places the tile as apposed to the texture of the tile itself (Only works for tiles that have items that place them)
+
+[Controls]
+- Toggle UI (Mouse3 by default): Switches the visibility of the UI Panel
+
+[Changelog]
+v0.1.1.0
+- Trees now display the proper name and texture on the UI
+- Fixed a blurry texture issue
+v0.1.0.1
+- Initial Release
+- The UI Panel displays the name, mod, and texture of most tiles in vanilla and modded terraria
 
 
