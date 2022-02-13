@@ -46,7 +46,7 @@ namespace Twaila.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, GetDimensions().Position(), Color, 0, Vector2.Zero, Scale, 0, 0);
+            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
         }
 
 

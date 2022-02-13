@@ -51,7 +51,7 @@ namespace Twaila.UI
                 SetSizeFromTileData();
                 int fullWidth = GetSpriteWidth() + (data.Width * data.CoordinatePadding);
                 int fullHeight = GetSpriteHeight() + (data.Height * data.CoordinatePadding);
-                CalculatedStyle dim = GetDimensions();
+                Rectangle dim = GetDimensions().ToRectangle();
                 int frameX = Tile.frameX / fullWidth * fullWidth;
                 int frameY = Tile.frameY / fullHeight * fullHeight;
                 if (data.Style > data.StyleWrapLimit)
@@ -69,8 +69,8 @@ namespace Twaila.UI
                 {
                     for (int col = 0; col < data.Width; ++col)
                     {
-                        float drawPosX = (int)Math.Round(dim.X) + col * data.CoordinateWidth;
-                        float drawPosY = (int)Math.Round(dim.Y) + row * data.CoordinateHeights[row - 1 >= 0 ? row - 1 : 0];
+                        float drawPosX = dim.X + col * data.CoordinateWidth;
+                        float drawPosY = dim.Y + row * data.CoordinateHeights[row - 1 >= 0 ? row - 1 : 0];
                         spriteBatch.Draw(texture, new Vector2(drawPosX, drawPosY),
                             new Rectangle(frameX + col * (data.CoordinateWidth + data.CoordinatePadding), 
                             frameY + row * (data.CoordinateHeights[row - 1 >= 0 ? row - 1 : 0] + data.CoordinatePadding),
@@ -84,7 +84,7 @@ namespace Twaila.UI
         private bool DrawFromTile(SpriteBatch spriteBatch)
         {
             
-            CalculatedStyle dim = GetDimensions();
+            Rectangle dim = GetDimensions().ToRectangle();
             int size = 16;
             int padding = 2;
             Texture2D texture = GetTileTexture();
@@ -95,7 +95,7 @@ namespace Twaila.UI
                 {
                     for (int col = 0; col < 2; ++col)
                     {
-                        Vector2 drawPos = new Vector2((int)dim.X + col * size, (int)dim.Y + row * size);
+                        Vector2 drawPos = new Vector2(dim.X + col * size, dim.Y + row * size);
                         Rectangle spriteData = new Rectangle(col * (size + padding), 54 + row * (size + padding), size, size);
                         spriteBatch.Draw(texture, drawPos, spriteData, Color.White, 0, Vector2.Zero, Scale, 0, 0);
                     }
@@ -151,7 +151,7 @@ namespace Twaila.UI
                 if (itemTexture != null && !itemTexture.Equals(TextureManager.BlankTexture))
                 {
                     SetSizeFromItemData(itemTexture);
-                    spriteBatch.Draw(position: GetDimensions().Position() + itemTexture.Size() * (1f - Scale) / 2f, texture: itemTexture, sourceRectangle: null, color: Color.White, rotation: 0f, origin: Vector2.Zero, scale: Scale, effects: SpriteEffects.None, layerDepth: 0f);
+                    spriteBatch.Draw(position: new Vector2((int)GetDimensions().X, (int)GetDimensions().Y) + itemTexture.Size() * (1f - Scale) / 2f, texture: itemTexture, sourceRectangle: null, color: Color.White, rotation: 0f, origin: Vector2.Zero, scale: Scale, effects: SpriteEffects.None, layerDepth: 0f);
                     return true;
                 } 
             }
@@ -190,7 +190,17 @@ namespace Twaila.UI
         {
             if (Tile.type == TileID.Trees)
             {
-                int? treeType = TwailaUtil.GetTreeType(Pos.X, Pos.Y);
+                int? treeDirt = TwailaUtil.GetTreeDirt(Pos.X, Pos.Y, Tile);
+                if(treeDirt == null)
+                {
+                    return false;
+                } 
+                if(TileLoader.CanGrowModTree(treeDirt.Value))
+                {
+                    DrawModdedTree(spriteBatch, treeDirt.Value);
+                    return true;
+                }
+                int? treeType = TwailaUtil.GetTreeType(treeDirt.Value, Pos.Y);
                 if (treeType != null)
                 {
                     DrawTree(spriteBatch, treeType.Value);
@@ -199,8 +209,18 @@ namespace Twaila.UI
             }
             else if (Tile.type == TileID.PalmTree) 
             { 
-                int? palmTreeType = TwailaUtil.GetPalmTreeType(Pos.X, Pos.Y);
-                if(palmTreeType != null)
+                int? palmTreeSand = TwailaUtil.GetPalmTreeSand(Pos.X, Pos.Y, Tile);
+                if(palmTreeSand == null)
+                {
+                    return false;
+                }
+                if (TileLoader.CanGrowModPalmTree(palmTreeSand.Value))
+                {
+                    DrawModdedPalmTree(spriteBatch, palmTreeSand.Value);
+                    return true;
+                }
+                int? palmTreeType = TwailaUtil.GetPalmTreeType(palmTreeSand.Value);
+                if(palmTreeSand != null)
                 {
                     DrawPalmTree(spriteBatch, palmTreeType.Value);
                     return true;
@@ -218,8 +238,6 @@ namespace Twaila.UI
         {
             Scale = 0.5f;
             int size = 20;
-            int unit = (int)Math.Round(16 * Scale);
-
             Texture2D topTexture = Main.treeTopTexture[treeType + 1];
             Texture2D woodTexture = treeType == -1 ? Main.tileTexture[TileID.Trees] : Main.woodTexture[treeType];
             Texture2D branchTexture = Main.treeBranchTexture[treeType + 1];
@@ -232,7 +250,6 @@ namespace Twaila.UI
             Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
             Rectangle bottomLeft = new Rectangle(44, 176, size, size);
             Rectangle bottomRight = new Rectangle(22, 154, size, size);
-
             int topOffsetX = (int)Math.Round(30 * Scale);
             int topOffsetY = (int)Math.Round(78 * Scale);
 
@@ -274,7 +291,46 @@ namespace Twaila.UI
                     break;  
             }
 
-            CalculatedStyle drawPos = GetDimensions();
+            DrawTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
+                bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+        }
+
+        private void DrawModdedTree(SpriteBatch spriteBatch, int treeDirt)
+        {
+            Scale = 0.5f;
+            int size = 20;
+            int unimplemented = 0;
+            int frame = 0, fWidth = 82, fHeight = 80, xOffset = (int)Math.Round(30 * Scale), yOffset = (int)Math.Round(78 * Scale);
+            Tile dirtTile = new Tile();
+            dirtTile.active(true);
+            dirtTile.type = (ushort)treeDirt;
+            Texture2D topTexture = TileLoader.GetTreeTopTextures(treeDirt, 82, 0, ref frame, ref fWidth, ref fHeight, ref xOffset, ref yOffset);
+            Texture2D woodTexture = TileLoader.GetTreeTexture(dirtTile);
+            Texture2D branchTexture = TileLoader.GetTreeBranchTextures(treeDirt, 0, 0, 0, ref unimplemented);
+            Rectangle top = new Rectangle(frame * fWidth, 0, fWidth, fHeight);
+            Rectangle trunk1 = new Rectangle(44, 108, size, size);
+            Rectangle trunk2 = new Rectangle(88, 42, size, size);
+            Rectangle trunk3 = new Rectangle(66, 66, size, size);
+            Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
+            Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
+            Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
+            Rectangle bottomLeft = new Rectangle(44, 176, size, size);
+            Rectangle bottomRight = new Rectangle(22, 154, size, size);
+
+            Width.Set(40, 0);
+            Height.Set(74, 0);
+
+            DrawTree(spriteBatch, xOffset, yOffset, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
+                bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+        }
+
+        private void DrawTree(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
+            Rectangle trunk2, Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle,
+            Rectangle bottomLeft, Rectangle bottomRight, Texture2D topTexture, Texture2D woodTexture, Texture2D branchTexture)
+        {
+            int unit = (int)Math.Round(16 * Scale);
+            Rectangle drawPos = GetDimensions().ToRectangle();
+
             spriteBatch.Draw(topTexture, new Vector2(drawPos.X, drawPos.Y), top, Color.White, 0, Vector2.Zero, Scale, 0, 0);
             drawPos.X += topOffsetX;
             drawPos.Y += topOffsetY;
@@ -295,7 +351,6 @@ namespace Twaila.UI
         {
             Scale = 0.5f;
             int size = 20;
-            int unit = (int)Math.Round(16 * Scale);
             Texture2D woodTexture = Main.tileTexture[TileID.PalmTree];
             Texture2D topTexture = Main.treeTopTexture[15];
 
@@ -310,7 +365,39 @@ namespace Twaila.UI
             Width.Set((int)(78 * Scale), 0);
             Height.Set((int)(160 * Scale), 0);
 
-            CalculatedStyle drawPos = GetDimensions();
+            DrawPalmTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
+        }
+
+        private void DrawModdedPalmTree(SpriteBatch spriteBatch, int palmTreeSand)
+        {
+            Scale = 0.5f;
+            int size = 20;
+            Tile sandTile = new Tile();
+            sandTile.active(true);
+            sandTile.type = (ushort)palmTreeSand;
+            Texture2D woodTexture = TileLoader.GetPalmTreeTexture(sandTile);
+            Texture2D topTexture = TileLoader.GetPalmTreeTopTextures(palmTreeSand);
+
+            Rectangle top = new Rectangle(0,0, size * 4, size * 4);
+            Rectangle trunk1 = new Rectangle(0, 0, size, size);
+            Rectangle trunk2 = new Rectangle(42, 0, size, size);
+            Rectangle bottom = new Rectangle(66, 0, size, size);
+
+            int topOffsetX = (int)Math.Round(30 * Scale);
+            int topOffsetY = (int)Math.Round(78 * Scale);
+
+            Width.Set((int)(78 * Scale), 0);
+            Height.Set((int)(160 * Scale), 0);
+
+            DrawPalmTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
+        }
+
+        private void DrawPalmTree(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1, 
+            Rectangle trunk2, Rectangle bottom, Texture2D topTexture, Texture2D woodTexture)
+        {
+            int unit = (int)Math.Round(16 * Scale);
+
+            Rectangle drawPos = GetDimensions().ToRectangle();
             spriteBatch.Draw(topTexture, new Vector2(drawPos.X, drawPos.Y), top, Color.White, 0, Vector2.Zero, Scale, 0, 0);
             drawPos.X += topOffsetX;
             drawPos.Y += topOffsetY;
@@ -318,10 +405,10 @@ namespace Twaila.UI
             drawPos.Y += unit;
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X, drawPos.Y), trunk2, Color.White, 0, Vector2.Zero, Scale, 0, 0);
             drawPos.Y += unit;
-            drawPos.X += 2 * Scale;
+            drawPos.X += (int)(2 * Scale);
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X, drawPos.Y), trunk1, Color.White, 0, Vector2.Zero, Scale, 0, 0);
             drawPos.Y += unit;
-            drawPos.X += 2 * Scale;
+            drawPos.X += (int)(2 * Scale);
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X, drawPos.Y), trunk1, Color.White, 0, Vector2.Zero, Scale, 0, 0);
             drawPos.Y += unit;
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X, drawPos.Y), bottom, Color.White, 0, Vector2.Zero, Scale, 0, 0);
@@ -339,15 +426,15 @@ namespace Twaila.UI
             int topOffsetX = (int)Math.Round(22 * Scale);
             int topOffsetY = (int)Math.Round(42 * Scale);
 
-            Width.Set(60, 0);
+            Width.Set(30, 0);
             Height.Set(66, 0);
 
-            CalculatedStyle drawPos = GetDimensions();
+            Rectangle drawPos = GetDimensions().ToRectangle();
             spriteBatch.Draw(topTexture, new Vector2(drawPos.X, drawPos.Y), top, Color.White, 0, Vector2.Zero, Scale, 0, 0);
             drawPos.X += topOffsetX;
             drawPos.Y += topOffsetY;
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X, drawPos.Y), trunk, Color.White, 0, Vector2.Zero, Scale, 0, 0);
-            drawPos.Y += (18 * 2) * Scale;
+            drawPos.Y += (int)(18 * 2 * Scale);
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X, drawPos.Y), trunk, Color.White, 0, Vector2.Zero, Scale, 0, 0);
 
         }
