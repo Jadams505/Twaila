@@ -13,10 +13,12 @@ Use 100% UI Scale to avoid texture glitches
 - Toggle UI (Mouse3 by default): Switches the visibility of the UI Panel
 
 [Changelog]
-v0.1.1.0
+v0.1.2.0 (2/13/2022)
+- Saplings now display the proper name on the UI
+v0.1.1.0 (2/12/2022)
 - Trees now display the proper name and texture on the UI
 - Fixed a blurry texture issue
-v0.1.0.1
+v0.1.0.1 (2/11/2022)
 - Initial Release
 - The UI Panel displays the name, mod, and texture of most tiles in vanilla and modded terraria
 

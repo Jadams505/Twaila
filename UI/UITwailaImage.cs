@@ -190,39 +190,39 @@ namespace Twaila.UI
         {
             if (Tile.type == TileID.Trees)
             {
-                int? treeDirt = TwailaUtil.GetTreeDirt(Pos.X, Pos.Y, Tile);
-                if(treeDirt == null)
+                int treeDirt = TwailaUtil.GetTreeDirt(Pos.X, Pos.Y, Tile);
+                if(treeDirt == -1)
                 {
                     return false;
                 } 
-                if(TileLoader.CanGrowModTree(treeDirt.Value))
+                if(TileLoader.CanGrowModTree(treeDirt))
                 {
-                    DrawModdedTree(spriteBatch, treeDirt.Value);
+                    DrawModdedTree(spriteBatch, treeDirt);
                     return true;
                 }
-                int? treeType = TwailaUtil.GetTreeType(treeDirt.Value, Pos.Y);
-                if (treeType != null)
+                int treeWood = TwailaUtil.GetTreeWood(treeDirt);
+                if (treeWood != -1)
                 {
-                    DrawTree(spriteBatch, treeType.Value);
+                    DrawTree(spriteBatch, treeWood);
                     return true;
                 }
             }
             else if (Tile.type == TileID.PalmTree) 
             { 
-                int? palmTreeSand = TwailaUtil.GetPalmTreeSand(Pos.X, Pos.Y, Tile);
-                if(palmTreeSand == null)
+                int palmTreeSand = TwailaUtil.GetPalmTreeSand(Pos.X, Pos.Y, Tile);
+                if(palmTreeSand == -1)
                 {
                     return false;
                 }
-                if (TileLoader.CanGrowModPalmTree(palmTreeSand.Value))
+                if (TileLoader.CanGrowModPalmTree(palmTreeSand))
                 {
-                    DrawModdedPalmTree(spriteBatch, palmTreeSand.Value);
+                    DrawModdedPalmTree(spriteBatch, palmTreeSand);
                     return true;
                 }
-                int? palmTreeType = TwailaUtil.GetPalmTreeType(palmTreeSand.Value);
-                if(palmTreeSand != null)
+                int palmTreeWood = TwailaUtil.GetTreeWood(palmTreeSand);
+                if(palmTreeWood != -1)
                 {
-                    DrawPalmTree(spriteBatch, palmTreeType.Value);
+                    DrawPalmTree(spriteBatch, palmTreeWood);
                     return true;
                 }
             }
@@ -234,13 +234,16 @@ namespace Twaila.UI
             return false;
         }
 
-        private void DrawTree(SpriteBatch spriteBatch, int treeType)
+        private void DrawTree(SpriteBatch spriteBatch, int woodType)
         {
             Scale = 0.5f;
             int size = 20;
-            Texture2D topTexture = Main.treeTopTexture[treeType + 1];
-            Texture2D woodTexture = treeType == -1 ? Main.tileTexture[TileID.Trees] : Main.woodTexture[treeType];
-            Texture2D branchTexture = Main.treeBranchTexture[treeType + 1];
+            
+            
+            Texture2D topTexture = Main.treeTopTexture[0];
+            Texture2D woodTexture = Main.tileTexture[TileID.Trees];
+            Texture2D branchTexture = Main.treeBranchTexture[0];
+            SetTexturesForTree(woodType, Pos.Y, ref topTexture, ref woodTexture, ref branchTexture);
             Rectangle top = new Rectangle(82, 0, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(44, 108, size, size);
             Rectangle trunk2 = new Rectangle(88, 42, size, size);
@@ -256,39 +259,34 @@ namespace Twaila.UI
             Width.Set(40, 0);
             Height.Set(74, 0);
 
-            switch (treeType)
+            switch (woodType)
             {
-                case 1: // jungle
-                    Width.Set(56, 0);
-                    Height.Set(80, 0);
-                    top = new Rectangle(0, 0, 114, 94);
-                    topOffsetX = (int)Math.Round(46 * Scale);
-                    topOffsetY = (int)Math.Round(92 * Scale);
+                case ItemID.RichMahogany: 
+                    if(Pos.Y <= Main.worldSurface) // underground jungle
+                    {
+                        Width.Set(56, 0);
+                        Height.Set(79, 0);
+                        top = new Rectangle(236, 4, 112, 92);
+                        topOffsetX = (int)Math.Round(42 * Scale);
+                        topOffsetY = (int)Math.Round(90 * Scale);
+                        break;
+                    }
+                    else // jungle
+                    {
+                        Width.Set(56, 0);
+                        Height.Set(80, 0);
+                        top = new Rectangle(0, 0, 114, 94);
+                        topOffsetX = (int)Math.Round(46 * Scale);
+                        topOffsetY = (int)Math.Round(92 * Scale);
+                    }
                     break;
-                case 2: // hallow
+                case ItemID.Pearlwood: // hallow
                     Width.Set(40, 0);
                     Height.Set(92, 0);
                     top = new Rectangle(84, 22, 76, 118);
                     topOffsetX = (int)Math.Round(28 * Scale);
                     topOffsetY = (int)Math.Round(116 * Scale);
                     break;
-                case 5: // underground jungle
-                    Width.Set(56, 0);
-                    Height.Set(79, 0);
-                    top = new Rectangle(236, 4, 112, 92);
-                    topOffsetX = (int)Math.Round(42 * Scale);
-                    topOffsetY = (int)Math.Round(90 * Scale);
-                    topTexture = Main.treeTopTexture[13];
-                    branchTexture = Main.treeBranchTexture[13];
-                    break;
-                case 3: // snow
-                    topTexture = Main.treeTopTexture[12];
-                    branchTexture = Main.treeBranchTexture[12];
-                    break;
-                case 6: // mushroom
-                    topTexture = Main.treeTopTexture[14];
-                    branchTexture = Main.treeBranchTexture[14];
-                    break;  
             }
 
             DrawTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
@@ -347,10 +345,26 @@ namespace Twaila.UI
             spriteBatch.Draw(woodTexture, new Vector2(drawPos.X + unit, drawPos.Y), bottomRight, Color.White, 0, Vector2.Zero, Scale, 0, 0);
         }
 
-        private void DrawPalmTree(SpriteBatch spriteBatch, int palmTreeType)
+        private void DrawPalmTree(SpriteBatch spriteBatch, int palmTreeWood)
         {
             Scale = 0.5f;
             int size = 20;
+            int palmTreeType = 0;
+            switch (palmTreeWood)
+            {
+                case ItemID.PalmWood:
+                    palmTreeType = 0;
+                    break;
+                case ItemID.Shadewood:
+                    palmTreeType = 1;
+                    break;
+                case ItemID.Pearlwood:
+                    palmTreeType = 2;
+                    break;
+                case ItemID.Ebonwood:
+                    palmTreeType = 3;
+                    break;
+            }
             Texture2D woodTexture = Main.tileTexture[TileID.PalmTree];
             Texture2D topTexture = Main.treeTopTexture[15];
 
@@ -457,6 +471,55 @@ namespace Twaila.UI
         {
             TileObjectData data = TileObjectData.GetTileData(Tile);
             return data == null ? 0 : data.Width * data.CoordinateWidth;
+        }
+
+        private void SetTexturesForTree(int woodType, int depth, ref Texture2D topTexture, ref Texture2D woodTexture, ref Texture2D branchTexture)
+        {
+            switch (woodType)
+            {
+                case ItemID.Ebonwood:
+                    topTexture = Main.treeTopTexture[1];
+                    woodTexture = Main.woodTexture[0];
+                    branchTexture = Main.treeBranchTexture[1];
+                    break;
+                case ItemID.RichMahogany:
+                    if (depth >= Main.worldSurface)
+                    {
+                        topTexture = Main.treeTopTexture[13];
+                        woodTexture = Main.woodTexture[5];
+                        branchTexture = Main.treeBranchTexture[13];
+                        break;
+                    }
+                    topTexture = Main.treeTopTexture[2];
+                    woodTexture = Main.woodTexture[1];
+                    branchTexture = Main.treeBranchTexture[2];
+                    break;
+                case ItemID.Pearlwood:
+                    topTexture = Main.treeTopTexture[3];
+                    woodTexture = Main.woodTexture[2];
+                    branchTexture = Main.treeBranchTexture[3];
+                    break;
+                case ItemID.BorealWood:
+                    topTexture = Main.treeTopTexture[12];
+                    woodTexture = Main.woodTexture[3];
+                    branchTexture = Main.treeBranchTexture[12];
+                    break;
+                case ItemID.Shadewood:
+                    topTexture = Main.treeTopTexture[5];
+                    woodTexture = Main.woodTexture[4];
+                    branchTexture = Main.treeBranchTexture[5];
+                    return;
+                case ItemID.GlowingMushroom:
+                    topTexture = Main.treeTopTexture[14];
+                    woodTexture = Main.woodTexture[6];
+                    branchTexture = Main.treeBranchTexture[14];
+                    break;
+                case ItemID.Wood:
+                    topTexture = Main.treeTopTexture[0];
+                    woodTexture = Main.tileTexture[TileID.Trees];
+                    branchTexture = Main.treeBranchTexture[0];
+                    break;
+            }
         }
         public void Set(Point pos, Tile tile, int itemId = -1, float scale = 1)
         {

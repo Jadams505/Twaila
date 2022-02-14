@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -59,7 +60,7 @@ namespace Twaila.Util
                 panel.Name.SetText(name);
                 return;
             }
-            if(UpdateNameForTrees(panel, tile, pos) || UpdateNameFromItem(itemId, panel) || UpdateNameFromMap(panel, pos))
+            if(UpdateNameForTreesAndSaplings(panel, tile, pos) || UpdateNameFromItem(itemId, panel) || UpdateNameFromMap(panel, pos))
             {
                 return;
             }
@@ -98,87 +99,59 @@ namespace Twaila.Util
             return false;
         }
 
-        private static bool UpdateNameForTrees(TwailaPanel panel, Tile tile, Point pos)
+        private static bool UpdateNameForTreesAndSaplings(TwailaPanel panel, Tile tile, Point pos)
         {
             int itemId = -1;
             string toAppend = "";
-            if (tile.type == TileID.Trees)
+            int treeBottom = -1;
+            string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
+            string sapling = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Saplings, 0));
+            string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
+            if (TileLoader.IsSapling(tile.type))
             {
-                toAppend = " Tree";
-                int? dirtType = GetTreeDirt(pos.X, pos.Y, tile);
-                int? treeType = GetTreeType(dirtType, pos.Y);
-                int woodType = -1;
-                if(dirtType != null)
+                treeBottom = GetSaplingTile(pos.X, pos.Y, tile);
+                if (TileLoader.CanGrowModPalmTree(treeBottom) || treeBottom == TileID.Crimsand || treeBottom == TileID.Ebonsand || treeBottom == TileID.Pearlsand)
                 {
-                    if(TileLoader.CanGrowModTree(dirtType.Value)){
-                        TileLoader.DropTreeWood(dirtType.Value, ref woodType);
-                        itemId = woodType;
-                    }
-                    else
-                    {
-                        switch (treeType)
-                        {
-                            case 0:
-                                itemId = ItemID.Ebonwood;
-                                break;
-                            case 1:
-                            case 5:
-                                itemId = ItemID.RichMahogany;
-                                break;
-                            case 2:
-                                itemId = ItemID.Pearlwood;
-                                break;
-                            case 3:
-                                itemId = ItemID.BorealWood;
-                                break;
-                            case 4:
-                                itemId = ItemID.Shadewood;
-                                break;
-                            case 6:
-                                itemId = ItemID.GlowingMushroom;
-                                break;
-                            case -1:
-                                itemId = ItemID.Wood;
-                                break;
-                        }
-                    }
+                    toAppend = " " + palmTree + " " + sapling;
+                }
+                else
+                {
+                    toAppend = " " + tree + " " + sapling;
+                }
+                if (treeBottom == TileID.Grass)
+                {
+                    panel.Name.SetText(tree + " " + sapling);
+                    return true;
+                }
+                if (treeBottom == TileID.Sand)
+                {
+                    panel.Name.SetText(palmTree + " " + sapling);
+                    return true;
+                }
+                
+            }
+            else if (tile.type == TileID.Trees)
+            {
+                toAppend = " " + tree;
+                treeBottom = GetTreeDirt(pos.X, pos.Y, tile);
+                if(treeBottom == TileID.Grass)
+                {
+                    panel.Name.SetText(tree);
+                    return true;
                 }
             }
             else if(tile.type == TileID.PalmTree)
             {
-                toAppend = " Palm Tree";
-                int? sandType = GetPalmTreeSand(pos.X, pos.Y, tile);
-                int? palmTreeType = GetPalmTreeType(sandType);
-                int woodType = -1;
-                if (sandType != null)
+                toAppend = " " + palmTree;
+                treeBottom = GetPalmTreeSand(pos.X, pos.Y, tile);
+                if(treeBottom == TileID.Sand)
                 {
-                    if (TileLoader.CanGrowModPalmTree(sandType.Value))
-                    {
-                        TileLoader.DropPalmTreeWood(sandType.Value, ref woodType);
-                        itemId = woodType;
-                    }
-                    else
-                    {
-                        switch (palmTreeType)
-                        {
-                            case 0:
-                                itemId = ItemID.PalmWood;
-                                toAppend = " Tree";
-                                break;
-                            case 1:
-                                itemId = ItemID.Shadewood;
-                                break;
-                            case 2:
-                                itemId = ItemID.Pearlwood;
-                                break;
-                            case 3:
-                                itemId = ItemID.Ebonwood;
-                                break;
-                        }
-                    }
+                    panel.Name.SetText(palmTree);
+                    return true;
                 }
             }
-            if(itemId != -1)
+            itemId = GetTreeWood(treeBottom);
+            if (itemId != -1)
             {
                 panel.Name.SetText(Lang.GetItemNameValue(itemId) + toAppend);
                 return true;
@@ -200,38 +173,41 @@ namespace Twaila.Util
             return copy;
         }
 
-        public static int? GetTreeType(int? treeDirt, int depth)
+        public static int GetTreeWood(int treeDirt)
         {
             switch (treeDirt)
             {
                 case TileID.CorruptGrass:
-                    return 0;
+                case TileID.Ebonsand:
+                    return ItemID.Ebonwood;
                 case TileID.JungleGrass:
-                    if (depth <= Main.worldSurface)
-                    {
-                        return 1;
-                    }
-                    return 5;
+                    return ItemID.RichMahogany;
                 case TileID.HallowedGrass:
-                    return 2;
+                case TileID.Pearlsand:
+                    return ItemID.Pearlwood;
                 case TileID.SnowBlock:
-                    return 3;
+                    return ItemID.BorealWood;
                 case TileID.FleshGrass:
-                    return 4;
+                case TileID.Crimsand:
+                    return ItemID.Shadewood;
                 case TileID.MushroomGrass:
-                    return 6;
+                    return ItemID.GlowingMushroom;
                 case TileID.Grass:
-                    return -1;
-                default:
-                    return null;
+                    return ItemID.Wood;
+                case TileID.Sand:
+                    return ItemID.PalmWood;
             }
+            int wood = -1;
+            TileLoader.DropTreeWood(treeDirt, ref wood);
+            TileLoader.DropPalmTreeWood(treeDirt, ref wood);
+            return wood;
         }
 
-        public static int? GetTreeDirt(int x, int y, Tile tile)
+        public static int GetTreeDirt(int x, int y, Tile tile)
         {
             if (tile.type != TileID.Trees)
             {
-                return null;
+                return -1;
             }
             if (Main.tile[x - 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
             {
@@ -248,31 +224,15 @@ namespace Twaila.Util
 
             if (Main.tile[x, y] == null || !Main.tile[x, y].active())
             {
-                return null;
+                return -1;
             }
             return Main.tile[x, y].type;
         }
-        public static int? GetPalmTreeType(int? palmTreeSand)
-        {
-            switch (palmTreeSand)
-            {
-                case TileID.Sand:
-                    return 0;
-                case TileID.Crimsand:
-                    return 1;
-                case TileID.Pearlsand:
-                    return 2;
-                case TileID.Ebonsand:
-                    return 3;
-                default:
-                    return null;
-            }
-        }
-        public static int? GetPalmTreeSand(int x, int y, Tile tile)
+        public static int GetPalmTreeSand(int x, int y, Tile tile)
         {
             if (tile.type != TileID.PalmTree)
             {
-                return null;
+                return -1;
             }
             do
             {
@@ -281,7 +241,25 @@ namespace Twaila.Util
 
             if (Main.tile[x, y] == null || !Main.tile[x, y].active())
             {
-                return null;
+                return -1;
+            }
+            return Main.tile[x, y].type;
+        }
+
+        private static int GetSaplingTile(int x, int y, Tile tile)
+        {
+            if (!TileLoader.IsSapling(tile.type))
+            {
+                return -1;
+            }
+            do
+            {
+                y++;
+            } while (TileLoader.IsSapling(Main.tile[x, y].type) && Main.tile[x, y].active());
+            
+            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
+            {
+                return -1;
             }
             return Main.tile[x, y].type;
         }
