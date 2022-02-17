@@ -60,7 +60,7 @@ namespace Twaila.Util
                 panel.Name.SetText(name);
                 return;
             }
-            if(UpdateNameForTreesAndSaplings(panel, tile, pos) || UpdateNameFromItem(itemId, panel) || UpdateNameFromMap(panel, pos))
+            if(UpdateNameCustom(panel, tile, pos) || UpdateNameFromItem(itemId, panel) || UpdateNameFromMap(panel, pos))
             {
                 return;
             }
@@ -94,6 +94,15 @@ namespace Twaila.Util
             if (!mapName.Equals(""))
             {
                 panel.Name.SetText(mapName);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool UpdateNameCustom(TwailaPanel panel, Tile tile, Point pos)
+        {
+            if(UpdateNameForTreesAndSaplings(panel, tile, pos) || UpdateNameForCactus(panel, tile, pos))
+            {
                 return true;
             }
             return false;
@@ -158,6 +167,54 @@ namespace Twaila.Util
             }
             return false;
             
+        }
+
+        private static bool UpdateNameForCactus(TwailaPanel panel, Tile tile, Point pos)
+        {
+            string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
+            if (tile.type == TileID.Cactus)
+            {
+                int cactusSand = GetCactusSand(pos.X, pos.Y, tile);
+                if(cactusSand == -1)
+                {
+                    return false;
+                }
+                if (TileLoader.CanGrowModCactus(cactusSand))
+                {
+                    ModTile mTile = TileLoader.GetTile(cactusSand);
+                    if(mTile != null)
+                    {
+                        int dropId = mTile.drop;
+                        ModItem mItem = ItemLoader.GetItem(dropId);
+                        panel.Name.SetText(mItem == null ? mTile.Name : mItem.DisplayName.GetDefault() + " " + cactus);
+                        return true;
+                    }
+                }
+                else
+                {
+                    int itemId = -1;
+                    switch (cactusSand)
+                    {
+                        case TileID.Crimsand:
+                            itemId = ItemID.CrimsandBlock;
+                            break;
+                        case TileID.Ebonsand:
+                            itemId = ItemID.EbonsandBlock;
+                            break;
+                        case TileID.Pearlsand:
+                            itemId = ItemID.PearlsandBlock;
+                            break;
+                    }
+                    if(itemId != -1)
+                    {
+                        panel.Name.SetText(Lang.GetItemNameValue(itemId) + " " + cactus);
+                        return true;
+                    }
+                }
+                panel.Name.SetText(cactus);
+                return true;
+            }
+            return false;
         }
 
         private static bool UpdateModName(TwailaPanel panel, Tile tile)
@@ -245,7 +302,6 @@ namespace Twaila.Util
             }
             return Main.tile[x, y].type;
         }
-
         private static int GetSaplingTile(int x, int y, Tile tile)
         {
             if (!TileLoader.IsSapling(tile.type))
@@ -258,6 +314,38 @@ namespace Twaila.Util
             } while (TileLoader.IsSapling(Main.tile[x, y].type) && Main.tile[x, y].active());
             
             if (Main.tile[x, y] == null || !Main.tile[x, y].active())
+            {
+                return -1;
+            }
+            return Main.tile[x, y].type;
+        }
+        public static int GetCactusSand(int x, int y, Tile tile)
+        {
+            if(tile.type != TileID.Cactus)
+            {
+                return -1;
+            }
+            do
+            {
+                if (Main.tile[x, y + 1].type == TileID.Cactus)
+                {
+                    y++;
+                }
+                else if (Main.tile[x + 1, y].type == TileID.Cactus)
+                {
+                    x++;
+                }
+                else if (Main.tile[x - 1, y].type == TileID.Cactus)
+                {
+                    x--;
+                }
+                else
+                {
+                    y++;
+                }
+            }
+            while (Main.tile[x, y].type == TileID.Cactus && Main.tile[x, y].active());
+            if(Main.tile[x, y] == null || !Main.tile[x, y].active())
             {
                 return -1;
             }
