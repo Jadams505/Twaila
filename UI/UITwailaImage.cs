@@ -18,6 +18,8 @@ namespace Twaila.UI
         public Tile Tile { get; private set; }
         public float Scale;
         public int ItemId { get; private set; }
+
+        public Texture2D Image {get ; private set; }
         public UITwailaImage() : this(Point.Zero, new Tile())
         {
         }
@@ -46,63 +48,85 @@ namespace Twaila.UI
         {
             TileObjectData data = TileObjectData.GetTileData(Tile);
             Texture2D texture = GetTileTexture();
+            
             if (data != null && texture != null && !texture.Equals(TextureManager.BlankTexture))
             {
                 SetSizeFromTileData();
-                int fullWidth = GetSpriteWidth() + (data.Width * data.CoordinatePadding);
-                int fullHeight = GetSpriteHeight() + (data.Height * data.CoordinatePadding);
+                Texture2D buffer = new Texture2D(spriteBatch.GraphicsDevice, GetSpriteWidth(), GetSpriteHeight());
                 Rectangle dim = GetDimensions().ToRectangle();
-                int frameX = Tile.frameX / fullWidth * fullWidth;
-                int frameY = Tile.frameY / fullHeight * fullHeight;
+                int frameX = Tile.frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
+                int frameY = Tile.frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
                 if (data.Style > data.StyleWrapLimit)
                 {
                     if (data.StyleHorizontal)
                     {
-                        frameY += fullHeight;
+                        frameY += data.CoordinateFullHeight;
                     }
                     else
                     {
-                        frameX += fullWidth;
+                        frameX += data.CoordinateFullWidth;
                     }  
                 }
                 for (int row = 0; row < data.Height; ++row)
                 {
                     for (int col = 0; col < data.Width; ++col)
                     {
-                        float drawPosX = dim.X + col * data.CoordinateWidth;
-                        float drawPosY = dim.Y + row * data.CoordinateHeights[row - 1 >= 0 ? row - 1 : 0];
-                        spriteBatch.Draw(texture, new Vector2(drawPosX, drawPosY),
-                            new Rectangle(frameX + col * (data.CoordinateWidth + data.CoordinatePadding), 
-                            frameY + row * (data.CoordinateHeights[row - 1 >= 0 ? row - 1 : 0] + data.CoordinatePadding),
-                            data.CoordinateWidth, data.CoordinateHeights[row]), Color.White, 0, Vector2.Zero, Scale, 0, 0);
+                        int width = data.CoordinateWidth, height = data.CoordinateHeights[row], lastHeight = data.CoordinateHeights[row - 1 > 0 ? row - 1 : 0];
+                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
+                            frameY + (lastHeight + data.CoordinatePadding) * row, width, height);
+                        Rectangle pasteRectangle = new Rectangle(width * col, lastHeight * row, width, height);
+                        if(!PopulateTextureBuffer(texture, copyRectangle, buffer, pasteRectangle))
+                        {
+                            return false;
+                        }
                     }
                 }
+                Image = buffer;
+                spriteBatch.Draw(Image, new Vector2(dim.X, dim.Y), new Rectangle(0, 0, Image.Width, Image.Height), Color.White, 0, Vector2.Zero, Scale, 0, 0);
                 return true;
             }
             return false;
         }
         private bool DrawFromTile(SpriteBatch spriteBatch)
         {
-            
             Rectangle dim = GetDimensions().ToRectangle();
             int size = 16;
             int padding = 2;
             Texture2D texture = GetTileTexture();
-            if(texture != null && !texture.Equals(TextureManager.BlankTexture))
+            
+            if (texture != null && !texture.Equals(TextureManager.BlankTexture))
             {
+                Texture2D buffer = new Texture2D(spriteBatch.GraphicsDevice, size * 2, size * 2);
                 SetSizeFromTile();
-                for (int row = 0; row < 2; ++row)
+                for(int row = 0; row < 2; ++row)
                 {
-                    for (int col = 0; col < 2; ++col)
+                    for(int col = 0; col < 2; ++col)
                     {
-                        Vector2 drawPos = new Vector2(dim.X + col * size, dim.Y + row * size);
-                        Rectangle spriteData = new Rectangle(col * (size + padding), 54 + row * (size + padding), size, size);
-                        spriteBatch.Draw(texture, drawPos, spriteData, Color.White, 0, Vector2.Zero, Scale, 0, 0);
+                        Rectangle copyRectangle = new Rectangle(col * (size + padding), 54 + row * (size + padding), size, size);
+                        Rectangle pasteRectangle = new Rectangle(size * col, size * row, size, size);
+                        if (!PopulateTextureBuffer(texture, copyRectangle, buffer, pasteRectangle))
+                        {
+                            return false;
+                        }
                     }
                 }
+                Image = buffer;
+                spriteBatch.Draw(Image, new Vector2(dim.X, dim.Y), new Rectangle(0, 0, Image.Width, Image.Height), Color.White, 0, Vector2.Zero, Scale, 0, 0);
                 return true;
             }
             return false;
+        }
+
+        private bool PopulateTextureBuffer(Texture2D fullTexture, Rectangle copyRectangle, Texture2D buffer, Rectangle pasteRectangle)
+        {
+            Color[] textureAsArray = new Color[copyRectangle.Width * copyRectangle.Height];
+            if (copyRectangle.X + copyRectangle.Width > fullTexture.Width || copyRectangle.Y + copyRectangle.Height > fullTexture.Height)
+            {
+                return false;
+            }
+            fullTexture.GetData(0, copyRectangle, textureAsArray, 0, textureAsArray.Length);
+            buffer.SetData(0, pasteRectangle, textureAsArray, 0, textureAsArray.Length);
+            return true;
         }
         private void SetSizeFromTile()
         {
