@@ -161,6 +161,58 @@ namespace Twaila.Util
             return builder.Build(spriteBatch.GraphicsDevice);
         }
 
+        public static Texture2D GetImageForCactus(SpriteBatch spriteBatch, int cactusSand, bool modded)
+        {
+            int size = 16;
+            int padding = 2;
+            Texture2D cactusTexture = modded ? TileLoader.GetCactusTexture(cactusSand) : Main.tileTexture[TileID.Cactus];
+            if (!modded)
+            {
+                switch (cactusSand)
+                {
+                    case TileID.Ebonsand:
+                        cactusTexture = Main.evilCactusTexture;
+                        break;
+                    case TileID.Pearlsand:
+                        cactusTexture = Main.goodCactusTexture;
+                        break;
+                    case TileID.Crimsand:
+                        cactusTexture = Main.crimsonCactusTexture;
+                        break;
+                    default:
+                        cactusTexture = Main.tileTexture[TileID.Cactus];
+                        break;
+                }
+            }
+
+            Rectangle stemTop = new Rectangle(0, 0, size, size);
+            Rectangle stemMiddle = new Rectangle(90, 36, size, size);
+            Rectangle left = new Rectangle(54, 36, size, size);
+            Rectangle topLeft = new Rectangle(54, 0, size, size);
+            Rectangle right = new Rectangle(36, 36, size, size);
+            Rectangle topRight = new Rectangle(36, 0, size, size);
+            Rectangle stemBottom = new Rectangle(0, 2 * (size + padding), size, size);
+
+            Point drawPos = Point.Zero;
+            TextureBuilder builder = new TextureBuilder();
+            drawPos.X += size / 2;
+            builder.AddComponent(stemTop, cactusTexture, drawPos);
+            drawPos.Y += size;
+            builder.AddComponent(stemMiddle, cactusTexture, drawPos);
+            drawPos.X -= size;
+            builder.AddComponent(left, cactusTexture, drawPos);
+            drawPos.Y -= size;
+            builder.AddComponent(topLeft, cactusTexture, drawPos);
+            drawPos.X += size * 2;
+            builder.AddComponent(topRight, cactusTexture, drawPos);
+            drawPos.Y += size;
+            builder.AddComponent(right, cactusTexture, drawPos);
+            drawPos.Y += size;
+            drawPos.X -= size;
+            builder.AddComponent(stemBottom, cactusTexture, drawPos);
+            return builder.Build(spriteBatch.GraphicsDevice);
+        }
+
         public static int GetTreeWood(int treeDirt)
         {
             switch (treeDirt)
@@ -243,6 +295,38 @@ namespace Twaila.Util
                 y++;
             } while (TileLoader.IsSapling(Main.tile[x, y].type) && Main.tile[x, y].active());
 
+            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
+            {
+                return -1;
+            }
+            return Main.tile[x, y].type;
+        }
+        public static int GetCactusSand(int x, int y, Tile tile)
+        {
+            if (tile.type != TileID.Cactus)
+            {
+                return -1;
+            }
+            do
+            {
+                if (Main.tile[x, y + 1].type == TileID.Cactus)
+                {
+                    y++;
+                }
+                else if (Main.tile[x + 1, y].type == TileID.Cactus)
+                {
+                    x++;
+                }
+                else if (Main.tile[x - 1, y].type == TileID.Cactus)
+                {
+                    x--;
+                }
+                else
+                {
+                    y++;
+                }
+            }
+            while (Main.tile[x, y].type == TileID.Cactus && Main.tile[x, y].active());
             if (Main.tile[x, y] == null || !Main.tile[x, y].active())
             {
                 return -1;

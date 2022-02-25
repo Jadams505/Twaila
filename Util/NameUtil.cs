@@ -16,7 +16,7 @@ namespace Twaila.Util
                 panel.Name.SetText(name);
                 return;
             }
-            if (UpdateNameForTreesAndSaplings(panel, tile, pos) || UpdateNameFromItem(itemId, panel) || UpdateNameFromMap(panel, pos))
+            if (UpdateNameCustom(panel, tile, pos) || UpdateNameFromItem(itemId, panel) || UpdateNameFromMap(panel, pos))
             {
                 return;
             }
@@ -50,6 +50,15 @@ namespace Twaila.Util
             if (!mapName.Equals(""))
             {
                 panel.Name.SetText(mapName);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool UpdateNameCustom(TwailaPanel panel, Tile tile, Point pos)
+        {
+            if (UpdateNameForTreesAndSaplings(panel, tile, pos) || UpdateNameForCactus(panel, tile, pos))
+            {
                 return true;
             }
             return false;
@@ -114,6 +123,54 @@ namespace Twaila.Util
             }
             return false;
 
+        }
+
+        private static bool UpdateNameForCactus(TwailaPanel panel, Tile tile, Point pos)
+        {
+            string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
+            if (tile.type == TileID.Cactus)
+            {
+                int cactusSand = TreeUtil.GetCactusSand(pos.X, pos.Y, tile);
+                if (cactusSand == -1)
+                {
+                    return false;
+                }
+                if (TileLoader.CanGrowModCactus(cactusSand))
+                {
+                    ModTile mTile = TileLoader.GetTile(cactusSand);
+                    if (mTile != null)
+                    {
+                        int dropId = mTile.drop;
+                        ModItem mItem = ItemLoader.GetItem(dropId);
+                        panel.Name.SetText(mItem == null ? mTile.Name : mItem.DisplayName.GetDefault() + " " + cactus);
+                        return true;
+                    }
+                }
+                else
+                {
+                    int itemId = -1;
+                    switch (cactusSand)
+                    {
+                        case TileID.Crimsand:
+                            itemId = ItemID.CrimsandBlock;
+                            break;
+                        case TileID.Ebonsand:
+                            itemId = ItemID.EbonsandBlock;
+                            break;
+                        case TileID.Pearlsand:
+                            itemId = ItemID.PearlsandBlock;
+                            break;
+                    }
+                    if (itemId != -1)
+                    {
+                        panel.Name.SetText(Lang.GetItemNameValue(itemId) + " " + cactus);
+                        return true;
+                    }
+                }
+                panel.Name.SetText(cactus);
+                return true;
+            }
+            return false;
         }
 
         public static bool UpdateModName(TwailaPanel panel, Tile tile)

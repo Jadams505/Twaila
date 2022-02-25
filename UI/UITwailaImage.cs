@@ -47,32 +47,23 @@ namespace Twaila.UI
         {
             //if (SetDebugImage(spriteBatch, tile)) return;
             bool drawSuccess;
-            if (SetImageForTrees(spriteBatch, pos, tile))
+            if (DrawCustom(spriteBatch, pos, tile))
             {
                 drawSuccess = true;
             }
             else if (TwailaConfig.Get().UseItemTextures)
             {
-                drawSuccess = SetImageFromItemData(spriteBatch, tile, itemId) || SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile);
+                drawSuccess = SetImageFromItemData(tile, itemId) || SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile);
             }
             else
             {
-                drawSuccess = SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile) || SetImageFromItemData(spriteBatch, tile, itemId);
+                drawSuccess = SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile) || SetImageFromItemData(tile, itemId);
             }
 
             if (!drawSuccess)
             {
                 _image = Main.buffTexture[BuffID.Confused];
             }
-        }
-
-        private bool SetDebugImage(SpriteBatch spriteBatch, Tile tile)
-        {
-            TextureBuilder builder = new TextureBuilder();
-            Texture2D texture = GetTileTexture(tile);
-            builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
-            _image = builder.Build(spriteBatch.GraphicsDevice);
-            return _image != null;
         }
 
         private bool SetImageFromTileData(SpriteBatch spriteBatch, Tile tile)
@@ -144,6 +135,30 @@ namespace Twaila.UI
             return false;
         }
 
+        private bool SetImageFromItemData(Tile tile, int itemId)
+        {
+            Scale = 1;
+            if (itemId != -1)
+            {
+                Texture2D itemTexture = GetItemTexture(tile, itemId);
+                if (itemTexture != null)
+                {
+                    _image = itemTexture;
+                    return _image != null;
+                }
+            }
+            return false;
+        }
+
+        private bool DrawCustom(SpriteBatch spriteBatch, Point pos, Tile tile)
+        {
+            if (SetImageForTrees(spriteBatch, pos, tile) || SetImageForCactus(spriteBatch, pos, tile))
+            {
+                return true;
+            }
+            return false;
+        }
+
         private bool SetImageForTrees(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
             Scale = 0.5f;
@@ -193,19 +208,34 @@ namespace Twaila.UI
             return false;
         }
 
-        private bool SetImageFromItemData(SpriteBatch spriteBatch, Tile tile, int itemId)
+        private bool SetImageForCactus(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
             Scale = 1;
-            if (itemId != -1)
+            if (tile.type == TileID.Cactus)
             {
-                Texture2D itemTexture = GetItemTexture(tile, itemId);
-                if (itemTexture != null)
+                int cactusSand = TreeUtil.GetCactusSand(pos.X, pos.Y, tile);
+                if (cactusSand == -1)
                 {
-                    _image = itemTexture;
+                    return false;
+                }
+                if (TileLoader.CanGrowModCactus(cactusSand))
+                {
+                    _image = TreeUtil.GetImageForCactus(spriteBatch, cactusSand, true);
                     return _image != null;
                 }
+                _image = TreeUtil.GetImageForCactus(spriteBatch, cactusSand, false);
+                return _image != null;
             }
             return false;
+        }
+
+        private bool SetDebugImage(SpriteBatch spriteBatch, Tile tile)
+        {
+            TextureBuilder builder = new TextureBuilder();
+            Texture2D texture = GetTileTexture(tile);
+            builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
+            _image = builder.Build(spriteBatch.GraphicsDevice);
+            return _image != null;
         }
 
         private static Texture2D GetTileTexture(Tile tile)

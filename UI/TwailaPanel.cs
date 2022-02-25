@@ -115,15 +115,14 @@ namespace Twaila.UI
         private static Tile GetTileCopy(int x, int y)
         {
             Tile copy = new Tile();
-            copy.CopyFrom(Main.tile[x, y]);
+            copy.CopyFrom(Framing.GetTileSafely(x, y));
             return copy;
         }
 
         // Any tile that has many textures for the same tileid without using TileObjectData
         private static bool IsTileException(Tile tile)
         {
-            return TileLoader.CanGrowModTree(tile.type) || TileLoader.CanGrowModTree(tile.type) || tile.type == TileID.Trees ||
-                tile.type == TileID.PalmTree;
+            return  tile.type == TileID.Trees || tile.type == TileID.PalmTree || tile.type == TileID.Cactus;
         }
 
         private static float GetWidth(UIElement element)
