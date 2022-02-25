@@ -39,6 +39,11 @@ namespace Twaila.UI
         public void SetText(string text)
         {
             Text = text;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
             Width.Set(GetTextSize().X, 0);
             Height.Set(GetTextSize().Y, 0);
             Recalculate();

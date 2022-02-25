@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Exceptions;
 using Terraria.ObjectData;
 using Terraria.UI;
 using Twaila.Util;
@@ -14,63 +15,82 @@ namespace Twaila.UI
 {
     public class UITwailaImage : UIElement
     {
-        public Point Pos { get; private set; }
-        public Tile Tile { get; private set; }
         public float Scale;
-        public int ItemId { get; private set; }
+        private Texture2D _image;
+        public UITwailaImage()
+        {
+            Scale = 1;
+            _image = Main.buffTexture[BuffID.Confused];
+        }
 
-        public Texture2D Image {get ; private set; }
-        public UITwailaImage() : this(Point.Zero, new Tile())
+        public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+            if(_image != null)
+            {
+                Width.Set(_image.Width * Scale, 0);
+                Height.Set(_image.Height * Scale, 0);
+                Recalculate();
+            }
         }
-        public UITwailaImage(Point pos, Tile tile, int itemId = -1, float scale = 1)
-        {
-            Tile = tile;
-            Pos = pos;
-            ItemId = itemId;
-            Scale = scale;
-        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            bool drawSuccess = false;
-            if (DrawForTrees(spriteBatch))
+            if (_image != null)
+            {
+                spriteBatch?.Draw(_image, new Vector2(GetDimensions().ToRectangle().X, GetDimensions().ToRectangle().Y), 
+                    new Rectangle(0, 0, _image.Width, _image.Height), Color.White, 0, Vector2.Zero, Scale, 0, 0);
+            }
+        }
+
+        public void SetImage(SpriteBatch spriteBatch, Tile tile, int itemId, Point pos)
+        {
+            //if (SetDebugImage(spriteBatch, tile)) return;
+            bool drawSuccess;
+            if (SetImageForTrees(spriteBatch, pos, tile))
             {
                 drawSuccess = true;
             }
             else if (TwailaConfig.Get().UseItemTextures)
             {
-                drawSuccess = DrawFromItemData(spriteBatch) || DrawFromTileData(spriteBatch) || DrawFromTile(spriteBatch);
+                drawSuccess = SetImageFromItemData(spriteBatch, tile, itemId) || SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile);
             }
             else
             {
-                drawSuccess = DrawFromTileData(spriteBatch) || DrawFromTile(spriteBatch) || DrawFromItemData(spriteBatch);
+                drawSuccess = SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile) || SetImageFromItemData(spriteBatch, tile, itemId);
             }
-            
+
             if (!drawSuccess)
             {
-                Image = TextureManager.BlankTexture;
+                _image = Main.buffTexture[BuffID.Confused];
             }
-
-            if (Image != null)
-            {
-                Width.Set(Image.Width, 0);
-                Height.Set(Image.Height, 0);
-                spriteBatch.Draw(Image, new Vector2(GetDimensions().ToRectangle().X, GetDimensions().ToRectangle().Y), new Rectangle(0, 0, Image.Width, Image.Height), Color.White, 0, Vector2.Zero, Scale, 0, 0);
-            }
-            
-
         }
-        private bool DrawFromTileData(SpriteBatch spriteBatch)
+
+        private bool SetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {
-            TileObjectData data = TileObjectData.GetTileData(Tile);
-            Texture2D texture = GetTileTexture();
-            
-            if (data != null && texture != null && !texture.Equals(TextureManager.BlankTexture))
+            TextureBuilder builder = new TextureBuilder();
+            Texture2D texture = GetTileTexture(tile);
+            builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
+            _image = builder.Build(spriteBatch.GraphicsDevice);
+            return _image != null;
+        }
+
+        private bool SetImageFromTileData(SpriteBatch spriteBatch, Tile tile)
+        {
+            Scale = 1;
+            TileObjectData data = TileObjectData.GetTileData(tile);
+            if(data == null)
+            {
+                return false;
+            }
+            Texture2D texture = GetTileTexture(tile);           
+            if (texture != null)
             {
                 TextureBuilder builder = new TextureBuilder();
-                Rectangle dim = GetDimensions().ToRectangle();
-                int frameX = Tile.frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
-                int frameY = Tile.frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
+                
+                int frameX = tile.frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
+                int frameY = tile.frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
+                
                 if (data.Style > data.StyleWrapLimit)
                 {
                     if (data.StyleHorizontal)
@@ -94,19 +114,20 @@ namespace Twaila.UI
                     }
                     height += data.CoordinateHeights[row];
                 }
-                Image = builder.Build(spriteBatch.GraphicsDevice);
-                return true;
+                _image = builder.Build(spriteBatch.GraphicsDevice);
+                return _image != null;
             }
             return false;
         }
-        private bool DrawFromTile(SpriteBatch spriteBatch)
+
+        private bool SetImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
-            Rectangle dim = GetDimensions().ToRectangle();
+            Scale = 1;
             int size = 16;
             int padding = 2;
-            Texture2D texture = GetTileTexture();
+            Texture2D texture = GetTileTexture(tile);
             
-            if (texture != null && !texture.Equals(TextureManager.BlankTexture))
+            if (texture != null)
             {
                 TextureBuilder builder = new TextureBuilder();
                 for(int row = 0; row < 2; ++row)
@@ -117,378 +138,104 @@ namespace Twaila.UI
                         builder.AddComponent(copyRectangle, texture, new Point(size * col, size * row));
                     }
                 }
-                Image = builder.Build(spriteBatch.GraphicsDevice);
-                return true;
+                _image = builder.Build(spriteBatch.GraphicsDevice);
+                return _image != null;
             }
             return false;
         }
-        private Texture2D GetTileTexture()
+
+        private bool SetImageForTrees(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
-            ModTile mTile = TileLoader.GetTile(Tile.type);
-            if(mTile != null)
+            Scale = 0.5f;
+            if (tile.type == TileID.Trees)
             {
-                return GetModdedTileTexture();
+                int treeDirt = TreeUtil.GetTreeDirt(pos.X, pos.Y, tile);
+                if (treeDirt == -1)
+                {
+                    return false;
+                }
+                if (TileLoader.CanGrowModTree(treeDirt))
+                {
+                    _image = TreeUtil.GetImageForModdedTree(spriteBatch, treeDirt);
+                    return _image != null;
+                }
+                int treeWood = TreeUtil.GetTreeWood(treeDirt);
+                if (treeWood != -1)
+                {
+                    _image = TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, pos.Y);
+                    return _image != null;
+                }
             }
-            return Main.tileTexture[Tile.type];
-        }
-        private Texture2D GetModdedTileTexture()
-        {
-            ModTile mTile = TileLoader.GetTile(Tile.type);
-            if(mTile != null)
+            else if (tile.type == TileID.PalmTree)
             {
-                string texturePath = mTile.HighlightTexture;
-                int index = texturePath.IndexOf("_Highlight");
-                if(index != -1)
+                int palmTreeSand = TreeUtil.GetPalmTreeSand(pos.X, pos.Y, tile);
+                if (palmTreeSand == -1)
                 {
-                    try
-                    {
-                        return ModContent.GetTexture(texturePath.Substring(0, index));
-                    }
-                    catch (Exception) { }
-                }          
+                    return false;
+                }
+                if (TileLoader.CanGrowModPalmTree(palmTreeSand))
+                {
+                    _image = TreeUtil.GetImageForModdedPalmTree(spriteBatch, palmTreeSand);
+                    return _image != null;
+                }
+                int palmTreeWood = TreeUtil.GetTreeWood(palmTreeSand);
+                if (palmTreeWood != -1)
+                {
+                    _image = TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood);
+                    return _image != null;
+                }
             }
-            return TextureManager.BlankTexture;
-        }
-        private bool DrawFromItemData(SpriteBatch spriteBatch)
-        {
-            if(ItemId != -1)
-            {    
-                Texture2D itemTexture = GetItemTexture();     
-                if (itemTexture != null && !itemTexture.Equals(TextureManager.BlankTexture))
-                {
-                    Image = itemTexture;
-                    return true;
-                } 
+            else if (tile.type == TileID.MushroomTrees)
+            {
+                _image = TreeUtil.GetImageForMushroomTree(spriteBatch);
+                return _image != null;
             }
             return false;
         }
-        private Texture2D GetItemTexture()
+
+        private bool SetImageFromItemData(SpriteBatch spriteBatch, Tile tile, int itemId)
         {
-            ModTile mTile = TileLoader.GetTile(Tile.type);
+            Scale = 1;
+            if (itemId != -1)
+            {
+                Texture2D itemTexture = GetItemTexture(tile, itemId);
+                if (itemTexture != null)
+                {
+                    _image = itemTexture;
+                    return _image != null;
+                }
+            }
+            return false;
+        }
+
+        private static Texture2D GetTileTexture(Tile tile)
+        {
+            return Main.tileTexture[tile.type];
+        }
+
+        private static Texture2D GetItemTexture(Tile tile, int itemId)
+        {
+            ModTile mTile = TileLoader.GetTile(tile.type);
             if (mTile != null)
             {
-                return GetModdedItemTexture();
+                return GetModdedItemTexture(itemId);
             }
-            return ItemId == -1 ? TextureManager.BlankTexture : Main.itemTexture[ItemId];
+            return itemId == -1 ? null : Main.itemTexture[itemId];
         }
-        private Texture2D GetModdedItemTexture()
+
+        private static Texture2D GetModdedItemTexture(int itemId)
         {
-            ModItem mItem = ModContent.GetModItem(ItemId);
+            ModItem mItem = ModContent.GetModItem(itemId);
             if (mItem != null)
             {
                 try
                 {
                     return ModContent.GetTexture(mItem.Texture);
                 }
-                catch (Exception) { }
+                catch (MissingResourceException) { }
             }
-            return TextureManager.BlankTexture;
+            return null;
         }
-        private bool DrawForTrees(SpriteBatch spriteBatch)
-        {
-            if (Tile.type == TileID.Trees)
-            {
-                int treeDirt = TwailaUtil.GetTreeDirt(Pos.X, Pos.Y, Tile);
-                if(treeDirt == -1)
-                {
-                    return false;
-                } 
-                if(TileLoader.CanGrowModTree(treeDirt))
-                {
-                    DrawModdedTree(spriteBatch, treeDirt);
-                    return true;
-                }
-                int treeWood = TwailaUtil.GetTreeWood(treeDirt);
-                if (treeWood != -1)
-                {
-                    DrawTree(spriteBatch, treeWood);
-                    return true;
-                }
-            }
-            else if (Tile.type == TileID.PalmTree) 
-            { 
-                int palmTreeSand = TwailaUtil.GetPalmTreeSand(Pos.X, Pos.Y, Tile);
-                if(palmTreeSand == -1)
-                {
-                    return false;
-                }
-                if (TileLoader.CanGrowModPalmTree(palmTreeSand))
-                {
-                    DrawModdedPalmTree(spriteBatch, palmTreeSand);
-                    return true;
-                }
-                int palmTreeWood = TwailaUtil.GetTreeWood(palmTreeSand);
-                if(palmTreeWood != -1)
-                {
-                    DrawPalmTree(spriteBatch, palmTreeWood);
-                    return true;
-                }
-            }
-            else if(Tile.type == TileID.MushroomTrees)
-            {
-                DrawMushroomTree(spriteBatch);
-                return true;
-            }
-            return false;
-        }
-
-        private void DrawTree(SpriteBatch spriteBatch, int woodType)
-        {
-            int size = 20;
-            Texture2D topTexture = Main.treeTopTexture[0];
-            Texture2D woodTexture = Main.tileTexture[TileID.Trees];
-            Texture2D branchTexture = Main.treeBranchTexture[0];
-            SetTexturesForTree(woodType, Pos.Y, ref topTexture, ref woodTexture, ref branchTexture);
-            Rectangle top = new Rectangle(82, 0, size * 4, size * 4);
-            Rectangle trunk1 = new Rectangle(44, 108, size, size);
-            Rectangle trunk2 = new Rectangle(88, 42, size, size);
-            Rectangle trunk3 = new Rectangle(66, 66, size, size);
-            Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
-            Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
-            Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
-            Rectangle bottomLeft = new Rectangle(44, 176, size, size);
-            Rectangle bottomRight = new Rectangle(22, 154, size, size);
-            int topOffsetX = 30;
-            int topOffsetY = 78;
-
-            switch (woodType)
-            {
-                case ItemID.RichMahogany: 
-                    if(Pos.Y <= Main.worldSurface) // underground jungle
-                    {
-                        Width.Set(56 * 2, 0);
-                        Height.Set(79 * 2, 0);
-                        top = new Rectangle(236, 4, 112, 92);
-                        topOffsetX = 42;
-                        topOffsetY = 90;
-                        break;
-                    }
-                    else // jungle
-                    {
-                        Width.Set(56 * 2, 0);
-                        Height.Set(80 * 2, 0);
-                        top = new Rectangle(0, 0, 114, 94);
-                        topOffsetX = 46;
-                        topOffsetY = 92;
-                    }
-                    break;
-                case ItemID.Pearlwood: // hallow
-                    Width.Set(40 * 2, 0);
-                    Height.Set(92 * 2, 0);
-                    top = new Rectangle(84, 22, 76, 118);
-                    topOffsetX = 28;
-                    topOffsetY = 116;
-                    break;
-            }
-
-            DrawTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-                bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
-        }
-
-        private void DrawModdedTree(SpriteBatch spriteBatch, int treeDirt)
-        {
-            int size = 20;
-            int unimplemented = 0;
-            int frame = 0, fWidth = 82, fHeight = 80, xOffset = 30, yOffset = 78;
-            Tile dirtTile = new Tile();
-            dirtTile.active(true);
-            dirtTile.type = (ushort)treeDirt;
-            Texture2D topTexture = TileLoader.GetTreeTopTextures(treeDirt, 82, 0, ref frame, ref fWidth, ref fHeight, ref xOffset, ref yOffset);
-            Texture2D woodTexture = TileLoader.GetTreeTexture(dirtTile);
-            Texture2D branchTexture = TileLoader.GetTreeBranchTextures(treeDirt, 0, 0, 0, ref unimplemented);
-            Rectangle top = new Rectangle(frame * fWidth, 0, fWidth, fHeight);
-            Rectangle trunk1 = new Rectangle(44, 108, size, size);
-            Rectangle trunk2 = new Rectangle(88, 42, size, size);
-            Rectangle trunk3 = new Rectangle(66, 66, size, size);
-            Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
-            Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
-            Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
-            Rectangle bottomLeft = new Rectangle(44, 176, size, size);
-            Rectangle bottomRight = new Rectangle(22, 154, size, size);
-
-            DrawTree(spriteBatch, xOffset, yOffset, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-                bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
-        }
-
-        private void DrawTree(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
-            Rectangle trunk2, Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle,
-            Rectangle bottomLeft, Rectangle bottomRight, Texture2D topTexture, Texture2D woodTexture, Texture2D branchTexture)
-        {
-            int unit = 16;
-            TextureBuilder builder = new TextureBuilder();
-            Point drawPos = Point.Zero;
-            builder.AddComponent(top, topTexture, drawPos);
-            drawPos.X += topOffsetX;
-            drawPos.Y += topOffsetY;
-            builder.AddComponent(trunk1, woodTexture, drawPos);
-            drawPos.Y += unit;
-            builder.AddComponent(trunk2, woodTexture, drawPos);
-            builder.AddComponent(leftBranch, branchTexture, new Point(drawPos.X - 38, drawPos.Y - 12));
-            drawPos.Y += unit;
-            builder.AddComponent(trunk3, woodTexture, drawPos);
-            builder.AddComponent(rightBranch, branchTexture, new Point(drawPos.X + 18, drawPos.Y - 12));
-            drawPos.Y += unit;
-            builder.AddComponent(bottomMiddle, woodTexture, drawPos);
-            builder.AddComponent(bottomLeft, woodTexture, new Point(drawPos.X - unit, drawPos.Y));
-            builder.AddComponent(bottomRight, woodTexture, new Point(drawPos.X + unit, drawPos.Y));
-            Texture2D texture = builder.Build(spriteBatch.GraphicsDevice);
-            Image = texture;            
-        }
-
-        private void DrawPalmTree(SpriteBatch spriteBatch, int palmTreeWood)
-        {
-            int size = 20;
-            int palmTreeType = 0;
-            switch (palmTreeWood)
-            {
-                case ItemID.PalmWood:
-                    palmTreeType = 0;
-                    break;
-                case ItemID.Shadewood:
-                    palmTreeType = 1;
-                    break;
-                case ItemID.Pearlwood:
-                    palmTreeType = 2;
-                    break;
-                case ItemID.Ebonwood:
-                    palmTreeType = 3;
-                    break;
-            }
-            Texture2D woodTexture = Main.tileTexture[TileID.PalmTree];
-            Texture2D topTexture = Main.treeTopTexture[15];
-
-            Rectangle top = new Rectangle(82, palmTreeType * 82, size * 4, size * 4);
-            Rectangle trunk1 = new Rectangle(0, palmTreeType * 22, size, size);
-            Rectangle trunk2 = new Rectangle(42, palmTreeType * 22, size, size);
-            Rectangle bottom = new Rectangle(66, palmTreeType * 22, size, size);
-
-            int topOffsetX = 30;
-            int topOffsetY = 78;
-
-            DrawPalmTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
-        }
-
-        private void DrawModdedPalmTree(SpriteBatch spriteBatch, int palmTreeSand)
-        {
-            int size = 20;
-            Tile sandTile = new Tile();
-            sandTile.active(true);
-            sandTile.type = (ushort)palmTreeSand;
-            Texture2D woodTexture = TileLoader.GetPalmTreeTexture(sandTile);
-            Texture2D topTexture = TileLoader.GetPalmTreeTopTextures(palmTreeSand);
-
-            Rectangle top = new Rectangle(0,0, size * 4, size * 4);
-            Rectangle trunk1 = new Rectangle(0, 0, size, size);
-            Rectangle trunk2 = new Rectangle(42, 0, size, size);
-            Rectangle bottom = new Rectangle(66, 0, size, size);
-
-            int topOffsetX = 30;
-            int topOffsetY = 78;
-
-            DrawPalmTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
-        }
-
-        private void DrawPalmTree(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1, 
-            Rectangle trunk2, Rectangle bottom, Texture2D topTexture, Texture2D woodTexture)
-        {
-            int unit = 16;
-            TextureBuilder builder = new TextureBuilder();
-            
-            Point drawPos = Point.Zero;
-            builder.AddComponent(top, topTexture, drawPos);
-            drawPos.X += topOffsetX;
-            drawPos.Y += topOffsetY;
-            builder.AddComponent(trunk1, woodTexture, drawPos);
-            drawPos.Y += unit;
-            builder.AddComponent(trunk2, woodTexture, drawPos);
-            drawPos.Y += unit;
-            drawPos.X += 2;
-            builder.AddComponent(trunk1, woodTexture, drawPos);
-            drawPos.Y += unit;
-            drawPos.X += 2;
-            builder.AddComponent(trunk1, woodTexture, drawPos);
-            drawPos.Y += unit;
-            builder.AddComponent(bottom, woodTexture, drawPos);
-            Image = builder.Build(spriteBatch.GraphicsDevice);
-        }
-
-        private void DrawMushroomTree(SpriteBatch spriteBatch)
-        {
-            Texture2D topTexture = Main.shroomCapTexture;
-            Texture2D woodTexture = Main.tileTexture[TileID.MushroomTrees];
-
-            Rectangle top = new Rectangle(124, 0, 60, 42);
-            Rectangle trunk = new Rectangle(0, 0, 18, 54);
-
-            int topOffsetX = 22;
-            int topOffsetY = 42;
-
-            Point drawPos = Point.Zero;
-            TextureBuilder builder = new TextureBuilder();
-            builder.AddComponent(top, topTexture, drawPos);
-            drawPos.X += topOffsetX;
-            drawPos.Y += topOffsetY;
-            builder.AddComponent(trunk, woodTexture, drawPos);
-            drawPos.Y += 36;
-            builder.AddComponent(trunk, woodTexture, drawPos);
-            Image = builder.Build(spriteBatch.GraphicsDevice);
-        }
-
-        private void SetTexturesForTree(int woodType, int depth, ref Texture2D topTexture, ref Texture2D woodTexture, ref Texture2D branchTexture)
-        {
-            switch (woodType)
-            {
-                case ItemID.Ebonwood:
-                    topTexture = Main.treeTopTexture[1];
-                    woodTexture = Main.woodTexture[0];
-                    branchTexture = Main.treeBranchTexture[1];
-                    break;
-                case ItemID.RichMahogany:
-                    if (depth >= Main.worldSurface)
-                    {
-                        topTexture = Main.treeTopTexture[13];
-                        woodTexture = Main.woodTexture[5];
-                        branchTexture = Main.treeBranchTexture[13];
-                        break;
-                    }
-                    topTexture = Main.treeTopTexture[2];
-                    woodTexture = Main.woodTexture[1];
-                    branchTexture = Main.treeBranchTexture[2];
-                    break;
-                case ItemID.Pearlwood:
-                    topTexture = Main.treeTopTexture[3];
-                    woodTexture = Main.woodTexture[2];
-                    branchTexture = Main.treeBranchTexture[3];
-                    break;
-                case ItemID.BorealWood:
-                    topTexture = Main.treeTopTexture[12];
-                    woodTexture = Main.woodTexture[3];
-                    branchTexture = Main.treeBranchTexture[12];
-                    break;
-                case ItemID.Shadewood:
-                    topTexture = Main.treeTopTexture[5];
-                    woodTexture = Main.woodTexture[4];
-                    branchTexture = Main.treeBranchTexture[5];
-                    return;
-                case ItemID.GlowingMushroom:
-                    topTexture = Main.treeTopTexture[14];
-                    woodTexture = Main.woodTexture[6];
-                    branchTexture = Main.treeBranchTexture[14];
-                    break;
-                case ItemID.Wood:
-                    topTexture = Main.treeTopTexture[0];
-                    woodTexture = Main.tileTexture[TileID.Trees];
-                    branchTexture = Main.treeBranchTexture[0];
-                    break;
-            }
-        }
-        public void Set(Point pos, Tile tile, int itemId = -1, float scale = 1)
-        {
-            Tile = tile;
-            Pos = pos;
-            ItemId = itemId;
-            Scale = scale;
-        }
-
+        
     }
 }

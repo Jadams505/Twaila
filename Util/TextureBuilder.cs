@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.Graphics;
+using Terraria.ID;
 
 namespace Twaila.Util
 {
@@ -69,7 +71,7 @@ namespace Twaila.Util
             {
                 if (comp.BoundingBox.X + comp.BoundingBox.Width > comp.Texture.Width || comp.BoundingBox.Y + comp.BoundingBox.Height > comp.Texture.Height)
                 {
-                    return TextureManager.BlankTexture;
+                    return null;
                 }
                 Populate(comp, data, texture.Width);
             }
