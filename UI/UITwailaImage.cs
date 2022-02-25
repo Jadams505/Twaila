@@ -36,7 +36,8 @@ namespace Twaila.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (_image != null)
+            bool drawSuccess = false;
+            if (DrawForTrees(spriteBatch))
             {
                 spriteBatch?.Draw(_image, new Vector2(GetDimensions().ToRectangle().X, GetDimensions().ToRectangle().Y), 
                     new Rectangle(0, 0, _image.Width, _image.Height), Color.White, 0, Vector2.Zero, Scale, 0, 0);
@@ -156,29 +157,79 @@ namespace Twaila.UI
             {
                 return true;
             }
+                if(index != -1)
+                {
+        private Texture2D GetModdedItemTexture()
+        {
+            ModItem mItem = ModContent.GetModItem(ItemId);
+            if (mItem != null)
+            {
+                try
+                {
+                    return ModContent.GetTexture(mItem.Texture);
+                }
+                catch (Exception) { }
+            }
+            return TextureManager.BlankTexture;
+        }
+        private void SetSizeFromItemData(Texture2D itemTexture)
+        {
+            Width.Set(itemTexture.Width, 0);
+            Height.Set(itemTexture.Height, 0);
+            Recalculate();
+        }
+                    try
+                    {
+                        return ModContent.GetTexture(texturePath.Substring(0, index));
+                    }
+                    catch (Exception) { }
+                }          
+            }
+            return TextureManager.BlankTexture;
+        }
+        private void SetSizeFromTileData()
+        {
+            Width.Set(GetSpriteWidth(), 0);
+            Height.Set(GetSpriteHeight(), 0);
+            Recalculate();
+        }
+        private bool DrawFromItemData(SpriteBatch spriteBatch)
+        {
+            if(ItemId != -1)
+            {    
+                Texture2D itemTexture = GetItemTexture();     
+                if (itemTexture != null && !itemTexture.Equals(TextureManager.BlankTexture))
+                {
+                    SetSizeFromItemData(itemTexture);
+                    spriteBatch.Draw(position: new Vector2((int)GetDimensions().X, (int)GetDimensions().Y) + itemTexture.Size() * (1f - Scale) / 2f, texture: itemTexture, sourceRectangle: null, color: Color.White, rotation: 0f, origin: Vector2.Zero, scale: Scale, effects: SpriteEffects.None, layerDepth: 0f);
+                    return true;
+                } 
+            }
             return false;
         }
 
         private bool SetImageForTrees(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
             Scale = 0.5f;
-            if (tile.type == TileID.Trees)
+            Scale = 1;
+            if (tile.type == TileID.Cactus)
             {
-                int treeDirt = TreeUtil.GetTreeDirt(pos.X, pos.Y, tile);
-                if (treeDirt == -1)
+                int cactusSand = TreeUtil.GetCactusSand(pos.X, pos.Y, tile);
+                if (cactusSand == -1)
                 {
                     return false;
                 }
-                if (TileLoader.CanGrowModTree(treeDirt))
+                if (TileLoader.CanGrowModCactus(cactusSand))
                 {
-                    _image = TreeUtil.GetImageForModdedTree(spriteBatch, treeDirt);
+                    _image = TreeUtil.GetImageForCactus(spriteBatch, cactusSand, true);
                     return _image != null;
                 }
-                int treeWood = TreeUtil.GetTreeWood(treeDirt);
-                if (treeWood != -1)
-                {
-                    _image = TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, pos.Y);
-                    return _image != null;
+                _image = TreeUtil.GetImageForCactus(spriteBatch, cactusSand, false);
+                return _image != null;
+            }
+            return false;
+
+            DrawPalmTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
                 }
             }
             else if (tile.type == TileID.PalmTree)
@@ -193,14 +244,14 @@ namespace Twaila.UI
                     _image = TreeUtil.GetImageForModdedPalmTree(spriteBatch, palmTreeSand);
                     return _image != null;
                 }
-                int palmTreeWood = TreeUtil.GetTreeWood(palmTreeSand);
-                if (palmTreeWood != -1)
-                {
-                    _image = TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood);
-                    return _image != null;
-                }
+        private static Texture2D GetItemTexture(Tile tile, int itemId)
+        {
+            ModTile mTile = TileLoader.GetTile(tile.type);
+            if (mTile != null)
+            {
+                return GetModdedItemTexture(itemId);
             }
-            else if (tile.type == TileID.MushroomTrees)
+            return itemId == -1 ? null : Main.itemTexture[itemId];
             {
                 _image = TreeUtil.GetImageForMushroomTree(spriteBatch);
                 return _image != null;
@@ -251,6 +302,73 @@ namespace Twaila.UI
                 return GetModdedItemTexture(itemId);
             }
             return itemId == -1 ? null : Main.itemTexture[itemId];
+        }
+        private void SetSizeFromTileData()
+        {
+            Width.Set(GetSpriteWidth(), 0);
+            Height.Set(GetSpriteHeight(), 0);
+            Recalculate();
+        }
+        private void SetSizeFromTile()
+        {
+            Width.Set(32, 0);
+            Height.Set(32, 0);
+            Recalculate();
+        }
+        private void SetSizeFromItemData(Texture2D itemTexture)
+        {
+            Width.Set(itemTexture.Width, 0);
+            Height.Set(itemTexture.Height, 0);
+            Recalculate();
+        }
+        private Texture2D GetTileTexture()
+        {
+            ModTile mTile = TileLoader.GetTile(Tile.type);
+            if (mTile != null)
+            {
+                return GetModdedTileTexture();
+            }
+            return Main.tileTexture[Tile.type];
+        }
+        private Texture2D GetModdedTileTexture()
+        {
+            ModTile mTile = TileLoader.GetTile(Tile.type);
+            if (mTile != null)
+            {
+                string texturePath = mTile.HighlightTexture;
+                int index = texturePath.IndexOf("_Highlight");
+                if (index != -1)
+                {
+                    try
+                    {
+                        return ModContent.GetTexture(texturePath.Substring(0, index));
+                    }
+                    catch (Exception) { }
+                }
+            }
+            return TextureManager.BlankTexture;
+        }
+        private Texture2D GetItemTexture()
+        {
+            ModTile mTile = TileLoader.GetTile(Tile.type);
+            if (mTile != null)
+            {
+                return GetModdedItemTexture();
+            }
+            return ItemId == -1 ? TextureManager.BlankTexture : Main.itemTexture[ItemId];
+        }
+        private Texture2D GetModdedItemTexture()
+        {
+            ModItem mItem = ModContent.GetModItem(ItemId);
+            if (mItem != null)
+            {
+                try
+                {
+                    return ModContent.GetTexture(mItem.Texture);
+                }
+                catch (Exception) { }
+            }
+            return TextureManager.BlankTexture;
         }
 
         private static Texture2D GetModdedItemTexture(int itemId)
