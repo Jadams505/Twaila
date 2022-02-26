@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -33,24 +34,51 @@ namespace Twaila.UI
         {
             if (Enabled)
             {
-                UpdateText();
-                _interface.Update(time);
+                UpdateUI();
+                _interface?.Update(time);
             }
         }
 
-        private static void UpdateText()
+        public static void UpdateUI()
         {
-            if(Main.tile[Player.tileTargetX, Player.tileTargetY] != null)
+            int targetX, targetY;
+            if (Main.SmartCursorShowing)
             {
-                Tile tile = Main.tile[Player.tileTargetX,Player.tileTargetY];
-                if (tile.active() && Enabled)
-                {
-                    ToggleVisibility(true);
-                    TwailaUtil.UpdateUI(_panel, new Point(Player.tileTargetX, Player.tileTargetY));
-                    return;
-                }
+                targetX = Main.SmartCursorX;
+                targetY = Main.SmartCursorY;
             }
-            //_interface?.SetState(null);
+            else
+            {
+                targetX = Player.tileTargetX;
+                targetY = Player.tileTargetY;
+            }
+            Tile tile = Main.tile[targetX, targetY];
+            if (tile != null && tile.active() && Enabled && InBounds(targetX, targetY))
+            {
+                _panel?.UpdatePos(new Point(targetX, targetY));
+                return;
+            }
+        }
+
+        private static bool InBounds(int targetX, int targetY)
+        {
+            if (targetX < (Main.screenPosition.X - 16) / 16) // left
+            {
+                return false;
+            }
+            if (16 * targetX > PlayerInput.RealScreenWidth + Main.screenPosition.X) // right
+            {
+                return false;
+            }
+            if (targetY < (Main.screenPosition.Y - 16) / 16) // top
+            {
+                return false;
+            }
+            if (16 * targetY > PlayerInput.RealScreenHeight + Main.screenPosition.Y) // bottom
+            {
+                return false;
+            }
+            return true;
         }
 
         public static void ToggleVisibility(bool? visible)
