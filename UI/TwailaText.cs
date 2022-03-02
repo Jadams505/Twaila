@@ -22,15 +22,6 @@ namespace Twaila.UI
             SetText(text);
         }
 
-        public TwailaText(string text) : this(text, Main.fontCombatText[0], Color.White, 1f)
-        {
-
-        }
-
-        public TwailaText(string text, Color color) : this(text)
-        {
-            Color = color;
-        }
         public Vector2 GetTextSize()
         {
             return Font.MeasureString(Text) * Scale;

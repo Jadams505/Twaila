@@ -69,10 +69,12 @@ namespace Twaila.Util
             Color[] data = new Color[texture.Width * texture.Height];
             foreach(Component comp in _components)
             {
-                if (comp.BoundingBox.X + comp.BoundingBox.Width > comp.Texture.Width || comp.BoundingBox.Y + comp.BoundingBox.Height > comp.Texture.Height)
+                if(comp.BoundingBox.X > comp.Texture.Width || comp.BoundingBox.Y > comp.Texture.Height)
                 {
                     return null;
                 }
+                comp.BoundingBox.Width = Math.Min(comp.BoundingBox.Width, comp.Texture.Width - comp.BoundingBox.X);
+                comp.BoundingBox.Height = Math.Min(comp.BoundingBox.Height, comp.Texture.Height - comp.BoundingBox.Y);
                 Populate(comp, data, texture.Width);
             }
             texture.SetData(data);
@@ -94,7 +96,12 @@ namespace Twaila.Util
 
         private void Populate(Component comp, Color[] toPopulate, int width)
         {
-            Color[] data = new Color[comp.BoundingBox.Width * comp.BoundingBox.Height];
+            int size = comp.BoundingBox.Width * comp.BoundingBox.Height;
+            if(size <= 0)
+            {
+                return;
+            }
+            Color[] data = new Color[size];
             comp.Texture.GetData(0, comp.BoundingBox, data, 0, data.Length);
             for(int i = 0; i < data.Length; ++i)
             {

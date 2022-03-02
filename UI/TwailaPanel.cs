@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
+using Twaila.ObjectData;
 using Twaila.Util;
 
 namespace Twaila.UI
@@ -30,7 +31,7 @@ namespace Twaila.UI
             _pos = Point.Zero;
             _tile = new Tile();
             _itemId = -1;
-            Name = new TwailaText("Default Name");
+            Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
             
             Image = new UITwailaImage();
             Image.VAlign = 0.5f;
@@ -64,15 +65,30 @@ namespace Twaila.UI
         {
             base.DrawChildren(spriteBatch);
             Tile tile = GetTileCopy(_pos.X, _pos.Y);
-            int oldStyle = TileObjectData.GetTileStyle(_tile), newStyle = TileObjectData.GetTileStyle(tile);
-            if (tile.active() && (IsTileException(tile) || _tile.type != tile.type) || (oldStyle != -1 && newStyle != -1 && oldStyle != newStyle))
+            
+            if (tile.active() && (IsTileException(tile) || IsDifferentTile(tile) || IsDifferentStyle(tile)))
             {
                 _itemId = GetItemId(tile);
-                NameUtil.UpdateName(this, tile, _pos, itemId: _itemId, name: "Default Name");
-                NameUtil.UpdateModName(this, tile);
+                Name.SetText(NameUtil.GetNameForTile(tile, _pos, itemId: _itemId));
+                Mod.SetText(NameUtil.GetModName(tile));
                 Image.SetImage(spriteBatch, tile, _itemId, _pos);
                 _tile.CopyFrom(tile);
             }
+        }
+        private bool IsDifferentStyle(Tile tile)
+        {
+            int oldStyle = ExtraObjectData.GetTileStyle(_tile), newStyle = ExtraObjectData.GetTileStyle(tile);
+            if (newStyle == -1)
+            {
+                oldStyle = TileObjectData.GetTileStyle(_tile);
+                newStyle = TileObjectData.GetTileStyle(tile);
+            }
+            return oldStyle != -1 && newStyle != -1 && oldStyle != newStyle;
+        }
+
+        private bool IsDifferentTile(Tile tile)
+        {
+            return _tile.type != tile.type;
         }
 
         public void UpdatePos(Point pos)
@@ -83,7 +99,11 @@ namespace Twaila.UI
         private static int GetItemId(Tile tile)
         {
             ModTile mTile = TileLoader.GetTile(tile.type);
-            int style = TileObjectData.GetTileStyle(tile);
+            int style = ExtraObjectData.GetTileStyle(tile); 
+            if(style == -1)
+            {
+                style = TileObjectData.GetTileStyle(tile);
+            }
             if (mTile == null)
             {
                 Item item = new Item();
@@ -122,7 +142,13 @@ namespace Twaila.UI
         // Any tile that has many textures for the same tileid without using TileObjectData
         private static bool IsTileException(Tile tile)
         {
-            return  tile.type == TileID.Trees || tile.type == TileID.PalmTree || tile.type == TileID.Cactus;
+            return  tile.type == TileID.Trees || tile.type == TileID.PalmTree || tile.type == TileID.Cactus ||
+                tile.type == TileID.Beds || tile.type == TileID.Bathtubs || tile.type == TileID.DiscoBall ||
+                tile.type == TileID.Timers || tile.type == TileID.Stalactite || tile.type == TileID.SmallPiles
+                || tile.type == TileID.PlantDetritus || tile.type == TileID.BeachPiles || tile.type == TileID.TallGateClosed || 
+                tile.type == TileID.TallGateClosed || tile.type == TileID.LunarMonolith || tile.type == TileID.LogicGate || 
+                tile.type == TileID.LogicSensor || tile.type == TileID.LogicGateLamp || tile.type == TileID.WireBulb ||
+                tile.type == TileID.PixelBox;
         }
 
         private static float GetWidth(UIElement element)

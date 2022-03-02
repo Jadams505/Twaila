@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Exceptions;
 using Terraria.ObjectData;
 using Terraria.UI;
+using Twaila.ObjectData;
 using Twaila.Util;
 
 namespace Twaila.UI
@@ -45,73 +46,37 @@ namespace Twaila.UI
 
         public void SetImage(SpriteBatch spriteBatch, Tile tile, int itemId, Point pos)
         {
-            //if (SetDebugImage(spriteBatch, tile)) return;
-            bool drawSuccess;
-            if (DrawCustom(spriteBatch, pos, tile))
+            //_image = GetDebugImage(spriteBatch, tile); return;
+            _image = GetImageCustom(spriteBatch, pos, tile);
+            if(_image == null)
             {
-                drawSuccess = true;
+                if (TwailaConfig.Get().UseItemTextures)
+                {
+                    _image = GetImageFromItemData(tile, itemId) ?? GetImageFromTileData(spriteBatch, tile) ?? GetImageFromTile(spriteBatch, tile);
+                }
+                else
+                {
+                    _image = GetImageFromTileData(spriteBatch, tile) ?? GetImageFromTile(spriteBatch, tile) ?? GetImageFromItemData(tile, itemId);
+                }
             }
-            else if (TwailaConfig.Get().UseItemTextures)
-            {
-                drawSuccess = SetImageFromItemData(tile, itemId) || SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile);
-            }
-            else
-            {
-                drawSuccess = SetImageFromTileData(spriteBatch, tile) || SetImageFromTile(spriteBatch, tile) || SetImageFromItemData(tile, itemId);
-            }
-
-            if (!drawSuccess)
+            if (_image == null)
             {
                 _image = Main.buffTexture[BuffID.Confused];
             }
         }
 
-        private bool SetImageFromTileData(SpriteBatch spriteBatch, Tile tile)
+        private Texture2D GetImageFromTileData(SpriteBatch spriteBatch, Tile tile)
         {
             Scale = 1;
-            TileObjectData data = TileObjectData.GetTileData(tile);
+            TileObjectData data = ExtraObjectData.GetData(tile.type) ?? TileObjectData.GetTileData(tile);
             if(data == null)
             {
-                return false;
+                return null;
             }
-            Texture2D texture = GetTileTexture(tile);           
-            if (texture != null)
-            {
-                TextureBuilder builder = new TextureBuilder();
-                
-                int frameX = tile.frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
-                int frameY = tile.frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
-                
-                if (data.Style > data.StyleWrapLimit)
-                {
-                    if (data.StyleHorizontal)
-                    {
-                        frameY += data.CoordinateFullHeight;
-                    }
-                    else
-                    {
-                        frameX += data.CoordinateFullWidth;
-                    }  
-                }
-                int height = 0;
-                for (int row = 0; row < data.Height; ++row)
-                {
-                    for (int col = 0; col < data.Width; ++col)
-                    {
-                        int width = data.CoordinateWidth;
-                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
-                            frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
-                        builder.AddComponent(copyRectangle, texture, new Point(width * col, height));
-                    }
-                    height += data.CoordinateHeights[row];
-                }
-                _image = builder.Build(spriteBatch.GraphicsDevice);
-                return _image != null;
-            }
-            return false;
+            return GetImageFromTileObjectData(spriteBatch, tile, data);
         }
 
-        private bool SetImageFromTile(SpriteBatch spriteBatch, Tile tile)
+        private Texture2D GetImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
             Scale = 1;
             int size = 16;
@@ -129,13 +94,12 @@ namespace Twaila.UI
                         builder.AddComponent(copyRectangle, texture, new Point(size * col, size * row));
                     }
                 }
-                _image = builder.Build(spriteBatch.GraphicsDevice);
-                return _image != null;
+                return builder.Build(spriteBatch.GraphicsDevice);
             }
-            return false;
+            return null;
         }
 
-        private bool SetImageFromItemData(Tile tile, int itemId)
+        private Texture2D GetImageFromItemData(Tile tile, int itemId)
         {
             Scale = 1;
             if (itemId != -1)
@@ -143,23 +107,20 @@ namespace Twaila.UI
                 Texture2D itemTexture = GetItemTexture(tile, itemId);
                 if (itemTexture != null)
                 {
-                    _image = itemTexture;
-                    return _image != null;
+                    return itemTexture;
                 }
             }
-            return false;
+            return null;
         }
 
-        private bool DrawCustom(SpriteBatch spriteBatch, Point pos, Tile tile)
+        private Texture2D GetImageCustom(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
-            if (SetImageForTrees(spriteBatch, pos, tile) || SetImageForCactus(spriteBatch, pos, tile))
-            {
-                return true;
-            }
-            return false;
+            return GetImageForTrees(spriteBatch, pos, tile) ?? GetImageForCactus(spriteBatch, pos, tile) ?? 
+                GetImageForStalactite(spriteBatch, tile) ?? GetImageForPiles(spriteBatch, tile) ??
+                GetImageForJungleFoliage(spriteBatch, tile);
         }
 
-        private bool SetImageForTrees(SpriteBatch spriteBatch, Point pos, Tile tile)
+        private Texture2D GetImageForTrees(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
             Scale = 0.5f;
             if (tile.type == TileID.Trees)
@@ -167,18 +128,16 @@ namespace Twaila.UI
                 int treeDirt = TreeUtil.GetTreeDirt(pos.X, pos.Y, tile);
                 if (treeDirt == -1)
                 {
-                    return false;
+                    return null;
                 }
                 if (TileLoader.CanGrowModTree(treeDirt))
                 {
-                    _image = TreeUtil.GetImageForModdedTree(spriteBatch, treeDirt);
-                    return _image != null;
+                    return TreeUtil.GetImageForModdedTree(spriteBatch, treeDirt);
                 }
                 int treeWood = TreeUtil.GetTreeWood(treeDirt);
                 if (treeWood != -1)
                 {
-                    _image = TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, pos.Y);
-                    return _image != null;
+                    return TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, pos.Y);
                 }
             }
             else if (tile.type == TileID.PalmTree)
@@ -186,29 +145,26 @@ namespace Twaila.UI
                 int palmTreeSand = TreeUtil.GetPalmTreeSand(pos.X, pos.Y, tile);
                 if (palmTreeSand == -1)
                 {
-                    return false;
+                    return null;
                 }
                 if (TileLoader.CanGrowModPalmTree(palmTreeSand))
                 {
-                    _image = TreeUtil.GetImageForModdedPalmTree(spriteBatch, palmTreeSand);
-                    return _image != null;
+                    return TreeUtil.GetImageForModdedPalmTree(spriteBatch, palmTreeSand);
                 }
                 int palmTreeWood = TreeUtil.GetTreeWood(palmTreeSand);
                 if (palmTreeWood != -1)
                 {
-                    _image = TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood);
-                    return _image != null;
+                    return TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood);
                 }
             }
             else if (tile.type == TileID.MushroomTrees)
             {
-                _image = TreeUtil.GetImageForMushroomTree(spriteBatch);
-                return _image != null;
+                return TreeUtil.GetImageForMushroomTree(spriteBatch);
             }
-            return false;
+            return null;
         }
 
-        private bool SetImageForCactus(SpriteBatch spriteBatch, Point pos, Tile tile)
+        private Texture2D GetImageForCactus(SpriteBatch spriteBatch, Point pos, Tile tile)
         {
             Scale = 1;
             if (tile.type == TileID.Cactus)
@@ -216,26 +172,144 @@ namespace Twaila.UI
                 int cactusSand = TreeUtil.GetCactusSand(pos.X, pos.Y, tile);
                 if (cactusSand == -1)
                 {
-                    return false;
+                    return null;
                 }
                 if (TileLoader.CanGrowModCactus(cactusSand))
                 {
-                    _image = TreeUtil.GetImageForCactus(spriteBatch, cactusSand, true);
-                    return _image != null;
+                    return TreeUtil.GetImageForCactus(spriteBatch, cactusSand, true);
                 }
-                _image = TreeUtil.GetImageForCactus(spriteBatch, cactusSand, false);
-                return _image != null;
+                return TreeUtil.GetImageForCactus(spriteBatch, cactusSand, false);
             }
-            return false;
+            return null;
         }
 
-        private bool SetDebugImage(SpriteBatch spriteBatch, Tile tile)
+        private Texture2D GetImageForStalactite(SpriteBatch spriteBatch, Tile tile)
+        {
+            Scale = 1;
+            if (tile.type == TileID.Stalactite)
+            {
+                TileObjectData data = new TileObjectData();
+                if(tile.frameY <= 69)
+                {
+                    data.CopyFrom(TileObjectData.Style1x2);
+                    data.CoordinateHeights = new int[] { 16, 16 };
+                }
+                else if(tile.frameY <= 105)
+                {
+                    data.CopyFrom(TileObjectData.Style1x1);
+                    data.CoordinateHeights = new int[] { 16 };
+                }
+                else
+                {
+                    data = null;
+                }
+                return GetImageFromTileObjectData(spriteBatch, tile, data);
+            }
+            return null;
+        }
+
+        private Texture2D GetImageForPiles(SpriteBatch spriteBatch, Tile tile)
+        {
+            Scale = 1;
+            if(tile.type == TileID.SmallPiles)
+            {
+                TileObjectData data = new TileObjectData();
+                if(tile.frameY < 18)
+                {
+                    data.CopyFrom(TileObjectData.Style1x1);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16 };
+                }
+                else if(tile.frameY < 52)
+                {
+                    data.CopyFrom(TileObjectData.Style2x1);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16 };
+                }
+                else
+                {
+                    data = null;
+                }
+                return GetImageFromTileObjectData(spriteBatch, tile, data);
+            }
+            return null;
+        }
+
+        private Texture2D GetImageForJungleFoliage(SpriteBatch spriteBatch, Tile tile)
+        {
+            Scale = 1;
+            if(tile.type == TileID.PlantDetritus)
+            {
+                TileObjectData data = new TileObjectData();
+                if (tile.frameY < 36)
+                {
+                    data.CopyFrom(TileObjectData.Style3x2);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16, 16 };
+                }
+                else if(tile.frameY < 70)
+                {
+                    data.CopyFrom(TileObjectData.Style2x2);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16, 16 };
+                }
+                else
+                {
+                    data = null;
+                }
+                return GetImageFromTileObjectData(spriteBatch, tile, data);
+            }
+            return null;
+        }
+
+        private Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {
             TextureBuilder builder = new TextureBuilder();
             Texture2D texture = GetTileTexture(tile);
             builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
-            _image = builder.Build(spriteBatch.GraphicsDevice);
-            return _image != null;
+            return builder.Build(spriteBatch.GraphicsDevice);
+        }
+
+        private static Texture2D GetImageFromTileObjectData(SpriteBatch spriteBatch, Tile tile, TileObjectData data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+            Texture2D texture = GetTileTexture(tile);
+            if (texture != null)
+            {
+                TextureBuilder builder = new TextureBuilder();
+
+                int frameX = tile.frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
+                int frameY = tile.frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
+
+                if (data.Style > data.StyleWrapLimit)
+                {
+                    if (data.StyleHorizontal)
+                    {
+                        frameY += data.CoordinateFullHeight;
+                    }
+                    else
+                    {
+                        frameX += data.CoordinateFullWidth;
+                    }
+                }
+                int height = 0;
+                for (int row = 0; row < data.Height; ++row)
+                {
+                    for (int col = 0; col < data.Width; ++col)
+                    {
+                        int width = data.CoordinateWidth;
+                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
+                            frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
+                        builder.AddComponent(copyRectangle, texture, new Point(width * col, height));
+                    }
+                    height += data.CoordinateHeights[row];
+                }
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
         }
 
         private static Texture2D GetTileTexture(Tile tile)

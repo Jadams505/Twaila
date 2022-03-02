@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Twaila.ObjectData;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -13,9 +14,10 @@ namespace Twaila
         private static GameTime _lastUpdateTime;
         public override void Load()
         {
-            Keybinds.RegisterKeybinds(this);
             if (!Main.dedServ)
             {
+                Keybinds.RegisterKeybinds(this);
+                ExtraObjectData.Initialize();
                 TwailaUI.Load();
             }
         }
@@ -24,6 +26,7 @@ namespace Twaila
         {
             TwailaUI.Unload();
             Keybinds.Unload();
+            ExtraObjectData.Unload();
         }
 
         public override void UpdateUI(GameTime gameTime)
