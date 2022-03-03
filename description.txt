@@ -12,6 +12,9 @@ This mod is currently in development and is not complete
 - Toggle UI (Mouse3 by default): Switches the visibility of the UI Panel
 
 [Changelog]
+v0.2.1.0 (3/2/2022)
+- Gave names to tiles that don't technically have names in vanilla Terraria
+- Many name and texture fixes
 v0.2.0.0 (2/26/2022)
 - UI Scaling now works properly with the UI
 - The UI updates more efficiently
@@ -27,4 +30,4 @@ v0.1.1.0 (2/12/2022)
 - Fixed a blurry texture issue
 v0.1.0.1 (2/11/2022)
 - Initial Release
-- The UI Panel displays the name, mod, and texture of most tiles in vanilla and modded terraria
+- The UI Panel displays the name, mod, and texture of most tiles in vanilla and modded Terraria
