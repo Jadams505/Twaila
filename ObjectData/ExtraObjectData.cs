@@ -31,8 +31,7 @@ namespace Twaila.ObjectData
 
         private static void Add1x1()
         {
-            TileObjectData data = new TileObjectData();
-            data.CopyFrom(TileObjectData.Style1x1);
+            TileObjectData data = new TileObjectData(TileObjectData.Style1x1);
             data.CoordinateHeights = new int[] { 16 };
             AddEntry(TileID.Crystals, data);
             AddEntry(TileID.Traps, data);
@@ -47,33 +46,35 @@ namespace Twaila.ObjectData
             AddEntry(TileID.WireBulb, data);
             AddEntry(TileID.PixelBox, data);
 
-            data = new TileObjectData(TileObjectData.Style1x1);
-            data.CoordinateHeights = new int[] { 16 };
-            data.StyleHorizontal = true;
-            AddEntry(TileID.ExposedGems, data);
-            AddEntry(TileID.WirePipe, data);
+            TileObjectData data2 = new TileObjectData(TileObjectData.Style1x1);
+            data2.CoordinateHeights = new int[] { 16 };
+            data2.StyleHorizontal = true;
+            AddEntry(TileID.ExposedGems, data2);
+            AddEntry(TileID.WirePipe, data2);
 
-            data = new TileObjectData(TileObjectData.Style1x1);
-            data.CoordinateHeights = new int[] { 16 };
-            data.StyleHorizontal = true;
-            data.CoordinateWidth = 20;
-            AddEntry(TileID.LongMoss, data);
+            TileObjectData data3 = new TileObjectData(TileObjectData.Style1x1);
+            data3.CoordinateHeights = new int[] { 16 };
+            data3.StyleHorizontal = true;
+            data3.CoordinateWidth = 20;
+            AddEntry(TileID.LongMoss, data3);
 
-            data.CopyFrom(TileObjectData.Style1x1);
-            data.CoordinateWidth = 16;
-            data.CoordinateHeights = new int[] { 20 };
-            AddEntry(TileID.CorruptPlants, data);
-            AddEntry(TileID.Plants, data);
-            AddEntry(TileID.JunglePlants, data);
-            AddEntry(TileID.MushroomPlants, data);
-            AddEntry(TileID.HallowedPlants, data);
-            AddEntry(TileID.FleshWeeds, data);
+            TileObjectData data4 = new TileObjectData(TileObjectData.Style1x1);
+            data4.CoordinateWidth = 16;
+            data4.CoordinateHeights = new int[] { 20 };
+            data4.StyleHorizontal = true;
+            AddEntry(TileID.CorruptPlants, data4);
+            AddEntry(TileID.Plants, data4);
+            AddEntry(TileID.JunglePlants, data4);
+            AddEntry(TileID.MushroomPlants, data4);
+            AddEntry(TileID.HallowedPlants, data4);
+            AddEntry(TileID.FleshWeeds, data4);
 
-            data.CopyFrom(TileObjectData.Style1x1);
-            data.CoordinateHeights = new int[] { 32 };
-            AddEntry(TileID.Plants2, data);
-            AddEntry(TileID.JunglePlants2, data);
-            AddEntry(TileID.HallowedPlants2, data);
+            TileObjectData data5 = new TileObjectData(TileObjectData.Style1x1);
+            data5.CoordinateHeights = new int[] { 32 };
+            data5.StyleHorizontal = true;
+            AddEntry(TileID.Plants2, data5);
+            AddEntry(TileID.JunglePlants2, data5);
+            AddEntry(TileID.HallowedPlants2, data5);
         }
         private static void Add2x1()
         {

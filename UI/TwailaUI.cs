@@ -39,7 +39,7 @@ namespace Twaila.UI
             }
         }
 
-        public static void UpdateUI()
+        public static void UpdateUI(bool forced = false)
         {
             int targetX, targetY;
             if (Main.SmartCursorShowing)
@@ -56,8 +56,18 @@ namespace Twaila.UI
             if (tile != null && tile.active() && Enabled && InBounds(targetX, targetY))
             {
                 _panel?.UpdatePos(new Point(targetX, targetY));
+                if (forced)
+                {
+                    _panel.ForceUpdate();
+                }
                 return;
             }
+        }
+
+        public static void DebugUI()
+        {
+            _panel?.ToggleDebugMode();
+            UpdateUI(true);
         }
 
         private static bool InBounds(int targetX, int targetY)

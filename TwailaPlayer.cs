@@ -10,10 +10,7 @@ namespace Twaila
     {
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (Keybinds.toggleUI.JustPressed)
-            {
-                TwailaUI.ToggleVisibility(null);
-            }
+            Keybinds.HandleKeys();
         }
     }
 }

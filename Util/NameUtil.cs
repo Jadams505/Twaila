@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Twaila.UI;
@@ -46,7 +47,8 @@ namespace Twaila.Util
 
         private static string GetNameCustom(Tile tile, Point pos)
         {
-            return GetNameForManualTiles(tile) ?? GetNameForTreesAndSaplings(tile, pos) ?? GetNameForCactus(tile, pos);
+            return GetNameForManualTiles(tile) ?? GetNameForTreesAndSaplings(tile, pos) ?? GetNameForCactus(tile, pos) ?? 
+                GetNameForChest(tile);
         }
 
         private static string GetNameForManualTiles(Tile tile)
@@ -81,8 +83,6 @@ namespace Twaila.Util
                     return "Jungle " + GetNameFromItem(ItemID.Vine);
                 case TileID.MushroomGrass:
                     return GetNameFromItem(ItemID.MushroomGrassSeeds).Replace("Seeds", "Block");
-                case TileID.MushroomPlants:
-                    return GetNameFromItem(ItemID.GlowingMushroom);
                 case TileID.Plants2:
                     return "Tall Plant";
                 case TileID.JunglePlants2:
@@ -101,20 +101,6 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.DiscoBall);
                 case TileID.MagicalIceBlock:
                     return "Magic " + GetNameFromItem(ItemID.IceBlock);
-                case TileID.HolidayLights:
-                    if(tile.frameX == 0 || tile.frameX == 54)
-                    {
-                        return GetNameFromItem(ItemID.BlueLight);
-                    }
-                    else if(tile.frameX == 18 || tile.frameX == 72)
-                    {
-                        return GetNameFromItem(ItemID.RedLight);
-                    }
-                    else if(tile.frameX == 36 || tile.frameX == 86)
-                    {
-                        return GetNameFromItem(ItemID.GreenLight);
-                    }
-                    break;
                 case TileID.BreakableIce:
                     return "Thin " + GetNameFromItem(ItemID.IceBlock);
                 case TileID.Stalactite:
@@ -159,7 +145,7 @@ namespace Twaila.Util
                     if (tile.frameX >= 1080 && tile.frameX < 1188) return "Large " + Lang.GetItemNameValue(ItemID.GoldCoin) + " Stash";
                     return "Large Debris";
                 case TileID.LargePiles2:
-                    if (tile.frameY == 0 && tile.frameX >= 918 && tile.frameX < 972) return Lang.GetItemNameValue(ItemID.EnchantedSword) + " Shrine";
+                    if (tile.frameY >= 0 && tile.frameY < 36 && tile.frameX >= 918 && tile.frameX < 972) return Lang.GetItemNameValue(ItemID.EnchantedSword) + " Shrine";
                     return "Large Debris";
                 case TileID.LivingWood:
                     return GetNameFromItem(ItemID.LivingWoodWand).Replace("Wand", "Block");
@@ -177,22 +163,6 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.Hive);
                 case TileID.PlantDetritus:
                     return "Jungle Foliage";
-                case TileID.AmethystGemsparkOff:
-                    return GetNameFromItem(ItemID.AmethystGemsparkBlock);
-                case TileID.TopazGemsparkOff:
-                    return GetNameFromItem(ItemID.TopazGemsparkBlock);
-                case TileID.SapphireGemsparkOff:
-                    return GetNameFromItem(ItemID.SapphireGemsparkBlock);
-                case TileID.EmeraldGemsparkOff:
-                    return GetNameFromItem(ItemID.EmeraldGemsparkBlock);
-                case TileID.RubyGemsparkOff:
-                    return GetNameFromItem(ItemID.RubyGemsparkBlock);
-                case TileID.DiamondGemsparkOff:
-                    return GetNameFromItem(ItemID.DiamondGemsparkBlock);
-                case TileID.AmberGemsparkOff:
-                    return GetNameFromItem(ItemID.AmberGemsparkBlock);
-                case TileID.WeaponsRack:
-                    return GetNameFromItem(ItemID.WeaponRack);
                 case TileID.WaterDrip:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.WaterDrip, 0));
                 case TileID.LavaDrip:
@@ -205,22 +175,10 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.LivingMahoganyWand).Replace("Wand", "Block");
                 case TileID.LivingMahoganyLeaves:
                     return GetNameFromItem(ItemID.LivingMahoganyLeafWand).Replace("Wand", "Block");
-                case TileID.TrapdoorOpen:
-                    return GetNameFromItem(ItemID.Trapdoor);
-                case TileID.TallGateOpen:
-                    return GetNameFromItem(ItemID.TallGate);
-                case TileID.ItemFrame:
-                    return GetNameFromItem(ItemID.ItemFrame);
-                case TileID.Fireplace:
-                    return GetNameFromItem(ItemID.Fireplace);
-                case TileID.Chimney:
-                    return GetNameFromItem(ItemID.Chimney);
-                case TileID.GeyserTrap:
-                    return GetNameFromItem(ItemID.GeyserTrap);
-                case TileID.PartyPresent:
-                    return GetNameFromItem(ItemID.PartyPresent);
                 case TileID.SandDrip:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.SandDrip, 0));
+                case TileID.Pumpkins:
+                    return Lang.GetItemNameValue(ItemID.Pumpkin);
             }
             return null;
         }
@@ -320,6 +278,27 @@ namespace Twaila.Util
                     }
                 }
                 return cactus;
+            }
+            return null;
+        }
+
+        private static string GetNameForChest(Tile tile)
+        {
+            if(tile.type == TileID.Containers)
+            {
+                int style = tile.frameX / 36;
+                if(style < Lang.chestType.Length)
+                {
+                    return Lang.chestType[style].Value;
+                }                
+            }
+            else if(tile.type == TileID.Containers2)
+            {
+                int style = tile.frameX / 36;
+                if (style < Lang.chestType2.Length)
+                {
+                    return Lang.chestType2[style].Value;
+                }
             }
             return null;
         }

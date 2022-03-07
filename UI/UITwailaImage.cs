@@ -44,9 +44,13 @@ namespace Twaila.UI
             }
         }
 
-        public void SetImage(SpriteBatch spriteBatch, Tile tile, int itemId, Point pos)
+        public void SetImage(SpriteBatch spriteBatch, Tile tile, int itemId, Point pos, bool debug = false)
         {
-            //_image = GetDebugImage(spriteBatch, tile); return;
+            if (debug)
+            {
+                _image = GetDebugImage(spriteBatch, tile); return;
+            }
+            
             _image = GetImageCustom(spriteBatch, pos, tile);
             if(_image == null)
             {
@@ -117,7 +121,7 @@ namespace Twaila.UI
         {
             return GetImageForTrees(spriteBatch, pos, tile) ?? GetImageForCactus(spriteBatch, pos, tile) ?? 
                 GetImageForStalactite(spriteBatch, tile) ?? GetImageForPiles(spriteBatch, tile) ??
-                GetImageForJungleFoliage(spriteBatch, tile);
+                GetImageForJungleFoliage(spriteBatch, tile) ?? GetImageForCampfire(spriteBatch, tile);
         }
 
         private Texture2D GetImageForTrees(SpriteBatch spriteBatch, Point pos, Tile tile)
@@ -262,8 +266,23 @@ namespace Twaila.UI
             return null;
         }
 
+        private Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
+        {
+            if (tile.type == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
+            {
+                TileObjectData data = TileObjectData.GetTileData(tile);
+                if(tile.frameY >= data.CoordinateFullHeight)
+                {
+                    tile.frameY = 288;
+                }
+                return GetImageFromTileObjectData(spriteBatch, tile, data);
+            }
+            return null;
+        }
+
         private Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {
+            Scale = 1;
             TextureBuilder builder = new TextureBuilder();
             Texture2D texture = GetTileTexture(tile);
             builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
@@ -324,7 +343,7 @@ namespace Twaila.UI
             {
                 return GetModdedItemTexture(itemId);
             }
-            return itemId == -1 ? null : Main.itemTexture[itemId];
+            return itemId <= -1 ? null : Main.itemTexture[itemId];
         }
 
         private static Texture2D GetModdedItemTexture(int itemId)

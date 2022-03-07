@@ -25,12 +25,16 @@ namespace Twaila.UI
         private Point _pos;
         private Tile _tile;
         private int _itemId;
+        private bool forceUpdate;
+        private bool debugMode;
 
         public TwailaPanel()
         {
             _pos = Point.Zero;
             _tile = new Tile();
             _itemId = -1;
+            forceUpdate = false;
+            debugMode = false;
             Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
             
             Image = new UITwailaImage();
@@ -66,24 +70,35 @@ namespace Twaila.UI
             base.DrawChildren(spriteBatch);
             Tile tile = GetTileCopy(_pos.X, _pos.Y);
             
-            if (tile.active() && (IsTileException(tile) || IsDifferentTile(tile) || IsDifferentStyle(tile)))
+            if (forceUpdate || (tile.active() && (IsTileException(tile) || IsDifferentTile(tile) || IsDifferentStyle(tile))))
             {
-                _itemId = GetItemId(tile);
+                _itemId = ItemUtil.GetItemId(tile);
                 Name.SetText(NameUtil.GetNameForTile(tile, _pos, itemId: _itemId));
                 Mod.SetText(NameUtil.GetModName(tile));
-                Image.SetImage(spriteBatch, tile, _itemId, _pos);
+                Image.SetImage(spriteBatch, tile, _itemId, _pos, debugMode);
                 _tile.CopyFrom(tile);
             }
+            forceUpdate = false;
         }
+
         private bool IsDifferentStyle(Tile tile)
         {
-            int oldStyle = ExtraObjectData.GetTileStyle(_tile), newStyle = ExtraObjectData.GetTileStyle(tile);
-            if (newStyle == -1)
+            TileObjectData oldData = ExtraObjectData.GetData(_tile.type), newData = ExtraObjectData.GetData(tile.type);
+            if(newData == null)
             {
-                oldStyle = TileObjectData.GetTileStyle(_tile);
-                newStyle = TileObjectData.GetTileStyle(tile);
+                oldData = TileObjectData.GetTileData(_tile);
+                newData = TileObjectData.GetTileData(tile);
             }
-            return oldStyle != -1 && newStyle != -1 && oldStyle != newStyle;
+            if(newData == null || oldData == null)
+            {
+                return false;
+            }
+            int oldRow = _tile.frameX / oldData.CoordinateFullWidth;
+            int oldCol = _tile.frameY / oldData.CoordinateFullHeight;
+            int newRow = tile.frameX / newData.CoordinateFullWidth;
+            int newCol = tile.frameY / newData.CoordinateFullHeight;
+
+            return oldRow != newRow || oldCol != newCol;
         }
 
         private bool IsDifferentTile(Tile tile)
@@ -96,40 +111,14 @@ namespace Twaila.UI
             _pos = pos;
         }
 
-        private static int GetItemId(Tile tile)
+        public void ForceUpdate()
         {
-            ModTile mTile = TileLoader.GetTile(tile.type);
-            int style = ExtraObjectData.GetTileStyle(tile); 
-            if(style == -1)
-            {
-                style = TileObjectData.GetTileStyle(tile);
-            }
-            if (mTile == null)
-            {
-                Item item = new Item();
-                for (int i = 0; i < ItemID.Count; ++i)
-                {
-                    item.SetDefaults(i);
-                    if (item.createTile == tile.type && (style == -1 || item.placeStyle == style))
-                    {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-            bool multiTile = TileObjectData.GetTileData(tile) != null;
-            if (mTile.drop == 0 && multiTile)
-            {
-                for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i)
-                {
-                    ModItem mItem = ItemLoader.GetItem(i);
-                    if (mItem != null && mItem.item.createTile == tile.type && (style == -1 || mItem.item.placeStyle == style))
-                    {
-                        return i;
-                    }
-                }
-            }
-            return mTile.drop == 0 ? -1 : mTile.drop;
+            forceUpdate = true;
+        }
+
+        public void ToggleDebugMode()
+        {
+            debugMode ^= true;
         }
 
         private static Tile GetTileCopy(int x, int y)
@@ -142,13 +131,16 @@ namespace Twaila.UI
         // Any tile that has many textures for the same tileid without using TileObjectData
         private static bool IsTileException(Tile tile)
         {
-            return  tile.type == TileID.Trees || tile.type == TileID.PalmTree || tile.type == TileID.Cactus ||
-                tile.type == TileID.Beds || tile.type == TileID.Bathtubs || tile.type == TileID.DiscoBall ||
-                tile.type == TileID.Timers || tile.type == TileID.Stalactite || tile.type == TileID.SmallPiles
-                || tile.type == TileID.PlantDetritus || tile.type == TileID.BeachPiles || tile.type == TileID.TallGateClosed || 
-                tile.type == TileID.TallGateClosed || tile.type == TileID.LunarMonolith || tile.type == TileID.LogicGate || 
-                tile.type == TileID.LogicSensor || tile.type == TileID.LogicGateLamp || tile.type == TileID.WireBulb ||
-                tile.type == TileID.PixelBox;
+            
+            switch (tile.type)
+            {
+                case TileID.Trees:
+                case TileID.PalmTree:
+                case TileID.Cactus:
+                    return true;
+            }
+            
+            return false;
         }
 
         private static float GetWidth(UIElement element)
