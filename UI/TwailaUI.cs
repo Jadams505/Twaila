@@ -1,13 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using Terraria.UI;
-using Twaila.Util;
+using Twaila.Context;
 
 namespace Twaila.UI
 {
@@ -34,12 +31,11 @@ namespace Twaila.UI
         {
             if (Enabled)
             {
-                UpdateUI();
                 _interface?.Update(time);
             }
         }
 
-        public static void UpdateUI(bool forced = false)
+        public static Point GetMousePos()
         {
             int targetX, targetY;
             if (Main.SmartCursorShowing)
@@ -52,25 +48,42 @@ namespace Twaila.UI
                 targetX = Player.tileTargetX;
                 targetY = Player.tileTargetY;
             }
-            Tile tile = Main.tile[targetX, targetY];
-            if (tile != null && tile.active() && Enabled && InBounds(targetX, targetY))
+            return new Point(targetX, targetY);
+        }
+
+        public static TileContext GetContext(Point pos)
+        {
+            if(!InBounds(pos.X, pos.Y))
             {
-                _panel?.UpdatePos(new Point(targetX, targetY));
-                if (forced)
-                {
-                    _panel.ForceUpdate();
-                }
-                return;
+                return new TileContext();
             }
+            Tile tile = Framing.GetTileSafely(pos);
+
+            if(tile.type == TileID.Trees || tile.type == TileID.MushroomTrees)
+            {
+                return new TreeContext(pos);
+            }
+            if(tile.type == TileID.Cactus)
+            {
+                return new CactusContext(pos);
+            }
+            if(tile.type == TileID.PalmTree)
+            {
+                return new PalmTreeContext(pos);
+            }
+            if (TileLoader.IsSapling(tile.type))
+            {
+                return new SaplingContext(pos);
+            }
+            return new TileContext(pos);
         }
 
         public static void DebugUI()
         {
             _panel?.ToggleDebugMode();
-            UpdateUI(true);
         }
 
-        private static bool InBounds(int targetX, int targetY)
+        public static bool InBounds(int targetX, int targetY)
         {
             if (targetX < (Main.screenPosition.X - 16) / 16) // left
             {

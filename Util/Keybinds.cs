@@ -1,6 +1,4 @@
 ﻿using Terraria.ModLoader;
-using Microsoft.Xna.Framework.Input;
-using Terraria.GameInput;
 using Twaila.UI;
 
 namespace Twaila.Util
@@ -8,21 +6,21 @@ namespace Twaila.Util
     public class Keybinds
     {
         public static ModHotKey toggleUI;
-        public static ModHotKey toggleItemTextures;
-        public static ModHotKey toggleDebugTextures;
+        //public static ModHotKey toggleItemTextures;
+        //public static ModHotKey toggleDebugTextures;
 
         public static void RegisterKeybinds(Mod mod)
         {
             toggleUI = mod.RegisterHotKey("Toggle UI", "Mouse3");
-            toggleItemTextures = mod.RegisterHotKey("Toggle Item Textures", "I");
-            toggleDebugTextures = mod.RegisterHotKey("Debug", "O");
+            //toggleItemTextures = mod.RegisterHotKey("Toggle Item Textures", "I");
+            //toggleDebugTextures = mod.RegisterHotKey("Debug", "O");
         }
 
         public static void Unload()
         {
             toggleUI = null;
-            toggleItemTextures = null;
-            toggleDebugTextures = null;
+            //toggleItemTextures = null;
+            //toggleDebugTextures = null;
         }
 
         public static void HandleKeys()
@@ -31,6 +29,7 @@ namespace Twaila.Util
             {
                 TwailaUI.ToggleVisibility(null);
             }
+            /*
             if (toggleItemTextures.JustPressed)
             {
                 TwailaConfig.Get().UseItemTextures ^= true;
@@ -40,6 +39,7 @@ namespace Twaila.Util
             {
                 TwailaUI.DebugUI();
             }
+            */
         }
     }
 }

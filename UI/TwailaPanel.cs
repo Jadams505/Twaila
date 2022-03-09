@@ -1,19 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.Graphics;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
 using Terraria.UI;
-using Twaila.ObjectData;
+using Twaila.Context;
 using Twaila.Util;
 
 namespace Twaila.UI
@@ -22,19 +12,13 @@ namespace Twaila.UI
     {
         public TwailaText Name, Mod;
         public UITwailaImage Image;
-        private Point _pos;
-        private Tile _tile;
-        private int _itemId;
-        private bool forceUpdate;
         private bool debugMode;
+        private TileContext _context;
 
         public TwailaPanel()
         {
-            _pos = Point.Zero;
-            _tile = new Tile();
-            _itemId = -1;
-            forceUpdate = false;
             debugMode = false;
+            _context = new TileContext();
             Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
             
             Image = new UITwailaImage();
@@ -68,79 +52,25 @@ namespace Twaila.UI
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
             base.DrawChildren(spriteBatch);
-            Tile tile = GetTileCopy(_pos.X, _pos.Y);
-            
-            if (forceUpdate || (tile.active() && (IsTileException(tile) || IsDifferentTile(tile) || IsDifferentStyle(tile))))
+            UpdatePanelContents(spriteBatch);
+        }
+
+        private void UpdatePanelContents(SpriteBatch spriteBatch)
+        {
+            TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
+            if (currentContext.Tile.active() && currentContext.ContextChanged(_context))
             {
-                _itemId = ItemUtil.GetItemId(tile);
-                Name.SetText(NameUtil.GetNameForTile(tile, _pos, itemId: _itemId));
-                Mod.SetText(NameUtil.GetModName(tile));
-                Image.SetImage(spriteBatch, tile, _itemId, _pos, debugMode);
-                _tile.CopyFrom(tile);
+                int itemId = ItemUtil.GetItemId(currentContext.Tile);
+                Name.SetText(currentContext.GetName(itemId));
+                Mod.SetText(currentContext.GetMod());
+                Image.SetImage(spriteBatch, currentContext, itemId);
+                _context = currentContext;
             }
-            forceUpdate = false;
-        }
-
-        private bool IsDifferentStyle(Tile tile)
-        {
-            TileObjectData oldData = ExtraObjectData.GetData(_tile.type), newData = ExtraObjectData.GetData(tile.type);
-            if(newData == null)
-            {
-                oldData = TileObjectData.GetTileData(_tile);
-                newData = TileObjectData.GetTileData(tile);
-            }
-            if(newData == null || oldData == null)
-            {
-                return false;
-            }
-            int oldRow = _tile.frameX / oldData.CoordinateFullWidth;
-            int oldCol = _tile.frameY / oldData.CoordinateFullHeight;
-            int newRow = tile.frameX / newData.CoordinateFullWidth;
-            int newCol = tile.frameY / newData.CoordinateFullHeight;
-
-            return oldRow != newRow || oldCol != newCol;
-        }
-
-        private bool IsDifferentTile(Tile tile)
-        {
-            return _tile.type != tile.type;
-        }
-
-        public void UpdatePos(Point pos)
-        {
-            _pos = pos;
-        }
-
-        public void ForceUpdate()
-        {
-            forceUpdate = true;
         }
 
         public void ToggleDebugMode()
         {
             debugMode ^= true;
-        }
-
-        private static Tile GetTileCopy(int x, int y)
-        {
-            Tile copy = new Tile();
-            copy.CopyFrom(Framing.GetTileSafely(x, y));
-            return copy;
-        }
-
-        // Any tile that has many textures for the same tileid without using TileObjectData
-        private static bool IsTileException(Tile tile)
-        {
-            
-            switch (tile.type)
-            {
-                case TileID.Trees:
-                case TileID.PalmTree:
-                case TileID.Cactus:
-                    return true;
-            }
-            
-            return false;
         }
 
         private static float GetWidth(UIElement element)

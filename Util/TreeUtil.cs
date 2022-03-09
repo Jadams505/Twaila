@@ -1,14 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
-using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Exceptions;
-using Terraria.ObjectData;
-using Terraria.UI;
-using Twaila.Util;
+using Twaila.Graphics;
 
 namespace Twaila.Util
 {
@@ -241,97 +236,6 @@ namespace Twaila.Util
             TileLoader.DropTreeWood(treeDirt, ref wood);
             TileLoader.DropPalmTreeWood(treeDirt, ref wood);
             return wood;
-        }
-        public static int GetTreeDirt(int x, int y, Tile tile)
-        {
-            if (tile.type != TileID.Trees)
-            {
-                return -1;
-            }
-            if (Main.tile[x - 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
-            {
-                x--;
-            }
-            if (Main.tile[x + 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
-            {
-                x++;
-            }
-            do
-            {
-                y += 1;
-            } while (Main.tile[x, y].type == TileID.Trees && Main.tile[x, y].active());
-
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
-            {
-                return -1;
-            }
-            return Main.tile[x, y].type;
-        }
-        public static int GetPalmTreeSand(int x, int y, Tile tile)
-        {
-            if (tile.type != TileID.PalmTree)
-            {
-                return -1;
-            }
-            do
-            {
-                y += 1;
-            } while (Main.tile[x, y].type == TileID.PalmTree && Main.tile[x, y].active());
-
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
-            {
-                return -1;
-            }
-            return Main.tile[x, y].type;
-        }
-        public static int GetSaplingTile(int x, int y, Tile tile)
-        {
-            if (!TileLoader.IsSapling(tile.type))
-            {
-                return -1;
-            }
-            do
-            {
-                y++;
-            } while (TileLoader.IsSapling(Main.tile[x, y].type) && Main.tile[x, y].active());
-
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
-            {
-                return -1;
-            }
-            return Main.tile[x, y].type;
-        }
-        public static int GetCactusSand(int x, int y, Tile tile)
-        {
-            if (tile.type != TileID.Cactus)
-            {
-                return -1;
-            }
-            do
-            {
-                if (Main.tile[x, y + 1].type == TileID.Cactus)
-                {
-                    y++;
-                }
-                else if (Main.tile[x + 1, y].type == TileID.Cactus)
-                {
-                    x++;
-                }
-                else if (Main.tile[x - 1, y].type == TileID.Cactus)
-                {
-                    x--;
-                }
-                else
-                {
-                    y++;
-                }
-            }
-            while (Main.tile[x, y].type == TileID.Cactus && Main.tile[x, y].active());
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
-            {
-                return -1;
-            }
-            return Main.tile[x, y].type;
         }
 
         private static Texture2D BuildImageForTrees(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
