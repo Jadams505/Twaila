@@ -6,21 +6,22 @@ namespace Twaila.Util
     public class Keybinds
     {
         public static ModHotKey toggleUI;
+        public static ModHotKey toggleDebugTextures;
         //public static ModHotKey toggleItemTextures;
-        //public static ModHotKey toggleDebugTextures;
 
         public static void RegisterKeybinds(Mod mod)
         {
             toggleUI = mod.RegisterHotKey("Toggle UI", "Mouse3");
+            toggleDebugTextures = mod.RegisterHotKey("Debug", "O");
             //toggleItemTextures = mod.RegisterHotKey("Toggle Item Textures", "I");
-            //toggleDebugTextures = mod.RegisterHotKey("Debug", "O");
+
         }
 
         public static void Unload()
         {
             toggleUI = null;
+            toggleDebugTextures = null;
             //toggleItemTextures = null;
-            //toggleDebugTextures = null;
         }
 
         public static void HandleKeys()
@@ -29,15 +30,15 @@ namespace Twaila.Util
             {
                 TwailaUI.ToggleVisibility(null);
             }
+            if (toggleDebugTextures.JustPressed)
+            {
+                TwailaUI.debugMode ^= true;
+            }
             /*
             if (toggleItemTextures.JustPressed)
             {
                 TwailaConfig.Get().UseItemTextures ^= true;
                 TwailaUI.UpdateUI(forced: true);
-            }
-            if (toggleDebugTextures.JustPressed)
-            {
-                TwailaUI.DebugUI();
             }
             */
         }

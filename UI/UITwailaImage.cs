@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Graphics;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -38,13 +39,20 @@ namespace Twaila.UI
 
         public void SetImage(SpriteBatch spriteBatch, TileContext context, int itemId)
         {
+            if (TwailaUI.debugMode)
+            {
+                _image = new TwailaTexture(ImageUtil.GetDebugImage(spriteBatch, context.Tile));
+                return;
+            }
             if (TwailaConfig.Get().UseItemTextures)
             {
-                _image = context.GetItemImage(spriteBatch, itemId) ?? context.GetTileImage(spriteBatch);
+                TwailaTexture item = context.GetItemImage(spriteBatch, itemId);
+                _image = item.Texture != null ? item : context.GetTileImage(spriteBatch);
             }
             else
             {
-                _image = context.GetTileImage(spriteBatch) ?? context.GetItemImage(spriteBatch, itemId);
+                TwailaTexture tile = context.GetTileImage(spriteBatch);
+                _image = tile.Texture != null ? tile : context.GetItemImage(spriteBatch, itemId);
             }
             if(_image?.Texture == null)
             {

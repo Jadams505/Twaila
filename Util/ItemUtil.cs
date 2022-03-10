@@ -209,17 +209,31 @@ namespace Twaila.Util
             {
                 int row = tile.frameY / data.CoordinateFullHeight;
                 int col = tile.frameX / data.CoordinateFullWidth;
-                if (data.Direction != Terraria.Enums.TileObjectDirection.None || tile.type == TileID.Torches || tile.type == TileID.Platforms || tile.type == TileID.BeachPiles || tile.type == TileID.Timers)
+                if (data.Direction != Terraria.Enums.TileObjectDirection.None || tile.type == TileID.Timers)
                 {
                     style = TileObjectData.GetTileStyle(tile);
                 }
                 else if (data.StyleHorizontal)
                 {
-                    style = col + row * data.StyleWrapLimit;
+                    if(data.StyleMultiplier > 1)
+                    {
+                        style = row + col / data.StyleMultiplier;
+                    }
+                    else
+                    {
+                        style = col + row * data.StyleWrapLimit;
+                    }
                 }
                 else
                 {
-                    style = row + col * data.StyleWrapLimit;
+                    if(data.StyleMultiplier > 1)
+                    {
+                        style = col + row / data.StyleMultiplier;
+                    }
+                    else
+                    {
+                        style = row + col * data.StyleWrapLimit;
+                    }
                 }
             }
             else

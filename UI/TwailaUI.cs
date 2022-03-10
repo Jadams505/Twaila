@@ -13,6 +13,7 @@ namespace Twaila.UI
         private static UserInterface _interface;
         private static UIState _state;
         private static TwailaPanel _panel;
+        public static bool debugMode = false;
 
         public static bool Enabled { get; private set; }
         public static void Initialize()
