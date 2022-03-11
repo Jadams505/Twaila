@@ -1,26 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Util;
 
 namespace Twaila.UI
 {
-    public class TwailaPanel : UIPanel
+    public class TwailaPanel : UIPanel, IDragable
     {
         public TwailaText Name, Mod;
         public UITwailaImage Image;
-        private bool debugMode;
         private TileContext _context;
+        private bool dragging;
+        internal Vector2 anchorPos;
+        private Point lastMouse;
 
         public TwailaPanel()
         {
-            debugMode = false;
             _context = new TileContext();
             Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
-            
+            anchorPos = Vector2.Zero;
             Image = new UITwailaImage();
             Image.VAlign = 0.5f;
             Image.MarginRight = 10;
@@ -28,8 +31,8 @@ namespace Twaila.UI
             
             Width.Set(0, 0);
             Height.Set(0, 0);
-            HAlign = 0.5f;
             Top.Set(0, 0);
+            Left.Set(PlayerInput.RealScreenWidth / 2, 0);
 
             Append(Name);
             Append(Mod);
@@ -38,21 +41,62 @@ namespace Twaila.UI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            float height = GetHeight(Image) > GetHeight(Mod) + GetHeight(Name) ? GetHeight(Image) : GetHeight(Mod) + GetHeight(Name);
-            Height.Set(height + PaddingLeft + PaddingRight, 0);
-            float width = GetWidth(Name) > GetWidth(Mod) ? GetWidth(Name) : GetWidth(Mod);
-            Width.Set(width + GetWidth(Image) + Image.MarginRight + PaddingLeft + PaddingRight, 0);
+            UpdateSize();
+            Drag();
+            UpdateAlignment();
+        }
 
-            Name.Top.Set(Top.Pixels, 0);
+        private void UpdateSize()
+        {
+            float imageHeight = Image.Height.Pixels;
+            float textHeight = Mod.Height.Pixels + Name.Height.Pixels;
+            Height.Set(imageHeight > textHeight ? imageHeight + PaddingTop + PaddingBottom : textHeight + PaddingTop + PaddingBottom, 0);
+            float imageWidth = Image.Width.Pixels + Image.MarginRight;
+            float textWidth = Name.Width.Pixels > Mod.Width.Pixels ? Name.Width.Pixels : Mod.Width.Pixels;
+            Width.Set(textWidth + imageWidth + PaddingLeft + PaddingRight, 0);
+        }
+
+        private void UpdateAlignment()
+        {
+            if (TwailaConfig.Get().UseDefaultPosition)
+            {
+                anchorPos.X = Parent.GetDimensions().Width / 2;
+                anchorPos.Y = 0;
+            }
+            UpdatePos();
+            Name.Top.Set(0, 0);
             Name.Left.Set(Image.Width.Pixels + Image.MarginRight, 0);
-            Mod.Top.Set(Name.Top.Pixels + GetHeight(Name), 0);
+            Mod.Top.Set(Name.Height.Pixels, 0);
             Mod.Left.Set(Image.Width.Pixels + Image.MarginRight, 0);
             Recalculate();
         }
+
+        private void UpdatePos()
+        {
+            float left = 0;
+            switch (TwailaConfig.Get().DrawAnchor)
+            {
+                case TwailaConfig.Anchor.Left:
+                    left = anchorPos.X;
+                    break;
+                case TwailaConfig.Anchor.Center:
+                    left = anchorPos.X - Width.Pixels / 2;
+                    break;
+                case TwailaConfig.Anchor.Right:
+                    left = anchorPos.X - Width.Pixels;
+                    break;
+            }
+            Left.Set(MathHelper.Clamp(left, 0, Parent.GetDimensions().Width - Width.Pixels), 0);
+            Top.Set(MathHelper.Clamp(anchorPos.Y, 0, Parent.GetDimensions().Height - Height.Pixels), 0);
+        }
+
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
             base.DrawChildren(spriteBatch);
-            UpdatePanelContents(spriteBatch);
+            if (!IsDragging())
+            {
+                UpdatePanelContents(spriteBatch);
+            }    
         }
 
         private void UpdatePanelContents(SpriteBatch spriteBatch)
@@ -68,19 +112,37 @@ namespace Twaila.UI
             }
         }
 
-        public void ToggleDebugMode()
+        public override void MouseDown(UIMouseEvent evt)
         {
-            debugMode ^= true;
+            lastMouse = new Point(Main.mouseX, Main.mouseY);
+            if (!TwailaConfig.Get().LockPosition)
+            {
+                TwailaConfig.Get().UseDefaultPosition = false;
+                dragging = true;
+            }
         }
 
-        private static float GetWidth(UIElement element)
+        public override void MouseUp(UIMouseEvent evt)
         {
-            return element.Width.Pixels;
+            dragging = false;
         }
 
-        private static float GetHeight(UIElement element)
+        public bool IsDragging()
         {
-            return element.Height.Pixels;
+            return dragging;
+        }
+
+        public void Drag()
+        {
+            if (IsDragging())
+            {
+                int deltaX = Main.mouseX - lastMouse.X, deltaY = Main.mouseY - lastMouse.Y;
+                anchorPos.X += deltaX;
+                anchorPos.Y += deltaY;
+                anchorPos.X = MathHelper.Clamp(anchorPos.X, 0, Parent.GetDimensions().Width);
+                anchorPos.Y = MathHelper.Clamp(anchorPos.Y, 0, Parent.GetDimensions().Height);
+                lastMouse = new Point(Main.mouseX, Main.mouseY);
+            }
         }
     }
 }
