@@ -49,6 +49,14 @@ namespace Twaila
         [Range(0, 2000)]
         public int AnchorPosY;
 
+        [Header("UI Panel")]
+
+        [DefaultValue(50)]
+        public int MaxWidth;
+
+        [DefaultValue(20)]
+        public int MaxHeight;
+
         public void Save()
         {
             Directory.CreateDirectory(ConfigManager.ModConfigPath);

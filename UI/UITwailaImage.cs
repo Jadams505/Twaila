@@ -59,6 +59,5 @@ namespace Twaila.UI
                 _image = new TwailaTexture(Main.buffTexture[BuffID.Confused]);
             }
         }
-        
     }
 }

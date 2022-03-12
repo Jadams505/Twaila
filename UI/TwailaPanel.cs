@@ -26,7 +26,6 @@ namespace Twaila.UI
             Image.VAlign = 0.5f;
             Image.MarginRight = 10;
             Mod = new TwailaText("Terraria", Main.fontItemStack, Color.White, 1f);
-            
             Width.Set(0, 0);
             Height.Set(0, 0);
             Top.Set(0, 0);
@@ -48,10 +47,12 @@ namespace Twaila.UI
         {
             float imageHeight = Image.Height.Pixels;
             float textHeight = Mod.Height.Pixels + Name.Height.Pixels;
-            Height.Set(imageHeight > textHeight ? imageHeight + PaddingTop + PaddingBottom : textHeight + PaddingTop + PaddingBottom, 0);
+            float calculatedHeight = imageHeight > textHeight ? imageHeight + PaddingTop + PaddingBottom : textHeight + PaddingTop + PaddingBottom;
+            Height.Set(MathHelper.Clamp(calculatedHeight, 0, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height), 0);
             float imageWidth = Image.Width.Pixels + Image.MarginRight;
             float textWidth = Name.Width.Pixels > Mod.Width.Pixels ? Name.Width.Pixels : Mod.Width.Pixels;
-            Width.Set(textWidth + imageWidth + PaddingLeft + PaddingRight, 0);
+            float calculatedWidth = textWidth + imageWidth + PaddingLeft + PaddingRight;
+            Width.Set(MathHelper.Clamp(calculatedWidth, 0, TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width), 0);
         }
 
         private void UpdateAlignment()
@@ -152,7 +153,8 @@ namespace Twaila.UI
                 TwailaConfig.Get().AnchorPosY += deltaY;
                 TwailaConfig.Get().AnchorPosX = (int)MathHelper.Clamp(TwailaConfig.Get().AnchorPosX, 0, Parent.GetDimensions().Width);
                 TwailaConfig.Get().AnchorPosY = (int)MathHelper.Clamp(TwailaConfig.Get().AnchorPosY, 0, Parent.GetDimensions().Height);
-                lastMouse = new Point(Main.mouseX, Main.mouseY);
+                lastMouse.X = Main.mouseX;
+                lastMouse.Y = Main.mouseY;
             }
         }
     }
