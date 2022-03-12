@@ -26,17 +26,28 @@ namespace Twaila
         public bool LockPosition;
 
         [DrawTicks]
-        [DefaultValue(Anchor.Center)]
-        public Anchor DrawAnchor;
-        public enum Anchor
+        [DefaultValue(HorizontalAnchor.Center)]
+        public HorizontalAnchor AnchorX;
+        public enum HorizontalAnchor
         {
             Left, Center, Right
         };
 
+        [DrawTicks]
+        [DefaultValue(VerticalAnchor.Top)]
+        public VerticalAnchor AnchorY;
+        public enum VerticalAnchor
+        {
+            Bottom, Center, Top
+        };
 
-        public int UIPosX => TwailaUI.panel == null ? 0 : (int)TwailaUI.panel.anchorPos.X;
+        [DefaultValue(0)]
+        [Range(0, 2000)]
+        public int AnchorPosX;
 
-        public int UIPosY => TwailaUI.panel == null ? 0 : (int)TwailaUI.panel.anchorPos.Y;
+        [DefaultValue(0)]
+        [Range(0, 2000)]
+        public int AnchorPosY;
 
         public void Save()
         {

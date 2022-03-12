@@ -135,11 +135,5 @@ namespace Twaila.UI
                 _interface.Draw(Main.spriteBatch, time);
             }
         }
-
-        public static Vector2 GetPanelPosition()
-        {
-            return panel != null ? panel.GetDimensions().Position() : Vector2.Zero;
-        }
-
     }
 }
