@@ -63,7 +63,7 @@ namespace Twaila.Context
 
         public override string GetName(int itemId)
         {
-            return NameUtil.GetNameForTree(this);
+            return NameUtil.GetNameForTree(this) ?? base.GetName(itemId);
         }
         private int GetTreeDirt()
         {

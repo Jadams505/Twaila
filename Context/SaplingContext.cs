@@ -41,7 +41,7 @@ namespace Twaila.Context
 
         public override string GetName(int itemId)
         {
-            return NameUtil.GetNameForSapling(this);
+            return NameUtil.GetNameForSapling(this) ?? base.GetName(itemId);
         }
 
         private int GetSaplingTile()
