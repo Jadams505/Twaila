@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
 
 namespace Twaila.Graphics
 {
@@ -9,7 +11,7 @@ namespace Twaila.Graphics
 
         public TwailaTexture(Texture2D texture, float scale)
         {
-            Texture = texture;
+            Texture = texture ?? Main.buffTexture[BuffID.Confused];
             Scale = scale;
         }
 

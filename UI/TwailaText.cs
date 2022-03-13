@@ -29,6 +29,10 @@ namespace Twaila.UI
 
         public void SetText(string text)
         {
+            if(text == null || text.Length == 0)
+            {
+                text = "Default Text";
+            }
             Text = text;
         }
 

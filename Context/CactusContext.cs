@@ -49,7 +49,7 @@ namespace Twaila.Context
 
         public override string GetName(int itemId)
         {
-            return NameUtil.GetNameForCactus(this);
+            return NameUtil.GetNameForCactus(this) ?? base.GetName(itemId);
         }
 
         private int GetCactusSand()

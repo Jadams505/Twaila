@@ -84,7 +84,7 @@ namespace Twaila.Context
 
         public virtual string GetMod()
         {
-            return NameUtil.GetModName(Tile);
+            return NameUtil.GetModName(Tile) ?? "Default Mod";
         }
     }
 }
