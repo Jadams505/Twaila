@@ -19,12 +19,12 @@ namespace Twaila.Graphics
 
         public int Width()
         {
-            return (int)(Texture.Width * Scale + 1);
+            return (int)(Texture.Width * Scale);
         }
 
         public int Height()
         {
-            return (int)(Texture.Height * Scale + 1);
+            return (int)(Texture.Height * Scale);
         }
     }
 }

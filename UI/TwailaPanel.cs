@@ -18,12 +18,14 @@ namespace Twaila.UI
         private bool dragging;
         private Point lastMouse;
 
+        private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height);
+        private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
+
         public TwailaPanel()
         {
             _context = new TileContext();
             Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
             Image = new UITwailaImage();
-            Image.VAlign = 0.5f;
             Image.MarginRight = 10;
             Mod = new TwailaText("Terraria", Main.fontItemStack, Color.White, 1f);
             Width.Set(0, 0);
@@ -35,9 +37,13 @@ namespace Twaila.UI
             Append(Mod);
             Append(Image);
         }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            Image.drawMode = TwailaConfig.Get().ContentSetting;
+            Mod.drawMode = TwailaConfig.Get().ContentSetting;
+            Name.drawMode = TwailaConfig.Get().ContentSetting;
             UpdateSize();
             Drag();
             UpdateAlignment();
@@ -45,16 +51,108 @@ namespace Twaila.UI
 
         private void UpdateSize()
         {
-            float imageHeight = Image.Height.Pixels;
-            float textHeight = Mod.Height.Pixels + Name.Height.Pixels;
-            float calculatedHeight = imageHeight > textHeight ? imageHeight + PaddingTop + PaddingBottom : textHeight + PaddingTop + PaddingBottom;
-            Height.Set(MathHelper.Clamp(calculatedHeight, 0, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height), 0);
-            float imageWidth = Image.Width.Pixels + Image.MarginRight;
-            float textWidth = Name.Width.Pixels > Mod.Width.Pixels ? Name.Width.Pixels : Mod.Width.Pixels;
-            float calculatedWidth = textWidth + imageWidth + PaddingLeft + PaddingRight;
-            Width.Set(MathHelper.Clamp(calculatedWidth, 0, TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width), 0);
+            SetPadding(TwailaConfig.Get().PanelPadding);
+            float imageHeight = Image.image.Height();
+            float textHeight = Mod.GetTextSize().Y + Name.GetTextSize().Y;
+            if(imageHeight > MaxPanelInnerDimension.Y)
+            {
+                switch (TwailaConfig.Get().ContentSetting)
+                {
+                    case DrawMode.Shrink:
+                        imageHeight *= ImageScale(new Vector2(TwailaConfig.Get().MaxImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
+                        break;
+                    default:
+                        imageHeight = MaxPanelInnerDimension.Y;
+                        break;
+                }
+            }
+            if (textHeight > MaxPanelInnerDimension.Y)
+            {
+                switch (TwailaConfig.Get().ContentSetting)
+                {
+                    case DrawMode.Shrink:
+                        Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - (TwailaConfig.Get().MaxImageWidth / 100.0f * MaxPanelInnerDimension.X) - Image.MarginRight, MaxPanelInnerDimension.Y);
+                        float nameHeight = Name.GetTextSize().Y * TextScale(Name, maxSize);
+                        float modHeight = Mod.GetTextSize().Y * TextScale(Mod, maxSize);
+                        textHeight = nameHeight + modHeight;
+                        break;
+                    default:
+                        textHeight = MaxPanelInnerDimension.Y;
+                        break;
+                }
+            }
+            float calculatedHeight = imageHeight > textHeight ? imageHeight : textHeight;
+            Height.Set(calculatedHeight + PaddingTop + PaddingBottom, 0);
+            Image.Height.Set(Math.Max(imageHeight, textHeight), 0);
+            
+            float imageWidth = Image.image.Width();
+            float textWidth = Name.GetTextSize().X > Mod.GetTextSize().X ? Name.GetTextSize().X : Mod.GetTextSize().X;
+            if(imageWidth > TwailaConfig.Get().MaxImageWidth / 100.0f * MaxPanelInnerDimension.X || TwailaConfig.Get().ContentSetting == DrawMode.Shrink)
+            {
+                switch (TwailaConfig.Get().ContentSetting)
+                {
+                    case DrawMode.Shrink:
+                        imageWidth *= ImageScale(new Vector2(TwailaConfig.Get().MaxImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
+                        break;
+                    default:
+                        imageWidth = TwailaConfig.Get().MaxImageWidth / 100.0f * MaxPanelInnerDimension.X;
+                        break;
+                }
+            }
+            if(textWidth > MaxPanelInnerDimension.X - imageWidth - Image.PaddingRight || TwailaConfig.Get().ContentSetting == DrawMode.Shrink)
+            {
+                switch (TwailaConfig.Get().ContentSetting)
+                {
+                    case DrawMode.Shrink:
+                        Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - imageWidth - Image.MarginRight, MaxPanelInnerDimension.Y);
+                        float nameWidth = Name.GetTextSize().X * TextScale(Name, maxSize);
+                        float modWidth = Mod.GetTextSize().X * TextScale(Mod, maxSize);
+                        Name.Width.Set(nameWidth, 0);
+                        Mod.Width.Set(modWidth, 0);
+                        textWidth = Math.Max(nameWidth, modWidth);
+                        break;
+                    default:
+                        textWidth = MaxPanelInnerDimension.X - imageWidth - Image.PaddingRight;
+                        Name.Width.Set(textWidth, 0);
+                        Mod.Width.Set(textWidth, 0);
+                        break;
+                }
+            }
+            float calculatedWidth = textWidth + imageWidth + Image.MarginRight + PaddingLeft + PaddingRight;
+            Width.Set(calculatedWidth, 0);
+            Image.Width.Set(imageWidth, 0);
         }
 
+        public float ImageScale(Vector2 maxSize)
+        {
+            float scaleX = 1;
+            if (Image.image.Width() > maxSize.X)
+            {
+                scaleX = maxSize.X / Image.image.Width();
+            }
+            float scaleY = 1;
+            if (Image.image.Height() > maxSize.Y)
+            {
+                scaleY = maxSize.Y / Image.image.Height();
+            }
+            return Math.Min(scaleX, scaleY) * Image.image.Scale;
+        }
+
+        public float TextScale(TwailaText text, Vector2 maxSize)
+        {
+            float scaleX = 1;
+            if (text.GetTextSize().X > maxSize.X)
+            {
+                scaleX = maxSize.X / text.GetTextSize().X;
+            }
+            float scaleY = 1;
+            if (text.GetTextSize().Y > maxSize.Y)
+            {
+                scaleY = maxSize.Y / text.GetTextSize().Y;
+            }
+            return Math.Min(scaleX, scaleY) * text.Scale;
+        }
+        
         private void UpdateAlignment()
         {
             if (TwailaConfig.Get().UseDefaultPosition)
@@ -63,6 +161,7 @@ namespace Twaila.UI
                 TwailaConfig.Get().AnchorPosY = 0;
             }
             UpdatePos();
+            Image.Top.Set(0, 0);
             Name.Top.Set(0, 0);
             Name.Left.Set(Image.Width.Pixels + Image.MarginRight, 0);
             Mod.Top.Set(Name.Height.Pixels, 0);
@@ -125,10 +224,11 @@ namespace Twaila.UI
         }
 
         public override void MouseDown(UIMouseEvent evt)
-        {
+        {           
             lastMouse = new Point(Main.mouseX, Main.mouseY);
             if (!TwailaConfig.Get().LockPosition)
             {
+                Main.LocalPlayer.mouseInterface = true;
                 TwailaConfig.Get().UseDefaultPosition = false;
                 dragging = true;
             }

@@ -51,11 +51,22 @@ namespace Twaila
 
         [Header("UI Panel")]
 
-        [DefaultValue(50)]
+        [DefaultValue(30)]
         public int MaxWidth;
 
         [DefaultValue(20)]
         public int MaxHeight;
+
+        [DefaultValue(12)]
+        public int PanelPadding;
+        
+        [DefaultValue(25)]
+        public int MaxImageWidth;
+
+        [DefaultValue(DrawMode.Shrink)]
+        [DrawTicks]
+        public DrawMode ContentSetting;
+
 
         public void Save()
         {

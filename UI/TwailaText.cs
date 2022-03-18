@@ -7,7 +7,7 @@ using Terraria.UI;
 
 namespace Twaila.UI
 {
-    public class TwailaText : UIElement
+    public class TwailaText : UITwailaElement
     {
         public string Text { get; private set; }
         public Color Color;
@@ -34,21 +34,56 @@ namespace Twaila.UI
                 text = "Default Text";
             }
             Text = text;
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
             Width.Set(GetTextSize().X, 0);
             Height.Set(GetTextSize().Y, 0);
-            Recalculate();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+            switch (drawMode)
+            {
+                case DrawMode.Trim:
+                    DrawTrimmed(spriteBatch);
+                    break;
+                case DrawMode.Shrink:
+                    DrawShrunk(spriteBatch);
+                    break;
+                case DrawMode.Overflow:
+                    DrawOverflow(spriteBatch);
+                    break;
+            }        
         }
 
+        protected override void DrawTrimmed(SpriteBatch spriteBatch)
+        {
+            string trimmed = Text;
+            while (Font.MeasureString(trimmed).X * Scale > Width.Pixels && Text.Length > 0)
+            {
+                trimmed = trimmed.Substring(0, trimmed.Length - 1);
+            }
+            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, trimmed, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+        }
+
+        protected override void DrawShrunk(SpriteBatch spriteBatch)
+        {
+            float scaleX = 1;
+            if (GetTextSize().X > GetDimensions().Width)
+            {
+                scaleX = GetDimensions().Width / GetTextSize().X;
+            }
+            float scaleY = 1;
+            if (GetTextSize().Y > GetDimensions().Height)
+            {
+                scaleY = GetDimensions().Height / GetTextSize().Y;
+            }
+            float scale = System.Math.Min(scaleX, scaleY) * Scale;
+            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, scale, 0, 0);
+        }
+
+        protected override void DrawOverflow(SpriteBatch spriteBatch)
+        {
+            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+        }
 
     }
 }
