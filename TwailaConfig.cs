@@ -52,21 +52,26 @@ namespace Twaila
         [Header("UI Panel")]
 
         [DefaultValue(30)]
+        [Tooltip("Maximum % of the screen's width the panel can be")]
+        [Label("MaxWidth (%)")]
         public int MaxWidth;
 
         [DefaultValue(20)]
+        [Tooltip("Maximum % of the screen's height the panel can be")]
+        [Label("MaxHeight (%)")]
         public int MaxHeight;
+
+        [DefaultValue(25)]
+        [Tooltip("The % of the panel's width that is allocated for the image when the text is too long")]
+        [Label("ReservedImageWidth (%)")]
+        public int ReservedImageWidth;
 
         [DefaultValue(12)]
         public int PanelPadding;
-        
-        [DefaultValue(25)]
-        public int MaxImageWidth;
 
         [DefaultValue(DrawMode.Shrink)]
         [DrawTicks]
         public DrawMode ContentSetting;
-
 
         public void Save()
         {

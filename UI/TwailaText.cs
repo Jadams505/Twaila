@@ -57,11 +57,14 @@ namespace Twaila.UI
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
         {
             string trimmed = Text;
-            while (Font.MeasureString(trimmed).X * Scale > Width.Pixels && Text.Length > 0)
+            while (Font.MeasureString(trimmed).X * Scale > Width.Pixels && trimmed.Length > 0)
             {
                 trimmed = trimmed.Substring(0, trimmed.Length - 1);
             }
-            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, trimmed, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+            if(Font.MeasureString(trimmed).Y * Scale <= Height.Pixels)
+            {
+                DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, trimmed, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+            }
         }
 
         protected override void DrawShrunk(SpriteBatch spriteBatch)
