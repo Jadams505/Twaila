@@ -12,7 +12,7 @@ namespace Twaila.UI
     {
         private static UserInterface _interface;
         private static UIState _state;
-        private static TwailaPanel _panel;
+        internal static TwailaPanel panel;
         public static bool debugMode = false;
 
         public static bool Enabled { get; private set; }
@@ -21,10 +21,10 @@ namespace Twaila.UI
             Enabled = true;
 
             _interface = new UserInterface();
-            _panel = new TwailaPanel();
+            panel = new TwailaPanel();
             _state = new UIState();
 
-            _state.Append(_panel);
+            _state.Append(panel);
             ToggleVisibility(Enabled);
         }
 
@@ -79,11 +79,6 @@ namespace Twaila.UI
             return new TileContext(pos);
         }
 
-        public static void DebugUI()
-        {
-            _panel?.ToggleDebugMode();
-        }
-
         public static bool InBounds(int targetX, int targetY)
         {
             if (targetX < (Main.screenPosition.X - 16) / 16) // left
@@ -129,7 +124,7 @@ namespace Twaila.UI
         public static void Unload()
         {
             _interface = null;
-            _panel = null;
+            panel = null;
             _state = null;
         }
 
@@ -140,6 +135,5 @@ namespace Twaila.UI
                 _interface.Draw(Main.spriteBatch, time);
             }
         }
-
     }
 }

@@ -12,5 +12,10 @@ namespace Twaila
         {
             Keybinds.HandleKeys();
         }
+
+        public override void PreSavePlayer()
+        {
+            TwailaConfig.Get()?.Save();
+        }
     }
 }

@@ -9,6 +9,10 @@ namespace Twaila.Graphics
         public Texture2D Texture { get; private set; }
         public float Scale { get; set; }
 
+        public float Width => Texture.Width * Scale;
+
+        public float Height => Texture.Height * Scale;
+
         public TwailaTexture(Texture2D texture, float scale)
         {
             Texture = texture ?? Main.buffTexture[BuffID.Confused];
@@ -17,14 +21,5 @@ namespace Twaila.Graphics
 
         public TwailaTexture(Texture2D texture) : this(texture, 1) { }
 
-        public int Width()
-        {
-            return (int)(Texture.Width * Scale + 1);
-        }
-
-        public int Height()
-        {
-            return (int)(Texture.Height * Scale + 1);
-        }
     }
 }
