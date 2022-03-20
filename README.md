@@ -7,8 +7,4 @@ This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is int
 [IMPORTANT NOTES]
 - This mod is currently in development and is not complete
 
-[Config Options]
-- UseItemTextures: Priotizes displaying the texture of the item that places the tile as opposed to the texture of the tile itself (Only works for tiles that have items that place them)
-
-[Controls]
-- Toggle UI (Mouse3 by default): Switches the visibility of the UI Panel
+Forum Page: https://forums.terraria.org/index.php?threads/terrarias-waila-twaila-mod.111090/

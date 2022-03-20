@@ -6,12 +6,25 @@ This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is int
 This mod is currently in development and is not complete
 
 [Config Options]
-- UseItemTextures: Priotizes displaying the texture of the item that places the tile as opposed to the texture of the tile itself (Only works for tiles that have items that place them)
+- Visit the Forum page for more details on config options
+
+- [c/FFFF00:UseItemTextures]: Priotizes displaying the texture of the item that places the tile as opposed to the texture of the tile itself (Only works for tiles that have items that place them)
+- [c/FFFF00:UseDefaultPosition]: Centers the panel on the top of the screen
+- [c/FFFF00:AnchorX, AnchorY]: Represent what part of the panel's positioning is constant when the content changes its size
+- [c/FFFF00:AnchorPosX, AnchorPosY]: The exact pixel location of the anchor point
+- [c/FFFF00:MaxWidth, MaxHeight]: The maximum percentage of the screen the panel can be
+- [c/FFFF00:ReservedImageWidth]: The percentage of the panel that is reserved for the image if the text is too long
+- [c/FFFF00:PanelPadding]: How much space there is (in pixels) between the content and the edge of the panel
+- [c/FFFF00:ContentSetting]: Settings that describe what to do with the content when it is too big for the panel
 
 [Controls]
 - Toggle UI (Mouse3 by default): Switches the visibility of the UI Panel
 
 [Changelog]
+v0.3.0.0 (3/20/2022)
+- Added configuration settings for positioning and anchoring
+- The panel can now be moved with the mouse
+- Added the Trim, Shrink, and Overflow options to handle content that is too big for the panel
 v0.2.2.1 (3/12/2022)
 - Fixed a game crash when hovering over a giant mushroom
 v0.2.2.0 (3/9/2022)
