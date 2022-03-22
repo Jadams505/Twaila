@@ -15,7 +15,7 @@ namespace Twaila.Graphics
 
         public TwailaTexture(Texture2D texture, float scale)
         {
-            Texture = texture ?? Main.buffTexture[BuffID.Confused];
+            Texture = texture;
             Scale = scale;
         }
 

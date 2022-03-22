@@ -67,7 +67,7 @@ namespace Twaila.Context
         public virtual string GetName(int itemId)
         {
             return NameUtil.GetNameForManualTiles(Tile) ?? NameUtil.GetNameForChest(Tile) ?? NameUtil.GetNameFromItem(itemId) 
-                ?? NameUtil.GetNameFromMap(Pos) ?? "Default Name";
+                ?? NameUtil.GetNameFromMap(this) ?? "Default Name";
         }
 
         public virtual TwailaTexture GetTileImage(SpriteBatch spriteBatch)

@@ -3,7 +3,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
 using Twaila.Context;
+using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
@@ -28,12 +30,18 @@ namespace Twaila.Util
             return name;
         }
 
-        public static string GetNameFromMap(Point pos)
+        public static string GetNameFromMap(TileContext context)
         {
-            string mapName = Lang.GetMapObjectName(Main.Map[pos.X, pos.Y].Type);
-            if (!mapName.Equals(""))
+            string mapName = Lang.GetMapObjectName(Main.Map[context.Pos.X, context.Pos.Y].Type);
+            int style = TileObjectData.GetTileStyle(context.Tile);
+            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(context.Tile.type, style == -1 ? 0 : style));
+            if (mapName != null && !mapName.Equals(""))
             {
                 return mapName;
+            }
+            if (altMapName != null && !altMapName.Equals(""))
+            {
+                return altMapName;
             }
             return null;
         }

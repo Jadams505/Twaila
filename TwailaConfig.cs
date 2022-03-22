@@ -16,6 +16,9 @@ namespace Twaila
         [DefaultValue(false)]
         public bool UseItemTextures;
 
+        [DefaultValue(true)]
+        public bool AntiCheat;
+
         [Header("UI Position")]
 
         [DefaultValue(true)]
