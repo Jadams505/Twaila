@@ -4,15 +4,16 @@ using ReLogic.Graphics;
 using Terraria;
 using Terraria.Localization;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace Twaila.UI
 {
     public class TwailaText : UITwailaElement
     {
         public string Text { get; private set; }
-        public Color Color;
-        public float Scale;
-        public DynamicSpriteFont Font;
+        public Color Color { get; set; }
+        public float Scale { get; set; }
+        public DynamicSpriteFont Font { get; set; }
 
         public TwailaText(string text, DynamicSpriteFont font, Color color, float scale)
         {
@@ -24,7 +25,7 @@ namespace Twaila.UI
 
         public Vector2 GetTextSize()
         {
-            return Font.MeasureString(Text) * Scale;
+            return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
         }
 
         public void SetText(string text)
@@ -57,13 +58,13 @@ namespace Twaila.UI
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
         {
             string trimmed = Text;
-            while (Font.MeasureString(trimmed).X * Scale > Width.Pixels && trimmed.Length > 0)
+            while (ChatManager.GetStringSize(Font, trimmed, new Vector2(Scale, Scale)).X > Width.Pixels && trimmed.Length > 0)
             {
                 trimmed = trimmed.Substring(0, trimmed.Length - 1);
             }
-            if(Font.MeasureString(trimmed).Y * Scale <= Height.Pixels)
+            if(ChatManager.GetStringSize(Font, trimmed, new Vector2(Scale, Scale)).Y <= Height.Pixels)
             {
-                DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, trimmed, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Font, trimmed, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, new Vector2(Scale, Scale));
             }
         }
 
@@ -80,12 +81,12 @@ namespace Twaila.UI
                 scaleY = GetDimensions().Height / GetTextSize().Y;
             }
             float scale = System.Math.Min(scaleX, scaleY) * Scale;
-            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, scale, 0, 0);
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, new Vector2(scale, scale));
         }
 
         protected override void DrawOverflow(SpriteBatch spriteBatch)
         {
-            DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, Scale, 0, 0);
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Font, Text, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, new Vector2(Scale, Scale));
         }
 
     }

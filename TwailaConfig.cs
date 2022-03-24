@@ -13,11 +13,17 @@ namespace Twaila
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
+        [Header("Features")]
+
         [DefaultValue(false)]
         public bool UseItemTextures;
 
         [DefaultValue(true)]
         public bool AntiCheat;
+
+        [SeparatePage]
+        [Label("Content Toggles")]
+        public Content DisplayContent = new Content();
 
         [Header("UI Position")]
 
@@ -75,6 +81,79 @@ namespace Twaila
         [DefaultValue(DrawMode.Shrink)]
         [DrawTicks]
         public DrawMode ContentSetting;
+
+        [DefaultValue(false)]
+        public bool RemoveBackground;
+
+        [SeparatePage]
+        [Label("Panel Color")]
+        public ColorWrapper PanelColor = new ColorWrapper(44, 57, 105, 178);
+
+        [SeparatePage]
+        [Label("Text Color")]
+        public ColorWrapper TextColor = new ColorWrapper(255, 255, 255, 255);
+
+        public class Content
+        {
+            [DefaultValue(true)]
+            public bool ShowImage;
+
+            [DefaultValue(true)]
+            public bool ShowName;
+
+            [DefaultValue(true)]
+            public bool ShowMod;
+
+            public Content()
+            {
+                ShowImage = true;
+                ShowName = true;
+                ShowMod = true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if(obj is Content other)
+                {
+                    return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName;
+                }
+                return base.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return new { ShowImage, ShowMod, ShowName }.GetHashCode();
+            }
+        }
+
+        public class ColorWrapper
+        {
+            public Color Color;
+
+            public ColorWrapper(byte r, byte g, byte b, byte a)
+            {
+                Color = new Color(r, g, b, a);
+            }
+
+            public ColorWrapper()
+            {
+                Color = new Color(0, 0, 0, 0);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is Color other)
+                {
+                    return Color.Equals(other);
+                }
+                return base.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return Color.GetHashCode();
+            }
+        }
 
         public void Save()
         {

@@ -205,6 +205,7 @@ namespace Twaila.Util
 
         private static Texture2D GetTileTexture(Tile tile)
         {
+            //Main.instance.LoadTiles(tile.type);
             return Main.tileTexture[tile.type];
         }
 

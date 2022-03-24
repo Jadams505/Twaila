@@ -1,9 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.UI.Chat;
 using Twaila.Context;
 using Twaila.ObjectData;
 
@@ -320,7 +323,11 @@ namespace Twaila.Util
         public static string GetModName(Tile tile)
         {
             ModTile mTile = TileLoader.GetTile(tile.type);
-            return mTile == null ? "Terraria" : mTile.mod.DisplayName;
+            if(mTile == null)
+            {
+                return "Terraria";
+            }
+            return mTile.mod.DisplayName;
         }
     }
 }
