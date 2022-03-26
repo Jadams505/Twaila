@@ -43,18 +43,27 @@ namespace Twaila.UI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Image.drawMode = TwailaConfig.Get().ContentSetting;
-            Mod.drawMode = TwailaConfig.Get().ContentSetting;
-            Name.drawMode = TwailaConfig.Get().ContentSetting;
-            BackgroundColor = TwailaConfig.Get().PanelColor.Color;
-            Mod.Color = TwailaConfig.Get().TextColor.Color;
-            Name.Color = TwailaConfig.Get().TextColor.Color;
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowImage, Image);
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowMod, Mod);
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowName, Name);
+            UpdateFromConfig();
             UpdateSize();
             Drag();
             UpdateAlignment();
+        }
+
+        private void UpdateFromConfig()
+        {
+            BackgroundColor = TwailaConfig.Get().PanelColor.Color;
+            Image.drawMode = TwailaConfig.Get().ContentSetting;
+            Mod.drawMode = TwailaConfig.Get().ContentSetting;
+            Name.drawMode = TwailaConfig.Get().ContentSetting;
+            Mod.Color = TwailaConfig.Get().TextColor.Color;
+            Name.Color = TwailaConfig.Get().TextColor.Color;
+            Mod.TextShadow = TwailaConfig.Get().TextShadow;
+            Name.TextShadow = TwailaConfig.Get().TextShadow;
+            Mod.OverrideTextColor = TwailaConfig.Get().OverrideColor;
+            Name.OverrideTextColor = TwailaConfig.Get().OverrideColor;
+            SetElementState(TwailaConfig.Get().DisplayContent.ShowImage, Image);
+            SetElementState(TwailaConfig.Get().DisplayContent.ShowMod, Mod);
+            SetElementState(TwailaConfig.Get().DisplayContent.ShowName, Name);
         }
 
         private void SetElementState(bool shouldShow, UIElement element)
@@ -239,7 +248,7 @@ namespace Twaila.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (!TwailaConfig.Get().RemoveBackground)
+            if (TwailaConfig.Get().ShowBackground)
             {
                 base.DrawSelf(spriteBatch);
             }

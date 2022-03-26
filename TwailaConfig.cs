@@ -15,15 +15,14 @@ namespace Twaila
 
         [Header("Features")]
 
-        [DefaultValue(false)]
-        public bool UseItemTextures;
-
         [DefaultValue(true)]
+        [Tooltip("When this is ON only tiles that are revealed on the map will show on the panel")]
         public bool AntiCheat;
 
         [SeparatePage]
         [Label("Content Toggles")]
         public Content DisplayContent = new Content();
+
 
         [Header("UI Position")]
 
@@ -32,11 +31,12 @@ namespace Twaila
         public bool UseDefaultPosition;
 
         [DefaultValue(true)]
+        [Tooltip("When this is OFF you can use the mouse to move the panel")]
         public bool LockPosition;
 
         [DrawTicks]
         [DefaultValue(HorizontalAnchor.Center)]
-        public HorizontalAnchor AnchorX;
+        public HorizontalAnchor AnchorX = HorizontalAnchor.Center;
         public enum HorizontalAnchor
         {
             Left, Center, Right
@@ -44,7 +44,7 @@ namespace Twaila
 
         [DrawTicks]
         [DefaultValue(VerticalAnchor.Top)]
-        public VerticalAnchor AnchorY;
+        public VerticalAnchor AnchorY = VerticalAnchor.Top;
         public enum VerticalAnchor
         {
             Bottom, Center, Top
@@ -58,6 +58,7 @@ namespace Twaila
         [Range(0, 2000)]
         public int AnchorPosY;
 
+
         [Header("UI Panel")]
 
         [DefaultValue(30)]
@@ -70,28 +71,45 @@ namespace Twaila
         [Label("MaxHeight (%)")]
         public int MaxHeight;
 
-        [DefaultValue(25)]
-        [Tooltip("The % of the panel's width that is allocated for the image when the text is too long")]
-        [Label("ReservedImageWidth (%)")]
-        public int ReservedImageWidth;
-
         [DefaultValue(12)]
         public int PanelPadding;
 
         [DefaultValue(DrawMode.Shrink)]
         [DrawTicks]
-        public DrawMode ContentSetting;
+        public DrawMode ContentSetting = DrawMode.Shrink;
 
-        [DefaultValue(false)]
-        public bool RemoveBackground;
+        [DefaultValue(true)]
+        public bool ShowBackground;
 
         [SeparatePage]
         [Label("Panel Color")]
         public ColorWrapper PanelColor = new ColorWrapper(44, 57, 105, 178);
 
+
+        [Header("UI Text")]
+
+        [DefaultValue(true)]
+        public bool TextShadow;
+
+        [DefaultValue(false)]
+        [Tooltip("Turn this on to override any pre-existing text color")]
+        public bool OverrideColor;
+
         [SeparatePage]
         [Label("Text Color")]
         public ColorWrapper TextColor = new ColorWrapper(255, 255, 255, 255);
+
+
+        [Header("UI Image")]
+
+        [DefaultValue(false)]
+        [Tooltip("ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world")]
+        public bool UseItemTextures;
+
+        [DefaultValue(25)]
+        [Tooltip("The % of the panel's width that is allocated for the image when the text is too long")]
+        [Label("ReservedImageWidth (%)")]
+        public int ReservedImageWidth;
 
         public class Content
         {
