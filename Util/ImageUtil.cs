@@ -60,9 +60,14 @@ namespace Twaila.Util
         public static Texture2D GetImageCustom(SpriteBatch spriteBatch, Tile tile)
         {
             return GetImageForStalactite(spriteBatch, tile) ?? GetImageForPiles(spriteBatch, tile) ??
-                GetImageForJungleFoliage(spriteBatch, tile) ?? GetImageForCampfire(spriteBatch, tile);
+                GetImageForJungleFoliage(spriteBatch, tile) ?? GetImageForCampfire(spriteBatch, tile) ??
+                GetImageForHerbs(spriteBatch, tile) ?? GetImageForXmasTree(spriteBatch, tile);
         }
 
+        /*
+            The top half of the spritesheet for stalactites are 1x2 in size while the
+            bottom half are 1x1 in size
+        */
         public static Texture2D GetImageForStalactite(SpriteBatch spriteBatch, Tile tile)
         {
             if (tile.type == TileID.Stalactite)
@@ -87,6 +92,10 @@ namespace Twaila.Util
             return null;
         }
 
+        /*
+            The top row of the spritesheet for piles are 1x1 in size while the
+            next two rows are 2x1 in size
+        */
         public static Texture2D GetImageForPiles(SpriteBatch spriteBatch, Tile tile)
         {
             if (tile.type == TileID.SmallPiles)
@@ -113,6 +122,10 @@ namespace Twaila.Util
             return null;
         }
 
+        /*
+            The top half of the spritesheet for jungle foilage are 3x2 in size while the
+            bottom half are 2x2 in size
+        */
         public static Texture2D GetImageForJungleFoliage(SpriteBatch spriteBatch, Tile tile)
         {
             if (tile.type == TileID.PlantDetritus)
@@ -139,6 +152,10 @@ namespace Twaila.Util
             return null;
         }
 
+        /*
+            For some reason the frameY for campfires when they are turned off does not match the frameY on
+            their spritesheet. It might have something to do with animation frames
+        */
         public static Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
         {
             if (tile.type == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
@@ -146,11 +163,64 @@ namespace Twaila.Util
                 TileObjectData data = TileObjectData.GetTileData(tile);
                 if (tile.frameY >= data.CoordinateFullHeight)
                 {
-                    tile.frameY = 288;
+                    tile.frameY = 288; // this is the correct frameY for the campfire when it is turned off
                 }
                 return GetImageFromTileObjectData(spriteBatch, tile, data);
             }
             return null;
+        }
+
+        /*
+            Becuase herb tiles bloom and unbloom based on various conditions the tileId's do not reflect what texture
+            is actually being displayed. Thus those conditions must be explititly checked in order to determine if the tile is
+            mature or blooming
+            Blinkroot and Shiverthorn are exceptions because once bloomed they never unbloom
+        */
+        public static Texture2D GetImageForHerbs(SpriteBatch spriteBatch, Tile tile)
+        {
+            if (tile.type == TileID.MatureHerbs)
+            {
+                int tileId = tile.type;
+                int style = TileObjectData.GetTileStyle(tile);
+                if (style == 0 && Main.dayTime) // daybloom
+                {
+                    tileId = TileID.BloomingHerbs;
+                }
+                if (style == 1 && !Main.dayTime) // moonglow
+                {
+                    tileId = TileID.BloomingHerbs;
+                }
+                if (style == 3 && !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0)) // deathweed
+                {
+                    tileId = TileID.BloomingHerbs;
+                }
+                if (style == 4 && (Main.raining || Main.cloudAlpha > 0)) // waterleaf
+                {
+                    tileId = TileID.BloomingHerbs;
+                }
+                if (style == 5 && !Main.raining && Main.time > 40500) // fireblossom
+                {
+                    tileId = TileID.BloomingHerbs;
+                }
+                tile.type = (ushort)tileId;
+                return GetImageFromTileData(spriteBatch, tile);
+            }
+            return null;
+        }
+
+        /*
+            Christmas trees store extra data in the top left tile to account for decorations
+        */
+        public static Texture2D GetImageForXmasTree(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.type == TileID.ChristmasTree)
+            {
+                if(tile.frameX >= 10) // the top left tile's frameX is always 10
+                {
+                    tile.frameY = 0; // sets the frameY to what it would be if it had no decorations
+                }
+            }
+            return GetImageFromTileData(spriteBatch, tile);
         }
 
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
@@ -205,7 +275,7 @@ namespace Twaila.Util
 
         private static Texture2D GetTileTexture(Tile tile)
         {
-            //Main.instance.LoadTiles(tile.type);
+            Main.instance.LoadTiles(tile.type);
             return Main.tileTexture[tile.type];
         }
 

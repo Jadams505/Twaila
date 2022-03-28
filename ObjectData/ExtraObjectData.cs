@@ -119,6 +119,10 @@ namespace Twaila.ObjectData
             data.CopyFrom(TileObjectData.Style3x3);
             data.CoordinateHeights = new int[] { 16, 16, 18 };
             AddEntry(TileID.Chimney, data);
+            TileObjectData data2 = new TileObjectData(TileObjectData.Style3x3);
+            data2.CoordinateHeights = new int[] { 16, 16, 16 };
+            data2.StyleHorizontal = true;
+            AddEntry(TileID.GemLocks, data2);
         }
 
         private static void AddEntry(int tileId, TileObjectData copyFrom)

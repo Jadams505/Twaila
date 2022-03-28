@@ -14,18 +14,19 @@ namespace Twaila.UI
 {
     public class TwailaPanel : UIPanel, IDragable
     {
-        public TwailaText Name, Mod;
-        public UITwailaImage Image;
-        private TileContext _context;
-        private bool dragging;
-        private Point lastMouse;
+        private TwailaText Name { get; set; } 
+        private TwailaText Mod { get; set; }
+        private UITwailaImage Image { get; set; }
+        private TileContext Context { get; set; }
+        private bool _dragging;
+        private Point _lastMouse;
 
         private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height);
         private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
 
         public TwailaPanel()
         {
-            _context = new TileContext();
+            Context = new TileContext();
             Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
             Image = new UITwailaImage();
             Image.MarginRight = 10;
@@ -265,13 +266,13 @@ namespace Twaila.UI
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
-            if (currentContext.Tile.active() && !IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(_context))
+            if (currentContext.Tile.active() && !IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
                 int itemId = ItemUtil.GetItemId(currentContext.Tile);
                 Name.SetText(currentContext.GetName(itemId));
                 Mod.SetText(currentContext.GetMod());
                 Image.SetImage(spriteBatch, currentContext, itemId);
-                _context = currentContext;
+                Context = currentContext;
             }
         }
 
@@ -318,36 +319,36 @@ namespace Twaila.UI
 
         public override void MouseDown(UIMouseEvent evt)
         {           
-            lastMouse = new Point(Main.mouseX, Main.mouseY);
+            _lastMouse = new Point(Main.mouseX, Main.mouseY);
             if (!TwailaConfig.Get().LockPosition)
             {
                 Main.LocalPlayer.mouseInterface = true;
                 TwailaConfig.Get().UseDefaultPosition = false;
-                dragging = true;
+                _dragging = true;
             }
         }
 
         public override void MouseUp(UIMouseEvent evt)
         {
-            dragging = false;
+            _dragging = false;
         }
 
         public bool IsDragging()
         {
-            return dragging;
+            return _dragging && !Main.ingameOptionsWindow && !Main.hideUI;
         }
 
         public void Drag()
         {
             if (IsDragging())
             {
-                int deltaX = Main.mouseX - lastMouse.X, deltaY = Main.mouseY - lastMouse.Y;
+                int deltaX = Main.mouseX - _lastMouse.X, deltaY = Main.mouseY - _lastMouse.Y;
                 TwailaConfig.Get().AnchorPosX += deltaX;
                 TwailaConfig.Get().AnchorPosY += deltaY;
                 TwailaConfig.Get().AnchorPosX = (int)MathHelper.Clamp(TwailaConfig.Get().AnchorPosX, 0, Parent.GetDimensions().Width);
                 TwailaConfig.Get().AnchorPosY = (int)MathHelper.Clamp(TwailaConfig.Get().AnchorPosY, 0, Parent.GetDimensions().Height);
-                lastMouse.X = Main.mouseX;
-                lastMouse.Y = Main.mouseY;
+                _lastMouse.X = Main.mouseX;
+                _lastMouse.Y = Main.mouseY;
             }
         }
     }

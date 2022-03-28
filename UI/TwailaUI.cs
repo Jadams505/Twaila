@@ -25,7 +25,7 @@ namespace Twaila.UI
             _state = new UIState();
 
             _state.Append(panel);
-            ToggleVisibility(Enabled);
+            _interface?.SetState(_state);
         }
 
         public static void Update(GameTime time)
