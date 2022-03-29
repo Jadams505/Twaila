@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -18,7 +19,7 @@ namespace Twaila.UI
         public static bool Enabled { get; private set; }
         public static void Initialize()
         {
-            Enabled = true;
+            Enabled = false;
 
             _interface = new UserInterface();
             panel = new TwailaPanel();
@@ -30,10 +31,28 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
-            if (Enabled)
+            switch (TwailaConfig.Get().UIDisplay)
             {
-                _interface?.Update(time);
+                case TwailaConfig.DisplayMode.On:
+                    ToggleVisibility(true);
+                    break;
+                case TwailaConfig.DisplayMode.Off:
+                    ToggleVisibility(false);
+                    break;
+                case TwailaConfig.DisplayMode.Automatic:
+                    TileContext currentContext = GetContext(GetMousePos());
+                    if(TwailaConfig.Get().HideUIForAir && (!currentContext.Tile.active() || TileUtil.IsBlockedByAntiCheat(currentContext)))
+                    {
+                        if (!Main.SmartCursorShowing)
+                        {
+                            ToggleVisibility(false);
+                            break;
+                        }
+                    }
+                    ToggleVisibility(true);
+                    break;
             }
+            _interface?.Update(time);
         }
 
         public static Point GetMousePos()
@@ -100,15 +119,16 @@ namespace Twaila.UI
             return true;
         }
 
-        public static void ToggleVisibility(bool? visible)
+        public static void ToggleVisibility(bool visible)
         {
-            Enabled = visible == null ? !Enabled : visible.Value;
-            if (Enabled)
+            if (visible)
             {
+                Enabled = true;
                 _interface?.SetState(_state);
             }
             else
             {
+                Enabled = false;
                 _interface?.SetState(null);
             } 
         }
@@ -130,9 +150,9 @@ namespace Twaila.UI
 
         public static void Draw(GameTime time)
         {
-            if(_interface?.CurrentState != null)
+            if (Enabled)
             {
-                _interface.Draw(Main.spriteBatch, time);
+                _interface?.Draw(Main.spriteBatch, time);
             }
         }
     }

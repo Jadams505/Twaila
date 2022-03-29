@@ -17,7 +17,7 @@ namespace Twaila.UI
         private TwailaText Name { get; set; } 
         private TwailaText Mod { get; set; }
         private UITwailaImage Image { get; set; }
-        private TileContext Context { get; set; }
+        internal TileContext Context { get; set; }
         private bool _dragging;
         private Point _lastMouse;
 
@@ -52,19 +52,40 @@ namespace Twaila.UI
 
         private void UpdateFromConfig()
         {
-            BackgroundColor = TwailaConfig.Get().PanelColor.Color;
-            Image.drawMode = TwailaConfig.Get().ContentSetting;
-            Mod.drawMode = TwailaConfig.Get().ContentSetting;
-            Name.drawMode = TwailaConfig.Get().ContentSetting;
-            Mod.Color = TwailaConfig.Get().TextColor.Color;
-            Name.Color = TwailaConfig.Get().TextColor.Color;
-            Mod.TextShadow = TwailaConfig.Get().TextShadow;
-            Name.TextShadow = TwailaConfig.Get().TextShadow;
-            Mod.OverrideTextColor = TwailaConfig.Get().OverrideColor;
-            Name.OverrideTextColor = TwailaConfig.Get().OverrideColor;
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowImage, Image);
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowMod, Mod);
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowName, Name);
+            TwailaConfig config = TwailaConfig.Get();
+            
+            Image.drawMode = config.ContentSetting;
+            Mod.drawMode = config.ContentSetting;
+            Name.drawMode = config.ContentSetting;
+
+            Mod.OverrideTextColor = config.OverrideColor;
+            Name.OverrideTextColor = config.OverrideColor;
+
+            BackgroundColor = config.PanelColor.Color;
+            BorderColor = Color.Black;
+            Image.opacity = 1;
+            Mod.opacity = 1;
+            Name.opacity = 1;
+            if (IsMouseHovering && !IsDragging())
+            {
+                BackgroundColor *= config.HoverOpacity;
+                BorderColor *= config.HoverOpacity;
+                Image.opacity = config.HoverOpacity;
+                Mod.opacity = config.HoverOpacity;
+                Name.opacity = config.HoverOpacity;
+                Mod.OverrideTextColor = true;
+                Name.OverrideTextColor = true;
+            }
+
+            Mod.Color = config.TextColor.Color;
+            Name.Color = config.TextColor.Color;
+
+            Mod.TextShadow = config.TextShadow;
+            Name.TextShadow = config.TextShadow;
+
+            SetElementState(config.DisplayContent.ShowImage, Image);
+            SetElementState(config.DisplayContent.ShowMod, Mod);
+            SetElementState(config.DisplayContent.ShowName, Name);
         }
 
         private void SetElementState(bool shouldShow, UIElement element)
@@ -266,7 +287,7 @@ namespace Twaila.UI
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
-            if (currentContext.Tile.active() && !IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
+            if (currentContext.Tile.active() && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
                 int itemId = ItemUtil.GetItemId(currentContext.Tile);
                 Name.SetText(currentContext.GetName(itemId));
@@ -274,47 +295,6 @@ namespace Twaila.UI
                 Image.SetImage(spriteBatch, currentContext, itemId);
                 Context = currentContext;
             }
-        }
-
-        private static bool IsBlockedByAntiCheat(TileContext context)
-        {
-            if (TwailaConfig.Get().AntiCheat)
-            {
-                Player player = Main.player[Main.myPlayer];
-                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.type])
-                {
-                    return false;
-                }
-                if(player.HasBuff(BuffID.Dangersense) && IsDangersenseTile(context.Tile, context.Pos))
-                {
-                    return false;
-                }
-                return !Main.Map.IsRevealed(context.Pos.X, context.Pos.Y);
-            }
-            return false;
-            
-        }
-
-        private static bool IsDangersenseTile(Tile tile, Point pos)
-        {
-            bool dangerTile = tile.type == TileID.PressurePlates || tile.type == TileID.Traps || tile.type == TileID.Boulder ||
-                tile.type == TileID.Explosives || tile.type == TileID.LandMine || tile.type == TileID.ProjectilePressurePad || 
-                tile.type == TileID.GeyserTrap || tile.type == TileID.BeeHive;
-            if (tile.slope() == 0 && !tile.inActive())
-            {
-                dangerTile = dangerTile || tile.type == TileID.Cobweb || tile.type == TileID.CorruptThorns || 
-                    tile.type == TileID.JungleThorns || tile.type == TileID.CrimtaneThorns || tile.type == TileID.Spikes 
-                    || tile.type == TileID.WoodenSpikes || tile.type == TileID.HoneyBlock;
-                if (!Main.player[Main.myPlayer].fireWalk)
-                {
-                    dangerTile = dangerTile || tile.type == TileID.Meteorite || tile.type == TileID.Hellstone || tile.type == TileID.HellstoneBrick;
-                }
-                if (!Main.player[Main.myPlayer].iceSkate)
-                {
-                    dangerTile = dangerTile || tile.type == TileID.BreakableIce;
-                }
-            }
-            return dangerTile || TileLoader.Dangersense(pos.X, pos.Y, tile.type, Main.player[Main.myPlayer]);
         }
 
         public override void MouseDown(UIMouseEvent evt)

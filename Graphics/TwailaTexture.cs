@@ -9,9 +9,9 @@ namespace Twaila.Graphics
         public Texture2D Texture { get; private set; }
         public float Scale { get; set; }
 
-        public float Width => Texture.Width * Scale;
+        public float Width => Texture == null ? 0 : Texture.Width * Scale;
 
-        public float Height => Texture.Height * Scale;
+        public float Height => Texture == null ? 0 : Texture.Height * Scale;
 
         public TwailaTexture(Texture2D texture, float scale)
         {

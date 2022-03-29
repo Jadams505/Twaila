@@ -12,7 +12,7 @@ namespace Twaila.Util
 
         public static void RegisterKeybinds(Mod mod)
         {
-            toggleUI = mod.RegisterHotKey("Toggle UI", "Mouse3");
+            toggleUI = mod.RegisterHotKey("Cycle UI Display Mode", "Mouse3");
             toggleDebugTextures = mod.RegisterHotKey("Debug", "O");
             info = mod.RegisterHotKey("info", "*");
         }
@@ -28,7 +28,19 @@ namespace Twaila.Util
         {
             if (toggleUI.JustPressed)
             {
-                TwailaUI.ToggleVisibility(null);
+                switch (TwailaConfig.Get().UIDisplay)
+                {
+                    case TwailaConfig.DisplayMode.On:
+                        TwailaConfig.Get().UIDisplay = TwailaConfig.DisplayMode.Off;
+                        break;
+                    case TwailaConfig.DisplayMode.Off:
+                        TwailaConfig.Get().UIDisplay = TwailaConfig.DisplayMode.Automatic;
+                        break;
+                    case TwailaConfig.DisplayMode.Automatic:
+                        TwailaConfig.Get().UIDisplay = TwailaConfig.DisplayMode.On;
+                        break;
+                }
+                Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplay);
             }
             if (toggleDebugTextures.JustPressed)
             {

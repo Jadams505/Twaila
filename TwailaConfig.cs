@@ -78,6 +78,22 @@ namespace Twaila
         [DrawTicks]
         public DrawMode ContentSetting = DrawMode.Shrink;
 
+        [DefaultValue(0.25f)]
+        public float HoverOpacity;
+
+        public enum DisplayMode
+        {
+            On, Off, Automatic
+        }
+
+        [DefaultValue(DisplayMode.Automatic)]
+        [DrawTicks]
+        public DisplayMode UIDisplay = DisplayMode.Automatic;
+
+        [DefaultValue(false)]
+        [Tooltip("ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile")]
+        public bool HideUIForAir;
+
         [DefaultValue(true)]
         public bool ShowBackground;
 
