@@ -19,7 +19,7 @@ namespace Twaila.UI
         public static bool Enabled { get; private set; }
         public static void Initialize()
         {
-            Enabled = false;
+            Enabled = true;
 
             _interface = new UserInterface();
             panel = new TwailaPanel();
@@ -34,22 +34,22 @@ namespace Twaila.UI
             switch (TwailaConfig.Get().UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
-                    ToggleVisibility(true);
+                    Enabled = true;
                     break;
                 case TwailaConfig.DisplayMode.Off:
-                    ToggleVisibility(false);
+                    Enabled = false;
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
                     TileContext currentContext = GetContext(GetMousePos());
                     if(TwailaConfig.Get().HideUIForAir && (!currentContext.Tile.active() || TileUtil.IsBlockedByAntiCheat(currentContext)))
                     {
-                        if (!Main.SmartCursorShowing)
+                        if (!panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !panel.IsDragging())
                         {
-                            ToggleVisibility(false);
+                            Enabled = false;
                             break;
                         }
                     }
-                    ToggleVisibility(true);
+                    Enabled = true;
                     break;
             }
             _interface?.Update(time);
@@ -117,20 +117,6 @@ namespace Twaila.UI
                 return false;
             }
             return true;
-        }
-
-        public static void ToggleVisibility(bool visible)
-        {
-            if (visible)
-            {
-                Enabled = true;
-                _interface?.SetState(_state);
-            }
-            else
-            {
-                Enabled = false;
-                _interface?.SetState(null);
-            } 
         }
 
         public static void Load()

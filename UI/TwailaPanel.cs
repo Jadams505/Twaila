@@ -35,7 +35,6 @@ namespace Twaila.UI
             Height.Set(0, 0);
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
-
             Append(Name);
             Append(Mod);
             Append(Image);
@@ -43,6 +42,7 @@ namespace Twaila.UI
 
         public override void Update(GameTime gameTime)
         {
+
             base.Update(gameTime);
             UpdateFromConfig();
             UpdateSize();
@@ -298,7 +298,7 @@ namespace Twaila.UI
         }
 
         public override void MouseDown(UIMouseEvent evt)
-        {           
+        {   
             _lastMouse = new Point(Main.mouseX, Main.mouseY);
             if (!TwailaConfig.Get().LockPosition)
             {
@@ -330,6 +330,11 @@ namespace Twaila.UI
                 _lastMouse.X = Main.mouseX;
                 _lastMouse.Y = Main.mouseY;
             }
+        }
+
+        public bool ContainsPoint(int x, int y)
+        {
+            return GetDimensions().ToRectangle().Intersects(new Rectangle(x, y, 0, 0));
         }
     }
 }
