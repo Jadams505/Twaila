@@ -31,7 +31,7 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
-            switch (TwailaConfig.Get().UIDisplay)
+            switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
                     Enabled = true;
@@ -41,7 +41,7 @@ namespace Twaila.UI
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
                     TileContext currentContext = GetContext(GetMousePos());
-                    if(TwailaConfig.Get().HideUIForAir && (!currentContext.Tile.active() || TileUtil.IsBlockedByAntiCheat(currentContext)))
+                    if(TwailaConfig.Get().UIDisplaySettings.HideUIForAir && (!currentContext.Tile.active() || TileUtil.IsBlockedByAntiCheat(currentContext)))
                     {
                         if (!panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !panel.IsDragging())
                         {

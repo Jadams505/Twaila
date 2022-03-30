@@ -28,19 +28,19 @@ namespace Twaila.Util
         {
             if (toggleUI.JustPressed)
             {
-                switch (TwailaConfig.Get().UIDisplay)
+                switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
                 {
                     case TwailaConfig.DisplayMode.On:
-                        TwailaConfig.Get().UIDisplay = TwailaConfig.DisplayMode.Off;
+                        TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.Off;
                         break;
                     case TwailaConfig.DisplayMode.Off:
-                        TwailaConfig.Get().UIDisplay = TwailaConfig.DisplayMode.Automatic;
+                        TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.Automatic;
                         break;
                     case TwailaConfig.DisplayMode.Automatic:
-                        TwailaConfig.Get().UIDisplay = TwailaConfig.DisplayMode.On;
+                        TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.On;
                         break;
                 }
-                Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplay);
+                Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
             }
             if (toggleDebugTextures.JustPressed)
             {
