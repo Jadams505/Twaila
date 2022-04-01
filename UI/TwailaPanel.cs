@@ -20,6 +20,7 @@ namespace Twaila.UI
         private TileContext Context { get; set; }
         private bool _dragging;
         private Point _lastMouse;
+        private int _tick = 0;
 
         private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height);
         private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
@@ -44,6 +45,7 @@ namespace Twaila.UI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            _tick++;
             UpdateFromConfig();
             UpdateSize();
             Drag();
@@ -266,14 +268,62 @@ namespace Twaila.UI
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
-            if (currentContext.Tile.active() && !IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
+            if(!currentContext.ContentChanged(Context))
             {
-                int itemId = ItemUtil.GetItemId(currentContext.Tile);
+                currentContext.SetTileType(Context.TileType);
+            }
+            else
+            {
+                _tick = 0;
+            }
+            if (_tick >= 120)
+            {
+                CycleType(currentContext);
+                //Main.NewText(currentContext.TileType);
+                _tick = 0;
+            }
+            
+            if (currentContext.TileType != TileType.Empty && !IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
+            {
+                int itemId = ItemUtil.GetItemId(currentContext);
                 Name.SetText(currentContext.GetName(itemId));
                 Mod.SetText(currentContext.GetMod());
                 Image.SetImage(spriteBatch, currentContext, itemId);
                 Context = currentContext;
             }
+        }
+
+        // tile -> wall -> liquid -> tile
+        private static void CycleType(TileContext context)
+        {
+            if(context.TileType == TileType.Empty || (!context.HasTile() && !context.HasLiquid() && !context.HasWall()))
+            {
+                return;
+            }
+
+            TileType type = context.TileType;
+            do
+            {
+                type = Cycle(type);
+                context.SetTileType(type);
+            } while (context.TileType != type);
+        }
+
+        private static TileType Cycle(TileType type)
+        {
+            if(type == TileType.Tile)
+            {
+                return TileType.Wall;
+            }
+            if(type == TileType.Wall)
+            {
+                return TileType.Liquid;
+            }
+            if(type == TileType.Liquid)
+            {
+                return TileType.Tile;
+            }
+            return TileType.Empty;
         }
 
         private static bool IsBlockedByAntiCheat(TileContext context)

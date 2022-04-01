@@ -3,32 +3,52 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Twaila.Context;
 using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
     internal class ItemUtil
     {
-        public static int GetItemId(Tile tile)
+        public static int GetItemId(TileContext context)
         {
-            int id = GetManualItemId(tile);
+            if (context.TileType == TileType.Liquid || context.TileType == TileType.Empty)
+            {
+                return -1;
+            }
+            int id = context.TileType == TileType.Tile ? GetManualItemId(context.Tile) : -1;
             if (id != -1)
             {
                 return id;
             }
-            ModTile mTile = TileLoader.GetTile(tile.type);
-            int style = CalculatedPlaceStyle(tile);
+            ModTile mTile = TileLoader.GetTile(context.Tile.type);
+            int style = CalculatedPlaceStyle(context.Tile);
+            ModWall mWall = WallLoader.GetWall(context.Tile.wall);
+            if (context.TileType == TileType.Wall && mWall != null)
+            {
+                return mWall.drop;
+            }
 
-            if (mTile == null)
+            if ((context.TileType == TileType.Tile && mTile == null) || (context.TileType == TileType.Wall && mWall == null))
             {
                 Item item = new Item();
                 for (int i = 0; i < ItemID.Count; ++i)
                 {
                     item.SetDefaults(i);
-                    if (item.createTile == tile.type || DoorHack(item, tile))
+                    if(context.TileType == TileType.Tile)
                     {
-                        id = item.type;
-                        if (style == -1 || item.placeStyle == style)
+                        if (item.createTile == context.Tile.type || DoorHack(item, context.Tile))
+                        {
+                            id = item.type;
+                            if (style == -1 || item.placeStyle == style)
+                            {
+                                return i;
+                            }
+                        }
+                    }
+                    else if(context.TileType == TileType.Wall)
+                    {
+                        if(item.createWall == context.Tile.wall)
                         {
                             return i;
                         }
@@ -36,13 +56,13 @@ namespace Twaila.Util
                 }
                 return id;
             }
-            bool multiTile = TileObjectData.GetTileData(tile) != null;
+            bool multiTile = TileObjectData.GetTileData(context.Tile) != null;
             if (mTile.drop == 0 && multiTile)
             {
                 for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i)
                 {
                     ModItem mItem = ItemLoader.GetItem(i);
-                    if (mItem != null && (mItem.item.createTile == tile.type || DoorHack(mItem.item, tile)))
+                    if (mItem != null && (mItem.item.createTile == context.Tile.type || DoorHack(mItem.item, context.Tile)))
                     {
                         id = mItem.item.type;
                         if (style == -1 || mItem.item.placeStyle == style)

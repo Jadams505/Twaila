@@ -116,13 +116,13 @@ namespace Twaila.UI
             }
             if (TwailaConfig.Get().UseItemTextures)
             {
-                TwailaTexture item = context.GetItemImage(spriteBatch, itemId);
-                image = item.Texture != null ? item : context.GetTileImage(spriteBatch);
+                TwailaTexture item = context.GetImage(spriteBatch, itemId);
+                image = item?.Texture != null ? item : context.GetImage(spriteBatch);
             }
             else
             {
-                TwailaTexture tile = context.GetTileImage(spriteBatch);
-                image = tile.Texture != null ? tile : context.GetItemImage(spriteBatch, itemId);
+                TwailaTexture tile = context.GetImage(spriteBatch);
+                image = tile?.Texture != null ? tile : context.GetImage(spriteBatch, itemId);
             }
             if(image?.Texture == null)
             {

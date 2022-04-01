@@ -18,7 +18,7 @@ namespace Twaila.Context
             TreeDirt = GetTreeDirt();
         }
 
-        public override bool ContextChanged(TileContext other)
+        public override bool ContentChanged(TileContext other)
         {
             if(other is TreeContext otherTreeContext)
             {
@@ -34,7 +34,7 @@ namespace Twaila.Context
             return true;
         }
 
-        public override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
             float scale = 0.5f;
             if (Tile.type == TileID.Trees)
@@ -56,15 +56,16 @@ namespace Twaila.Context
             return null;
         }
 
-        public override TwailaTexture GetItemImage(SpriteBatch spriteBatch, int itemId)
+        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
             return GetTileImage(spriteBatch);
         }
 
-        public override string GetName(int itemId)
+        protected override string GetTileName(int itemId)
         {
-            return NameUtil.GetNameForTree(this) ?? base.GetName(itemId);
+            return NameUtil.GetNameForTree(this) ?? base.GetTileName(itemId);
         }
+
         private int GetTreeDirt()
         {
             if (Tile.type != TileID.Trees)

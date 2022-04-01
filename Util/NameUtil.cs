@@ -320,14 +320,26 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetModName(Tile tile)
+        public static string GetModName(TileContext context)
         {
-            ModTile mTile = TileLoader.GetTile(tile.type);
-            if(mTile == null)
+            switch (context.TileType)
             {
-                return "Terraria";
+                case TileType.Tile:
+                    ModTile mTile = TileLoader.GetTile(context.Tile.type);
+                    if (mTile != null)
+                    {
+                        return mTile.mod.DisplayName;
+                    }
+                    break;
+                case TileType.Wall:
+                    ModWall mWall = WallLoader.GetWall(context.Tile.wall);
+                    if(mWall != null)
+                    {
+                        return mWall.mod.DisplayName;
+                    }
+                    break;
             }
-            return mTile.mod.DisplayName;
+            return "Terraria";
         }
     }
 }

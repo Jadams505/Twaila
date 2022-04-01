@@ -17,7 +17,7 @@ namespace Twaila.Context
            CactusSand = GetCactusSand();
         }
 
-        public override bool ContextChanged(TileContext other)
+        public override bool ContentChanged(TileContext other)
         {
             if (other is CactusContext otherCactusContext)
             {
@@ -29,7 +29,7 @@ namespace Twaila.Context
             return true;
         }
 
-        public override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
             if (Tile.type == TileID.Cactus)
             {
@@ -42,14 +42,14 @@ namespace Twaila.Context
             return null;
         }
 
-        public override TwailaTexture GetItemImage(SpriteBatch spriteBatch, int itemId)
+        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
             return GetTileImage(spriteBatch);
         }
 
-        public override string GetName(int itemId)
+        protected override string GetTileName(int itemId)
         {
-            return NameUtil.GetNameForCactus(this) ?? base.GetName(itemId);
+            return NameUtil.GetNameForCactus(this) ?? base.GetTileName(itemId);
         }
 
         private int GetCactusSand()

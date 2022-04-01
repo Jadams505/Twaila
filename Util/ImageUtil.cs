@@ -44,6 +44,25 @@ namespace Twaila.Util
             return null;
         }
 
+        public static Texture2D GetWallImageFromTile(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.wall > 0)
+            {
+                int size = 32;
+                int startX = 324, startY = 108;
+                Texture2D texture = GetWallTexture(tile);
+
+                if (texture != null)
+                {
+                    TextureBuilder builder = new TextureBuilder();
+                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
+                    builder.AddComponent(copyRectangle, texture, new Point(0, 0));
+                    return builder.Build(spriteBatch.GraphicsDevice);
+                }
+            }
+            return null;
+        }
+
         public static Texture2D GetImageFromItemData(Tile tile, int itemId)
         {
             if (itemId != -1)
@@ -277,6 +296,12 @@ namespace Twaila.Util
         {
             Main.instance.LoadTiles(tile.type);
             return Main.tileTexture[tile.type];
+        }
+
+        private static Texture2D GetWallTexture(Tile tile)
+        {
+            Main.instance.LoadWall(tile.wall);
+            return Main.wallTexture[tile.wall];
         }
 
         private static Texture2D GetItemTexture(Tile tile, int itemId)
