@@ -17,7 +17,7 @@ namespace Twaila.UI
         private TwailaText Name { get; set; } 
         private TwailaText Mod { get; set; }
         private UITwailaImage Image { get; set; }
-        private TileContext Context { get; set; }
+        internal TileContext Context { get; set; }
         private bool _dragging;
         private Point _lastMouse;
         private int _tick = 0;
@@ -36,7 +36,6 @@ namespace Twaila.UI
             Height.Set(0, 0);
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
-
             Append(Name);
             Append(Mod);
             Append(Image);
@@ -44,6 +43,7 @@ namespace Twaila.UI
 
         public override void Update(GameTime gameTime)
         {
+
             base.Update(gameTime);
             _tick++;
             UpdateFromConfig();
@@ -54,19 +54,40 @@ namespace Twaila.UI
 
         private void UpdateFromConfig()
         {
-            BackgroundColor = TwailaConfig.Get().PanelColor.Color;
-            Image.drawMode = TwailaConfig.Get().ContentSetting;
-            Mod.drawMode = TwailaConfig.Get().ContentSetting;
-            Name.drawMode = TwailaConfig.Get().ContentSetting;
-            Mod.Color = TwailaConfig.Get().TextColor.Color;
-            Name.Color = TwailaConfig.Get().TextColor.Color;
-            Mod.TextShadow = TwailaConfig.Get().TextShadow;
-            Name.TextShadow = TwailaConfig.Get().TextShadow;
-            Mod.OverrideTextColor = TwailaConfig.Get().OverrideColor;
-            Name.OverrideTextColor = TwailaConfig.Get().OverrideColor;
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowImage, Image);
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowMod, Mod);
-            SetElementState(TwailaConfig.Get().DisplayContent.ShowName, Name);
+            TwailaConfig config = TwailaConfig.Get();
+            
+            Image.drawMode = config.ContentSetting;
+            Mod.drawMode = config.ContentSetting;
+            Name.drawMode = config.ContentSetting;
+
+            Mod.OverrideTextColor = config.OverrideColor;
+            Name.OverrideTextColor = config.OverrideColor;
+
+            BackgroundColor = config.PanelColor.Color;
+            BorderColor = Color.Black;
+            Image.opacity = 1;
+            Mod.opacity = 1;
+            Name.opacity = 1;
+            if (IsMouseHovering && !IsDragging())
+            {
+                BackgroundColor *= config.HoverOpacity;
+                BorderColor *= config.HoverOpacity;
+                Image.opacity = config.HoverOpacity;
+                Mod.opacity = config.HoverOpacity;
+                Name.opacity = config.HoverOpacity;
+                Mod.OverrideTextColor = true;
+                Name.OverrideTextColor = true;
+            }
+
+            Mod.Color = config.TextColor.Color;
+            Name.Color = config.TextColor.Color;
+
+            Mod.TextShadow = config.TextShadow;
+            Name.TextShadow = config.TextShadow;
+
+            SetElementState(config.DisplayContent.ShowImage, Image);
+            SetElementState(config.DisplayContent.ShowMod, Mod);
+            SetElementState(config.DisplayContent.ShowName, Name);
         }
 
         private void SetElementState(bool shouldShow, UIElement element)
@@ -368,7 +389,7 @@ namespace Twaila.UI
         }
 
         public override void MouseDown(UIMouseEvent evt)
-        {           
+        {   
             _lastMouse = new Point(Main.mouseX, Main.mouseY);
             if (!TwailaConfig.Get().LockPosition)
             {
@@ -400,6 +421,11 @@ namespace Twaila.UI
                 _lastMouse.X = Main.mouseX;
                 _lastMouse.Y = Main.mouseY;
             }
+        }
+
+        public bool ContainsPoint(int x, int y)
+        {
+            return GetDimensions().ToRectangle().Intersects(new Rectangle(x, y, 0, 0));
         }
     }
 }

@@ -92,13 +92,8 @@ namespace Twaila.UI
                 }
                 TextSnippet[] remainingSnippets = new TextSnippet[index + 1];
                 snippets.CopyTo(0, remainingSnippets, 0, index + 1);
-                
-                ChatManager.ConvertNormalSnippets(remainingSnippets);
-                if (TextShadow)
-                {
-                    ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, remainingSnippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black, 0, Vector2.Zero, new Vector2(Scale, Scale));
-                }
-                ChatManager.DrawColorCodedString(spriteBatch, Font, remainingSnippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, new Vector2(Scale, Scale), out int unimplemented, -1, OverrideTextColor);
+
+                DrawText(spriteBatch, remainingSnippets, new Vector2(Scale, Scale));
             }
         }
 
@@ -142,26 +137,24 @@ namespace Twaila.UI
                     snippet.Scale = scale;
                 }
             }
-            
-            ChatManager.ConvertNormalSnippets(snippets);
-            if (TextShadow)
-            {
-                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black, 0, Vector2.Zero, new Vector2(scale, scale));
-            }
-            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, new Vector2(scale, scale), out int unimplemented, -1, OverrideTextColor);
+
+            DrawText(spriteBatch, snippets, new Vector2(scale, scale));
         }
 
         protected override void DrawOverflow(SpriteBatch spriteBatch)
         {
             TextSnippet[] snippets = ChatManager.ParseMessage(Text, Color).ToArray();
             Vector2 scale = new Vector2(Scale, Scale);
+            DrawText(spriteBatch, snippets, scale);
+        }
+        private void DrawText(SpriteBatch spriteBatch, TextSnippet[] snippets, Vector2 scale)
+        {
             ChatManager.ConvertNormalSnippets(snippets);
             if (TextShadow)
             {
-                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black, 0, Vector2.Zero, scale);
+                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black * opacity, 0, Vector2.Zero, scale);
             }
-            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color, 0, Vector2.Zero, scale, out int unimplemented, -1, OverrideTextColor);
+            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color * opacity, 0, Vector2.Zero, scale, out int unimplemented, -1, OverrideTextColor);
         }
-
     }
 }

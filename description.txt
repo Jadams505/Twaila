@@ -8,19 +8,36 @@ This mod is currently in development and is not complete
 [Config Options]
 - Visit the Forum page for more details on config options
 
-- [c/FFFF00:UseItemTextures]: Priotizes displaying the texture of the item that places the tile as opposed to the texture of the tile itself (Only works for tiles that have items that place them)
+- [c/FFFF00:AntiCheat]: Only updates the UI if the tile has been reveled on the map
+- [c/FFFF00:Content Toggles]: Toggles the various UI features on and off 
 - [c/FFFF00:UseDefaultPosition]: Centers the panel on the top of the screen
-- [c/FFFF00:AnchorX, AnchorY]: Represent what part of the panel's positioning is constant when the content changes its size
+- [c/FFFF00:LockPosition]: Stops the mouse from being able to move the panel
+- [c/FFFF00:AnchorX, AnchorY]: Represents what part of the panel's positioning is constant when the content changes its size
 - [c/FFFF00:AnchorPosX, AnchorPosY]: The exact pixel location of the anchor point
 - [c/FFFF00:MaxWidth, MaxHeight]: The maximum percentage of the screen the panel can be
-- [c/FFFF00:ReservedImageWidth]: The percentage of the panel that is reserved for the image if the text is too long
 - [c/FFFF00:PanelPadding]: How much space there is (in pixels) between the content and the edge of the panel
 - [c/FFFF00:ContentSetting]: Settings that describe what to do with the content when it is too big for the panel
+- [c/FFFF00:HoverOpacity]: How visible the panel should be when it is hovered over
+- [c/FFFF00:ShowBackground]: Displays the background panel
+- [c/FFFF00:UIDisplay]: Options for when the panel should be visible or hidden
+- [c/FFFF00:HideUIForAir]: Hides the UI when hovering over tiles that would otherwise not be upated by the UI
+- [c/FFFF00:Panel Color]: Changes the color of the background panel
+- [c/FFFF00:TextShadow]: Displays a black border around the text
+- [c/FFFF00:OverrideColor]: Overrides any pre-existing colors on the text
+- [c/FFFF00:Text Color]: Changes the color of the text
+- [c/FFFF00:UseItemTextures]: Priotizes displaying the texture of the item that places the tile as opposed to the texture of the tile itself (Only works for tiles that have items that place them)
+- [c/FFFF00:ReservedImageWidth]: The percentage of the panel that is reserved for the image if the text is too long
 
 [Controls]
-- Toggle UI (Mouse3 by default): Switches the visibility of the UI Panel
+- Cycle UI Display Mode (Mouse3 by default): Cycles through the UIDisplay options
 
 [Changelog]
+v0.3.1.0 (3/30/2022)
+- Added more config options including AntiCheat, TextShadow, ContentToggles, and Colors
+- Fixed an issue where item textures would not default to tile textures if no item texture was found
+- The panel's text can how handle text tags
+- Toggle UI was changed to Cycle UI Display Mode to allow for the new Automatic display option
+- Plants now properly display on the UI when in their blooming state
 v0.3.0.0 (3/20/2022)
 - Added configuration settings for positioning and anchoring
 - The panel can now be moved with the mouse

@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -30,10 +31,28 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
-            if (Enabled)
+            switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
             {
-                _interface?.Update(time);
+                case TwailaConfig.DisplayMode.On:
+                    Enabled = true;
+                    break;
+                case TwailaConfig.DisplayMode.Off:
+                    Enabled = false;
+                    break;
+                case TwailaConfig.DisplayMode.Automatic:
+                    TileContext currentContext = GetContext(GetMousePos());
+                    if(TwailaConfig.Get().UIDisplaySettings.HideUIForAir && (!currentContext.Tile.active() || TileUtil.IsBlockedByAntiCheat(currentContext)))
+                    {
+                        if (!panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !panel.IsDragging())
+                        {
+                            Enabled = false;
+                            break;
+                        }
+                    }
+                    Enabled = true;
+                    break;
             }
+            _interface?.Update(time);
         }
 
         public static Point GetMousePos()
@@ -100,19 +119,6 @@ namespace Twaila.UI
             return true;
         }
 
-        public static void ToggleVisibility(bool? visible)
-        {
-            Enabled = visible == null ? !Enabled : visible.Value;
-            if (Enabled)
-            {
-                _interface?.SetState(_state);
-            }
-            else
-            {
-                _interface?.SetState(null);
-            } 
-        }
-
         public static void Load()
         {
             if (!Main.dedServ)
@@ -130,9 +136,9 @@ namespace Twaila.UI
 
         public static void Draw(GameTime time)
         {
-            if(_interface?.CurrentState != null)
+            if (Enabled)
             {
-                _interface.Draw(Main.spriteBatch, time);
+                _interface?.Draw(Main.spriteBatch, time);
             }
         }
     }

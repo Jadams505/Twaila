@@ -78,8 +78,20 @@ namespace Twaila
         [DrawTicks]
         public DrawMode ContentSetting = DrawMode.Shrink;
 
+        [DefaultValue(0.25f)]
+        public float HoverOpacity;
+
+        public enum DisplayMode
+        {
+            On, Off, Automatic
+        }
+
         [DefaultValue(true)]
         public bool ShowBackground;
+
+        [SeparatePage]
+        [Label("UI Display")]
+        public DisplaySettings UIDisplaySettings = new DisplaySettings();
 
         [SeparatePage]
         [Label("Panel Color")]
@@ -170,6 +182,38 @@ namespace Twaila
             public override int GetHashCode()
             {
                 return Color.GetHashCode();
+            }
+        }
+
+        public class DisplaySettings
+        {
+            [DefaultValue(DisplayMode.Automatic)]
+            [DrawTicks]
+            public DisplayMode UIDisplay = DisplayMode.Automatic;
+
+            [Header("Automatic Options")]
+            [DefaultValue(false)]
+            [Tooltip("ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile")]
+            public bool HideUIForAir;
+
+            public DisplaySettings()
+            {
+                UIDisplay = DisplayMode.Automatic;
+                HideUIForAir = false;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is DisplaySettings other)
+                {
+                    return UIDisplay == other.UIDisplay && HideUIForAir == other.HideUIForAir;
+                }
+                return base.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return new { UIDisplay, HideUIForAir }.GetHashCode();
             }
         }
 
