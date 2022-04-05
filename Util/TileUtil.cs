@@ -10,7 +10,7 @@ namespace Twaila.Util
     {
         public static bool IsBlockedByAntiCheat(TileContext context)
         {
-            if (TwailaConfig.Get().AntiCheat)
+            if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)
             {
                 Player player = Main.player[Main.myPlayer];
                 if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.type])
@@ -46,6 +46,39 @@ namespace Twaila.Util
                 }
             }
             return dangerTile || TileLoader.Dangersense(pos.X, pos.Y, tile.type, Main.player[Main.myPlayer]);
+        }
+
+        // tile -> wall -> liquid -> tile
+        public static void CycleType(TileContext context)
+        {
+            if (context.TileType == TileType.Empty || (!context.HasTile() && !context.HasLiquid() && !context.HasWall()))
+            {
+                return;
+            }
+
+            TileType type = context.TileType;
+            do
+            {
+                type = Cycle(type);
+                context.SetTileType(type);
+            } while (context.TileType != type);
+        }
+
+        private static TileType Cycle(TileType type)
+        {
+            if (type == TileType.Tile)
+            {
+                return TileType.Wall;
+            }
+            if (type == TileType.Wall)
+            {
+                return TileType.Liquid;
+            }
+            if (type == TileType.Liquid)
+            {
+                return TileType.Tile;
+            }
+            return TileType.Empty;
         }
 
     }
