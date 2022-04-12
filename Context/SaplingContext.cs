@@ -35,7 +35,7 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            Texture2D texture = ImageUtil.GetImageFromItemData(Tile, itemId) ?? GetTileImage(spriteBatch).Texture;
+            Texture2D texture = ImageUtil.GetItemTexture(itemId) ?? GetTileImage(spriteBatch).Texture;
             return new TwailaTexture(texture);
         }
 

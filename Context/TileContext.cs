@@ -188,7 +188,7 @@ namespace Twaila.Context
 
         public virtual bool StyleChanged(TileContext other)
         {
-            TileObjectData oldData = ExtraObjectData.GetData(other.Tile.type), newData = ExtraObjectData.GetData(Tile.type);
+            TileObjectData oldData = ExtraObjectData.GetData(other.Tile), newData = ExtraObjectData.GetData(Tile);
             if (newData == null)
             {
                 oldData = TileObjectData.GetTileData(other.Tile);
@@ -214,12 +214,12 @@ namespace Twaila.Context
 
         protected virtual string GetWallName(int itemId)
         {
-            return NameUtil.GetNameFromItem(itemId) ?? "Default Wall";
+            return NameUtil.GetNameForManualWalls(Tile) ?? NameUtil.GetNameFromItem(itemId) ?? "Default Wall";
         }
 
         protected virtual string GetLiquidName()
         {
-            return "Default Liquid";
+            return NameUtil.GetNameForLiquids(Tile) ?? "Default Liquid";
         }
 
         protected virtual TwailaTexture GetTileImage(SpriteBatch spriteBatch)
@@ -236,22 +236,22 @@ namespace Twaila.Context
 
         protected virtual TwailaTexture GetLiquidImage(SpriteBatch spriteBatch)
         {
-            return null;
+            return new TwailaTexture(ImageUtil.GetLiquidImageFromTile(spriteBatch, Tile));
         }
 
         protected virtual TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return new TwailaTexture(ImageUtil.GetImageFromItemData(Tile, itemId));
+            return new TwailaTexture(ImageUtil.GetItemTexture(itemId));
         }
 
         protected virtual TwailaTexture GetWallItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return GetWallImage(spriteBatch);
+            return new TwailaTexture(ImageUtil.GetItemTexture(itemId));
         }
 
         protected virtual TwailaTexture GetLiquidItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return GetLiquidImage(spriteBatch);
+            return new TwailaTexture(ImageUtil.GetItemTexture(itemId));
         }
 
         protected virtual string GetTileMod()
