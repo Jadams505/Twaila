@@ -153,32 +153,32 @@ namespace Twaila.Context
 
         public bool HasWall()
         {
-            return Tile.wall > 0;
+            return Tile.WallType > 0;
         }
 
         public bool HasTile()
         {
-            return Tile.active() && Tile.type >= 0;
+            return Tile.HasTile && Tile.TileType >= 0;
         }
 
         public bool HasLiquid()
         {
-            return Tile.liquid > 0;
+            return Tile.LiquidAmount > 0;
         }
 
         public virtual bool ContentChanged(TileContext other)
         {
-            if (other is TileContext otherTileContext)
+            if (other.GetType() == GetType())
             {
-                if (TileType == TileType.Tile && Tile.type == otherTileContext.Tile.type)
+                if (TileType == TileType.Tile && Tile.TileType == other.Tile.TileType)
                 {
                     return StyleChanged(other);
                 }
-                if (TileType == TileType.Wall && Tile.wall == otherTileContext.Tile.wall)
+                if (TileType == TileType.Wall && Tile.WallType == other.Tile.WallType)
                 {
                     return false;
                 }
-                if (TileType == TileType.Liquid && Tile.liquidType() == otherTileContext.Tile.liquidType())
+                if (TileType == TileType.Liquid && Tile.LiquidType == other.Tile.LiquidType)
                 {
                     return false;
                 }
@@ -198,10 +198,10 @@ namespace Twaila.Context
             {
                 return false;
             }
-            int oldRow = other.Tile.frameX / oldData.CoordinateFullWidth;
-            int oldCol = other.Tile.frameY / oldData.CoordinateFullHeight;
-            int newRow = Tile.frameX / newData.CoordinateFullWidth;
-            int newCol = Tile.frameY / newData.CoordinateFullHeight;
+            int oldRow = other.Tile.TileFrameX / oldData.CoordinateFullWidth;
+            int oldCol = other.Tile.TileFrameY / oldData.CoordinateFullHeight;
+            int newRow = Tile.TileFrameX / newData.CoordinateFullWidth;
+            int newCol = Tile.TileFrameY / newData.CoordinateFullHeight;
 
             return oldRow != newRow || oldCol != newCol;
         }

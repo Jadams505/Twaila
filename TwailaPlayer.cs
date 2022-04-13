@@ -1,8 +1,6 @@
 ﻿using Terraria.GameInput;
 using Terraria.ModLoader;
 using Twaila.Util;
-using Twaila.UI;
-using Terraria;
 
 namespace Twaila
 {
@@ -15,7 +13,7 @@ namespace Twaila
 
         public override void PreSavePlayer()
         {
-            TwailaConfig.Get()?.Save();
+            TwailaConfig.Get().Save();
         }
     }
 }

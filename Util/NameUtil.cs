@@ -32,7 +32,7 @@ namespace Twaila.Util
         {
             string mapName = Lang.GetMapObjectName(Main.Map[context.Pos.X, context.Pos.Y].Type);
             int style = TileObjectData.GetTileStyle(context.Tile);
-            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(context.Tile.type, style == -1 ? 0 : style));
+            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(context.Tile.TileType, style == -1 ? 0 : style));
             if (mapName != null && !mapName.Equals(""))
             {
                 return mapName;
@@ -46,18 +46,18 @@ namespace Twaila.Util
 
         public static string GetNameForManualTiles(Tile tile)
         {
-            switch (tile.type)
+            switch (tile.TileType)
             {
                 case TileID.Grass:
                     return GetNameFromItem(ItemID.GrassSeeds).Replace("Seeds", "Block");
                 case TileID.Plants:
-                    if (tile.frameX == 144)
+                    if (tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.Mushroom);
                     return "Plant";
                 case TileID.CorruptGrass:
                     return GetNameFromItem(ItemID.CorruptSeeds).Replace("Seeds", "Grass Block");
                 case TileID.CorruptPlants:
-                    if (tile.frameX == 144)
+                    if (tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.VileMushroom);
                     return "Corrupt Plant";
                 case TileID.Sunflower:
@@ -66,10 +66,10 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.Vine);
                 case TileID.JungleGrass:
                     return GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
-                case TileID.CrimtaneThorns:
+                case TileID.CrimsonThorns:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.CorruptThorns, 0));
                 case TileID.JunglePlants:
-                    if(tile.frameX == 144)
+                    if(tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.JungleSpores);
                     return "Jungle Plant";
                 case TileID.JungleVines:
@@ -83,7 +83,7 @@ namespace Twaila.Util
                 case TileID.HallowedGrass:
                     return GetNameFromItem(ItemID.HallowedSeeds).Replace("Seeds", "Grass Block");
                 case TileID.HallowedPlants:
-                    if (tile.frameX == 144)
+                    if (tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.Mushroom);
                     return "Hallowed Plant";
                 case TileID.HallowedPlants2:
@@ -111,43 +111,43 @@ namespace Twaila.Util
                 case TileID.LavaMoss:
                     return "Lava Moss";
                 case TileID.LongMoss:
-                    if (tile.frameX < 22) return "Green Moss";
-                    else if (tile.frameX < 44) return "Brown Moss";
-                    else if (tile.frameX < 66) return "Red Moss";
-                    else if (tile.frameX < 88) return "Blue Moss";
-                    else if (tile.frameX < 110) return "Purple Moss";
-                    else if (tile.frameX < 132) return "Lava Moss";
+                    if (tile.TileFrameX < 22) return "Green Moss";
+                    else if (tile.TileFrameX < 44) return "Brown Moss";
+                    else if (tile.TileFrameX < 66) return "Red Moss";
+                    else if (tile.TileFrameX < 88) return "Blue Moss";
+                    else if (tile.TileFrameX < 110) return "Purple Moss";
+                    else if (tile.TileFrameX < 132) return "Lava Moss";
                     break;
                 case TileID.SmallPiles:
-                    if(tile.frameY == 18)
+                    if(tile.TileFrameY == 18)
                     {
-                        if(tile.frameX >= 576 && tile.frameX < 612) return "Small " + Lang.GetItemNameValue(ItemID.CopperCoin) + " Stash";
-                        if(tile.frameX >= 612 && tile.frameX < 648) return "Small " + Lang.GetItemNameValue(ItemID.SilverCoin) + " Stash";
-                        if (tile.frameX >= 648 && tile.frameX < 684) return "Small " + Lang.GetItemNameValue(ItemID.GoldCoin) + " Stash";
-                        if (tile.frameX >= 684 && tile.frameX < 720) return Lang.GetItemNameValue(ItemID.Amethyst) + " Stash";
-                        if (tile.frameX >= 720 && tile.frameX < 756) return Lang.GetItemNameValue(ItemID.Topaz) + " Stash";
-                        if (tile.frameX >= 756 && tile.frameX < 792) return Lang.GetItemNameValue(ItemID.Sapphire) + " Stash";
-                        if (tile.frameX >= 792 && tile.frameX < 828) return Lang.GetItemNameValue(ItemID.Emerald) + " Stash";
-                        if (tile.frameX >= 828 && tile.frameX < 864) return Lang.GetItemNameValue(ItemID.Ruby) + " Stash";
-                        if (tile.frameX >= 864 && tile.frameX < 900) return Lang.GetItemNameValue(ItemID.Diamond) + " Stash";
+                        if(tile.TileFrameX >= 576 && tile.TileFrameX < 612) return "Small " + Lang.GetItemNameValue(ItemID.CopperCoin) + " Stash";
+                        if(tile.TileFrameX >= 612 && tile.TileFrameX < 648) return "Small " + Lang.GetItemNameValue(ItemID.SilverCoin) + " Stash";
+                        if (tile.TileFrameX >= 648 && tile.TileFrameX < 684) return "Small " + Lang.GetItemNameValue(ItemID.GoldCoin) + " Stash";
+                        if (tile.TileFrameX >= 684 && tile.TileFrameX < 720) return Lang.GetItemNameValue(ItemID.Amethyst) + " Stash";
+                        if (tile.TileFrameX >= 720 && tile.TileFrameX < 756) return Lang.GetItemNameValue(ItemID.Topaz) + " Stash";
+                        if (tile.TileFrameX >= 756 && tile.TileFrameX < 792) return Lang.GetItemNameValue(ItemID.Sapphire) + " Stash";
+                        if (tile.TileFrameX >= 792 && tile.TileFrameX < 828) return Lang.GetItemNameValue(ItemID.Emerald) + " Stash";
+                        if (tile.TileFrameX >= 828 && tile.TileFrameX < 864) return Lang.GetItemNameValue(ItemID.Ruby) + " Stash";
+                        if (tile.TileFrameX >= 864 && tile.TileFrameX < 900) return Lang.GetItemNameValue(ItemID.Diamond) + " Stash";
                     }
                     return "Small Debris";
                 case TileID.LargePiles:
-                    if (tile.frameX >= 868 && tile.frameX < 972) return "Large " + Lang.GetItemNameValue(ItemID.CopperCoin) + " Stash";
-                    if (tile.frameX >= 972 && tile.frameX < 1080) return "Large " + Lang.GetItemNameValue(ItemID.SilverCoin) + " Stash";
-                    if (tile.frameX >= 1080 && tile.frameX < 1188) return "Large " + Lang.GetItemNameValue(ItemID.GoldCoin) + " Stash";
+                    if (tile.TileFrameX >= 868 && tile.TileFrameX < 972) return "Large " + Lang.GetItemNameValue(ItemID.CopperCoin) + " Stash";
+                    if (tile.TileFrameX >= 972 && tile.TileFrameX < 1080) return "Large " + Lang.GetItemNameValue(ItemID.SilverCoin) + " Stash";
+                    if (tile.TileFrameX >= 1080 && tile.TileFrameX < 1188) return "Large " + Lang.GetItemNameValue(ItemID.GoldCoin) + " Stash";
                     return "Large Debris";
                 case TileID.LargePiles2:
-                    if (tile.frameY >= 0 && tile.frameY < 36 && tile.frameX >= 918 && tile.frameX < 972) return Lang.GetItemNameValue(ItemID.EnchantedSword) + " Shrine";
+                    if (tile.TileFrameY >= 0 && tile.TileFrameY < 36 && tile.TileFrameX >= 918 && tile.TileFrameX < 972) return Lang.GetItemNameValue(ItemID.EnchantedSword) + " Shrine";
                     return "Large Debris";
                 case TileID.LivingWood:
                     return GetNameFromItem(ItemID.LivingWoodWand).Replace("Wand", "Block");
                 case TileID.LeafBlock:
                     return GetNameFromItem(ItemID.LeafWand).Replace("Wand", "Block");
-                case TileID.FleshGrass:
+                case TileID.CrimsonGrass:
                     return GetNameFromItem(ItemID.CrimsonSeeds).Replace("Seeds", "Grass Block");
-                case TileID.FleshWeeds:
-                    if (tile.frameX == 270)
+                case TileID.CrimsonPlants:
+                    if (tile.TileFrameX == 270)
                         return GetNameFromItem(ItemID.ViciousMushroom);
                     return "Crimson Plant";
                 case TileID.CrimsonVines:
@@ -180,7 +180,7 @@ namespace Twaila.Util
         {
             string wall = "Wall";
             string block = "Block";
-            switch (tile.wall)
+            switch (tile.WallType)
             {
                 case WallID.EbonstoneUnsafe:
                     return GetNameFromItem(ItemID.EbonstoneBlock).Replace(block, wall);
@@ -336,17 +336,17 @@ namespace Twaila.Util
 
         public static string GetNameForLiquids(Tile tile)
         {
-            if(tile.liquid > 0)
+            if(tile.LiquidType > 0)
             {
-                if(tile.liquidType() == Tile.Liquid_Lava)
+                if(tile.LiquidType == LiquidID.Lava)
                 {
                     return "Lava";
                 }
-                if(tile.liquidType() == Tile.Liquid_Honey)
+                if(tile.LiquidType == LiquidID.Honey)
                 {
                     return "Honey";
                 }
-                if(tile.liquidType() == Tile.Liquid_Water)
+                if(tile.LiquidType == LiquidID.Water)
                 {
                     const string water = "Water";
                     switch (Main.waterStyle)
@@ -387,7 +387,7 @@ namespace Twaila.Util
         {
             string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
             string toAppend = "";
-            if (context.Tile.type == TileID.Trees)
+            if (context.Tile.TileType == TileID.Trees)
             {
                 toAppend = " " + tree;
                 if (context.TreeDirt == TileID.Grass)
@@ -407,7 +407,7 @@ namespace Twaila.Util
         {
             string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
             string toAppend = "";
-            if (context.Tile.type == TileID.PalmTree)
+            if (context.Tile.TileType == TileID.PalmTree)
             {
                 toAppend = " " + palmTree;
                 if (context.PalmTreeSand == TileID.Sand)
@@ -429,7 +429,7 @@ namespace Twaila.Util
             string sapling = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Saplings, 0));
             string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
             string toAppend = "";
-            if (TileLoader.IsSapling(context.Tile.type))
+            if (TileID.Sets.TreeSapling[context.Tile.TileType])
             {
                 if (TileLoader.CanGrowModPalmTree(context.SaplingDirt) || context.SaplingDirt == TileID.Crimsand || 
                     context.SaplingDirt == TileID.Ebonsand || context.SaplingDirt == TileID.Pearlsand)
@@ -460,7 +460,7 @@ namespace Twaila.Util
         public static string GetNameForCactus(CactusContext context)
         {
             string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
-            if (context.Tile.type == TileID.Cactus)
+            if (context.Tile.TileType == TileID.Cactus)
             {
                 if (context.CactusSand == -1)
                 {
@@ -471,7 +471,7 @@ namespace Twaila.Util
                     ModTile mTile = TileLoader.GetTile(context.CactusSand);
                     if (mTile != null)
                     {
-                        int dropId = mTile.drop;
+                        int dropId = mTile.ItemDrop;
                         ModItem mItem = ItemLoader.GetItem(dropId);
                         return mItem == null ? mTile.Name : mItem.DisplayName.GetDefault() + " " + cactus;
                     }
@@ -503,17 +503,17 @@ namespace Twaila.Util
 
         public static string GetNameForChest(Tile tile)
         {
-            if(tile.type == TileID.Containers)
+            if(tile.TileType == TileID.Containers)
             {
-                int style = tile.frameX / 36;
+                int style = tile.TileFrameX / 36;
                 if(style < Lang.chestType.Length)
                 {
                     return Lang.chestType[style].Value;
                 }                
             }
-            else if(tile.type == TileID.Containers2)
+            else if(tile.TileType == TileID.Containers2)
             {
-                int style = tile.frameX / 36;
+                int style = tile.TileFrameX / 36;
                 if (style < Lang.chestType2.Length)
                 {
                     return Lang.chestType2[style].Value;
@@ -527,17 +527,17 @@ namespace Twaila.Util
             switch (context.TileType)
             {
                 case TileType.Tile:
-                    ModTile mTile = TileLoader.GetTile(context.Tile.type);
+                    ModTile mTile = TileLoader.GetTile(context.Tile.TileType);
                     if (mTile != null)
                     {
-                        return mTile.mod.DisplayName;
+                        return mTile.Mod.DisplayName;
                     }
                     break;
                 case TileType.Wall:
-                    ModWall mWall = WallLoader.GetWall(context.Tile.wall);
+                    ModWall mWall = WallLoader.GetWall(context.Tile.WallType);
                     if(mWall != null)
                     {
-                        return mWall.mod.DisplayName;
+                        return mWall.Mod.DisplayName;
                     }
                     break;
             }

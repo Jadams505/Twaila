@@ -2,10 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Util;
@@ -28,10 +27,10 @@ namespace Twaila.UI
         public TwailaPanel()
         {
             Context = new TileContext();
-            Name = new TwailaText("Default Name", Main.fontCombatText[0], Color.White, 1f);
+            Name = new TwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
             Image = new UITwailaImage();
             Image.MarginRight = 10;
-            Mod = new TwailaText("Terraria", Main.fontItemStack, Color.White, 1f);
+            Mod = new TwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
             Width.Set(0, 0);
             Height.Set(0, 0);
             Top.Set(0, 0);
@@ -288,6 +287,11 @@ namespace Twaila.UI
         {
             _tick++;
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
+            if (currentContext.Tile.TileType != Context.Tile.TileType)
+            {
+                Main.NewText("Current: " + currentContext.Tile.TileType);
+                Main.NewText("Context: " + Context.Tile.TileType);
+            }
             if (!currentContext.ContentChanged(Context))
             {
                 currentContext.SetTileType(Context.TileType);
@@ -315,7 +319,7 @@ namespace Twaila.UI
                     return;
                 }
             }
-
+            
             if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
                 int itemId = ItemUtil.GetItemId(currentContext);

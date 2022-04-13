@@ -20,12 +20,12 @@ namespace Twaila.Util
             {
                 return id;
             }
-            ModTile mTile = TileLoader.GetTile(context.Tile.type);
+            ModTile mTile = TileLoader.GetTile(context.Tile.TileType);
             int style = CalculatedPlaceStyle(context.Tile);
-            ModWall mWall = WallLoader.GetWall(context.Tile.wall);
+            ModWall mWall = WallLoader.GetWall(context.Tile.WallType);
             if (context.TileType == TileType.Wall && mWall != null)
             {
-                return mWall.drop;
+                return mWall.ItemDrop;
             }
 
             if ((context.TileType == TileType.Tile && mTile == null) || (context.TileType == TileType.Wall && mWall == null))
@@ -36,7 +36,7 @@ namespace Twaila.Util
                     item.SetDefaults(i);
                     if(context.TileType == TileType.Tile)
                     {
-                        if (item.createTile == context.Tile.type || DoorHack(item, context.Tile))
+                        if (item.createTile == context.Tile.TileType || DoorHack(item, context.Tile))
                         {
                             id = item.type;
                             if (style == -1 || item.placeStyle == style)
@@ -47,7 +47,7 @@ namespace Twaila.Util
                     }
                     else if(context.TileType == TileType.Wall)
                     {
-                        if(item.createWall == context.Tile.wall)
+                        if(item.createWall == context.Tile.WallType)
                         {
                             return i;
                         }
@@ -56,22 +56,22 @@ namespace Twaila.Util
                 return id;
             }
             bool multiTile = TileObjectData.GetTileData(context.Tile) != null;
-            if (mTile.drop == 0 && multiTile)
+            if (mTile.ItemDrop == 0 && multiTile)
             {
                 for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i)
                 {
                     ModItem mItem = ItemLoader.GetItem(i);
-                    if (mItem != null && (mItem.item.createTile == context.Tile.type || DoorHack(mItem.item, context.Tile)))
+                    if (mItem != null && (mItem.Item.createTile == context.Tile.TileType || DoorHack(mItem.Item, context.Tile)))
                     {
-                        id = mItem.item.type;
-                        if (style == -1 || mItem.item.placeStyle == style)
+                        id = mItem.Item.type;
+                        if (style == -1 || mItem.Item.placeStyle == style)
                         {
                             return i;
                         }
                     }
                 }
             }
-            return mTile.drop == 0 ? id : mTile.drop;
+            return mTile.ItemDrop == 0 ? id : mTile.ItemDrop;
         }
 
         private static int CalculatedPlaceStyle(Tile tile)
@@ -87,7 +87,7 @@ namespace Twaila.Util
                 {
                     return doorStyle;
                 }               
-                if (tile.type == TileID.Chandeliers)
+                if (tile.TileType == TileID.Chandeliers)
                 {
                     int row = style % data.StyleWrapLimit;
                     int col = style / data.StyleWrapLimit / 2 * data.StyleWrapLimit;
@@ -103,15 +103,15 @@ namespace Twaila.Util
             TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
             if (TileLoader.IsClosedDoor(tile))
             {
-                int row = tile.frameY / data.CoordinateFullHeight;
-                int col = tile.frameX / (data.CoordinateFullWidth * 3);
+                int row = tile.TileFrameY / data.CoordinateFullHeight;
+                int col = tile.TileFrameX / (data.CoordinateFullWidth * 3);
 
                 return row + col * data.StyleWrapLimit;
             }
             else if(TileLoader.CloseDoorID(tile) > -1) // open door
             {
-                int row = tile.frameY / data.CoordinateFullHeight;
-                int col = tile.frameX / (data.CoordinateFullWidth * 2);
+                int row = tile.TileFrameY / data.CoordinateFullHeight;
+                int col = tile.TileFrameX / (data.CoordinateFullWidth * 2);
                 return row + col * 36;
             }
             return -1;
@@ -132,23 +132,23 @@ namespace Twaila.Util
             if(context.TileType == TileType.Tile)
             {
                 Tile tile = context.Tile;
-                switch (tile.type)
+                switch (tile.TileType)
                 {
                     case TileID.Plants:
-                        if (tile.frameX == 144) return ItemID.Mushroom;
+                        if (tile.TileFrameX == 144) return ItemID.Mushroom;
                         break;
                     case TileID.Heart:
                         return ItemID.LifeCrystal;
                     case TileID.Bottles:
-                        if (tile.frameX == 18) return ItemID.LesserHealingPotion;
-                        if (tile.frameX == 36) return ItemID.LesserManaPotion;
+                        if (tile.TileFrameX == 18) return ItemID.LesserHealingPotion;
+                        if (tile.TileFrameX == 36) return ItemID.LesserManaPotion;
                         break;
                     case TileID.Saplings:
                         return ItemID.Acorn;
                     case TileID.Sunflower:
                         return ItemID.Sunflower;
                     case TileID.JunglePlants:
-                        if (tile.frameX == 144) return ItemID.JungleSpores;
+                        if (tile.TileFrameX == 144) return ItemID.JungleSpores;
                         break;
                     case TileID.Sapphire:
                         return ItemID.Sapphire;
@@ -165,24 +165,24 @@ namespace Twaila.Util
                     case TileID.MushroomPlants:
                         return ItemID.GlowingMushroom;
                     case TileID.HallowedPlants:
-                        if (tile.frameX == 144) return ItemID.Mushroom;
+                        if (tile.TileFrameX == 144) return ItemID.Mushroom;
                         break;
                     case TileID.HolidayLights:
-                        if (tile.frameX == 0 || tile.frameX == 54)
+                        if (tile.TileFrameX == 0 || tile.TileFrameX == 54)
                         {
                             return ItemID.BlueLight;
                         }
-                        else if (tile.frameX == 18 || tile.frameX == 72)
+                        else if (tile.TileFrameX == 18 || tile.TileFrameX == 72)
                         {
                             return ItemID.RedLight;
                         }
-                        else if (tile.frameX == 36 || tile.frameX == 86)
+                        else if (tile.TileFrameX == 36 || tile.TileFrameX == 86)
                         {
                             return ItemID.GreenLight;
                         }
                         break;
-                    case TileID.FleshWeeds:
-                        if (tile.frameX == 270) return ItemID.ViciousMushroom;
+                    case TileID.CrimsonPlants:
+                        if (tile.TileFrameX == 270) return ItemID.ViciousMushroom;
                         break;
                     case TileID.Hive:
                         return ItemID.Hive;
@@ -205,18 +205,18 @@ namespace Twaila.Util
                     case TileID.TallGateOpen:
                         return ItemID.TallGate;
                     case TileID.Containers:
-                        if ((tile.frameX >= 72 && tile.frameX < 180) || (tile.frameX >= 144 && tile.frameX < 108) || (tile.frameX >= 828 && tile.frameX < 1008)) // locked chests
+                        if ((tile.TileFrameX >= 72 && tile.TileFrameX < 180) || (tile.TileFrameX >= 144 && tile.TileFrameX < 108) || (tile.TileFrameX >= 828 && tile.TileFrameX < 1008)) // locked chests
                         {
                             return -2;
                         }
                         break;
                     case TileID.DyePlants:
-                        if (tile.frameX >= 204 && tile.frameX < 238) return ItemID.PinkPricklyPear;
+                        if (tile.TileFrameX >= 204 && tile.TileFrameX < 238) return ItemID.PinkPricklyPear;
                         break;
                     case TileID.SillyBalloonTile:
-                        if (tile.frameX >= 0 && tile.frameX < 36) return ItemID.SillyBalloonTiedPurple;
-                        if (tile.frameX >= 36 && tile.frameX < 72) return ItemID.SillyBalloonTiedGreen;
-                        if (tile.frameX >= 72) return ItemID.SillyBalloonTiedPink;
+                        if (tile.TileFrameX >= 0 && tile.TileFrameX < 36) return ItemID.SillyBalloonTiedPurple;
+                        if (tile.TileFrameX >= 36 && tile.TileFrameX < 72) return ItemID.SillyBalloonTiedGreen;
+                        if (tile.TileFrameX >= 72) return ItemID.SillyBalloonTiedPink;
                         break;
                     case TileID.LifeFruit:
                         return ItemID.LifeFruit;
@@ -224,14 +224,14 @@ namespace Twaila.Util
             }
             else if(context.TileType == TileType.Liquid)
             {
-                switch (context.Tile.liquidType())
+                switch (context.Tile.LiquidType)
                 {
-                    case Tile.Liquid_Water:
+                    case LiquidID.Water:
                         return ItemID.WaterBucket;
-                    case Tile.Liquid_Honey:
-                        return ItemID.HoneyBucket;
-                    case Tile.Liquid_Lava:
+                    case LiquidID.Lava:
                         return ItemID.LavaBucket;
+                    case LiquidID.Honey:
+                        return ItemID.HoneyBucket;
                 }
             }
             return -1;
@@ -242,9 +242,9 @@ namespace Twaila.Util
             data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
             if(data != null)
             {
-                int row = tile.frameY / data.CoordinateFullHeight;
-                int col = tile.frameX / data.CoordinateFullWidth;
-                if (data.Direction != Terraria.Enums.TileObjectDirection.None || tile.type == TileID.Timers)
+                int row = tile.TileFrameY / data.CoordinateFullHeight;
+                int col = tile.TileFrameX / data.CoordinateFullWidth;
+                if (data.Direction != Terraria.Enums.TileObjectDirection.None || tile.TileType == TileID.Timers)
                 {
                     style = TileObjectData.GetTileStyle(tile);
                 }

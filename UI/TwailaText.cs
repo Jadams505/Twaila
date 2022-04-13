@@ -3,10 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Terraria;
-using Terraria.Localization;
-using Terraria.UI;
 using Terraria.UI.Chat;
 
 namespace Twaila.UI

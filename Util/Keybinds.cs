@@ -6,15 +6,15 @@ namespace Twaila.Util
 {
     public class Keybinds
     {
-        public static ModHotKey toggleUI;
-        public static ModHotKey toggleDebugTextures;
-        public static ModHotKey info;
+        private static ModKeybind toggleUI;
+        private static ModKeybind toggleDebugTextures;
+        private static ModKeybind info;
 
         public static void RegisterKeybinds(Mod mod)
         {
-            toggleUI = mod.RegisterHotKey("Cycle UI Display Mode", "Mouse3");
-            toggleDebugTextures = mod.RegisterHotKey("Debug", "O");
-            info = mod.RegisterHotKey("info", "*");
+            toggleUI = KeybindLoader.RegisterKeybind(mod, "Cycle UI Display Mode", "Mouse3");
+            toggleDebugTextures = KeybindLoader.RegisterKeybind(mod, "Debug", "O");
+            info = KeybindLoader.RegisterKeybind(mod, "info", "*");
         }
 
         public static void Unload()

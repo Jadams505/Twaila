@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Twaila.Graphics;
+using Terraria.ID;
 
 namespace Twaila.Context
 {
@@ -46,7 +46,7 @@ namespace Twaila.Context
 
         private int GetSaplingTile()
         {
-            if (!TileLoader.IsSapling(Tile.type))
+            if (!TileID.Sets.TreeSapling[Tile.TileType])
             {
                 return -1;
             }
@@ -54,13 +54,13 @@ namespace Twaila.Context
             do
             {
                 y++;
-            } while (TileLoader.IsSapling(Main.tile[Pos.X, y].type) && Main.tile[Pos.X, y].active());
+            } while (TileID.Sets.TreeSapling[Main.tile[Pos.X, y].TileType] && Main.tile[Pos.X, y].HasTile);
 
-            if (Main.tile[Pos.X, y] == null || !Main.tile[Pos.X, y].active())
+            if (!Main.tile[Pos.X, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[Pos.X, y].type;
+            return Main.tile[Pos.X, y].TileType;
         }
     }
 }

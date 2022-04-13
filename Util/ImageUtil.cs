@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ObjectData;
 using Twaila.ObjectData;
 using Twaila.Graphics;
+using Terraria.GameContent;
 
 namespace Twaila.Util
 {
@@ -44,7 +45,7 @@ namespace Twaila.Util
 
         public static Texture2D GetWallImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
-            if(tile.wall > 0)
+            if(tile.WallType > 0)
             {
                 int size = 32;
                 int startX = 324, startY = 108;
@@ -63,21 +64,21 @@ namespace Twaila.Util
 
         public static Texture2D GetLiquidImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
-            if(tile.liquid > 0)
+            if(tile.LiquidAmount > 0)
             {
                 int size = 16;
                 int startX = 0, startY = 0;
                 Texture2D texture = null;
-                switch (tile.liquidType())
+                switch (tile.LiquidType)
                 {
-                    case Tile.Liquid_Lava:
-                        texture = Main.liquidTexture[1];
+                    case LiquidID.Lava:
+                        texture = TextureAssets.Liquid[1].Value;
                         break;
-                    case Tile.Liquid_Honey:
-                        texture = Main.liquidTexture[11];
+                    case LiquidID.Honey:
+                        texture = TextureAssets.Liquid[11].Value;
                         break;
-                    case Tile.Liquid_Water:
-                        texture = Main.liquidTexture[Main.waterStyle];
+                    case LiquidID.Water:
+                        texture = TextureAssets.Liquid[Main.waterStyle].Value;
                         break;
                 }
 
@@ -104,12 +105,12 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
         {
-            if (tile.type == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
+            if (tile.TileType == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
             {
                 TileObjectData data = TileObjectData.GetTileData(tile);
-                if (tile.frameY >= data.CoordinateFullHeight)
+                if (tile.TileFrameY >= data.CoordinateFullHeight)
                 {
-                    tile.frameY = 288; // this is the correct frameY for the campfire when it is turned off
+                    tile.TileFrameY = 288; // this is the correct frameY for the campfire when it is turned off
                 }
                 return GetImageFromTileObjectData(spriteBatch, tile, data);
             }
@@ -124,9 +125,9 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForHerbs(SpriteBatch spriteBatch, Tile tile)
         {
-            if (tile.type == TileID.MatureHerbs)
+            if (tile.TileType == TileID.MatureHerbs)
             {
-                int tileId = tile.type;
+                int tileId = tile.TileType;
                 int style = TileObjectData.GetTileStyle(tile);
                 if (style == 0 && Main.dayTime) // daybloom
                 {
@@ -148,7 +149,7 @@ namespace Twaila.Util
                 {
                     tileId = TileID.BloomingHerbs;
                 }
-                tile.type = (ushort)tileId;
+                tile.TileType = (ushort)tileId;
                 return GetImageFromTileData(spriteBatch, tile);
             }
             return null;
@@ -159,11 +160,11 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForXmasTree(SpriteBatch spriteBatch, Tile tile)
         {
-            if(tile.type == TileID.ChristmasTree)
+            if(tile.TileType == TileID.ChristmasTree)
             {
-                if(tile.frameX >= 10) // the top left tile's frameX is always 10
+                if(tile.TileFrameX >= 10) // the top left tile's frameX is always 10
                 {
-                    tile.frameY = 0; // sets the frameY to what it would be if it had no decorations
+                    tile.TileFrameY = 0; // sets the frameY to what it would be if it had no decorations
                 }
             }
             return GetImageFromTileData(spriteBatch, tile);
@@ -188,8 +189,8 @@ namespace Twaila.Util
             {
                 TextureBuilder builder = new TextureBuilder();
 
-                int frameX = tile.frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
-                int frameY = tile.frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
+                int frameX = tile.TileFrameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
+                int frameY = tile.TileFrameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
 
                 if (data.Style > data.StyleWrapLimit)
                 {
@@ -221,29 +222,30 @@ namespace Twaila.Util
 
         public static Texture2D GetTileTexture(Tile tile)
         {
-            if(tile.type >= 0 && tile.type < Main.tileTexture.Length)
+            if(tile.TileType >= 0 && tile.TileType < TextureAssets.Tile.Length)
             {
-                Main.instance.LoadTiles(tile.type);
-                return Main.tileTexture[tile.type];
+                Main.instance.LoadTiles(tile.TileType);
+                return TextureAssets.Tile[tile.TileType].Value;
             }
             return null;
         }
 
         public static Texture2D GetWallTexture(Tile tile)
         {
-            if (tile.wall >= 0 && tile.wall < Main.wallTexture.Length)
+            if (tile.WallType >= 0 && tile.WallType < TextureAssets.Wall.Length)
             {
-                Main.instance.LoadWall(tile.wall);
-                return Main.wallTexture[tile.wall];
+                Main.instance.LoadWall(tile.WallType);
+                return TextureAssets.Wall[tile.WallType].Value;
             }
             return null;
         }
 
         public static Texture2D GetItemTexture(int itemId)
         {
-            if (itemId >= 0 && itemId < Main.itemTexture.Length)
+            if (itemId >= 0 && itemId < TextureAssets.Item.Length)
             {
-                return Main.itemTexture[itemId];
+                Main.instance.LoadItem(itemId);
+                return TextureAssets.Item[itemId].Value;
             }
             return null;
         }

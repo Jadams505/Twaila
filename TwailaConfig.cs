@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.IO;
-using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
@@ -225,7 +224,7 @@ namespace Twaila
         public void Save()
         {
             Directory.CreateDirectory(ConfigManager.ModConfigPath);
-            string filename = mod.Name + "_" + Name + ".json";
+            string filename = Mod.Name + "_" + Name + ".json";
             string path = Path.Combine(ConfigManager.ModConfigPath, filename);
             string json = JsonConvert.SerializeObject((object)this, ConfigManager.serializerSettings);
             File.WriteAllText(path, json);

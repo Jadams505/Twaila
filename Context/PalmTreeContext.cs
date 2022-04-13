@@ -31,7 +31,7 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
-            if (Tile.type == TileID.PalmTree)
+            if (Tile.TileType == TileID.PalmTree)
             {
                 if (TileLoader.CanGrowModPalmTree(PalmTreeSand))
                 {
@@ -58,7 +58,7 @@ namespace Twaila.Context
 
         private int GetPalmTreeSand()
         {
-            if (Tile.type != TileID.PalmTree)
+            if (Tile.TileType != TileID.PalmTree)
             {
                 return -1;
             }
@@ -66,13 +66,13 @@ namespace Twaila.Context
             do
             {
                 y += 1;
-            } while (Main.tile[Pos.X, y].type == TileID.PalmTree && Main.tile[Pos.X, y].active());
+            } while (Main.tile[Pos.X, y].TileType == TileID.PalmTree && Main.tile[Pos.X, y].HasTile);
 
-            if (Main.tile[Pos.X, y] == null || !Main.tile[Pos.X, y].active())
+            if (!Main.tile[Pos.X, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[Pos.X, y].type;
+            return Main.tile[Pos.X, y].TileType;
         }
     }
 }

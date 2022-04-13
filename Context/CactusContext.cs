@@ -31,7 +31,7 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
-            if (Tile.type == TileID.Cactus)
+            if (Tile.TileType == TileID.Cactus)
             {
                 if (TileLoader.CanGrowModCactus(CactusSand))
                 {
@@ -54,22 +54,22 @@ namespace Twaila.Context
 
         private int GetCactusSand()
         {
-            if (Tile.type != TileID.Cactus)
+            if (Tile.TileType != TileID.Cactus)
             {
                 return -1;
             }
             int x = Pos.X, y = Pos.Y;
             do
             {
-                if (Main.tile[x, y + 1].type == TileID.Cactus)
+                if (Main.tile[x, y + 1].TileType == TileID.Cactus)
                 {
                     y++;
                 }
-                else if (Main.tile[x + 1, y].type == TileID.Cactus)
+                else if (Main.tile[x + 1, y].TileType == TileID.Cactus)
                 {
                     x++;
                 }
-                else if (Main.tile[x - 1, y].type == TileID.Cactus)
+                else if (Main.tile[x - 1, y].TileType == TileID.Cactus)
                 {
                     x--;
                 }
@@ -78,12 +78,12 @@ namespace Twaila.Context
                     y++;
                 }
             }
-            while (Main.tile[x, y].type == TileID.Cactus && Main.tile[x, y].active());
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
+            while (Main.tile[x, y].TileType == TileID.Cactus && Main.tile[x, y].HasTile);
+            if (!Main.tile[x, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[x, y].type;
+            return Main.tile[x, y].TileType;
         }
     }
 }

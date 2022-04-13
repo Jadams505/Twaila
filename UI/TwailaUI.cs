@@ -2,7 +2,6 @@
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Util;
@@ -79,19 +78,19 @@ namespace Twaila.UI
             }
             Tile tile = Framing.GetTileSafely(pos);
 
-            if(tile.type == TileID.Trees || tile.type == TileID.MushroomTrees)
+            if(tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees)
             {
                 return new TreeContext(pos);
             }
-            if(tile.type == TileID.Cactus)
+            if(tile.TileType == TileID.Cactus)
             {
                 return new CactusContext(pos);
             }
-            if(tile.type == TileID.PalmTree)
+            if(tile.TileType == TileID.PalmTree)
             {
                 return new PalmTreeContext(pos);
             }
-            if (TileLoader.IsSapling(tile.type))
+            if (TileID.Sets.TreeSapling[tile.TileType])
             {
                 return new SaplingContext(pos);
             }

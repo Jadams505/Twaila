@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.UI;
 using Twaila.Context;
 using Twaila.Graphics;
 using Twaila.Util;
@@ -14,7 +13,7 @@ namespace Twaila.UI
         internal TwailaTexture image;
         public UITwailaImage()
         {
-            image = new TwailaTexture(Main.buffTexture[BuffID.Confused]);
+            image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -126,7 +125,8 @@ namespace Twaila.UI
             }
             if(image?.Texture == null)
             {
-                image = new TwailaTexture(Main.buffTexture[BuffID.Confused]);
+                
+                image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
             }
         }
     }

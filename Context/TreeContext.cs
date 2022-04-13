@@ -37,7 +37,7 @@ namespace Twaila.Context
         protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
             float scale = 0.5f;
-            if (Tile.type == TileID.Trees)
+            if (Tile.TileType == TileID.Trees)
             {
                 if (TileLoader.CanGrowModTree(TreeDirt))
                 {
@@ -49,7 +49,7 @@ namespace Twaila.Context
                     return new TwailaTexture(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, Pos.Y), scale);
                 }
             }
-            else if (Tile.type == TileID.MushroomTrees)
+            else if (Tile.TileType == TileID.MushroomTrees)
             {
                 return new TwailaTexture(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
             }
@@ -68,29 +68,29 @@ namespace Twaila.Context
 
         private int GetTreeDirt()
         {
-            if (Tile.type != TileID.Trees)
+            if (Tile.TileType != TileID.Trees)
             {
                 return -1;
             }
             int x = Pos.X, y = Pos.Y;
-            if (Main.tile[x - 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
+            if (Main.tile[x - 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
             {
                 x--;
             }
-            if (Main.tile[x + 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
+            if (Main.tile[x + 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
             {
                 x++;
             }
             do
             {
                 y += 1;
-            } while (Main.tile[x, y].type == TileID.Trees && Main.tile[x, y].active());
+            } while (Main.tile[x, y].TileType == TileID.Trees && Main.tile[x, y].HasTile);
 
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
+            if (!Main.tile[x, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[x, y].type;
+            return Main.tile[x, y].TileType;
         }
     }
 }

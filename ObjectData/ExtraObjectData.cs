@@ -63,7 +63,7 @@ namespace Twaila.ObjectData
             AddEntry(TileID.JunglePlants, data4);
             AddEntry(TileID.MushroomPlants, data4);
             AddEntry(TileID.HallowedPlants, data4);
-            AddEntry(TileID.FleshWeeds, data4);
+            AddEntry(TileID.CrimsonPlants, data4); //FleshWeeds
 
             TileObjectData data5 = new TileObjectData(TileObjectData.Style1x1);
             data5.CoordinateHeights = new int[] { 32 };
@@ -131,7 +131,7 @@ namespace Twaila.ObjectData
             TileObjectData data = GetDataForPiles(tile) ?? GetDataForJungleFoilage(tile) ?? GetDataForStalactite(tile);
             if(data == null)
             {
-                _data.TryGetValue(tile.type, out data);
+                _data.TryGetValue(tile.TileType, out data);
             }  
             return data;
         }
@@ -142,16 +142,16 @@ namespace Twaila.ObjectData
         */
         private static TileObjectData GetDataForPiles(Tile tile)
         {
-            if (tile.type == TileID.SmallPiles)
+            if (tile.TileType == TileID.SmallPiles)
             {
                 TileObjectData data = new TileObjectData();
-                if (tile.frameY < 18)
+                if (tile.TileFrameY < 18)
                 {
                     data.CopyFrom(TileObjectData.Style1x1);
                     data.StyleHorizontal = true;
                     data.CoordinateHeights = new int[] { 16 };
                 }
-                else if (tile.frameY < 52)
+                else if (tile.TileFrameY < 52)
                 {
                     data.CopyFrom(TileObjectData.Style2x1);
                     data.StyleHorizontal = true;
@@ -172,16 +172,16 @@ namespace Twaila.ObjectData
         */
         private static TileObjectData GetDataForJungleFoilage(Tile tile)
         {
-            if (tile.type == TileID.PlantDetritus)
+            if (tile.TileType == TileID.PlantDetritus)
             {
                 TileObjectData data = new TileObjectData();
-                if (tile.frameY < 36)
+                if (tile.TileFrameY < 36)
                 {
                     data.CopyFrom(TileObjectData.Style3x2);
                     data.StyleHorizontal = true;
                     data.CoordinateHeights = new int[] { 16, 16 };
                 }
-                else if (tile.frameY < 70)
+                else if (tile.TileFrameY < 70)
                 {
                     data.CopyFrom(TileObjectData.Style2x2);
                     data.StyleHorizontal = true;
@@ -202,15 +202,15 @@ namespace Twaila.ObjectData
         */
         private static TileObjectData GetDataForStalactite(Tile tile)
         {
-            if (tile.type == TileID.Stalactite)
+            if (tile.TileType == TileID.Stalactite)
             {
                 TileObjectData data = new TileObjectData();
-                if (tile.frameY <= 69)
+                if (tile.TileFrameY <= 69)
                 {
                     data.CopyFrom(TileObjectData.Style1x2);
                     data.CoordinateHeights = new int[] { 16, 16 };
                 }
-                else if (tile.frameY <= 105)
+                else if (tile.TileFrameY <= 105)
                 {
                     data.CopyFrom(TileObjectData.Style1x1);
                     data.CoordinateHeights = new int[] { 16 };
@@ -233,9 +233,9 @@ namespace Twaila.ObjectData
             }
             if (data.StyleHorizontal)
             {
-                return tile.frameX / data.CoordinateFullWidth;
+                return tile.TileFrameX / data.CoordinateFullWidth;
             }
-            return tile.frameY / data.CoordinateFullHeight;
+            return tile.TileFrameY / data.CoordinateFullHeight;
         }
     }
 }
