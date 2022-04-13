@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Text;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using Terraria.UI.Chat;
 using Twaila.Context;
-using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
@@ -181,6 +176,213 @@ namespace Twaila.Util
             return null;
         }
 
+        public static string GetNameForManualWalls(Tile tile)
+        {
+            string wall = "Wall";
+            string block = "Block";
+            switch (tile.wall)
+            {
+                case WallID.EbonstoneUnsafe:
+                    return GetNameFromItem(ItemID.EbonstoneBlock).Replace(block, wall);
+                case WallID.HellstoneBrickUnsafe:
+                    return GetNameFromItem(ItemID.HellstoneBrickWall);
+                case WallID.ObsidianBrickUnsafe:
+                    return GetNameFromItem(ItemID.ObsidianBrickWall);
+                case WallID.MudUnsafe:
+                    return GetNameFromItem(ItemID.MudBlock).Replace(block, wall);
+                case WallID.DirtUnsafe:
+                    return GetNameFromItem(ItemID.DirtBlock).Replace(block, wall);
+                case WallID.BlueDungeonUnsafe:
+                    return GetNameFromItem(ItemID.BlueBrickWall);
+                case WallID.GreenDungeonUnsafe:
+                    return GetNameFromItem(ItemID.GreenBrickWall);
+                case WallID.PinkDungeonUnsafe:
+                    return GetNameFromItem(ItemID.PinkBrickWall);
+                case WallID.SnowWallUnsafe:
+                    return GetNameFromItem(ItemID.SnowBlock).Replace(block, wall);
+                case WallID.AmethystUnsafe:
+                    return GetNameFromItem(ItemID.Amethyst) + " " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.TopazUnsafe:
+                    return GetNameFromItem(ItemID.Topaz) + " " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.SapphireUnsafe:
+                    return GetNameFromItem(ItemID.Sapphire) + " " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.EmeraldUnsafe:
+                    return GetNameFromItem(ItemID.Emerald) + " " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.RubyUnsafe:
+                    return GetNameFromItem(ItemID.Ruby) + " " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.DiamondUnsafe:
+                    return GetNameFromItem(ItemID.Diamond) + " " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.CaveUnsafe:
+                    return "Green Mossy " + wall;
+                case WallID.Cave2Unsafe:
+                    return "Brown Mossy " + wall;
+                case WallID.Cave3Unsafe:
+                    return "Red Mossy " + wall;
+                case WallID.Cave4Unsafe:
+                    return "Blue Mossy " + wall;
+                case WallID.Cave5Unsafe:
+                    return "Purple Mossy " + wall;
+                case WallID.Cave6Unsafe:
+                    return "Rocky " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.Cave7Unsafe:
+                    return "Old " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.SpiderUnsafe:
+                    return "Spider " + wall;
+                case WallID.GrassUnsafe:
+                    return GetNameFromItem(ItemID.GrassWall);
+                case WallID.JungleUnsafe:
+                    return GetNameFromItem(ItemID.JungleWall);
+                case WallID.FlowerUnsafe:
+                    return GetNameFromItem(ItemID.FlowerWall);
+                case WallID.CorruptGrassUnsafe:
+                    return "Corrupt Grass " + wall;
+                case WallID.HallowedGrassUnsafe:
+                    return "Hallowed Grass " + wall;
+                case WallID.IceUnsafe:
+                    return GetNameFromItem(ItemID.IceBlock).Replace(block, wall);
+                case WallID.ObsidianBackUnsafe:
+                    return GetNameFromItem(ItemID.Obsidian) + " Back " + wall;
+                case WallID.MushroomUnsafe:
+                    return GetNameFromItem(ItemID.MushroomWall);
+                case WallID.CrimsonGrassUnsafe:
+                    return "Crimson Grass " + wall;
+                case WallID.CrimstoneUnsafe:
+                    return GetNameFromItem(ItemID.CrimstoneBlock).Replace(block, wall);
+                case WallID.HiveUnsafe:
+                    return GetNameFromItem(ItemID.HiveWall);
+                case WallID.LihzahrdBrickUnsafe:
+                    return GetNameFromItem(ItemID.LihzahrdBrickWall);
+                case WallID.BlueDungeonSlabUnsafe:
+                    return GetNameFromItem(ItemID.BlueSlabWall);
+                case WallID.BlueDungeonTileUnsafe:
+                    return GetNameFromItem(ItemID.BlueTiledWall);
+                case WallID.PinkDungeonSlabUnsafe:
+                    return GetNameFromItem(ItemID.PinkSlabWall);
+                case WallID.PinkDungeonTileUnsafe:
+                    return GetNameFromItem(ItemID.PinkTiledWall);
+                case WallID.GreenDungeonSlabUnsafe:
+                    return GetNameFromItem(ItemID.GreenSlabWall);
+                case WallID.GreenDungeonTileUnsafe:
+                    return GetNameFromItem(ItemID.GreenTiledWall);
+                case WallID.CaveWall:
+                    return "Cave " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.CaveWall2:
+                    return "Rough " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.MarbleUnsafe:
+                    return GetNameFromItem(ItemID.MarbleWall);
+                case WallID.GraniteUnsafe:
+                    return GetNameFromItem(ItemID.GraniteWall);
+                case WallID.Cave8Unsafe:
+                    return "Craggy " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.CorruptionUnsafe1:
+                    return "Corrupt Growth " + wall;
+                case WallID.CorruptionUnsafe2:
+                    return "Corrupt Mass " + wall;
+                case WallID.CorruptionUnsafe3:
+                    return "Corrupt Pustule " + wall;
+                case WallID.CorruptionUnsafe4:
+                    return "Corrupt Tendtil " + wall;
+                case WallID.CrimsonUnsafe1:
+                    return "Crimson Crust " + wall;
+                case WallID.CrimsonUnsafe2:
+                    return "Crimson Scab " + wall;
+                case WallID.CrimsonUnsafe3:
+                    return "Crimson Teeth " + wall;
+                case WallID.CrimsonUnsafe4:
+                    return "Crimson Blister " + wall;
+                case WallID.DirtUnsafe1:
+                    return "Layered " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.DirtUnsafe2:
+                    return "Crumbling " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.DirtUnsafe3:
+                    return "Cracked " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.DirtUnsafe4:
+                    return "Wavy " + GetNameFromItem(ItemID.DirtWall);
+                case WallID.HallowUnsafe1:
+                    return "Hallowed Prism " + wall;
+                case WallID.HallowUnsafe2:
+                    return "Hallowed Cavern " + wall;
+                case WallID.HallowUnsafe3:
+                    return "Hallowed Shard " + wall;
+                case WallID.HallowUnsafe4:
+                    return "Hallowed Cystalline " + wall;
+                case WallID.JungleUnsafe1:
+                    return "Lichen Stone " + wall;
+                case WallID.JungleUnsafe2:
+                    return "Leafy Jungle " + wall;
+                case WallID.JungleUnsafe3:
+                    return "Ivy Stone " + wall;
+                case WallID.JungleUnsafe4:
+                    return "Jungle Vine " + wall;
+                case WallID.LavaUnsafe1:
+                    return "Ember " + wall;
+                case WallID.LavaUnsafe2:
+                    return "Cinder " + wall;
+                case WallID.LavaUnsafe3:
+                    return "Magma " + wall;
+                case WallID.LavaUnsafe4:
+                    return "Smouldering Stone " + wall;
+                case WallID.RocksUnsafe1:
+                    return "Worn " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.RocksUnsafe2:
+                    return "Stalactite " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.RocksUnsafe3:
+                    return "Mottled " + GetNameFromItem(ItemID.StoneWall);
+                case WallID.RocksUnsafe4:
+                    return "Fractured " + GetNameFromItem(ItemID.StoneWall);
+            }
+            return null;
+        }
+
+        public static string GetNameForLiquids(Tile tile)
+        {
+            if(tile.liquid > 0)
+            {
+                if(tile.liquidType() == Tile.Liquid_Lava)
+                {
+                    return "Lava";
+                }
+                if(tile.liquidType() == Tile.Liquid_Honey)
+                {
+                    return "Honey";
+                }
+                if(tile.liquidType() == Tile.Liquid_Water)
+                {
+                    const string water = "Water";
+                    switch (Main.waterStyle)
+                    {
+                        case 0:
+                            return water;
+                        case 1:
+                            return "Lava";
+                        case 2: 
+                            return "Corrupt " + water;
+                        case 3:
+                            return "Jungle " + water;
+                        case 4:
+                            return "Hallowed " + water;
+                        case 5:
+                            return "Tundra " + water;
+                        case 6:
+                            return "Desert " + water;
+                        case 7:
+                            return "Underground " + water;
+                        case 8:
+                            return "Cavern " + water;
+                        case 9:
+                            return "Blood Moon " + water;
+                        case 10:
+                            return "Crimson " + water;
+                        case 11:
+                            return "Honey";
+                        case 12:
+                            return "Desert " + water;
+                    }
+                }
+            }
+            return null;
+        }
+
         public static string GetNameForTree(TreeContext context)
         {
             string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
@@ -320,14 +522,26 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetModName(Tile tile)
+        public static string GetModName(TileContext context)
         {
-            ModTile mTile = TileLoader.GetTile(tile.type);
-            if(mTile == null)
+            switch (context.TileType)
             {
-                return "Terraria";
+                case TileType.Tile:
+                    ModTile mTile = TileLoader.GetTile(context.Tile.type);
+                    if (mTile != null)
+                    {
+                        return mTile.mod.DisplayName;
+                    }
+                    break;
+                case TileType.Wall:
+                    ModWall mWall = WallLoader.GetWall(context.Tile.wall);
+                    if(mWall != null)
+                    {
+                        return mWall.mod.DisplayName;
+                    }
+                    break;
             }
-            return mTile.mod.DisplayName;
+            return "Terraria";
         }
     }
 }

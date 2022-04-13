@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -130,15 +126,107 @@ namespace Twaila.ObjectData
             _data.Add(tileId, new TileObjectData(copyFrom));
         }
 
-        public static TileObjectData GetData(int type)
+        public static TileObjectData GetData(Tile tile)
         {
-            _data.TryGetValue(type, out TileObjectData data);
+            TileObjectData data = GetDataForPiles(tile) ?? GetDataForJungleFoilage(tile) ?? GetDataForStalactite(tile);
+            if(data == null)
+            {
+                _data.TryGetValue(tile.type, out data);
+            }  
             return data;
+        }
+
+        /*
+            The top row of the spritesheet for piles are 1x1 in size while the
+            next two rows are 2x1 in size
+        */
+        private static TileObjectData GetDataForPiles(Tile tile)
+        {
+            if (tile.type == TileID.SmallPiles)
+            {
+                TileObjectData data = new TileObjectData();
+                if (tile.frameY < 18)
+                {
+                    data.CopyFrom(TileObjectData.Style1x1);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16 };
+                }
+                else if (tile.frameY < 52)
+                {
+                    data.CopyFrom(TileObjectData.Style2x1);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16 };
+                }
+                else
+                {
+                    data = null;
+                }
+                return data;
+            }
+            return null;
+        }
+
+        /*
+            The top half of the spritesheet for jungle foilage are 3x2 in size while the
+            bottom half are 2x2 in size
+        */
+        private static TileObjectData GetDataForJungleFoilage(Tile tile)
+        {
+            if (tile.type == TileID.PlantDetritus)
+            {
+                TileObjectData data = new TileObjectData();
+                if (tile.frameY < 36)
+                {
+                    data.CopyFrom(TileObjectData.Style3x2);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16, 16 };
+                }
+                else if (tile.frameY < 70)
+                {
+                    data.CopyFrom(TileObjectData.Style2x2);
+                    data.StyleHorizontal = true;
+                    data.CoordinateHeights = new int[] { 16, 16 };
+                }
+                else
+                {
+                    data = null;
+                }
+                return data;
+            }
+            return null;
+        }
+
+        /*
+            The top half of the spritesheet for stalactites are 1x2 in size while the
+            bottom half are 1x1 in size
+        */
+        private static TileObjectData GetDataForStalactite(Tile tile)
+        {
+            if (tile.type == TileID.Stalactite)
+            {
+                TileObjectData data = new TileObjectData();
+                if (tile.frameY <= 69)
+                {
+                    data.CopyFrom(TileObjectData.Style1x2);
+                    data.CoordinateHeights = new int[] { 16, 16 };
+                }
+                else if (tile.frameY <= 105)
+                {
+                    data.CopyFrom(TileObjectData.Style1x1);
+                    data.CoordinateHeights = new int[] { 16 };
+                }
+                else
+                {
+                    data = null;
+                }
+                return data;
+            }
+            return null;
         }
 
         public static int GetTileStyle(Tile tile)
         {
-            TileObjectData data = GetData(tile.type);
+            TileObjectData data = GetData(tile);
             if(data == null)
             {
                 return -1;

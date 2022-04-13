@@ -17,9 +17,10 @@ namespace Twaila.UI
         private TwailaText Name { get; set; } 
         private TwailaText Mod { get; set; }
         private UITwailaImage Image { get; set; }
-        internal TileContext Context { get; set; }
+        private TileContext Context { get; set; }
         private bool _dragging;
         private Point _lastMouse;
+        private int _tick = 0;
 
         private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height);
         private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
@@ -42,7 +43,6 @@ namespace Twaila.UI
 
         public override void Update(GameTime gameTime)
         {
-
             base.Update(gameTime);
             UpdateFromConfig();
             UpdateSize();
@@ -286,10 +286,39 @@ namespace Twaila.UI
 
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
+            _tick++;
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
-            if (currentContext.Tile.active() && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
+            if (!currentContext.ContentChanged(Context))
             {
-                int itemId = ItemUtil.GetItemId(currentContext.Tile);
+                currentContext.SetTileType(Context.TileType);
+            }
+            else
+            {
+                _tick = 0;
+            }
+            if (_tick >= TwailaConfig.Get().CycleDelay)
+            {
+                TileUtil.CycleType(currentContext);
+                _tick = 0;
+            }
+            
+            Player player = Main.player[Main.myPlayer];
+
+            if(player?.itemAnimation > 0 && currentContext.TileType != TileType.Empty) // attempts to stop rapid updating when mining/hammering
+            {
+                if(player?.HeldItem.pick > 0 && currentContext.TileType != TileType.Tile)
+                {
+                    return;
+                }
+                if(player?.HeldItem.hammer > 0 && currentContext.TileType != TileType.Wall)
+                {
+                    return;
+                }
+            }
+
+            if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
+            {
+                int itemId = ItemUtil.GetItemId(currentContext);
                 Name.SetText(currentContext.GetName(itemId));
                 Mod.SetText(currentContext.GetMod());
                 Image.SetImage(spriteBatch, currentContext, itemId);

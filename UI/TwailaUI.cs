@@ -13,24 +13,24 @@ namespace Twaila.UI
     {
         private static UserInterface _interface;
         private static UIState _state;
-        internal static TwailaPanel panel;
+        private static TwailaPanel _panel;
         public static bool debugMode = false;
 
         public static bool Enabled { get; private set; }
         public static void Initialize()
         {
             Enabled = true;
-
             _interface = new UserInterface();
-            panel = new TwailaPanel();
+            _panel = new TwailaPanel();
             _state = new UIState();
 
-            _state.Append(panel);
+            _state.Append(_panel);
             _interface?.SetState(_state);
         }
 
         public static void Update(GameTime time)
         {
+            TileContext currentContext = GetContext(GetMousePos());
             switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
@@ -40,10 +40,10 @@ namespace Twaila.UI
                     Enabled = false;
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
-                    TileContext currentContext = GetContext(GetMousePos());
-                    if(TwailaConfig.Get().UIDisplaySettings.HideUIForAir && (!currentContext.Tile.active() || TileUtil.IsBlockedByAntiCheat(currentContext)))
+                    if ((TwailaConfig.Get().UIDisplaySettings.HideUIForAir && currentContext.TileType == TileType.Empty) || 
+                        TileUtil.IsBlockedByAntiCheat(currentContext))
                     {
-                        if (!panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !panel.IsDragging())
+                        if (!_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
                             break;
@@ -130,7 +130,7 @@ namespace Twaila.UI
         public static void Unload()
         {
             _interface = null;
-            panel = null;
+            _panel = null;
             _state = null;
         }
 

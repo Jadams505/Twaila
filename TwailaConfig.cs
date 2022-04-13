@@ -74,6 +74,11 @@ namespace Twaila
         [DefaultValue(12)]
         public int PanelPadding;
 
+        [DefaultValue(120)]
+        [Range(0, 1000)]
+        [Tooltip("The amount of time in ticks before the panel will cycle to the next type")]
+        public int CycleDelay;
+
         [DefaultValue(DrawMode.Shrink)]
         [DrawTicks]
         public DrawMode ContentSetting = DrawMode.Shrink;

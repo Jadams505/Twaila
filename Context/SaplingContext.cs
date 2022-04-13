@@ -16,7 +16,7 @@ namespace Twaila.Context
             SaplingDirt = GetSaplingTile();
         }
 
-        public override bool ContextChanged(TileContext other)
+        public override bool ContentChanged(TileContext other)
         {
             if (other is SaplingContext otherSaplingContext)
             {
@@ -28,20 +28,20 @@ namespace Twaila.Context
             return true;
         }
 
-        public override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
             return new TwailaTexture(ImageUtil.GetImageFromTileData(spriteBatch, Tile));
         }
 
-        public override TwailaTexture GetItemImage(SpriteBatch spriteBatch, int itemId)
+        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            Texture2D texture = ImageUtil.GetImageFromItemData(Tile, itemId) ?? GetTileImage(spriteBatch).Texture;
+            Texture2D texture = ImageUtil.GetItemTexture(itemId) ?? GetTileImage(spriteBatch).Texture;
             return new TwailaTexture(texture);
         }
 
-        public override string GetName(int itemId)
+        protected override string GetTileName(int itemId)
         {
-            return NameUtil.GetNameForSapling(this) ?? base.GetName(itemId);
+            return NameUtil.GetNameForSapling(this) ?? base.GetTileName(itemId);
         }
 
         private int GetSaplingTile()

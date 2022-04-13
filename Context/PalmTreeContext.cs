@@ -17,7 +17,7 @@ namespace Twaila.Context
             PalmTreeSand = GetPalmTreeSand();
         }
 
-        public override bool ContextChanged(TileContext other)
+        public override bool ContentChanged(TileContext other)
         {
             if (other is PalmTreeContext otherPalmTreeContext)
             {
@@ -29,7 +29,7 @@ namespace Twaila.Context
             return true;
         }
 
-        public override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
             if (Tile.type == TileID.PalmTree)
             {
@@ -46,14 +46,14 @@ namespace Twaila.Context
             return null;
         }
 
-        public override TwailaTexture GetItemImage(SpriteBatch spriteBatch, int itemId)
+        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
             return GetTileImage(spriteBatch);
         }
 
-        public override string GetName(int itemId)
+        protected override string GetTileName(int itemId)
         {
-            return NameUtil.GetNameForPalmTree(this) ?? base.GetName(itemId);
+            return NameUtil.GetNameForPalmTree(this) ?? base.GetTileName(itemId);
         }
 
         private int GetPalmTreeSand()
