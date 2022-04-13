@@ -16,6 +16,7 @@ This mod is currently in development and is not complete
 - [c/FFFF00:AnchorPosX, AnchorPosY]: The exact pixel location of the anchor point
 - [c/FFFF00:MaxWidth, MaxHeight]: The maximum percentage of the screen the panel can be
 - [c/FFFF00:PanelPadding]: How much space there is (in pixels) between the content and the edge of the panel
+- [c/FFFF00:CycleDelay]: How many ticks before the panel cycles its type 
 - [c/FFFF00:ContentSetting]: Settings that describe what to do with the content when it is too big for the panel
 - [c/FFFF00:HoverOpacity]: How visible the panel should be when it is hovered over
 - [c/FFFF00:ShowBackground]: Displays the background panel
@@ -32,6 +33,9 @@ This mod is currently in development and is not complete
 - Cycle UI Display Mode (Mouse3 by default): Cycles through the UIDisplay options
 
 [Changelog]
+v0.4.0.0 (4/12/2022)
+- Added Walls and Liquids to the UI
+- The panel now cycles through tile types (tile, wall, liquid) if more than one type applies
 v0.3.1.0 (3/30/2022)
 - Added more config options including AntiCheat, TextShadow, ContentToggles, and Colors
 - Fixed an issue where item textures would not default to tile textures if no item texture was found
