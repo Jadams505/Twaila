@@ -1,12 +1,27 @@
 ﻿using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
+using Terraria.ObjectData;
 using Twaila.Context;
+using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
     internal class TileUtil
     {
+        public static TileObjectData GetTileObjectData(Tile tile)
+        {
+            TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
+            return data;
+        }
+
+        public static TileObjectData GetTileObjectData(DummyTile tile, int style = 0)
+        {
+            TileObjectData data = ExtraObjectData.GetData(tile.TileId, tile.TileFrameY) ?? 
+                TileObjectData.GetTileData(tile.TileId, style);
+            return data;
+        }
+
         public static bool IsBlockedByAntiCheat(TileContext context)
         {
             if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)

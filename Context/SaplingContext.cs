@@ -30,7 +30,7 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            return new TwailaTexture(ImageUtil.GetImageFromTileData(spriteBatch, tile));
+            return new TwailaTexture(ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y));
         }
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)

@@ -221,13 +221,7 @@ namespace Twaila.Context
 
         public virtual bool StyleChanged(TileContext other)
         {
-            TileObjectData oldData = ExtraObjectData.GetData(other.Tile.TileId, other.Tile.TileFrameY), 
-                newData = ExtraObjectData.GetData(Tile.TileId, Tile.TileFrameY);
-            if (newData == null)
-            {
-                oldData = TileObjectData.GetTileData(other.Tile.TileId, 0); // test this
-                newData = TileObjectData.GetTileData(Tile.TileId, 0); // test this
-            }
+            TileObjectData oldData = TileUtil.GetTileObjectData(other.Tile), newData = TileUtil.GetTileObjectData(Tile);
             if (newData == null || oldData == null)
             {
                 return false;
@@ -258,7 +252,7 @@ namespace Twaila.Context
 
         protected virtual TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            Texture2D texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileData(spriteBatch, tile)
+            Texture2D texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y)
                 ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return new TwailaTexture(texture);
         }

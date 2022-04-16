@@ -100,7 +100,7 @@ namespace Twaila.Util
         // Assumes that modded doors do not wrap and that they follow the pattern of vanilla
         private static int GetPlaceStyleForDoor(Tile tile)
         {
-            TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
+            TileObjectData data = TileUtil.GetTileObjectData(tile);
             if (TileLoader.IsClosedDoor(tile))
             {
                 int row = tile.TileFrameY / data.CoordinateFullHeight;
@@ -238,7 +238,7 @@ namespace Twaila.Util
 
         private static void GetTileInfo(Tile tile, ref int style, ref TileObjectData data)
         {
-            data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
+            data = TileUtil.GetTileObjectData(tile);
             if(data != null)
             {
                 int row = tile.TileFrameY / data.CoordinateFullHeight;

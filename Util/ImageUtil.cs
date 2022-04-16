@@ -12,16 +12,6 @@ namespace Twaila.Util
 {
     internal class ImageUtil
     {
-        public static Texture2D GetImageFromTileData(SpriteBatch spriteBatch, Tile tile)
-        {
-            TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
-            if (data == null)
-            {
-                return null;
-            }
-            return GetImageFromTileObjectData(spriteBatch, tile, data);
-        }
-
         public static Texture2D GetImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
             int size = 16;
@@ -106,7 +96,17 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
         {
-            return null; // broken
+            if (tile.TileType == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
+            {
+                TileObjectData data = TileObjectData.GetTileData(tile);
+                int mutableFrameY = tile.TileFrameY;
+                if (tile.TileFrameY >= data.CoordinateFullHeight)
+                {
+                    mutableFrameY = 288; // this is the correct frameY for the campfire when it is turned off
+                }
+                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, data);
+            }
+            return null;
         }
 
         /*
@@ -117,36 +117,33 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForHerbs(SpriteBatch spriteBatch, Tile tile)
         {
-            /*
             if (tile.TileType == TileID.MatureHerbs)
             {
-                int tileId = tile.TileType;
+                int mutableId = tile.TileType;
                 int style = TileObjectData.GetTileStyle(tile);
+                TileObjectData data = TileUtil.GetTileObjectData(tile);
                 if (style == 0 && Main.dayTime) // daybloom
                 {
-                    tileId = TileID.BloomingHerbs;
+                    mutableId = TileID.BloomingHerbs;
                 }
-                if (style == 1 && !Main.dayTime) // moonglow
+                else if (style == 1 && !Main.dayTime) // moonglow
                 {
-                    tileId = TileID.BloomingHerbs;
+                    mutableId = TileID.BloomingHerbs;
                 }
-                if (style == 3 && !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0)) // deathweed
+                else if (style == 3 && !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0)) // deathweed
                 {
-                    tileId = TileID.BloomingHerbs;
+                    mutableId = TileID.BloomingHerbs;
                 }
-                if (style == 4 && (Main.raining || Main.cloudAlpha > 0)) // waterleaf
+                else if (style == 4 && (Main.raining || Main.cloudAlpha > 0)) // waterleaf
                 {
-                    tileId = TileID.BloomingHerbs;
+                    mutableId = TileID.BloomingHerbs;
                 }
-                if (style == 5 && !Main.raining && Main.time > 40500) // fireblossom
+                else if (style == 5 && !Main.raining && Main.time > 40500) // fireblossom
                 {
-                    tileId = TileID.BloomingHerbs;
+                    mutableId = TileID.BloomingHerbs;
                 }
-                tile.TileType = (ushort)tileId;
-                return GetImageFromTileData(spriteBatch, tile);
+                return GetImageFromTileObjectData(spriteBatch, mutableId, tile.TileFrameX, tile.TileFrameY, data);
             }
-            return null;
-            */
             return null;
         }
 
@@ -155,16 +152,15 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForXmasTree(SpriteBatch spriteBatch, Tile tile)
         {
-            /*
             if(tile.TileType == TileID.ChristmasTree)
             {
+                int mutableFrameY = tile.TileFrameY;
                 if(tile.TileFrameX >= 10) // the top left tile's frameX is always 10
                 {
-                    tile.TileFrameY = 0; // sets the frameY to what it would be if it had no decorations
+                    mutableFrameY = 0; // sets the frameY to what it would be if it had no decorations
                 }
+                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
             }
-            return GetImageFromTileData(spriteBatch, tile);
-            */
             return null;
         }
 
@@ -174,55 +170,6 @@ namespace Twaila.Util
             Texture2D texture = GetTileTexture(tile.TileType);
             builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
             return builder.Build(spriteBatch.GraphicsDevice);
-        }
-
-        public static Texture2D GetImageFromTileObjectData(SpriteBatch spriteBatch, Tile tile, TileObjectData data)
-        {
-            if (data == null)
-            {
-                return null;
-            }
-            Texture2D texture = GetTileTexture(tile.TileType);
-            if (texture != null)
-            {
-                TextureBuilder builder = new TextureBuilder();
-
-                int frameX = tile.TileFrameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
-                int frameY = tile.TileFrameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
-                int style = TileObjectData.GetTileStyle(tile);
-                if(data.StyleWrapLimit > 1 && data.StyleMultiplier == 1)
-                {
-                    if (data.StyleHorizontal)
-                    {
-                        int row = style / data.StyleWrapLimit;
-                        int col = style % data.StyleWrapLimit;
-                        frameX = data.CoordinateFullWidth * col;
-                        frameY = data.CoordinateFullHeight * row;
-                    }
-                    else
-                    {
-                        int col = style / data.StyleWrapLimit;
-                        int row = style % data.StyleWrapLimit;
-                        frameX = data.CoordinateFullWidth * col;
-                        frameY = data.CoordinateFullHeight * row;
-                    }
-                }
-                
-                int height = 0;
-                for (int row = 0; row < data.Height; ++row)
-                {
-                    for (int col = 0; col < data.Width; ++col)
-                    {
-                        int width = data.CoordinateWidth;
-                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
-                            frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
-                        builder.AddComponent(copyRectangle, texture, new Point(width * col, height));
-                    }
-                    height += data.CoordinateHeights[row];
-                }
-                return builder.Build(spriteBatch.GraphicsDevice);
-            }
-            return null;
         }
 
         public static Texture2D GetImageFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
@@ -239,17 +186,6 @@ namespace Twaila.Util
                 frameX = frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
                 frameY = frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
 
-                if (data.Style > data.StyleWrapLimit)
-                {
-                    if (data.StyleHorizontal)
-                    {
-                        frameY += data.CoordinateFullHeight;
-                    }
-                    else
-                    {
-                        frameX += data.CoordinateFullWidth;
-                    }
-                }
                 int height = 0;
                 for (int row = 0; row < data.Height; ++row)
                 {
@@ -265,6 +201,21 @@ namespace Twaila.Util
                 return builder.Build(spriteBatch.GraphicsDevice);
             }
             return null;
+        }
+
+        public static Texture2D GetImageFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
+        {
+            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
+            Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
+                ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
+                out _, out _, out _, out _);
+            if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
+            {
+                tileFx += (short)addX;
+                tileFy += (short)addY;
+            }
+            return GetImageFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
         }
 
         public static Texture2D GetTileTexture(int tileId)

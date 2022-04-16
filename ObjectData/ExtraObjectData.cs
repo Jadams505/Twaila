@@ -234,19 +234,5 @@ namespace Twaila.ObjectData
             }
             return null;
         }
-
-        public static int GetTileStyle(Tile tile)
-        {
-            TileObjectData data = GetData(tile);
-            if(data == null)
-            {
-                return -1;
-            }
-            if (data.StyleHorizontal)
-            {
-                return tile.TileFrameX / data.CoordinateFullWidth;
-            }
-            return tile.TileFrameY / data.CoordinateFullHeight;
-        }
     }
 }
