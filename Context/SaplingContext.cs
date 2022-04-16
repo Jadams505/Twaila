@@ -28,25 +28,25 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            return new TwailaTexture(ImageUtil.GetImageFromTileData(spriteBatch, Tile));
+            return new TwailaTexture(ImageUtil.GetImageFromTileData(spriteBatch, tile));
         }
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            Texture2D texture = ImageUtil.GetItemTexture(itemId) ?? GetTileImage(spriteBatch).Texture;
+            Texture2D texture = ImageUtil.GetItemTexture(itemId);
             return new TwailaTexture(texture);
         }
 
-        protected override string GetTileName(int itemId)
+        protected override string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForSapling(this) ?? base.GetTileName(itemId);
+            return NameUtil.GetNameForSapling(this) ?? base.GetTileName(tile, itemId);
         }
 
         private int GetSaplingTile()
         {
-            if (!TileID.Sets.TreeSapling[Tile.TileType])
+            if (!TileID.Sets.TreeSapling[Tile.TileId])
             {
                 return -1;
             }

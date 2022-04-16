@@ -39,10 +39,10 @@ namespace Twaila.UI
                     Enabled = false;
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
-                    if ((TwailaConfig.Get().UIDisplaySettings.HideUIForAir && currentContext.TileType == TileType.Empty) || 
-                        TileUtil.IsBlockedByAntiCheat(currentContext))
+                    if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
                     {
-                        if (!_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
+                        if ((currentContext.TileType == TileType.Empty) || TileUtil.IsBlockedByAntiCheat(currentContext) 
+                            && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
                             break;

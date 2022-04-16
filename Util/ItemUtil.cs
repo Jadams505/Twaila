@@ -9,34 +9,34 @@ namespace Twaila.Util
 {
     internal class ItemUtil
     {
-        public static int GetItemId(TileContext context)
+        public static int GetItemId(Tile tile, TileType type)
         {
-            if (context.TileType == TileType.Empty)
+            if (type == TileType.Empty)
             {
                 return -1;
             }
-            int id = GetManualItemId(context);
+            int id = GetManualItemId(tile, type);
             if (id != -1)
             {
                 return id;
             }
-            ModTile mTile = TileLoader.GetTile(context.Tile.TileType);
-            int style = CalculatedPlaceStyle(context.Tile);
-            ModWall mWall = WallLoader.GetWall(context.Tile.WallType);
-            if (context.TileType == TileType.Wall && mWall != null)
+            ModTile mTile = TileLoader.GetTile(tile.TileType);
+            int style = CalculatedPlaceStyle(tile);
+            ModWall mWall = WallLoader.GetWall(tile.WallType);
+            if (type == TileType.Wall && mWall != null)
             {
                 return mWall.ItemDrop;
             }
 
-            if ((context.TileType == TileType.Tile && mTile == null) || (context.TileType == TileType.Wall && mWall == null))
+            if ((type == TileType.Tile && mTile == null) || (type == TileType.Wall && mWall == null))
             {
                 Item item = new Item();
                 for (int i = 0; i < ItemID.Count; ++i)
                 {
                     item.SetDefaults(i);
-                    if(context.TileType == TileType.Tile)
+                    if(type == TileType.Tile)
                     {
-                        if (item.createTile == context.Tile.TileType || DoorHack(item, context.Tile))
+                        if (item.createTile == tile.TileType || DoorHack(item, tile))
                         {
                             id = item.type;
                             if (style == -1 || item.placeStyle == style)
@@ -45,9 +45,9 @@ namespace Twaila.Util
                             }
                         }
                     }
-                    else if(context.TileType == TileType.Wall)
+                    else if(type == TileType.Wall)
                     {
-                        if(item.createWall == context.Tile.WallType)
+                        if(item.createWall == tile.WallType)
                         {
                             return i;
                         }
@@ -55,13 +55,13 @@ namespace Twaila.Util
                 }
                 return id;
             }
-            bool multiTile = TileObjectData.GetTileData(context.Tile) != null;
+            bool multiTile = TileObjectData.GetTileData(tile) != null;
             if (mTile.ItemDrop == 0 && multiTile)
             {
                 for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i)
                 {
                     ModItem mItem = ItemLoader.GetItem(i);
-                    if (mItem != null && (mItem.Item.createTile == context.Tile.TileType || DoorHack(mItem.Item, context.Tile)))
+                    if (mItem != null && (mItem.Item.createTile == tile.TileType || DoorHack(mItem.Item, tile)))
                     {
                         id = mItem.Item.type;
                         if (style == -1 || mItem.Item.placeStyle == style)
@@ -127,11 +127,10 @@ namespace Twaila.Util
             return false;
         }
 
-        private static int GetManualItemId(TileContext context)
+        private static int GetManualItemId(Tile tile, TileType tileType)
         {
-            if(context.TileType == TileType.Tile)
+            if(tileType == TileType.Tile)
             {
-                Tile tile = context.Tile;
                 switch (tile.TileType)
                 {
                     case TileID.Plants:
@@ -222,9 +221,9 @@ namespace Twaila.Util
                         return ItemID.LifeFruit;
                 }
             }
-            else if(context.TileType == TileType.Liquid)
+            else if(tileType == TileType.Liquid)
             {
-                switch (context.Tile.LiquidType)
+                switch (tile.LiquidType)
                 {
                     case LiquidID.Water:
                         return ItemID.WaterBucket;

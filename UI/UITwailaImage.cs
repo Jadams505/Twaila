@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Twaila.Context;
@@ -106,26 +107,11 @@ namespace Twaila.UI
             return System.Math.Min(scaleX, scaleY) * image.Scale;
         }
 
-        public void SetImage(SpriteBatch spriteBatch, TileContext context, int itemId)
+        public void SetImage(TwailaTexture texture)
         {
-            if (TwailaUI.debugMode)
-            {
-                image = new TwailaTexture(ImageUtil.GetDebugImage(spriteBatch, context.Tile));
-                return;
-            }
-            if (TwailaConfig.Get().UseItemTextures)
-            {
-                TwailaTexture item = context.GetImage(spriteBatch, itemId);
-                image = item?.Texture != null ? item : context.GetImage(spriteBatch);
-            }
-            else
-            {
-                TwailaTexture tile = context.GetImage(spriteBatch);
-                image = tile?.Texture != null ? tile : context.GetImage(spriteBatch, itemId);
-            }
+            image = texture;
             if(image?.Texture == null)
             {
-                
                 image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
             }
         }

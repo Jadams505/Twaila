@@ -5,6 +5,7 @@ using Twaila.Util;
 using Twaila.ObjectData;
 using Terraria.ObjectData;
 using Twaila.Graphics;
+using Terraria.GameContent.Drawing;
 
 namespace Twaila.Context
 {
@@ -13,9 +14,42 @@ namespace Twaila.Context
         Tile, Wall, Liquid, Empty
     }
 
+    public class DummyTile
+    {
+        public int TileId { get; set; }
+        public int WallId { get; set; }
+        public int LiquidId { get; set; }
+        public int LiquidAmount { get; set; }
+        public int TileFrameX { get; set; }
+        public int TileFrameY { get; set; }
+        public bool HasTile { get; set; }
+
+        public DummyTile(Tile tile)
+        {
+            TileId = tile.TileType;
+            WallId = tile.WallType;
+            LiquidId = tile.LiquidType;
+            LiquidAmount = tile.LiquidAmount;
+            TileFrameX = tile.TileFrameX;
+            TileFrameY = tile.TileFrameY;
+            HasTile = tile.HasTile;
+        }
+
+        public DummyTile()
+        {
+            TileId = 0;
+            WallId = 0;
+            LiquidId = 0;
+            LiquidAmount = 0;
+            TileFrameX = 0;
+            TileFrameY = 0;
+            HasTile = false;
+        }
+    }
+
     public class TileContext
     {
-        public Tile Tile { get; private set; }
+        public DummyTile Tile { get; private set; }
 
         public Point Pos { get; private set; }
 
@@ -46,15 +80,14 @@ namespace Twaila.Context
         public TileContext()
         {
             Pos = Point.Zero;
-            Tile = new Tile();
+            Tile = new DummyTile();
             TileType = TileType.Empty;
         }
 
-        private Tile GetTileCopy()
+        private DummyTile GetTileCopy()
         {
-            Tile copy = new Tile();
-            copy.CopyFrom(Framing.GetTileSafely(Pos.X, Pos.Y));
-            return copy;
+            Tile tile = Framing.GetTileSafely(Pos.X, Pos.Y);
+            return new DummyTile(tile);
         }
 
         public bool ContextChanged(TileContext other)
@@ -71,38 +104,38 @@ namespace Twaila.Context
             return TileType != other.TileType;
         }
 
-        public string GetName(int itemId)
+        public string GetName(Tile tile, int itemId)
         {
             if (TileType == TileType.Tile)
             {
-                return GetTileName(itemId);
+                return GetTileName(tile, itemId);
             }
             if (TileType == TileType.Liquid)
             {
-                return GetLiquidName();
+                return GetLiquidName(tile);
             }
             if (TileType == TileType.Wall)
             {
-                return GetWallName(itemId);
+                return GetWallName(tile, itemId);
             }
             return "Default Name";
         }
 
-        public TwailaTexture GetImage(SpriteBatch spriteBatch)
+        public TwailaTexture GetImage(SpriteBatch spriteBatch, Tile tile)
         {
             if (TileType == TileType.Tile)
             {
-                return GetTileImage(spriteBatch);
+                return GetTileImage(spriteBatch, tile);
             }
             if (TileType == TileType.Liquid)
             {
-                return GetLiquidImage(spriteBatch);
+                return GetLiquidImage(spriteBatch, tile);
             }
             if (TileType == TileType.Wall)
             {
-                return GetWallImage(spriteBatch);
+                return GetWallImage(spriteBatch, tile);
             }
-            return GetTileImage(spriteBatch);
+            return GetTileImage(spriteBatch, tile);
         }
 
         public TwailaTexture GetImage(SpriteBatch spriteBatch, int itemId)
@@ -153,12 +186,12 @@ namespace Twaila.Context
 
         public bool HasWall()
         {
-            return Tile.WallType > 0;
+            return Tile.WallId > 0;
         }
 
         public bool HasTile()
         {
-            return Tile.HasTile && Tile.TileType >= 0;
+            return Tile.HasTile && Tile.TileId >= 0;
         }
 
         public bool HasLiquid()
@@ -170,15 +203,15 @@ namespace Twaila.Context
         {
             if (other.GetType() == GetType())
             {
-                if (TileType == TileType.Tile && Tile.TileType == other.Tile.TileType)
+                if (TileType == TileType.Tile && Tile.TileId == other.Tile.TileId)
                 {
                     return StyleChanged(other);
                 }
-                if (TileType == TileType.Wall && Tile.WallType == other.Tile.WallType)
+                if (TileType == TileType.Wall && Tile.WallId == other.Tile.WallId)
                 {
                     return false;
                 }
-                if (TileType == TileType.Liquid && Tile.LiquidType == other.Tile.LiquidType)
+                if (TileType == TileType.Liquid && Tile.LiquidId == other.Tile.LiquidId)
                 {
                     return false;
                 }
@@ -188,11 +221,12 @@ namespace Twaila.Context
 
         public virtual bool StyleChanged(TileContext other)
         {
-            TileObjectData oldData = ExtraObjectData.GetData(other.Tile), newData = ExtraObjectData.GetData(Tile);
+            TileObjectData oldData = ExtraObjectData.GetData(other.Tile.TileId, other.Tile.TileFrameY), 
+                newData = ExtraObjectData.GetData(Tile.TileId, Tile.TileFrameY);
             if (newData == null)
             {
-                oldData = TileObjectData.GetTileData(other.Tile);
-                newData = TileObjectData.GetTileData(Tile);
+                oldData = TileObjectData.GetTileData(other.Tile.TileId, 0); // test this
+                newData = TileObjectData.GetTileData(Tile.TileId, 0); // test this
             }
             if (newData == null || oldData == null)
             {
@@ -206,37 +240,37 @@ namespace Twaila.Context
             return oldRow != newRow || oldCol != newCol;
         }
 
-        protected virtual string GetTileName(int itemId)
+        protected virtual string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForManualTiles(Tile) ?? NameUtil.GetNameForChest(Tile) ?? NameUtil.GetNameFromItem(itemId)
-                ?? NameUtil.GetNameFromMap(this) ?? "Default Name";
+            return NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
+                ?? NameUtil.GetNameFromMap(tile, Pos.X, Pos.Y) ?? "Default Name";
         }
 
-        protected virtual string GetWallName(int itemId)
+        protected virtual string GetWallName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForManualWalls(Tile) ?? NameUtil.GetNameFromItem(itemId) ?? "Default Wall";
+            return NameUtil.GetNameForManualWalls(tile) ?? NameUtil.GetNameFromItem(itemId) ?? "Default Wall";
         }
 
-        protected virtual string GetLiquidName()
+        protected virtual string GetLiquidName(Tile tile)
         {
-            return NameUtil.GetNameForLiquids(Tile) ?? "Default Liquid";
+            return NameUtil.GetNameForLiquids(tile) ?? "Default Liquid";
         }
 
-        protected virtual TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected virtual TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            Texture2D texture = ImageUtil.GetImageCustom(spriteBatch, Tile) ?? ImageUtil.GetImageFromTileData(spriteBatch, Tile)
-                ?? ImageUtil.GetImageFromTile(spriteBatch, Tile);
+            Texture2D texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileData(spriteBatch, tile)
+                ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return new TwailaTexture(texture);
         }
 
-        protected virtual TwailaTexture GetWallImage(SpriteBatch spriteBatch)
+        protected virtual TwailaTexture GetWallImage(SpriteBatch spriteBatch, Tile tile)
         {
-            return new TwailaTexture(ImageUtil.GetWallImageFromTile(spriteBatch, Tile));
+            return new TwailaTexture(ImageUtil.GetWallImageFromTile(spriteBatch, tile));
         }
 
-        protected virtual TwailaTexture GetLiquidImage(SpriteBatch spriteBatch)
+        protected virtual TwailaTexture GetLiquidImage(SpriteBatch spriteBatch, Tile tile)
         {
-            return new TwailaTexture(ImageUtil.GetLiquidImageFromTile(spriteBatch, Tile));
+            return new TwailaTexture(ImageUtil.GetLiquidImageFromTile(spriteBatch, tile));
         }
 
         protected virtual TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)

@@ -34,10 +34,10 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
             float scale = 0.5f;
-            if (Tile.TileType == TileID.Trees)
+            if (tile.TileType == TileID.Trees)
             {
                 if (TileLoader.CanGrowModTree(TreeDirt))
                 {
@@ -49,7 +49,7 @@ namespace Twaila.Context
                     return new TwailaTexture(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, Pos.Y), scale);
                 }
             }
-            else if (Tile.TileType == TileID.MushroomTrees)
+            else if (tile.TileType == TileID.MushroomTrees)
             {
                 return new TwailaTexture(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
             }
@@ -58,17 +58,17 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return GetTileImage(spriteBatch);
+            return null;
         }
 
-        protected override string GetTileName(int itemId)
+        protected override string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForTree(this) ?? base.GetTileName(itemId);
+            return NameUtil.GetNameForTree(this) ?? base.GetTileName(tile, itemId);
         }
 
         private int GetTreeDirt()
         {
-            if (Tile.TileType != TileID.Trees)
+            if (Tile.TileId != TileID.Trees)
             {
                 return -1;
             }

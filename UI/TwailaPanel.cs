@@ -7,6 +7,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.UI;
 using Twaila.Context;
+using Twaila.Graphics;
 using Twaila.Util;
 
 namespace Twaila.UI
@@ -287,11 +288,6 @@ namespace Twaila.UI
         {
             _tick++;
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
-            if (currentContext.Tile.TileType != Context.Tile.TileType)
-            {
-                Main.NewText("Current: " + currentContext.Tile.TileType);
-                Main.NewText("Context: " + Context.Tile.TileType);
-            }
             if (!currentContext.ContentChanged(Context))
             {
                 currentContext.SetTileType(Context.TileType);
@@ -319,14 +315,28 @@ namespace Twaila.UI
                     return;
                 }
             }
-            
             if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
-                int itemId = ItemUtil.GetItemId(currentContext);
-                Name.SetText(currentContext.GetName(itemId));
+                Tile tile = Framing.GetTileSafely(currentContext.Pos);
+                int itemId = ItemUtil.GetItemId(tile, currentContext.TileType);
+                Name.SetText(currentContext.GetName(tile, itemId));
                 Mod.SetText(currentContext.GetMod());
-                Image.SetImage(spriteBatch, currentContext, itemId);
+                Image.SetImage(GetImage(spriteBatch, currentContext, tile, itemId));
                 Context = currentContext;
+            }
+        }
+
+        private static TwailaTexture GetImage(SpriteBatch spriteBatch, TileContext context, Tile tile, int itemId)
+        {
+            if (TwailaConfig.Get().UseItemTextures)
+            {
+                TwailaTexture item = context.GetImage(spriteBatch, itemId);
+                return item?.Texture != null ? item : context.GetImage(spriteBatch, tile);
+            }
+            else
+            {
+                TwailaTexture tileTexture = context.GetImage(spriteBatch, tile);
+                return tileTexture?.Texture != null ? tileTexture : context.GetImage(spriteBatch, itemId);
             }
         }
 

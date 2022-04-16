@@ -28,11 +28,11 @@ namespace Twaila.Util
             return name;
         }
 
-        public static string GetNameFromMap(TileContext context)
+        public static string GetNameFromMap(Tile tile, int x, int y)
         {
-            string mapName = Lang.GetMapObjectName(Main.Map[context.Pos.X, context.Pos.Y].Type);
-            int style = TileObjectData.GetTileStyle(context.Tile);
-            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(context.Tile.TileType, style == -1 ? 0 : style));
+            string mapName = Lang.GetMapObjectName(Main.Map[x, y].Type);
+            int style = TileObjectData.GetTileStyle(tile);
+            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(tile.TileType, style == -1 ? 0 : style));
             if (mapName != null && !mapName.Equals(""))
             {
                 return mapName;
@@ -387,7 +387,7 @@ namespace Twaila.Util
         {
             string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
             string toAppend = "";
-            if (context.Tile.TileType == TileID.Trees)
+            if (context.Tile.TileId == TileID.Trees)
             {
                 toAppend = " " + tree;
                 if (context.TreeDirt == TileID.Grass)
@@ -407,7 +407,7 @@ namespace Twaila.Util
         {
             string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
             string toAppend = "";
-            if (context.Tile.TileType == TileID.PalmTree)
+            if (context.Tile.TileId == TileID.PalmTree)
             {
                 toAppend = " " + palmTree;
                 if (context.PalmTreeSand == TileID.Sand)
@@ -429,7 +429,7 @@ namespace Twaila.Util
             string sapling = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Saplings, 0));
             string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
             string toAppend = "";
-            if (TileID.Sets.TreeSapling[context.Tile.TileType])
+            if (TileID.Sets.TreeSapling[context.Tile.TileId])
             {
                 if (TileLoader.CanGrowModPalmTree(context.SaplingDirt) || context.SaplingDirt == TileID.Crimsand || 
                     context.SaplingDirt == TileID.Ebonsand || context.SaplingDirt == TileID.Pearlsand)
@@ -460,7 +460,7 @@ namespace Twaila.Util
         public static string GetNameForCactus(CactusContext context)
         {
             string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
-            if (context.Tile.TileType == TileID.Cactus)
+            if (context.Tile.TileId == TileID.Cactus)
             {
                 if (context.CactusSand == -1)
                 {
@@ -527,14 +527,14 @@ namespace Twaila.Util
             switch (context.TileType)
             {
                 case TileType.Tile:
-                    ModTile mTile = TileLoader.GetTile(context.Tile.TileType);
+                    ModTile mTile = TileLoader.GetTile(context.Tile.TileId);
                     if (mTile != null)
                     {
                         return mTile.Mod.DisplayName;
                     }
                     break;
                 case TileType.Wall:
-                    ModWall mWall = WallLoader.GetWall(context.Tile.WallType);
+                    ModWall mWall = WallLoader.GetWall(context.Tile.WallId);
                     if(mWall != null)
                     {
                         return mWall.Mod.DisplayName;

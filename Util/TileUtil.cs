@@ -12,7 +12,7 @@ namespace Twaila.Util
             if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)
             {
                 Player player = Main.player[Main.myPlayer];
-                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.TileType])
+                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.TileId])
                 {
                     return false;
                 }

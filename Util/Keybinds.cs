@@ -49,7 +49,7 @@ namespace Twaila.Util
             
             if (info.JustPressed)
             {
-                Main.NewText(Main.tile[Player.tileTargetX, Player.tileTargetY]);
+                Main.NewText(Framing.GetTileSafely(TwailaUI.GetMousePos()));
             }
             
         }

@@ -29,9 +29,9 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            if (Tile.TileType == TileID.PalmTree)
+            if (tile.TileType == TileID.PalmTree)
             {
                 if (TileLoader.CanGrowModPalmTree(PalmTreeSand))
                 {
@@ -48,17 +48,17 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return GetTileImage(spriteBatch);
+            return null;
         }
 
-        protected override string GetTileName(int itemId)
+        protected override string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForPalmTree(this) ?? base.GetTileName(itemId);
+            return NameUtil.GetNameForPalmTree(this) ?? base.GetTileName(tile, itemId);
         }
 
         private int GetPalmTreeSand()
         {
-            if (Tile.TileType != TileID.PalmTree)
+            if (Tile.TileId != TileID.PalmTree)
             {
                 return -1;
             }

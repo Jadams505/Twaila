@@ -29,9 +29,9 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            if (Tile.TileType == TileID.Cactus)
+            if (tile.TileType == TileID.Cactus)
             {
                 if (TileLoader.CanGrowModCactus(CactusSand))
                 {
@@ -44,17 +44,17 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return GetTileImage(spriteBatch);
+            return null;
         }
 
-        protected override string GetTileName(int itemId)
+        protected override string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForCactus(this) ?? base.GetTileName(itemId);
+            return NameUtil.GetNameForCactus(this) ?? base.GetTileName(tile, itemId);
         }
 
         private int GetCactusSand()
         {
-            if (Tile.TileType != TileID.Cactus)
+            if (Tile.TileId != TileID.Cactus)
             {
                 return -1;
             }
