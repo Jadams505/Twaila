@@ -318,7 +318,7 @@ namespace Twaila.UI
             if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
                 Tile tile = Framing.GetTileSafely(currentContext.Pos);
-                int itemId = ItemUtil.GetItemId(tile, currentContext.TileType);
+                int itemId = ItemUtil.GetItemId(currentContext);
                 Name.SetText(currentContext.GetName(tile, itemId));
                 Mod.SetText(currentContext.GetMod());
                 Image.SetImage(GetImage(spriteBatch, currentContext, tile, itemId));

@@ -336,7 +336,7 @@ namespace Twaila.Util
 
         public static string GetNameForLiquids(Tile tile)
         {
-            if(tile.LiquidType > 0)
+            if(tile.LiquidAmount > 0)
             {
                 if(tile.LiquidType == LiquidID.Lava)
                 {

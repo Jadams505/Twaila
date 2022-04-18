@@ -22,6 +22,36 @@ namespace Twaila.Util
             return data;
         }
 
+        public static int GetTileStyle(DummyTile tile)
+        {
+            TileObjectData data = GetTileObjectData(tile);
+            if(data == null)
+            {
+                return -1;
+            }
+
+            int col = tile.TileFrameX / data.CoordinateFullWidth;
+            int row = tile.TileFrameY / data.CoordinateFullHeight;
+            int swl = data.StyleWrapLimit;
+            if (swl == 0)
+            {
+                swl = 1;
+            }
+
+            int style = (!data.StyleHorizontal) ? (col * swl + row) : (row * swl + col);
+            style /= data.StyleMultiplier;
+            return style;
+        }
+
+        public static void GetRealTileFrame(Tile tile, int posX, int posY, out int frameX, out int frameY)
+        {
+            short originalFrameX = tile.TileFrameX, originalFrameY = tile.TileFrameY;
+            Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType, ref originalFrameX, ref originalFrameY, out _, out _, out _,
+                out _, out int addX, out int addY, out _, out _, out _, out _);
+            frameX = originalFrameX + addX;
+            frameY = originalFrameY + addY;
+        }
+
         public static bool IsBlockedByAntiCheat(TileContext context)
         {
             if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)

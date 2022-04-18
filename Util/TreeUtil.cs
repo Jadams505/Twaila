@@ -32,17 +32,17 @@ namespace Twaila.Util
             switch (woodType)
             {
                 case ItemID.RichMahogany:
-                    if (depth <= Main.worldSurface) // underground jungle
+                    if (depth <= Main.worldSurface) // jungle
                     {
                         top = new Rectangle(236, 4, 112, 92);
                         topOffsetX = 42;
                         topOffsetY = 90;
                         break;
                     }
-                    else // jungle
+                    else // underground jungle
                     {
-                        top = new Rectangle(0, 0, 114, 94);
-                        topOffsetX = 46;
+                        top = new Rectangle(0, 2, 114, 94);
+                        topOffsetX = 48;
                         topOffsetY = 92;
                     }
                     break;
@@ -299,7 +299,7 @@ namespace Twaila.Util
                 case ItemID.RichMahogany:
                     if (depth >= Main.worldSurface)
                     {
-                        topTexture = TextureAssets.TreeTop[1].Value;
+                        topTexture = TextureAssets.TreeTop[13].Value;
                         woodTexture = TextureAssets.Wood[5].Value;
                         branchTexture = TextureAssets.TreeBranch[13].Value;
                         break;

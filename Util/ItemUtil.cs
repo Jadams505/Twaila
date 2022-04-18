@@ -1,93 +1,172 @@
-﻿using Terraria;
+﻿using System;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Twaila.Context;
-using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
     internal class ItemUtil
     {
-        public static int GetItemId(Tile tile, TileType type)
+        private class TileStylePair
         {
-            if (type == TileType.Empty)
+            public int Style { get; set; }
+            public int Id { get; set; }
+            public TileType Type { get; set; }
+
+            public TileStylePair(int id, int style, TileType type)
             {
-                return -1;
-            }
-            int id = GetManualItemId(tile, type);
-            if (id != -1)
-            {
-                return id;
-            }
-            ModTile mTile = TileLoader.GetTile(tile.TileType);
-            int style = CalculatedPlaceStyle(tile);
-            ModWall mWall = WallLoader.GetWall(tile.WallType);
-            if (type == TileType.Wall && mWall != null)
-            {
-                return mWall.ItemDrop;
+                Id = id;
+                Style = style;
+                Type = type;
             }
 
-            if ((type == TileType.Tile && mTile == null) || (type == TileType.Wall && mWall == null))
+            public override string ToString()
             {
-                Item item = new Item();
-                for (int i = 0; i < ItemID.Count; ++i)
-                {
-                    item.SetDefaults(i);
-                    if(type == TileType.Tile)
-                    {
-                        if (item.createTile == tile.TileType || DoorHack(item, tile))
-                        {
-                            id = item.type;
-                            if (style == -1 || item.placeStyle == style)
-                            {
-                                return i;
-                            }
-                        }
-                    }
-                    else if(type == TileType.Wall)
-                    {
-                        if(item.createWall == tile.WallType)
-                        {
-                            return i;
-                        }
-                    }
-                }
-                return id;
+                return $"Id: {Id} Style: {Style} Type: {Type}";
             }
-            bool multiTile = TileObjectData.GetTileData(tile) != null;
-            if (mTile.ItemDrop == 0 && multiTile)
+
+            public override bool Equals(object obj)
             {
-                for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i)
-                {
-                    ModItem mItem = ItemLoader.GetItem(i);
-                    if (mItem != null && (mItem.Item.createTile == tile.TileType || DoorHack(mItem.Item, tile)))
-                    {
-                        id = mItem.Item.type;
-                        if (style == -1 || mItem.Item.placeStyle == style)
-                        {
-                            return i;
-                        }
-                    }
-                }
+                return obj is TileStylePair pair &&
+                       Style == pair.Style &&
+                       Id == pair.Id &&
+                       Type == pair.Type;
             }
-            return mTile.ItemDrop == 0 ? id : mTile.ItemDrop;
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(Style, Id, Type);
+            }
         }
 
-        private static int CalculatedPlaceStyle(Tile tile)
+        private static Dictionary<TileStylePair, int> _tileToItemDictionary;
+
+        public static int GetItemId(TileContext context)
+        {
+            int id = GetManualItemId(context);
+            if(id != -1)
+            {
+                return id;
+            }
+            int style = CalculatedPlaceStyle(context.Tile);
+            return GetItemId(context.Tile, style, context.TileType);
+        }
+
+        internal static void LoadDictionary()
+        {
+            _tileToItemDictionary = new Dictionary<TileStylePair, int>();
+            Populate();
+        }
+
+        internal static void UnloadDictionary()
+        {
+            _tileToItemDictionary = null;
+        }
+
+        private static int GetItemId(DummyTile tile, int style, TileType type)
+        {
+            int id = -1;
+            switch (type)
+            {
+                case TileType.Tile:
+                    id = tile.TileId;
+                    break;
+                case TileType.Wall:
+                    id = tile.WallId;
+                    break;
+                case TileType.Liquid:
+                    id = tile.LiquidId;
+                    break;
+                default:
+                    return -1;
+            }
+            TileStylePair pair = new TileStylePair(id, style, type);
+            return _tileToItemDictionary.GetValueOrDefault(pair, -1);
+        }
+
+        private static void AddEntry(int id, int style, TileType type, int itemId)
+        {
+            TileStylePair pair = new TileStylePair(id, style, type);
+            if (!_tileToItemDictionary.TryAdd(pair, itemId))
+            {
+                //Twaila.Instance.Logger.Warn("Cannot use itemId: " + itemId + " becuase " + pair + " already exists!");
+            }
+        }
+
+        private static void Populate()
+        {
+            for (int i = 0; i < ItemID.Count; ++i) // vanilla items
+            {
+                Item item = new Item();
+                item.SetDefaults(i);
+                if (item.createTile != -1)
+                {
+                    if(item.createTile == TileID.ClosedDoor)
+                    {
+                        AddOpenDoorEntry(i);
+                    } 
+                    AddEntry(item.createTile, item.placeStyle, TileType.Tile, i);
+                }
+                if (item.createWall != -1)
+                {
+                    AddEntry(item.createWall, 0, TileType.Wall, i);
+                }
+            }
+            
+            for (int i = TileID.Count; i < TileLoader.TileCount; ++i) // modded tiles
+            {
+                ModTile mTile = TileLoader.GetTile(i);
+                if(mTile != null && mTile.ItemDrop != 0)
+                {
+                    AddEntry(i, 0, TileType.Tile, mTile.ItemDrop);
+                }
+            }
+            for(int i = WallID.Count; i < WallLoader.WallCount; ++i) // modded walls
+            {
+                ModWall mWall = WallLoader.GetWall(i);
+                if(mWall != null && mWall.ItemDrop != 0)
+                {
+                    AddEntry(i, 0, TileType.Wall, mWall.ItemDrop);
+                }
+            }
+            DummyTile dummyTile = new DummyTile();
+            for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i) // modded items
+            {
+                ModItem mItem = ItemLoader.GetItem(i);
+                if(mItem != null)
+                {
+                    dummyTile.TileId = mItem.Item.createTile;
+                    if(mItem.Item.createTile != -1 && TileUtil.GetTileObjectData(dummyTile) != null)
+                    {
+                        AddOpenDoorEntry(i);
+                        AddEntry(mItem.Item.createTile, mItem.Item.placeStyle, TileType.Tile, i);
+                    }
+                    if(mItem.Item.createWall != -1)
+                    {
+                        AddEntry(mItem.Item.createWall, 0, TileType.Wall, i);
+                    }
+                }
+            }
+            Twaila.Instance.Logger.Info(_tileToItemDictionary.Count + " Pairs Added");
+        }
+
+        private static int CalculatedPlaceStyle(DummyTile tile)
         {
             TileObjectData data = null;
-            int style = -1;
+            int style = 0;
             GetTileInfo(tile, ref style, ref data);
             int calculatedStyle = style;
             if (data != null)
             {
                 int doorStyle = GetPlaceStyleForDoor(tile);
-                if(doorStyle != -1)
+                if (doorStyle != -1)
                 {
                     return doorStyle;
-                }               
-                if (tile.TileType == TileID.Chandeliers)
+                }
+                if (tile.TileId == TileID.Chandeliers)
                 {
                     int row = style % data.StyleWrapLimit;
                     int col = style / data.StyleWrapLimit / 2 * data.StyleWrapLimit;
@@ -98,17 +177,19 @@ namespace Twaila.Util
         }
 
         // Assumes that modded doors do not wrap and that they follow the pattern of vanilla
-        private static int GetPlaceStyleForDoor(Tile tile)
+        private static int GetPlaceStyleForDoor(DummyTile tile)
         {
             TileObjectData data = TileUtil.GetTileObjectData(tile);
-            if (TileLoader.IsClosedDoor(tile))
+            ModTile mTile = TileLoader.GetTile(tile.TileId);
+
+            if ((mTile != null && mTile.OpenDoorID != -1) || tile.TileId == TileID.ClosedDoor)
             {
                 int row = tile.TileFrameY / data.CoordinateFullHeight;
                 int col = tile.TileFrameX / (data.CoordinateFullWidth * 3);
 
                 return row + col * data.StyleWrapLimit;
             }
-            else if(TileLoader.CloseDoorID(tile) > -1) // open door
+            else if((mTile != null && mTile.CloseDoorID != -1) || tile.TileId == TileID.OpenDoor)
             {
                 int row = tile.TileFrameY / data.CoordinateFullHeight;
                 int col = tile.TileFrameX / (data.CoordinateFullWidth * 2);
@@ -117,21 +198,78 @@ namespace Twaila.Util
             return -1;
         }
 
-        private static bool DoorHack(Item item, Tile tile)
+        private static void GetTileInfo(DummyTile tile, ref int style, ref TileObjectData data)
         {
-            int closeDoorId = TileLoader.CloseDoorID(tile);
-            if(closeDoorId > -1) // open door
+            data = TileUtil.GetTileObjectData(tile);
+            if (data != null)
             {
-                return item.createTile == closeDoorId;
+                int row = tile.TileFrameY / data.CoordinateFullHeight;
+                int col = tile.TileFrameX / data.CoordinateFullWidth;
+                if (data.Direction != Terraria.Enums.TileObjectDirection.None || tile.TileId == TileID.Timers)
+                {
+                    style = TileUtil.GetTileStyle(tile);
+                }
+                else if (data.StyleHorizontal)
+                {
+                    if (data.StyleMultiplier > 1)
+                    {
+                        style = row + col / data.StyleMultiplier;
+                    }
+                    else
+                    {
+                        style = col + row * data.StyleWrapLimit;
+                    }
+                }
+                else
+                {
+                    if (data.StyleMultiplier > 1)
+                    {
+                        style = col + row / data.StyleMultiplier;
+                    }
+                    else
+                    {
+                        style = row + col * data.StyleWrapLimit;
+                    }
+                }
             }
-            return false;
+            else
+            {
+                style = 0;
+            }
+        }
+        
+        /*
+            Uses the item id of a door item to add an entry for the open door tile.
+            This is necessary because no item places open door tiles only closed door tiles 
+        */
+        private static void AddOpenDoorEntry(int doorItemId)
+        {
+            ModItem mItem = ItemLoader.GetItem(doorItemId);
+            if(mItem != null)
+            {
+                ModTile mTile = TileLoader.GetTile(mItem.Item.createTile);
+                if(mTile != null && mTile.OpenDoorID != -1)
+                {
+                    AddEntry(mTile.OpenDoorID, mItem.Item.placeStyle, TileType.Tile, doorItemId);
+                }
+            }
+            else
+            {
+                Item item = new Item();
+                item.SetDefaults(doorItemId);
+                if(item.createTile == TileID.ClosedDoor)
+                {
+                    AddEntry(TileID.OpenDoor, item.placeStyle, TileType.Tile, doorItemId);
+                }
+            }
         }
 
-        private static int GetManualItemId(Tile tile, TileType tileType)
+        private static int GetManualItemId(TileContext context)
         {
-            if(tileType == TileType.Tile)
+            if(context.TileType == TileType.Tile)
             {
-                switch (tile.TileType)
+                DummyTile tile = context.Tile;
+                switch (tile.TileId)
                 {
                     case TileID.Plants:
                         if (tile.TileFrameX == 144) return ItemID.Mushroom;
@@ -221,59 +359,19 @@ namespace Twaila.Util
                         return ItemID.LifeFruit;
                 }
             }
-            else if(tileType == TileType.Liquid)
+            else if(context.TileType == TileType.Liquid)
             {
-                switch (tile.LiquidType)
+                switch (context.Tile.LiquidId)
                 {
                     case LiquidID.Water:
                         return ItemID.WaterBucket;
-                    case LiquidID.Lava:
-                        return ItemID.LavaBucket;
                     case LiquidID.Honey:
                         return ItemID.HoneyBucket;
+                    case LiquidID.Lava:
+                        return ItemID.LavaBucket;
                 }
             }
             return -1;
-        }
-
-        private static void GetTileInfo(Tile tile, ref int style, ref TileObjectData data)
-        {
-            data = TileUtil.GetTileObjectData(tile);
-            if(data != null)
-            {
-                int row = tile.TileFrameY / data.CoordinateFullHeight;
-                int col = tile.TileFrameX / data.CoordinateFullWidth;
-                if (data.Direction != Terraria.Enums.TileObjectDirection.None || tile.TileType == TileID.Timers)
-                {
-                    style = TileObjectData.GetTileStyle(tile);
-                }
-                else if (data.StyleHorizontal)
-                {
-                    if(data.StyleMultiplier > 1)
-                    {
-                        style = row + col / data.StyleMultiplier;
-                    }
-                    else
-                    {
-                        style = col + row * data.StyleWrapLimit;
-                    }
-                }
-                else
-                {
-                    if(data.StyleMultiplier > 1)
-                    {
-                        style = col + row / data.StyleMultiplier;
-                    }
-                    else
-                    {
-                        style = row + col * data.StyleWrapLimit;
-                    }
-                }
-            }
-            else
-            {
-                style = -1;
-            }
         }
     }
 }
