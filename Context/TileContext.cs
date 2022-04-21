@@ -252,8 +252,13 @@ namespace Twaila.Context
 
         protected virtual TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            Texture2D texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y)
-                ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
+            Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
+                    TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType);
+            if(texture != null)
+            {
+                return new TwailaTexture(texture, 0.5f);
+            }
+            texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return new TwailaTexture(texture);
         }
 

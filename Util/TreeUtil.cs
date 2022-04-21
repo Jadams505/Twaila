@@ -57,17 +57,129 @@ namespace Twaila.Util
                 bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
         }
 
-        public static Texture2D GetImageForModdedTree(SpriteBatch spriteBatch, int treeDirt)
+        public static Texture2D GetImageForVanityTree(SpriteBatch spriteBatch, int tileId)
+        {
+            int size = 20;
+            Texture2D topTexture;
+            Texture2D woodTexture = TextureAssets.Tile[tileId].Value;
+            Texture2D branchTexture;
+            Rectangle top;
+            Rectangle trunk1 = new Rectangle(44, 108, size, size);
+            Rectangle trunk2 = new Rectangle(88, 42, size, size);
+            Rectangle trunk3 = new Rectangle(66, 66, size, size);
+            Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
+            Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
+            Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
+            Rectangle bottomLeft = new Rectangle(44, 176, size, size);
+            Rectangle bottomRight = new Rectangle(22, 154, size, size);
+            int topOffsetX;
+            int topOffsetY;
+
+            switch (tileId)
+            {
+                case TileID.VanityTreeSakura:
+                    top = new Rectangle(125, 16, 106, 86);
+                    topTexture = TextureAssets.TreeTop[29].Value;
+                    branchTexture = TextureAssets.TreeBranch[29].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 78;
+                    break;
+                case TileID.VanityTreeYellowWillow:
+                    top = new Rectangle(124, 0, 116, 94);
+                    topTexture = TextureAssets.TreeTop[30].Value;
+                    branchTexture = TextureAssets.TreeBranch[30].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 92;
+                    break;
+                default:
+                    return null;
+            }
+
+            return BuildImageForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
+                bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+        }
+
+        public static Texture2D GetImageForGemTree(SpriteBatch spriteBatch, int tileId)
+        {
+            int size = 20;
+            Texture2D topTexture;
+            Texture2D woodTexture = TextureAssets.Tile[tileId].Value;
+            Texture2D branchTexture;
+            Rectangle top;
+            Rectangle trunk1 = new Rectangle(44, 108, size, size);
+            Rectangle trunk2 = new Rectangle(88, 42, size, size);
+            Rectangle trunk3 = new Rectangle(66, 66, size, size);
+            Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
+            Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
+            Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
+            int topOffsetX;
+            int topOffsetY;
+            switch (tileId)
+            {
+                case TileID.TreeTopaz:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[22].Value;
+                    branchTexture = TextureAssets.TreeBranch[22].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                case TileID.TreeAmethyst:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[23].Value;
+                    branchTexture = TextureAssets.TreeBranch[23].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                case TileID.TreeSapphire:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[24].Value;
+                    branchTexture = TextureAssets.TreeBranch[24].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                case TileID.TreeEmerald:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[25].Value;
+                    branchTexture = TextureAssets.TreeBranch[25].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                case TileID.TreeRuby:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[26].Value;
+                    branchTexture = TextureAssets.TreeBranch[26].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                case TileID.TreeDiamond:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[27].Value;
+                    branchTexture = TextureAssets.TreeBranch[27].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                case TileID.TreeAmber:
+                    top = new Rectangle(2, 0, 114, 96);
+                    topTexture = TextureAssets.TreeTop[28].Value;
+                    branchTexture = TextureAssets.TreeBranch[28].Value;
+                    topOffsetX = 44;
+                    topOffsetY = 94;
+                    break;
+                default:
+                    return null;
+            }
+            return BuildImageForGemTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, 
+                bottomMiddle, topTexture, woodTexture, branchTexture);
+        }
+
+        public static Texture2D GetImageForModdedTree(SpriteBatch spriteBatch, Tile treeDirt)
         {
             int size = 20;
             int unimplemented = 0;
             int frame = 0, fWidth = 82, fHeight = 80, xOffset = 30, yOffset = 78;
-            Tile dirtTile = new Tile();
-            dirtTile.HasTile = true;
-            dirtTile.TileType = (ushort)treeDirt;
-            Texture2D topTexture = TileLoader.GetTreeTopTextures(treeDirt, 82, 0, ref frame, ref fWidth, ref fHeight, ref xOffset, ref yOffset);
-            Texture2D woodTexture = TileLoader.GetTreeTexture(dirtTile);
-            Texture2D branchTexture = TileLoader.GetTreeBranchTextures(treeDirt, 0, 0, 0, ref unimplemented);
+            Texture2D topTexture = TileLoader.GetTreeTopTextures(treeDirt.TileType, 82, 0, ref frame, ref fWidth, ref fHeight, ref xOffset, ref yOffset);
+            Texture2D woodTexture = TileLoader.GetTreeTexture(treeDirt);
+            Texture2D branchTexture = TileLoader.GetTreeBranchTextures(treeDirt.TileType, 0, 0, 0, ref unimplemented);
             Rectangle top = new Rectangle(frame * fWidth, 0, fWidth, fHeight);
             Rectangle trunk1 = new Rectangle(44, 108, size, size);
             Rectangle trunk2 = new Rectangle(88, 42, size, size);
@@ -209,6 +321,62 @@ namespace Twaila.Util
             return builder.Build(spriteBatch.GraphicsDevice);
         }
 
+        public static Texture2D GetImageForBamboo(SpriteBatch spriteBatch, int tileId)
+        {
+            if(tileId == TileID.Bamboo)
+            {
+                Texture2D texture = ImageUtil.GetTileTexture(tileId);
+                int size = 16;
+                int padding = 2;
+
+                int bottomStyle = 1;
+                int middle1Style = 12;
+                int middle2Style = 10;
+                int topStyle = 17;
+
+                Point drawPos = Point.Zero;
+
+                TextureBuilder builder = new TextureBuilder();
+                builder.AddComponent(new Rectangle(topStyle * (size + padding), 0, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle(middle1Style * (size + padding), 0, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle(middle2Style * (size + padding), 0, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle(bottomStyle * (size + padding), 0, size, size), texture, drawPos);
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForSeaweed(SpriteBatch spriteBatch, int tileId)
+        {
+            if (tileId == TileID.Seaweed)
+            {
+                Texture2D texture = ImageUtil.GetTileTexture(tileId);
+                int size = 16;
+                int padding = 2;
+
+                int bottomStyle = 1;
+                int middle1Style = 5;
+                int middle2Style = 4;
+                int topStyle = 12;
+
+                Point drawPos = Point.Zero;
+
+                TextureBuilder builder = new TextureBuilder();
+                builder.AddComponent(new Rectangle(topStyle * (size + padding), 0, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle(middle1Style * (size + padding), 0, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle(middle2Style * (size + padding), 0, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle(bottomStyle * (size + padding), 0, size, size), texture, drawPos);
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
+        }
+
         public static int GetTreeWood(int treeDirt)
         {
             switch (treeDirt)
@@ -260,6 +428,27 @@ namespace Twaila.Util
             builder.AddComponent(bottomMiddle, woodTexture, drawPos);
             builder.AddComponent(bottomLeft, woodTexture, new Point(drawPos.X - unit, drawPos.Y));
             builder.AddComponent(bottomRight, woodTexture, new Point(drawPos.X + unit, drawPos.Y));
+            return builder.Build(spriteBatch.GraphicsDevice);
+        }
+
+        private static Texture2D BuildImageForGemTree(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
+            Rectangle trunk2, Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle, Texture2D topTexture, Texture2D woodTexture, Texture2D branchTexture)
+        {
+            int unit = 16;
+            TextureBuilder builder = new TextureBuilder();
+            Point drawPos = Point.Zero;
+            builder.AddComponent(top, topTexture, drawPos);
+            drawPos.X += topOffsetX;
+            drawPos.Y += topOffsetY;
+            builder.AddComponent(trunk1, woodTexture, drawPos);
+            drawPos.Y += unit;
+            builder.AddComponent(trunk2, woodTexture, drawPos);
+            builder.AddComponent(leftBranch, branchTexture, new Point(drawPos.X - 38, drawPos.Y - 12));
+            drawPos.Y += unit;
+            builder.AddComponent(trunk3, woodTexture, drawPos);
+            builder.AddComponent(rightBranch, branchTexture, new Point(drawPos.X + 18, drawPos.Y - 12));
+            drawPos.Y += unit;
+            builder.AddComponent(bottomMiddle, woodTexture, drawPos);
             return builder.Build(spriteBatch.GraphicsDevice);
         }
 

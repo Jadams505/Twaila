@@ -15,7 +15,7 @@ namespace Twaila.Context
 
         public TreeContext(Point pos) : base(pos)
         {
-            TreeDirt = GetTreeDirt();
+            TreeDirt = GetTreeDirt(out _);
         }
 
         public override bool ContentChanged(TileContext other)
@@ -41,7 +41,9 @@ namespace Twaila.Context
             {
                 if (TileLoader.CanGrowModTree(TreeDirt))
                 {
-                    return new TwailaTexture(TreeUtil.GetImageForModdedTree(spriteBatch, TreeDirt), scale);
+                    GetTreeDirt(out Tile? dirtTile);
+                    Texture2D treeTexture = dirtTile != null ? TreeUtil.GetImageForModdedTree(spriteBatch, dirtTile.Value) : null;
+                    return new TwailaTexture(treeTexture, scale);
                 }
                 int treeWood = TreeUtil.GetTreeWood(TreeDirt);
                 if (treeWood != -1)
@@ -66,10 +68,11 @@ namespace Twaila.Context
             return NameUtil.GetNameForTree(this) ?? base.GetTileName(tile, itemId);
         }
 
-        private int GetTreeDirt()
+        private int GetTreeDirt(out Tile? dirtTile)
         {
             if (Tile.TileId != TileID.Trees)
             {
+                dirtTile = null;
                 return -1;
             }
             int x = Pos.X, y = Pos.Y;
@@ -88,8 +91,10 @@ namespace Twaila.Context
 
             if (!Main.tile[x, y].HasTile)
             {
+                dirtTile = null;
                 return -1;
             }
+            dirtTile = Main.tile[x, y];
             return Main.tile[x, y].TileType;
         }
     }

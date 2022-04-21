@@ -172,6 +172,28 @@ namespace Twaila.Util
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.SandDrip, 0));
                 case TileID.Pumpkins:
                     return Lang.GetItemNameValue(ItemID.Pumpkin);
+                case TileID.VanityTreeSakura:
+                    return GetNameFromItem(ItemID.VanityTreeSakuraSeed).Replace("Sapling", "Tree");
+                case TileID.VanityTreeYellowWillow:
+                    return GetNameFromItem(ItemID.VanityTreeYellowWillowSeed).Replace("Sapling", "Tree");
+                case TileID.TreeTopaz:
+                    return GetNameFromItem(ItemID.Topaz) + " Tree";
+                case TileID.TreeAmethyst:
+                    return GetNameFromItem(ItemID.Amethyst) + " Tree";
+                case TileID.TreeSapphire:
+                    return GetNameFromItem(ItemID.Sapphire) + " Tree";
+                case TileID.TreeEmerald:
+                    return GetNameFromItem(ItemID.Emerald) + " Tree";
+                case TileID.TreeRuby:
+                    return GetNameFromItem(ItemID.Ruby) + " Tree";
+                case TileID.TreeDiamond:
+                    return GetNameFromItem(ItemID.Diamond) + " Tree";
+                case TileID.TreeAmber:
+                    return GetNameFromItem(ItemID.Amber) + " Tree";
+                case TileID.Bamboo:
+                    return GetNameFromItem(ItemID.BambooBlock);
+                case TileID.Seaweed:
+                    return GetNameFromItem(ItemID.Seaweed);
             }
             return null;
         }

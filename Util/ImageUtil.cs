@@ -86,8 +86,9 @@ namespace Twaila.Util
 
         public static Texture2D GetImageCustom(SpriteBatch spriteBatch, Tile tile)
         {
-            return GetImageForCampfire(spriteBatch, tile) ?? GetImageForHerbs(spriteBatch, tile) ?? 
-                GetImageForXmasTree(spriteBatch, tile);
+            return GetImageForCampfire(spriteBatch, tile) ?? GetImageForHerbs(spriteBatch, tile) ??
+                GetImageForXmasTree(spriteBatch, tile) ?? TreeUtil.GetImageForBamboo(spriteBatch, tile.TileType)
+                ?? TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType);
         }
 
         /*
