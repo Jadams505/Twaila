@@ -206,6 +206,13 @@ namespace Twaila.Util
         {
             switch (tile.TileId)
             {
+                case TileID.Statues:
+                    int style = TileUtil.GetTileStyle(tile);
+                    if(tile.TileFrameY >= 162)
+                    {
+                        return style - 165;
+                    }
+                    return style;
                 case TileID.DisplayDoll:
                     if(tile.TileFrameX >= 72 && tile.TileFrameX <= 126)
                     {
