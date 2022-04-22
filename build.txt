@@ -1,5 +1,5 @@
 displayName = TWAILA
 author = Jadams
-version = 0.1.1.0
+version = 0.1.2.0
 homepage = https://forums.terraria.org/index.php?threads/twaila-mod.111090/
 side = Client

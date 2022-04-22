@@ -33,6 +33,8 @@ This mod is currently in development and is not complete
 - Cycle UI Display Mode (Mouse3 by default): Cycles through the UIDisplay options
 
 [Changelog]
+v0.1.2.0 (4/22/2022)
+- Fixed the majority of 1.4 tiles
 v0.1.1.0 (4/20/2022)
 - Fixed vanity and gem trees
 - Fixed bamboo and seaweed
