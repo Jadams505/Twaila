@@ -88,7 +88,10 @@ namespace Twaila.Util
         {
             return GetImageForCampfire(spriteBatch, tile) ?? GetImageForHerbs(spriteBatch, tile) ??
                 GetImageForXmasTree(spriteBatch, tile) ?? TreeUtil.GetImageForBamboo(spriteBatch, tile.TileType)
-                ?? TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType);
+                ?? TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType) ?? GetImageForMannequins(spriteBatch, tile)
+                ?? GetImageForSnakeRope(spriteBatch, tile.TileType) ?? GetImageForCattail(spriteBatch, tile)
+                ?? GetImageForRelic(spriteBatch, tile) ?? GetImageForPylon(spriteBatch, tile) ??
+                GetImageForVoidVault(spriteBatch, tile);
         }
 
         /*
@@ -161,6 +164,119 @@ namespace Twaila.Util
                     mutableFrameY = 0; // sets the frameY to what it would be if it had no decorations
                 }
                 return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForMannequins(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.TileType == TileID.DisplayDoll)
+            {
+                TileObjectData data = TileUtil.GetTileObjectData(tile);
+                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForSnakeRope(SpriteBatch spriteBatch, int tileId)
+        {
+            if(tileId == TileID.MysticSnakeRope)
+            {
+                TextureBuilder builder = new TextureBuilder();
+                Texture2D texture = GetTileTexture(tileId);
+                int size = 16;
+                int padding = 2;
+                for(int i = 0; i < 3; ++i)
+                {
+                    builder.AddComponent(new Rectangle(size + padding, 0 + i * (size + padding), size, size), texture, 
+                        new Point(0, 0 + i * size));
+                }
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForCattail(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.TileType == TileID.Cattail)
+            {
+                TextureBuilder builder = new TextureBuilder();
+                Texture2D texture = GetTileTexture(tile.TileType);
+                int size = 16;
+                int padding = 2;
+                int bottomStyle = 4;
+                int middleStyle = 8;
+                int topStyle = 11;
+
+                Point drawPos = Point.Zero;
+                builder.AddComponent(new Rectangle((size + padding) * topStyle, tile.TileFrameY, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle((size + padding) * middleStyle, tile.TileFrameY, size, size), texture, drawPos);
+                drawPos.Y += size;
+                builder.AddComponent(new Rectangle((size + padding) * bottomStyle, tile.TileFrameY, size, size), texture, drawPos);
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForRelic(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.TileType == TileID.MasterTrophyBase)
+            {
+                Texture2D baseTexture = GetTileTexture(tile.TileType);
+                Texture2D relicTexture = TextureAssets.Extra[198].Value;
+                int size = 48;
+                int padding = 2;
+                int frameY = tile.TileFrameX / 54 * (size + padding);
+
+                Point drawPos = Point.Zero;
+                TextureBuilder builder = new TextureBuilder();
+                builder.AddComponent(new Rectangle(0, frameY, size, size), relicTexture, drawPos);
+                drawPos.Y += size;
+                for(int i = 0; i < 3; ++i)
+                {
+                    builder.AddComponent(new Rectangle(i * 18, 54, 16, 16), baseTexture, drawPos);
+                    drawPos.X += 16;
+                }
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForPylon(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.TileType == TileID.TeleportationPylon)
+            {
+                Texture2D baseTexture = GetTileTexture(tile.TileType);
+                Texture2D pylonTexture = TextureAssets.Extra[181].Value;
+                int pylonWidth = 28, pylonHeight = 44;
+                int padding = 2;
+                int frameX = 90 + (tile.TileFrameX / 54 * (pylonWidth + padding));
+
+                Point drawPos = Point.Zero;
+                TextureBuilder builder = new TextureBuilder();             
+                int startY = 18;
+                int startX = tile.TileFrameX / 54 * 54;
+                for (int row = 0; row < 3; ++row)
+                {
+                    for (int col = 0; col < 3; ++col)
+                    {
+                        builder.AddComponent(new Rectangle(startX + (col * 18), startY + (row * 18), 16, 16), baseTexture, new Point(16 * col, row * 16));
+                    }
+                }
+                drawPos.X += 10;
+                drawPos.Y -= 16;
+                builder.AddComponent(new Rectangle(frameX, 0, pylonWidth, pylonHeight), pylonTexture, drawPos);
+                return builder.Build(spriteBatch.GraphicsDevice);
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForVoidVault(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(tile.TileType == TileID.VoidVault)
+            {
+                return GetImageFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
             }
             return null;
         }

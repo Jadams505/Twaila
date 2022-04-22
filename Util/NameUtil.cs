@@ -99,25 +99,23 @@ namespace Twaila.Util
                 case TileID.Stalactite:
                     return "Stalactite";
                 case TileID.GreenMoss:
-                    return "Green Moss";
+                    return GetNameFromItem(ItemID.GreenMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
                 case TileID.BrownMoss:
-                    return "Brown Moss";
+                    return GetNameFromItem(ItemID.BrownMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
                 case TileID.RedMoss:
-                    return "Red Moss";
+                    return GetNameFromItem(ItemID.RedMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
                 case TileID.BlueMoss:
-                    return "Blue Moss";
+                    return GetNameFromItem(ItemID.BlueMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
                 case TileID.PurpleMoss:
-                    return "Purple Moss";
+                    return GetNameFromItem(ItemID.PurpleMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
                 case TileID.LavaMoss:
-                    return "Lava Moss";
-                case TileID.LongMoss:
-                    if (tile.TileFrameX < 22) return "Green Moss";
-                    else if (tile.TileFrameX < 44) return "Brown Moss";
-                    else if (tile.TileFrameX < 66) return "Red Moss";
-                    else if (tile.TileFrameX < 88) return "Blue Moss";
-                    else if (tile.TileFrameX < 110) return "Purple Moss";
-                    else if (tile.TileFrameX < 132) return "Lava Moss";
-                    break;
+                    return GetNameFromItem(ItemID.LavaMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+                case TileID.KryptonMoss:
+                    return GetNameFromItem(ItemID.KryptonMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+                case TileID.XenonMoss:
+                    return GetNameFromItem(ItemID.XenonMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+                case TileID.ArgonMoss:
+                    return GetNameFromItem(ItemID.ArgonMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
                 case TileID.SmallPiles:
                     if(tile.TileFrameY == 18)
                     {
@@ -172,6 +170,46 @@ namespace Twaila.Util
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.SandDrip, 0));
                 case TileID.Pumpkins:
                     return Lang.GetItemNameValue(ItemID.Pumpkin);
+                case TileID.GolfGrass:
+                    return "Mowed Grass";
+                case TileID.GolfGrassHallowed:
+                    return "Mowed Hallowed Grass";
+                case TileID.MysticSnakeRope:
+                    return "Snake Rope";
+                case TileID.GreenMossBrick:
+                    return GetNameFromItem(ItemID.GreenMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.BrownMossBrick:
+                    return GetNameFromItem(ItemID.BrownMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.RedMossBrick:
+                    return GetNameFromItem(ItemID.RedMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.BlueMossBrick:
+                    return GetNameFromItem(ItemID.BlueMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.PurpleMossBrick:
+                    return GetNameFromItem(ItemID.PurpleMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.LavaMossBrick:
+                    return GetNameFromItem(ItemID.LavaMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.KryptonMossBrick:
+                    return GetNameFromItem(ItemID.KryptonMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.XenonMossBrick:
+                    return GetNameFromItem(ItemID.XenonMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.ArgonMossBrick:
+                    return GetNameFromItem(ItemID.ArgonMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+                case TileID.LilyPad:
+                    return "Lily Pad";
+                case TileID.Cattail:
+                    return "Cattail";
+                case TileID.MushroomVines:
+                    return "Hanging Mushroom";
+                case TileID.SeaOats:
+                    return "Sea Oats";
+                case TileID.OasisPlants:
+                    return "Oasis Plant";
+                case TileID.Sandcastles:
+                    return "Sandcastle";
+                case TileID.Grate:
+                    return "Open Grate";
+                case TileID.GrateClosed:
+                    return "Closed Grate";
                 case TileID.VanityTreeSakura:
                     return GetNameFromItem(ItemID.VanityTreeSakuraSeed).Replace("Sapling", "Tree");
                 case TileID.VanityTreeYellowWillow:

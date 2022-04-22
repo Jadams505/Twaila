@@ -47,12 +47,14 @@ namespace Twaila.ObjectData
             data2.StyleHorizontal = true;
             AddEntry(TileID.ExposedGems, data2);
             AddEntry(TileID.WirePipe, data2);
+            AddEntry(TileID.LilyPad, data2);
 
             TileObjectData data3 = new TileObjectData(TileObjectData.Style1x1);
             data3.CoordinateHeights = new int[] { 16 };
             data3.StyleHorizontal = true;
             data3.CoordinateWidth = 20;
             AddEntry(TileID.LongMoss, data3);
+            AddEntry(TileID.AbigailsFlower, data3);
 
             TileObjectData data4 = new TileObjectData(TileObjectData.Style1x1);
             data4.CoordinateWidth = 16;
@@ -71,7 +73,9 @@ namespace Twaila.ObjectData
             AddEntry(TileID.Plants2, data5);
             AddEntry(TileID.JunglePlants2, data5);
             AddEntry(TileID.HallowedPlants2, data5);
+            AddEntry(TileID.SeaOats, data5);
         }
+
         private static void Add2x1()
         {
             TileObjectData data = new TileObjectData();
@@ -107,6 +111,12 @@ namespace Twaila.ObjectData
             data.CopyFrom(TileObjectData.Style3x2);
             data.CoordinateHeights = new int[] { 16, 18 };
             AddEntry(TileID.TinkerersWorkbench, data);
+
+            TileObjectData data2 = new TileObjectData(TileObjectData.Style3x2);
+            data.CoordinateHeights = new int[] { 16, 16 };
+            data.CoordinateWidth = 16;
+            data.StyleHorizontal = true;
+            AddEntry(TileID.OasisPlants, data2);
         }
 
         private static void Add3x3()

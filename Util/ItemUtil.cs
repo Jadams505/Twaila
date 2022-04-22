@@ -156,7 +156,11 @@ namespace Twaila.Util
         private static int CalculatedPlaceStyle(DummyTile tile)
         {
             TileObjectData data = null;
-            int style = 0;
+            int style = GetCustomPlaceStyle(tile);
+            if(style != -1)
+            {
+                return style;
+            }
             GetTileInfo(tile, ref style, ref data);
             int calculatedStyle = style;
             if (data != null)
@@ -194,6 +198,42 @@ namespace Twaila.Util
                 int row = tile.TileFrameY / data.CoordinateFullHeight;
                 int col = tile.TileFrameX / (data.CoordinateFullWidth * 2);
                 return row + col * 36;
+            }
+            return -1;
+        }
+
+        private static int GetCustomPlaceStyle(DummyTile tile)
+        {
+            switch (tile.TileId)
+            {
+                case TileID.DisplayDoll:
+                    if(tile.TileFrameX >= 72 && tile.TileFrameX <= 126)
+                    {
+                        return 2;
+                    }
+                    if(tile.TileFrameX >= 0 && tile.TileFrameX < 72)
+                    {
+                        return 0;
+                    }
+                    break;
+                case TileID.WeaponsRack2:
+                    return 0;
+                case TileID.HatRack:
+                    return 0;
+                case TileID.AntlionLarva:
+                    return 0;
+                case TileID.CatBast:
+                    return 0;
+                case TileID.FoodPlatter:
+                    return 0;
+                case TileID.LawnFlamingo:
+                    return 0;
+                case TileID.Sandcastles:
+                    return 0;
+                case TileID.GardenGnome:
+                    return 0;
+                case TileID.RockGolemHead:
+                    return 0;
             }
             return -1;
         }
@@ -357,6 +397,21 @@ namespace Twaila.Util
                         break;
                     case TileID.LifeFruit:
                         return ItemID.LifeFruit;
+                    case TileID.LongMoss:
+                        if (tile.TileFrameX < 22) return ItemID.GreenMoss;
+                        else if (tile.TileFrameX < 44) return ItemID.BrownMoss;
+                        else if (tile.TileFrameX < 66) return ItemID.RedMoss;
+                        else if (tile.TileFrameX < 88) return ItemID.BlueMoss;
+                        else if (tile.TileFrameX < 110) return ItemID.PurpleMoss;
+                        else if (tile.TileFrameX < 132) return ItemID.LavaMoss;
+                        else if (tile.TileFrameX < 154) return ItemID.KryptonMoss;
+                        else if (tile.TileFrameX < 176) return ItemID.XenonMoss;
+                        else if (tile.TileFrameX < 198) return ItemID.ArgonMoss;
+                        break;
+                    case TileID.GrateClosed:
+                        return ItemID.Grate;
+                    case TileID.AmberStoneBlock:
+                        return ItemID.Amber;
                 }
             }
             else if(context.TileType == TileType.Liquid)
