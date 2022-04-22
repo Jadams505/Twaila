@@ -242,7 +242,7 @@ namespace Twaila.Context
 
         protected virtual string GetWallName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForManualWalls(tile) ?? NameUtil.GetNameFromItem(itemId) ?? "Default Wall";
+            return NameUtil.GetNameFromItem(itemId) ?? "Default Wall";
         }
 
         protected virtual string GetLiquidName(Tile tile)

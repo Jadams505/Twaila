@@ -388,6 +388,7 @@ namespace Twaila.Util
                     return ItemID.RichMahogany;
                 case TileID.HallowedGrass:
                 case TileID.Pearlsand:
+                case TileID.GolfGrassHallowed:
                     return ItemID.Pearlwood;
                 case TileID.SnowBlock:
                     return ItemID.BorealWood;
@@ -397,6 +398,7 @@ namespace Twaila.Util
                 case TileID.MushroomGrass:
                     return ItemID.GlowingMushroom;
                 case TileID.Grass:
+                case TileID.GolfGrass:
                     return ItemID.Wood;
                 case TileID.Sand:
                     return ItemID.PalmWood;

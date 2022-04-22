@@ -206,6 +206,13 @@ namespace Twaila.Util
         {
             switch (tile.TileId)
             {
+                case TileID.Campfire:
+                    int campfireStyle = TileUtil.GetTileStyle(tile);
+                    if(tile.TileFrameY >= 54)
+                    {
+                        return campfireStyle - 14;
+                    }
+                    return campfireStyle;
                 case TileID.Statues:
                     int style = TileUtil.GetTileStyle(tile);
                     if(tile.TileFrameY >= 162)
@@ -419,6 +426,182 @@ namespace Twaila.Util
                         return ItemID.Grate;
                     case TileID.AmberStoneBlock:
                         return ItemID.Amber;
+                }
+            }
+            else if(context.TileType == TileType.Wall)
+            {
+                switch (context.Tile.WallId)
+                {
+                    case WallID.DirtUnsafe:
+                        return ItemID.DirtWall;
+                    case WallID.EbonstoneUnsafe:
+                        return ItemID.EbonstoneEcho;
+                    case WallID.BlueDungeonUnsafe:
+                        return ItemID.BlueBrickWall;
+                    case WallID.GreenDungeonUnsafe:
+                        return ItemID.GreenBrickWall;
+                    case WallID.PinkDungeonUnsafe:
+                        return ItemID.PinkBrickWall;
+                    case WallID.HellstoneBrickUnsafe:
+                        return ItemID.HellstoneBrickWall;
+                    case WallID.ObsidianBrickUnsafe:
+                        return ItemID.ObsidianBrickWall;
+                    case WallID.MudUnsafe:
+                        return ItemID.MudWallEcho;
+                    case WallID.PearlstoneBrickUnsafe:
+                        return ItemID.PearlstoneEcho;
+                    case WallID.SnowWallUnsafe:
+                        return ItemID.SnowWallEcho;
+                    case WallID.AmethystUnsafe:
+                        return ItemID.AmethystEcho;
+                    case WallID.TopazUnsafe:
+                        return ItemID.TopazEcho;
+                    case WallID.SapphireUnsafe:
+                        return ItemID.SapphireEcho;
+                    case WallID.EmeraldUnsafe:
+                        return ItemID.EmeraldEcho;
+                    case WallID.RubyUnsafe:
+                        return ItemID.RubyEcho;
+                    case WallID.DiamondUnsafe:
+                        return ItemID.DiamondEcho;
+                    case WallID.CaveUnsafe:
+                        return ItemID.Cave1Echo;
+                    case WallID.Cave2Unsafe:
+                        return ItemID.Cave2Echo;
+                    case WallID.Cave3Unsafe:
+                        return ItemID.Cave3Echo;
+                    case WallID.Cave4Unsafe:
+                        return ItemID.Cave4Echo;
+                    case WallID.Cave5Unsafe:
+                        return ItemID.Cave5Echo;
+                    case WallID.Cave6Unsafe:
+                        return ItemID.Cave6Echo;
+                    case WallID.LivingLeaf:
+                        return ItemID.LivingLeafWall;
+                    case WallID.Cave7Unsafe:
+                        return ItemID.Cave7Echo;
+                    case WallID.SpiderUnsafe:
+                        return ItemID.SpiderEcho;
+                    case WallID.GrassUnsafe:
+                        return ItemID.GrassWall;
+                    case WallID.JungleUnsafe:
+                        return ItemID.JungleWall;
+                    case WallID.FlowerUnsafe:
+                        return ItemID.FlowerWall;
+                    case WallID.CorruptGrassUnsafe:
+                        return ItemID.CorruptGrassEcho;
+                    case WallID.HallowedGrassUnsafe:
+                        return ItemID.HallowedGrassEcho;
+                    case WallID.IceUnsafe:
+                        return ItemID.IceEcho;
+                    case WallID.ObsidianBackUnsafe:
+                        return ItemID.ObsidianBackEcho;
+                    case WallID.MushroomUnsafe:
+                        return ItemID.MushroomWall;
+                    case WallID.CrimsonGrassUnsafe:
+                        return ItemID.CrimsonGrassEcho;
+                    case WallID.CrimstoneUnsafe:
+                        return ItemID.CrimstoneEcho;
+                    case WallID.HiveUnsafe:
+                        return ItemID.HiveWall;
+                    case WallID.LihzahrdBrickUnsafe:
+                        return ItemID.LihzahrdBrickWall;
+                    case WallID.BlueDungeonSlabUnsafe:
+                        return ItemID.BlueSlabWall;
+                    case WallID.BlueDungeonTileUnsafe:
+                        return ItemID.BlueTiledWall;
+                    case WallID.PinkDungeonSlabUnsafe:
+                        return ItemID.PinkSlabWall;
+                    case WallID.PinkDungeonTileUnsafe:
+                        return ItemID.PinkTiledWall;
+                    case WallID.GreenDungeonSlabUnsafe:
+                        return ItemID.GreenSlabWall;
+                    case WallID.GreenDungeonTileUnsafe:
+                        return ItemID.GreenTiledWall;
+                    case WallID.CaveWall:
+                        return ItemID.CaveWall1Echo;
+                    case WallID.CaveWall2:
+                        return ItemID.CaveWall2Echo;
+                    case WallID.MarbleUnsafe:
+                        return ItemID.MarbleWall;
+                    case WallID.GraniteUnsafe:
+                        return ItemID.GraniteWall;
+                    case WallID.Cave8Unsafe:
+                        return ItemID.Cave8Echo;
+                    case WallID.Sandstone:
+                        return ItemID.SandstoneWall;
+                    case WallID.CorruptionUnsafe1:
+                        return ItemID.Corruption1Echo;
+                    case WallID.CorruptionUnsafe2:
+                        return ItemID.Corruption2Echo;
+                    case WallID.CorruptionUnsafe3:
+                        return ItemID.Corruption3Echo;
+                    case WallID.CorruptionUnsafe4:
+                        return ItemID.Corruption4Echo;
+                    case WallID.CrimsonUnsafe1:
+                        return ItemID.Crimson1Echo;
+                    case WallID.CrimsonUnsafe2:
+                        return ItemID.Crimson2Echo;
+                    case WallID.CrimsonUnsafe3:
+                        return ItemID.Crimson3Echo;
+                    case WallID.CrimsonUnsafe4:
+                        return ItemID.Crimson4Echo;
+                    case WallID.DirtUnsafe1:
+                        return ItemID.Dirt1Echo;
+                    case WallID.DirtUnsafe2:
+                        return ItemID.Dirt2Echo;
+                    case WallID.DirtUnsafe3:
+                        return ItemID.Dirt3Echo;
+                    case WallID.DirtUnsafe4:
+                        return ItemID.Dirt4Echo;
+                    case WallID.HallowUnsafe1:
+                        return ItemID.Hallow1Echo;
+                    case WallID.HallowUnsafe2:
+                        return ItemID.Hallow2Echo;
+                    case WallID.HallowUnsafe3:
+                        return ItemID.Hallow3Echo;
+                    case WallID.HallowUnsafe4:
+                        return ItemID.Hallow4Echo;
+                    case WallID.JungleUnsafe1:
+                        return ItemID.Jungle1Echo;
+                    case WallID.JungleUnsafe2:
+                        return ItemID.Jungle2Echo;
+                    case WallID.JungleUnsafe3:
+                        return ItemID.Jungle3Echo;
+                    case WallID.JungleUnsafe4:
+                        return ItemID.Jungle4Echo;
+                    case WallID.LavaUnsafe1:
+                        return ItemID.Lava1Echo;
+                    case WallID.LavaUnsafe2:
+                        return ItemID.Lava2Echo;
+                    case WallID.LavaUnsafe3:
+                        return ItemID.Lava3Echo;
+                    case WallID.LavaUnsafe4:
+                        return ItemID.Lava4Echo;
+                    case WallID.RocksUnsafe1:
+                        return ItemID.Rocks1Echo;
+                    case WallID.RocksUnsafe2:
+                        return ItemID.Rocks2Echo;
+                    case WallID.RocksUnsafe3:
+                        return ItemID.Rocks3Echo;
+                    case WallID.RocksUnsafe4:
+                        return ItemID.Rocks4Echo;
+                    case WallID.HardenedSand:
+                        return ItemID.HardenedSandWall;
+                    case WallID.CorruptHardenedSand:
+                        return ItemID.CorruptHardenedSandWall;
+                    case WallID.CrimsonHardenedSand:
+                        return ItemID.CrimsonHardenedSandWall;
+                    case WallID.HallowHardenedSand:
+                        return ItemID.HallowHardenedSandWall;
+                    case WallID.CorruptSandstone:
+                        return ItemID.CorruptSandstoneWall;
+                    case WallID.CrimsonSandstone:
+                        return ItemID.CrimsonSandstoneWall;
+                    case WallID.HallowSandstone:
+                        return ItemID.HallowSandstoneWall;
+                    case WallID.LivingWoodUnsafe:
+                        return ItemID.LivingWoodWall;
                 }
             }
             else if(context.TileType == TileType.Liquid)
