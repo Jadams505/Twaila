@@ -21,7 +21,7 @@ namespace Twaila.UI
         {
             if (image?.Texture != null)
             {
-                switch (drawMode)
+                switch (DrawMode)
                 {
                     case DrawMode.Trim:
                         DrawTrimmed(spriteBatch);
@@ -40,7 +40,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * opacity, 0, 
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, 
                 Vector2.Zero, image.Scale, 0, 0);
         }
 
@@ -48,7 +48,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * opacity, 0, Vector2.Zero, image.Scale, 0, 0);
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, image.Scale, 0, 0);
         }
 
         protected override void DrawShrunk(SpriteBatch spriteBatch)
@@ -56,13 +56,13 @@ namespace Twaila.UI
             Rectangle drawDim = DrawDimensions();
             float scale = CalculatedScale();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * opacity, 0, Vector2.Zero, scale, 0, 0);
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
         }
 
         public Rectangle DrawDimensions()
         {
             Rectangle rec = new Rectangle(GetDimensions().ToRectangle().X, GetDimensions().ToRectangle().Y, (int)image.Width, (int)image.Height);
-            switch (drawMode)
+            switch (DrawMode)
             {
                 case DrawMode.Trim:
                     if (image.Height < GetInnerDimensions().Height)

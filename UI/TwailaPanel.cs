@@ -14,8 +14,7 @@ namespace Twaila.UI
 {
     public class TwailaPanel : UIPanel, IDragable
     {
-        private TwailaText Name { get; set; } 
-        private TwailaText Mod { get; set; }
+        private TwailaInfoBox InfoBox { get; set; }
         private UITwailaImage Image { get; set; }
         private TileContext Context { get; set; }
         private bool _dragging;
@@ -28,16 +27,14 @@ namespace Twaila.UI
         public TwailaPanel()
         {
             Context = new TileContext();
-            Name = new TwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
             Image = new UITwailaImage();
+            InfoBox = new TwailaInfoBox();
             Image.MarginRight = 10;
-            Mod = new TwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
             Width.Set(0, 0);
             Height.Set(0, 0);
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
-            Append(Name);
-            Append(Mod);
+            Append(InfoBox);
             Append(Image);
         }
 
@@ -54,38 +51,34 @@ namespace Twaila.UI
         {
             TwailaConfig config = TwailaConfig.Get();
             
-            Image.drawMode = config.ContentSetting;
-            Mod.drawMode = config.ContentSetting;
-            Name.drawMode = config.ContentSetting;
-
-            Mod.OverrideTextColor = config.OverrideColor;
-            Name.OverrideTextColor = config.OverrideColor;
+            Image.DrawMode = config.ContentSetting;
+            Image.Opacity = 1;
+            InfoBox.ApplyToAll((text) =>
+            {
+                text.OverrideTextColor = config.OverrideColor;
+                text.Opacity = 1;
+                text.Color = config.TextColor.Color;
+                text.TextShadow = config.TextShadow;
+                text.DrawMode = config.ContentSetting;
+            });
 
             BackgroundColor = config.PanelColor.Color;
             BorderColor = Color.Black;
-            Image.opacity = 1;
-            Mod.opacity = 1;
-            Name.opacity = 1;
             if (IsMouseHovering && !IsDragging())
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
-                Image.opacity = config.HoverOpacity;
-                Mod.opacity = config.HoverOpacity;
-                Name.opacity = config.HoverOpacity;
-                Mod.OverrideTextColor = true;
-                Name.OverrideTextColor = true;
+                Image.Opacity = config.HoverOpacity;
+                InfoBox.ApplyToAll((text) =>
+                {
+                    text.OverrideTextColor = true;
+                    text.Opacity = config.HoverOpacity;
+                });
             }
 
-            Mod.Color = config.TextColor.Color;
-            Name.Color = config.TextColor.Color;
-
-            Mod.TextShadow = config.TextShadow;
-            Name.TextShadow = config.TextShadow;
-
             SetElementState(config.DisplayContent.ShowImage, Image);
-            SetElementState(config.DisplayContent.ShowMod, Mod);
-            SetElementState(config.DisplayContent.ShowName, Name);
+            InfoBox.SetEnabled(InfoType.Name, config.DisplayContent.ShowName);
+            InfoBox.SetEnabled(InfoType.Mod, config.DisplayContent.ShowMod);
         }
 
         private void SetElementState(bool shouldShow, UIElement element)
@@ -110,31 +103,36 @@ namespace Twaila.UI
             SetPadding(TwailaConfig.Get().PanelPadding);
             SetInitialSizes();
             float imageHeight = GetDimension(Image, Image.Height.Pixels);
-            float textHeight = GetDimension(Mod, Mod.GetTextSize().Y) + GetDimension(Name, Name.GetTextSize().Y);
+            float textHeight = InfoBox.Height.Pixels;
             float imageWidth = GetDimension(Image, Image.image.Width);
-            float textWidth = GetDimension(Name, Name.GetTextSize().X) > GetDimension(Mod, Mod.GetTextSize().X) ? 
-                GetDimension(Name, Name.GetTextSize().X) : GetDimension(Mod, Mod.GetTextSize().X);
-            if(!HasChild(Name) && !HasChild(Mod))
+            float textWidth = InfoBox.Width.Pixels;
+            if(InfoBox.IsEmpty())
             {
                 Image.MarginRight = 0;
             }
             DrawMode drawMode = TwailaConfig.Get().ContentSetting;
             if (drawMode == DrawMode.Shrink)
             {
-                imageHeight *= ImageScale(new Vector2(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
                 imageWidth *= ImageScale(new Vector2(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
 
-                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - imageWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y);
-                float nameHeight = GetDimension(Name, Name.GetTextSize().Y) * TextScale(Name, maxSize);
-                Name.Height.Set(nameHeight, 0);
-                float modHeight = GetDimension(Mod, Mod.GetTextSize().Y) * TextScale(Mod, maxSize);
-                textHeight = nameHeight + modHeight;
-
-                float nameWidth = GetDimension(Name, Name.GetTextSize().X) * TextScale(Name, maxSize);
-                float modWidth = GetDimension(Mod, Mod.GetTextSize().X) * TextScale(Mod, maxSize);
-                textWidth = Math.Max(nameWidth, modWidth);
-                Name.Width.Set(nameWidth, 0);
-                Mod.Width.Set(modWidth, 0);
+                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - imageWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y / InfoBox.NumberOfAppendedElements());
+                textHeight = 0;
+                InfoBox.ApplyToAll((element) =>
+                {
+                    float height = element.GetTextSize().Y * TextScale(element, new Vector2(maxSize.X, maxSize.Y));
+                    element.Height.Set(height, 0);
+                    textHeight += height;
+                });
+                textWidth = 0;
+                InfoBox.ApplyToAll((element) =>
+                {
+                    float width = element.GetTextSize().X * TextScale(element, maxSize);
+                    element.Width.Set(width, 0);
+                    if(width > textWidth)
+                    {
+                        textWidth = width;
+                    }
+                });
 
                 Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y);
 
@@ -145,24 +143,33 @@ namespace Twaila.UI
             {
                 if (drawMode == DrawMode.Trim)
                 {
-                    if (GetDimension(Mod, Mod.GetTextSize().Y) > MaxPanelInnerDimension.Y - GetDimension(Name, Name.GetTextSize().Y))
+                    float height = 0;
+                    for(int i = 0; i < InfoBox.InfoLines.Length; ++i)
                     {
-                        Mod.Height.Set(0, 0);
-                        textHeight = MathHelper.Clamp(textHeight - GetDimension(Mod, Mod.GetTextSize().Y), 0, textHeight);
+                        if (InfoBox.Appended[i])
+                        {
+                            TwailaText element = InfoBox.InfoLines[i];
+                            if (element.GetTextSize().Y + height < MaxPanelInnerDimension.Y)
+                            {
+                                height += element.GetTextSize().Y;
+                            }
+                            else
+                            {
+                                InfoBox.RemoveElements((InfoType)i);
+                            }
+                        }
                     }
-                    if (GetDimension(Name, Name.GetTextSize().Y) > MaxPanelInnerDimension.Y)
-                    {
-                        Name.Height.Set(0, 0);
-                        textHeight = MathHelper.Clamp(textHeight - GetDimension(Name, Name.GetTextSize().Y), 0, textHeight);
-                    }
-                    textWidth = Math.Max(GetDimension(Name, Name.GetTextSize().X), GetDimension(Mod, Mod.GetTextSize().X));
+                    textHeight = height;
+                    //textWidth = InfoBox.Width.Pixels;
                 }
                 imageHeight = Math.Min(MaxPanelInnerDimension.Y, imageHeight);
                 textHeight = Math.Min(MaxPanelInnerDimension.Y, textHeight);
                 imageWidth = Math.Min(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, imageWidth);
                 textWidth = Math.Min(MaxPanelInnerDimension.X - imageWidth - GetDimension(Image, Image.MarginRight), textWidth);
-                Name.Width.Set(textWidth, 0);
-                Mod.Width.Set(textWidth, 0);
+                InfoBox.ApplyToAll((element) =>
+                {
+                    element.Width.Set(textWidth, 0);
+                });
 
                 Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y);
 
@@ -181,10 +188,12 @@ namespace Twaila.UI
 
         private void SetInitialSizes()
         {
-            Name.Width.Set(Name.GetTextSize().X, 0);
-            Name.Height.Set(Name.GetTextSize().Y, 0);
-            Mod.Width.Set(Mod.GetTextSize().X, 0);
-            Mod.Height.Set(Mod.GetTextSize().Y, 0);
+            InfoBox.ApplyToAll((element) =>
+            {
+                element.Width.Set(element.GetTextSize().X, 0);
+                element.Height.Set(element.GetTextSize().Y, 0);
+            });
+            InfoBox.UpdateDimensions();
             Image.Width.Set(Image.image.Width, 0);
             Image.Height.Set(Image.image.Height, 0);
             Image.MarginRight = 10;
@@ -208,14 +217,14 @@ namespace Twaila.UI
         public float TextScale(TwailaText text, Vector2 maxSize)
         {
             float scaleX = 1;
-            if (GetDimension(text, text.GetTextSize().X) > maxSize.X)
+            if (text.GetTextSize().X > maxSize.X)
             {
-                scaleX = maxSize.X / GetDimension(text, text.GetTextSize().X);
+                scaleX = maxSize.X / text.GetTextSize().X;
             }
             float scaleY = 1;
-            if (GetDimension(text, text.GetTextSize().Y) > maxSize.Y)
+            if (text.GetTextSize().Y > maxSize.Y)
             {
-                scaleY = maxSize.Y / GetDimension(text, text.GetTextSize().Y);
+                scaleY = maxSize.Y / text.GetTextSize().Y;
             }
             return Math.Min(scaleX, scaleY) * text.Scale;
         }
@@ -229,10 +238,8 @@ namespace Twaila.UI
             }
             UpdatePos();
             Image.Top.Set(0, 0);
-            Name.Top.Set(0, 0);
-            Name.Left.Set(GetDimension(Image, Image.Width.Pixels + Image.MarginRight), 0);
-            Mod.Top.Set(GetDimension(Name, Name.Height.Pixels), 0);
-            Mod.Left.Set(GetDimension(Image, Image.Width.Pixels + Image.MarginRight), 0);
+            InfoBox.Left.Set(GetDimension(Image, Image.Width.Pixels + Image.MarginRight), 0);
+            InfoBox.UpdateVertically();
             Recalculate();
         }
 
@@ -315,14 +322,35 @@ namespace Twaila.UI
                     return;
                 }
             }
+            Tile tile = Framing.GetTileSafely(currentContext.Pos);
+            int itemId = ItemUtil.GetItemId(currentContext); 
+            
             if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
-                Tile tile = Framing.GetTileSafely(currentContext.Pos);
-                int itemId = ItemUtil.GetItemId(currentContext);
-                Name.SetText(currentContext.GetName(tile, itemId));
-                Mod.SetText(currentContext.GetMod());
-                Image.SetImage(GetImage(spriteBatch, currentContext, tile, itemId));
+                InfoBox.RemoveAll();
+                SetInfoBoxElements(currentContext, tile, itemId);
+                if (TwailaConfig.Get().DisplayContent.ShowImage)
+                {
+                    Image.SetImage(GetImage(spriteBatch, currentContext, tile, itemId));
+                }
                 Context = currentContext;
+            }
+            string paintColor = InfoUtil.GetPaintName(tile, currentContext.TileType);
+            if (paintColor != null)
+            {
+                InfoBox.SetAndAppend(InfoType.PaintColor, paintColor);
+            }
+            
+        }
+
+        private void SetInfoBoxElements(TileContext context, Tile tile, int itemId)
+        {
+            InfoBox.SetAndAppend(InfoType.Name, context.GetName(tile, itemId));
+            InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
+            int pickPower = InfoUtil.GetPickaxePower(tile.TileType);
+            if(pickPower > 0)
+            {
+                InfoBox.SetAndAppend(InfoType.PickaxePower, pickPower + "% Pick Power");
             }
         }
 
