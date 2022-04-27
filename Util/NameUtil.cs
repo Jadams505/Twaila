@@ -292,7 +292,7 @@ namespace Twaila.Util
             if (context.Tile.TileId == TileID.Trees)
             {
                 toAppend = " " + tree;
-                if (context.TreeDirt == TileID.Grass)
+                if (context.TreeDirt == TileID.Grass || context.TreeDirt == TileID.GolfGrass)
                 {
                     return tree;
                 }
