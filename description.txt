@@ -33,6 +33,10 @@ This mod is currently in development and is not complete
 - Cycle UI Display Mode (Mouse3 by default): Cycles through the UIDisplay options
 
 [Changelog]
+v0.1.3.0 (4/27/2022)
+- Fixed 1.4 walls
+- Fixed an issue with trees grown on mowed grass
+- Fixed campfires in their unlit form
 v0.1.2.0 (4/22/2022)
 - Fixed the majority of 1.4 tiles
 v0.1.1.0 (4/20/2022)
