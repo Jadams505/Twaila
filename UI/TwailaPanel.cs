@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.UI;
@@ -14,9 +15,9 @@ namespace Twaila.UI
 {
     public class TwailaPanel : UIPanel, IDragable
     {
-        private TwailaInfoBox InfoBox { get; set; }
-        private UITwailaImage Image { get; set; }
-        private TileContext Context { get; set; }
+        public TwailaInfoBox InfoBox { get; set; }
+        public UITwailaImage Image { get; set; }
+        public TileContext Context { get; set; }
         private bool _dragging;
         private Point _lastMouse;
         private int _tick = 0;
@@ -74,22 +75,6 @@ namespace Twaila.UI
                     text.OverrideTextColor = true;
                     text.Opacity = config.HoverOpacity;
                 });
-            }
-
-            SetElementState(config.DisplayContent.ShowImage, Image);
-            InfoBox.SetEnabled(InfoType.Name, config.DisplayContent.ShowName);
-            InfoBox.SetEnabled(InfoType.Mod, config.DisplayContent.ShowMod);
-        }
-
-        private void SetElementState(bool shouldShow, UIElement element)
-        {
-            if (shouldShow && !HasChild(element))
-            {
-                Append(element);
-            }
-            if(!shouldShow && HasChild(element))
-            {
-                RemoveChild(element);
             }
         }
 
@@ -160,7 +145,6 @@ namespace Twaila.UI
                         }
                     }
                     textHeight = height;
-                    //textWidth = InfoBox.Width.Pixels;
                 }
                 imageHeight = Math.Min(MaxPanelInnerDimension.Y, imageHeight);
                 textHeight = Math.Min(MaxPanelInnerDimension.Y, textHeight);
@@ -295,6 +279,11 @@ namespace Twaila.UI
         {
             _tick++;
             TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
+            if(currentContext.TileType == TileType.Empty || TileUtil.IsBlockedByAntiCheat(currentContext))
+            {
+                _tick = 0;
+                return;
+            }
             if (!currentContext.ContentChanged(Context))
             {
                 currentContext.SetTileType(Context.TileType);
@@ -323,34 +312,64 @@ namespace Twaila.UI
                 }
             }
             Tile tile = Framing.GetTileSafely(currentContext.Pos);
-            int itemId = ItemUtil.GetItemId(currentContext); 
-            
+            int itemId = ItemUtil.GetItemId(currentContext);
+            InfoBox.RemoveAll();
             if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
             {
-                InfoBox.RemoveAll();
-                SetInfoBoxElements(currentContext, tile, itemId);
                 if (TwailaConfig.Get().DisplayContent.ShowImage)
                 {
+                    if (!HasChild(Image))
+                    {
+                        Append(Image);
+                    }
                     Image.SetImage(GetImage(spriteBatch, currentContext, tile, itemId));
                 }
-                Context = currentContext;
+                else if (HasChild(Image))
+                {
+                    RemoveChild(Image);
+                }
             }
-            string paintColor = InfoUtil.GetPaintName(tile, currentContext.TileType);
-            if (paintColor != null)
-            {
-                InfoBox.SetAndAppend(InfoType.PaintColor, paintColor);
-            }
-            
+            SetInfoBoxElements(currentContext, tile, itemId);
+            Context = currentContext;
         }
 
         private void SetInfoBoxElements(TileContext context, Tile tile, int itemId)
         {
-            InfoBox.SetAndAppend(InfoType.Name, context.GetName(tile, itemId));
-            InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
+            if (TwailaConfig.Get().DisplayContent.ShowName)
+            {
+                InfoBox.SetAndAppend(InfoType.Name, context.GetName(tile, itemId));
+            }
+            if (TwailaConfig.Get().DisplayContent.ShowMod)
+            {
+                InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
+            }
             int pickPower = InfoUtil.GetPickaxePower(tile.TileType);
-            if(pickPower > 0)
+            if(pickPower > 0 && TwailaConfig.Get().DisplayContent.ShowPickaxePower)
             {
                 InfoBox.SetAndAppend(InfoType.PickaxePower, pickPower + "% Pick Power");
+            }
+            string iconText = "";
+            if (TwailaConfig.Get().DisplayContent.ShowPaint)
+            {
+                iconText += InfoUtil.GetPaintTag(tile, context.TileType);
+            }
+            if (!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
+            {
+                if (TwailaConfig.Get().DisplayContent.ShowWire)
+                {
+                    iconText += InfoUtil.GetWireTag(tile);
+                }
+            }
+            if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
+            {
+                if (TwailaConfig.Get().DisplayContent.ShowActuator)
+                {
+                    iconText += InfoUtil.GetActuatorTag(tile);
+                }
+            }
+            if (iconText != "")
+            {
+                InfoBox.SetAndAppend(InfoType.InfoIcons, iconText);
             }
         }
 

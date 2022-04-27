@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Context;
@@ -53,7 +48,7 @@ namespace Twaila.Util
             }
         }
 
-        public static string GetPaintName(Tile tile, TileType type)
+        public static string GetPaintTag(Tile tile, TileType type)
         {
             byte color = GetPaintColor(tile, type);
             switch (color)
@@ -61,65 +56,65 @@ namespace Twaila.Util
                 case PaintID.RedPaint:
                     return $"[i:{ItemID.RedPaint}]";
                 case PaintID.OrangePaint:
-                    return NameUtil.GetNameFromItem(ItemID.OrangePaint);
+                    return $"[i:{ItemID.OrangePaint}]";
                 case PaintID.YellowPaint:
-                    return NameUtil.GetNameFromItem(ItemID.YellowPaint);
+                    return $"[i:{ItemID.YellowPaint}]";
                 case PaintID.LimePaint:
-                    return NameUtil.GetNameFromItem(ItemID.LimePaint);
+                    return $"[i:{ItemID.LimePaint}]";
                 case PaintID.GreenPaint:
-                    return NameUtil.GetNameFromItem(ItemID.GreenPaint);
+                    return $"[i:{ItemID.GreenPaint}]";
                 case PaintID.CyanPaint:
-                    return NameUtil.GetNameFromItem(ItemID.CyanPaint);
+                    return $"[i:{ItemID.CyanPaint}]";
                 case PaintID.SkyBluePaint:
-                    return NameUtil.GetNameFromItem(ItemID.SkyBluePaint);
+                    return $"[i:{ItemID.SkyBluePaint}]";
                 case PaintID.BluePaint:
-                    return NameUtil.GetNameFromItem(ItemID.BluePaint);
+                    return $"[i:{ItemID.BluePaint}]";
                 case PaintID.PurplePaint:
-                    return NameUtil.GetNameFromItem(ItemID.PurplePaint);
+                    return $"[i:{ItemID.PurplePaint}]";
                 case PaintID.VioletPaint:
-                    return NameUtil.GetNameFromItem(ItemID.VioletPaint);
+                    return $"[i:{ItemID.VioletPaint}]";
                 case PaintID.PinkPaint:
-                    return NameUtil.GetNameFromItem(ItemID.PinkPaint);
+                    return $"[i:{ItemID.PinkPaint}]";
                 case PaintID.BlackPaint:
-                    return NameUtil.GetNameFromItem(ItemID.BlackPaint);
+                    return $"[i:{ItemID.BlackPaint}]";
                 case PaintID.GrayPaint:
-                    return NameUtil.GetNameFromItem(ItemID.GrayPaint);
+                    return $"[i:{ItemID.GrayPaint}]";
                 case PaintID.WhitePaint:
-                    return NameUtil.GetNameFromItem(ItemID.WhitePaint);
+                    return $"[i:{ItemID.WhitePaint}]";
                 case PaintID.BrownPaint:
-                    return NameUtil.GetNameFromItem(ItemID.BrownPaint);
+                    return $"[i:{ItemID.BrownPaint}]";
                 case PaintID.ShadowPaint:
-                    return NameUtil.GetNameFromItem(ItemID.ShadowPaint);
+                    return $"[i:{ItemID.ShadowPaint}]";
                 case PaintID.NegativePaint:
-                    return NameUtil.GetNameFromItem(ItemID.NegativePaint);
+                    return $"[i:{ItemID.NegativePaint}]";
                 case PaintID.IlluminantPaint:
-                    return NameUtil.GetNameFromItem(ItemID.GlowPaint);
+                    return $"[i:{ItemID.GlowPaint}]";
                 case PaintID.DeepRedPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepRedPaint);
+                    return $"[i:{ItemID.DeepRedPaint}]";
                 case PaintID.DeepOrangePaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepOrangePaint);
+                    return $"[i:{ItemID.DeepOrangePaint}]";
                 case PaintID.DeepYellowPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepYellowPaint);
+                    return $"[i:{ItemID.DeepYellowPaint}]";
                 case PaintID.DeepLimePaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepLimePaint);
+                    return $"[i:{ItemID.DeepLimePaint}]";
                 case PaintID.DeepGreenPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepGreenPaint);
+                    return $"[i:{ItemID.DeepGreenPaint}]";
                 case PaintID.DeepTealPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepTealPaint);
+                    return $"[i:{ItemID.DeepTealPaint}]";
                 case PaintID.DeepCyanPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepCyanPaint);
+                    return $"[i:{ItemID.DeepCyanPaint}]";
                 case PaintID.DeepSkyBluePaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepSkyBluePaint);
+                    return $"[i:{ItemID.DeepSkyBluePaint}]";
                 case PaintID.DeepBluePaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepBluePaint);
+                    return $"[i:{ItemID.DeepBluePaint}]";
                 case PaintID.DeepPurplePaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepPurplePaint);
+                    return $"[i:{ItemID.DeepPurplePaint}]";
                 case PaintID.DeepVioletPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepVioletPaint);
+                    return $"[i:{ItemID.DeepVioletPaint}]";
                 case PaintID.DeepPinkPaint:
-                    return NameUtil.GetNameFromItem(ItemID.DeepPinkPaint);
+                    return $"[i:{ItemID.DeepPinkPaint}]";
             }
-            return null;
+            return "";
         }
 
         public static byte GetPaintColor(Tile tile, TileType type)
@@ -133,6 +128,37 @@ namespace Twaila.Util
                 return tile.WallColor;
             }
             return 0;
+        }
+
+        public static string GetWireTag(Tile tile)
+        {
+            string tag = "";
+            if (tile.RedWire)
+            {
+                tag += $"[i:{ItemID.Wrench}]";
+            }
+            if (tile.BlueWire)
+            {
+                tag += $"[i:{ItemID.BlueWrench}]";
+            }
+            if (tile.GreenWire)
+            {
+                tag += $"[i:{ItemID.GreenWrench}]";
+            }
+            if (tile.YellowWire)
+            {
+                tag += $"[i:{ItemID.YellowWrench}]";
+            }
+            return tag;
+        }
+
+        public static string GetActuatorTag(Tile tile)
+        {
+            if (tile.HasActuator)
+            {
+                return $"[i:{ItemID.Actuator}]";
+            }
+            return "";
         }
     }
 }

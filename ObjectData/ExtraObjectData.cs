@@ -74,6 +74,14 @@ namespace Twaila.ObjectData
             AddEntry(TileID.JunglePlants2, data5);
             AddEntry(TileID.HallowedPlants2, data5);
             AddEntry(TileID.SeaOats, data5);
+
+            TileObjectData data6 = new TileObjectData(TileObjectData.Style1x1);
+            data6.CoordinateHeights = new int[] { 16 };
+            data6.CoordinateWidth = 16;
+            data6.StyleHorizontal = true;
+            data6.StyleMultiplier = 27;
+            data6.StyleWrapLimit = 27;
+            AddEntry(TileID.Platforms, data6); // the stone platform is messed up in the original TileObjectData and I dont know why
         }
 
         private static void Add2x1()

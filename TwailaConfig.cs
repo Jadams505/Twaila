@@ -138,25 +138,43 @@ namespace Twaila
             [DefaultValue(true)]
             public bool ShowMod;
 
+            [DefaultValue(true)]
+            public bool ShowPickaxePower;
+
+            [DefaultValue(true)]
+            public bool ShowWire;
+
+            [DefaultValue(true)]
+            public bool ShowActuator;
+
+            [DefaultValue(true)]
+            public bool ShowPaint;
+
             public Content()
             {
                 ShowImage = true;
                 ShowName = true;
                 ShowMod = true;
+                ShowPickaxePower = true;
+                ShowWire = true;
+                ShowActuator = true;
+                ShowPaint = true;
             }
 
             public override bool Equals(object obj)
             {
                 if(obj is Content other)
                 {
-                    return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName;
+                    return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName
+                        && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire && 
+                        ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint;
                 }
                 return base.Equals(obj);
             }
 
             public override int GetHashCode()
             {
-                return new { ShowImage, ShowMod, ShowName }.GetHashCode();
+                return new { ShowImage, ShowMod, ShowName, ShowPickaxePower, ShowWire, ShowActuator, ShowPaint }.GetHashCode();
             }
         }
 

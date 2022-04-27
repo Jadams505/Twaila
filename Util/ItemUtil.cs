@@ -84,7 +84,14 @@ namespace Twaila.Util
                     return -1;
             }
             TileStylePair pair = new TileStylePair(id, style, type);
-            return _tileToItemDictionary.GetValueOrDefault(pair, -1);
+            int firstTry = _tileToItemDictionary.GetValueOrDefault(pair, -1);
+            if(firstTry == -1 && pair.Style != 0)
+            {
+                pair.Style = 0;
+                int secondTry = _tileToItemDictionary.GetValueOrDefault(pair, -1);
+                return secondTry; // this works for a lot of tiles that are directional (improve later)
+            }
+            return firstTry;
         }
 
         private static void AddEntry(int id, int style, TileType type, int itemId)
@@ -230,24 +237,6 @@ namespace Twaila.Util
                         return 0;
                     }
                     break;
-                case TileID.WeaponsRack2:
-                    return 0;
-                case TileID.HatRack:
-                    return 0;
-                case TileID.AntlionLarva:
-                    return 0;
-                case TileID.CatBast:
-                    return 0;
-                case TileID.FoodPlatter:
-                    return 0;
-                case TileID.LawnFlamingo:
-                    return 0;
-                case TileID.Sandcastles:
-                    return 0;
-                case TileID.GardenGnome:
-                    return 0;
-                case TileID.RockGolemHead:
-                    return 0;
             }
             return -1;
         }
@@ -426,6 +415,14 @@ namespace Twaila.Util
                         return ItemID.Grate;
                     case TileID.AmberStoneBlock:
                         return ItemID.Amber;
+                }
+                if (context.Tile.Actuator)
+                {
+                    return ItemID.Actuator;
+                }
+                if (context.OnlyWire())
+                {
+                    return ItemID.Wire;
                 }
             }
             else if(context.TileType == TileType.Wall)

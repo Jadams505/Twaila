@@ -91,7 +91,7 @@ namespace Twaila.Util
                 ?? TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType) ?? GetImageForMannequins(spriteBatch, tile)
                 ?? GetImageForSnakeRope(spriteBatch, tile.TileType) ?? GetImageForCattail(spriteBatch, tile)
                 ?? GetImageForRelic(spriteBatch, tile) ?? GetImageForPylon(spriteBatch, tile) ??
-                GetImageForVoidVault(spriteBatch, tile);
+                GetImageForVoidVault(spriteBatch, tile) ?? GetImageForWireAndActuator(spriteBatch, tile);
         }
 
         /*
@@ -277,6 +277,19 @@ namespace Twaila.Util
             if(tile.TileType == TileID.VoidVault)
             {
                 return GetImageFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
+        {
+            if (tile.HasActuator)
+            {
+                return GetItemTexture(ItemID.Actuator);
+            }
+            if(tile.YellowWire || tile.GreenWire || tile.BlueWire || tile.RedWire)
+            {
+                return GetItemTexture(ItemID.Wire);
             }
             return null;
         }
