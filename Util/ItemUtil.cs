@@ -416,7 +416,7 @@ namespace Twaila.Util
                     case TileID.AmberStoneBlock:
                         return ItemID.Amber;
                 }
-                if (context.Tile.Actuator)
+                if (context.Tile.Actuator && context.OnlyWire())
                 {
                     return ItemID.Actuator;
                 }

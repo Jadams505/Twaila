@@ -285,6 +285,10 @@ namespace Twaila.Context
             {
                 return new TwailaTexture(texture, 0.5f);
             }
+            if(OnlyWire())
+            {
+                return new TwailaTexture(ImageUtil.GetImageForWireAndActuator(spriteBatch, tile));
+            }
             texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return new TwailaTexture(texture);
         }

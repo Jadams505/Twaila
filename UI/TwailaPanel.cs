@@ -36,7 +36,7 @@ namespace Twaila.UI
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
             Append(InfoBox);
-            Append(Image);
+            //Append(Image);
         }
 
         public override void Update(GameTime gameTime)
@@ -344,7 +344,7 @@ namespace Twaila.UI
                 InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
             }
             int pickPower = InfoUtil.GetPickaxePower(tile.TileType);
-            if(pickPower > 0 && TwailaConfig.Get().DisplayContent.ShowPickaxePower)
+            if(pickPower > 0 && context.TileType == TileType.Tile && TwailaConfig.Get().DisplayContent.ShowPickaxePower)
             {
                 InfoBox.SetAndAppend(InfoType.PickaxePower, pickPower + "% Pick Power");
             }
