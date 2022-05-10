@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.IO;
+using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
@@ -138,43 +139,25 @@ namespace Twaila
             [DefaultValue(true)]
             public bool ShowMod;
 
-            [DefaultValue(true)]
-            public bool ShowPickaxePower;
-
-            [DefaultValue(true)]
-            public bool ShowWire;
-
-            [DefaultValue(true)]
-            public bool ShowActuator;
-
-            [DefaultValue(true)]
-            public bool ShowPaint;
-
             public Content()
             {
                 ShowImage = true;
                 ShowName = true;
                 ShowMod = true;
-                ShowPickaxePower = true;
-                ShowWire = true;
-                ShowActuator = true;
-                ShowPaint = true;
             }
 
             public override bool Equals(object obj)
             {
                 if(obj is Content other)
                 {
-                    return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName
-                        && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire && 
-                        ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint;
+                    return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName;
                 }
                 return base.Equals(obj);
             }
 
             public override int GetHashCode()
             {
-                return new { ShowImage, ShowMod, ShowName, ShowPickaxePower, ShowWire, ShowActuator, ShowPaint }.GetHashCode();
+                return new { ShowImage, ShowMod, ShowName }.GetHashCode();
             }
         }
 
@@ -242,7 +225,7 @@ namespace Twaila
         public void Save()
         {
             Directory.CreateDirectory(ConfigManager.ModConfigPath);
-            string filename = Mod.Name + "_" + Name + ".json";
+            string filename = mod.Name + "_" + Name + ".json";
             string path = Path.Combine(ConfigManager.ModConfigPath, filename);
             string json = JsonConvert.SerializeObject((object)this, ConfigManager.serializerSettings);
             File.WriteAllText(path, json);

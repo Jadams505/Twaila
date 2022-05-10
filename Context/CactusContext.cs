@@ -29,9 +29,9 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
         {
-            if (tile.TileType == TileID.Cactus)
+            if (Tile.type == TileID.Cactus)
             {
                 if (TileLoader.CanGrowModCactus(CactusSand))
                 {
@@ -44,32 +44,32 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return null;
+            return GetTileImage(spriteBatch);
         }
 
-        protected override string GetTileName(Tile tile, int itemId)
+        protected override string GetTileName(int itemId)
         {
-            return NameUtil.GetNameForCactus(this) ?? base.GetTileName(tile, itemId);
+            return NameUtil.GetNameForCactus(this) ?? base.GetTileName(itemId);
         }
 
         private int GetCactusSand()
         {
-            if (Tile.TileId != TileID.Cactus)
+            if (Tile.type != TileID.Cactus)
             {
                 return -1;
             }
             int x = Pos.X, y = Pos.Y;
             do
             {
-                if (Main.tile[x, y + 1].TileType == TileID.Cactus)
+                if (Main.tile[x, y + 1].type == TileID.Cactus)
                 {
                     y++;
                 }
-                else if (Main.tile[x + 1, y].TileType == TileID.Cactus)
+                else if (Main.tile[x + 1, y].type == TileID.Cactus)
                 {
                     x++;
                 }
-                else if (Main.tile[x - 1, y].TileType == TileID.Cactus)
+                else if (Main.tile[x - 1, y].type == TileID.Cactus)
                 {
                     x--;
                 }
@@ -78,12 +78,12 @@ namespace Twaila.Context
                     y++;
                 }
             }
-            while (Main.tile[x, y].TileType == TileID.Cactus && Main.tile[x, y].HasTile);
-            if (!Main.tile[x, y].HasTile)
+            while (Main.tile[x, y].type == TileID.Cactus && Main.tile[x, y].active());
+            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
             {
                 return -1;
             }
-            return Main.tile[x, y].TileType;
+            return Main.tile[x, y].type;
         }
     }
 }

@@ -9,13 +9,13 @@ namespace Twaila.UI
     }
     public class UITwailaElement : UIElement
     {
-        public DrawMode DrawMode { get; set; }
-        public float Opacity { get; set; }
+        internal DrawMode drawMode;
+        internal float opacity;
 
         public UITwailaElement()
         {
-            DrawMode = DrawMode.Trim;
-            Opacity = 1.0f;
+            drawMode = DrawMode.Trim;
+            opacity = 1.0f;
         }
 
         protected virtual void DrawShrunk(SpriteBatch spriteBatch)
