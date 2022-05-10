@@ -281,6 +281,22 @@ namespace Twaila.Util
             return null;
         }
 
+        public static Texture2D GetImageForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
+        {
+            if(!tile.HasTile && tile.WallType == 0 && tile.LiquidAmount <= 0)
+            {
+                if (tile.HasActuator)
+                {
+                    return GetItemTexture(ItemID.Actuator);
+                }
+                if (tile.YellowWire || tile.GreenWire || tile.BlueWire || tile.RedWire)
+                {
+                    return GetItemTexture(ItemID.Wire);
+                } 
+            }
+            return null;
+        }
+
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {
             TextureBuilder builder = new TextureBuilder();

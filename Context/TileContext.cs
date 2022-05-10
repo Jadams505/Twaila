@@ -6,6 +6,8 @@ using Twaila.ObjectData;
 using Terraria.ObjectData;
 using Twaila.Graphics;
 using Terraria.GameContent.Drawing;
+using Twaila.UI;
+using Terraria.GameContent;
 
 namespace Twaila.Context
 {
@@ -22,6 +24,11 @@ namespace Twaila.Context
         public int LiquidAmount { get; set; }
         public int TileFrameX { get; set; }
         public int TileFrameY { get; set; }
+        public bool RedWire { get; set; }
+        public bool BlueWire { get; set; }
+        public bool GreenWire { get; set; }
+        public bool YellowWire { get; set; }
+        public bool Actuator { get; set; }
         public bool HasTile { get; set; }
 
         public DummyTile(Tile tile)
@@ -33,6 +40,11 @@ namespace Twaila.Context
             TileFrameX = tile.TileFrameX;
             TileFrameY = tile.TileFrameY;
             HasTile = tile.HasTile;
+            RedWire = tile.RedWire;
+            BlueWire = tile.BlueWire;
+            GreenWire = tile.GreenWire;
+            YellowWire = tile.YellowWire;
+            Actuator = tile.HasActuator;
         }
 
         public DummyTile()
@@ -44,6 +56,11 @@ namespace Twaila.Context
             TileFrameX = 0;
             TileFrameY = 0;
             HasTile = false;
+            RedWire = false;
+            BlueWire = false;
+            GreenWire = false;
+            YellowWire = false;
+            Actuator = false;
         }
     }
 
@@ -59,7 +76,7 @@ namespace Twaila.Context
         {
             Pos = pos;
             Tile = GetTileCopy();
-            if (HasTile())
+            if (HasTile() || OnlyWire())
             {
                 TileType = TileType.Tile;
             }
@@ -174,7 +191,7 @@ namespace Twaila.Context
 
         public void SetTileType(TileType type)
         {
-            if(!HasTile() && !HasLiquid() && !HasWall())
+            if(!HasTile() && !HasLiquid() && !HasWall() && !Tile.RedWire && !Tile.BlueWire && !Tile.GreenWire && !Tile.YellowWire && !Tile.Actuator)
             {
                 TileType = TileType.Empty;
             }
@@ -199,12 +216,22 @@ namespace Twaila.Context
             return Tile.LiquidAmount > 0;
         }
 
+        public bool OnlyWire()
+        {
+            return (Tile.RedWire || Tile.BlueWire || Tile.GreenWire || Tile.YellowWire || Tile.Actuator) &&
+                !HasTile() && !HasWall() && !HasLiquid();
+        }
+
         public virtual bool ContentChanged(TileContext other)
         {
             if (other.GetType() == GetType())
             {
                 if (TileType == TileType.Tile && Tile.TileId == other.Tile.TileId)
                 {
+                    if(OnlyWire() && other.OnlyWire() && Tile.Actuator != other.Tile.Actuator)
+                    {
+                        return true;
+                    }
                     return StyleChanged(other);
                 }
                 if (TileType == TileType.Wall && Tile.WallId == other.Tile.WallId)
@@ -257,6 +284,10 @@ namespace Twaila.Context
             if(texture != null)
             {
                 return new TwailaTexture(texture, 0.5f);
+            }
+            if(OnlyWire())
+            {
+                return new TwailaTexture(ImageUtil.GetImageForWireAndActuator(spriteBatch, tile));
             }
             texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return new TwailaTexture(texture);

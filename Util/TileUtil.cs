@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.GameContent.Drawing;
+using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ObjectData;
 using Twaila.Context;
@@ -56,6 +57,10 @@ namespace Twaila.Util
         {
             if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)
             {
+                if((context.OnlyWire() && !WiresUI.Settings.DrawWires) || 
+                    (context.OnlyWire() && !context.Tile.Actuator && WiresUI.Settings.HideWires)){
+                    return true;
+                }
                 Player player = Main.player[Main.myPlayer];
                 if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.TileId])
                 {
@@ -73,7 +78,7 @@ namespace Twaila.Util
         // tile -> wall -> liquid -> tile
         public static void CycleType(TileContext context)
         {
-            if (context.TileType == TileType.Empty || (!context.HasTile() && !context.HasLiquid() && !context.HasWall()))
+            if (context.TileType == TileType.Empty)
             {
                 return;
             }
