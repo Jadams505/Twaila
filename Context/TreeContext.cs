@@ -15,7 +15,7 @@ namespace Twaila.Context
 
         public TreeContext(Point pos) : base(pos)
         {
-            TreeDirt = GetTreeDirt();
+            TreeDirt = GetTreeDirt(out _);
         }
 
         public override bool ContentChanged(TileContext other)
@@ -34,14 +34,16 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
             float scale = 0.5f;
-            if (Tile.type == TileID.Trees)
+            if (tile.TileType == TileID.Trees)
             {
                 if (TileLoader.CanGrowModTree(TreeDirt))
                 {
-                    return new TwailaTexture(TreeUtil.GetImageForModdedTree(spriteBatch, TreeDirt), scale);
+                    GetTreeDirt(out Tile? dirtTile);
+                    Texture2D treeTexture = dirtTile != null ? TreeUtil.GetImageForModdedTree(spriteBatch, dirtTile.Value) : null;
+                    return new TwailaTexture(treeTexture, scale);
                 }
                 int treeWood = TreeUtil.GetTreeWood(TreeDirt);
                 if (treeWood != -1)
@@ -49,7 +51,7 @@ namespace Twaila.Context
                     return new TwailaTexture(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, Pos.Y), scale);
                 }
             }
-            else if (Tile.type == TileID.MushroomTrees)
+            else if (tile.TileType == TileID.MushroomTrees)
             {
                 return new TwailaTexture(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
             }
@@ -58,39 +60,42 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            return GetTileImage(spriteBatch);
+            return null;
         }
 
-        protected override string GetTileName(int itemId)
+        protected override string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForTree(this) ?? base.GetTileName(itemId);
+            return NameUtil.GetNameForTree(this) ?? base.GetTileName(tile, itemId);
         }
 
-        private int GetTreeDirt()
+        private int GetTreeDirt(out Tile? dirtTile)
         {
-            if (Tile.type != TileID.Trees)
+            if (Tile.TileId != TileID.Trees)
             {
+                dirtTile = null;
                 return -1;
             }
             int x = Pos.X, y = Pos.Y;
-            if (Main.tile[x - 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
+            if (Main.tile[x - 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
             {
                 x--;
             }
-            if (Main.tile[x + 1, y].type == TileID.Trees && Main.tile[x, y + 1].type != TileID.Trees && Main.tile[x, y - 1].type != TileID.Trees)
+            if (Main.tile[x + 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
             {
                 x++;
             }
             do
             {
                 y += 1;
-            } while (Main.tile[x, y].type == TileID.Trees && Main.tile[x, y].active());
+            } while (Main.tile[x, y].TileType == TileID.Trees && Main.tile[x, y].HasTile);
 
-            if (Main.tile[x, y] == null || !Main.tile[x, y].active())
+            if (!Main.tile[x, y].HasTile)
             {
+                dirtTile = null;
                 return -1;
             }
-            return Main.tile[x, y].type;
+            dirtTile = Main.tile[x, y];
+            return Main.tile[x, y].TileType;
         }
     }
 }

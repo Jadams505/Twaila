@@ -3,10 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Terraria;
-using Terraria.Localization;
-using Terraria.UI;
 using Terraria.UI.Chat;
 
 namespace Twaila.UI
@@ -46,7 +42,7 @@ namespace Twaila.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            switch (drawMode)
+            switch (DrawMode)
             {
                 case DrawMode.Trim:
                     DrawTrimmed(spriteBatch);
@@ -152,9 +148,9 @@ namespace Twaila.UI
             ChatManager.ConvertNormalSnippets(snippets);
             if (TextShadow)
             {
-                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black * opacity, 0, Vector2.Zero, scale);
+                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black * Opacity, 0, Vector2.Zero, scale);
             }
-            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color * opacity, 0, Vector2.Zero, scale, out int unimplemented, -1, OverrideTextColor);
+            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color * Opacity, 0, Vector2.Zero, scale, out int unimplemented, -1, OverrideTextColor);
         }
     }
 }

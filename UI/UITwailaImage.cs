@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.UI;
 using Twaila.Context;
 using Twaila.Graphics;
 using Twaila.Util;
@@ -14,14 +14,14 @@ namespace Twaila.UI
         internal TwailaTexture image;
         public UITwailaImage()
         {
-            image = new TwailaTexture(Main.buffTexture[BuffID.Confused]);
+            image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (image?.Texture != null)
             {
-                switch (drawMode)
+                switch (DrawMode)
                 {
                     case DrawMode.Trim:
                         DrawTrimmed(spriteBatch);
@@ -40,7 +40,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * opacity, 0, 
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, 
                 Vector2.Zero, image.Scale, 0, 0);
         }
 
@@ -48,7 +48,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * opacity, 0, Vector2.Zero, image.Scale, 0, 0);
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, image.Scale, 0, 0);
         }
 
         protected override void DrawShrunk(SpriteBatch spriteBatch)
@@ -56,13 +56,13 @@ namespace Twaila.UI
             Rectangle drawDim = DrawDimensions();
             float scale = CalculatedScale();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * opacity, 0, Vector2.Zero, scale, 0, 0);
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
         }
 
         public Rectangle DrawDimensions()
         {
             Rectangle rec = new Rectangle(GetDimensions().ToRectangle().X, GetDimensions().ToRectangle().Y, (int)image.Width, (int)image.Height);
-            switch (drawMode)
+            switch (DrawMode)
             {
                 case DrawMode.Trim:
                     if (image.Height < GetInnerDimensions().Height)
@@ -107,26 +107,12 @@ namespace Twaila.UI
             return System.Math.Min(scaleX, scaleY) * image.Scale;
         }
 
-        public void SetImage(SpriteBatch spriteBatch, TileContext context, int itemId)
+        public void SetImage(TwailaTexture texture)
         {
-            if (TwailaUI.debugMode)
-            {
-                image = new TwailaTexture(ImageUtil.GetDebugImage(spriteBatch, context.Tile));
-                return;
-            }
-            if (TwailaConfig.Get().UseItemTextures)
-            {
-                TwailaTexture item = context.GetImage(spriteBatch, itemId);
-                image = item?.Texture != null ? item : context.GetImage(spriteBatch);
-            }
-            else
-            {
-                TwailaTexture tile = context.GetImage(spriteBatch);
-                image = tile?.Texture != null ? tile : context.GetImage(spriteBatch, itemId);
-            }
+            image = texture;
             if(image?.Texture == null)
             {
-                image = new TwailaTexture(Main.buffTexture[BuffID.Confused]);
+                image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
             }
         }
     }

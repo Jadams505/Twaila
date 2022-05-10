@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Twaila.Graphics;
+using Terraria.ID;
 
 namespace Twaila.Context
 {
@@ -28,25 +28,25 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
         {
-            return new TwailaTexture(ImageUtil.GetImageFromTileData(spriteBatch, Tile));
+            return new TwailaTexture(ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y));
         }
 
         protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
         {
-            Texture2D texture = ImageUtil.GetItemTexture(itemId) ?? GetTileImage(spriteBatch).Texture;
+            Texture2D texture = ImageUtil.GetItemTexture(itemId);
             return new TwailaTexture(texture);
         }
 
-        protected override string GetTileName(int itemId)
+        protected override string GetTileName(Tile tile, int itemId)
         {
-            return NameUtil.GetNameForSapling(this) ?? base.GetTileName(itemId);
+            return NameUtil.GetNameForSapling(this) ?? base.GetTileName(tile, itemId);
         }
 
         private int GetSaplingTile()
         {
-            if (!TileLoader.IsSapling(Tile.type))
+            if (!TileID.Sets.TreeSapling[Tile.TileId])
             {
                 return -1;
             }
@@ -54,13 +54,13 @@ namespace Twaila.Context
             do
             {
                 y++;
-            } while (TileLoader.IsSapling(Main.tile[Pos.X, y].type) && Main.tile[Pos.X, y].active());
+            } while (TileID.Sets.TreeSapling[Main.tile[Pos.X, y].TileType] && Main.tile[Pos.X, y].HasTile);
 
-            if (Main.tile[Pos.X, y] == null || !Main.tile[Pos.X, y].active())
+            if (!Main.tile[Pos.X, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[Pos.X, y].type;
+            return Main.tile[Pos.X, y].TileType;
         }
     }
 }

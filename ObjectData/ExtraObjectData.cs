@@ -47,12 +47,14 @@ namespace Twaila.ObjectData
             data2.StyleHorizontal = true;
             AddEntry(TileID.ExposedGems, data2);
             AddEntry(TileID.WirePipe, data2);
+            AddEntry(TileID.LilyPad, data2);
 
             TileObjectData data3 = new TileObjectData(TileObjectData.Style1x1);
             data3.CoordinateHeights = new int[] { 16 };
             data3.StyleHorizontal = true;
             data3.CoordinateWidth = 20;
             AddEntry(TileID.LongMoss, data3);
+            AddEntry(TileID.AbigailsFlower, data3);
 
             TileObjectData data4 = new TileObjectData(TileObjectData.Style1x1);
             data4.CoordinateWidth = 16;
@@ -63,7 +65,7 @@ namespace Twaila.ObjectData
             AddEntry(TileID.JunglePlants, data4);
             AddEntry(TileID.MushroomPlants, data4);
             AddEntry(TileID.HallowedPlants, data4);
-            AddEntry(TileID.FleshWeeds, data4);
+            AddEntry(TileID.CrimsonPlants, data4); //FleshWeeds
 
             TileObjectData data5 = new TileObjectData(TileObjectData.Style1x1);
             data5.CoordinateHeights = new int[] { 32 };
@@ -71,7 +73,17 @@ namespace Twaila.ObjectData
             AddEntry(TileID.Plants2, data5);
             AddEntry(TileID.JunglePlants2, data5);
             AddEntry(TileID.HallowedPlants2, data5);
+            AddEntry(TileID.SeaOats, data5);
+
+            TileObjectData data6 = new TileObjectData(TileObjectData.Style1x1);
+            data6.CoordinateHeights = new int[] { 16 };
+            data6.CoordinateWidth = 16;
+            data6.StyleHorizontal = true;
+            data6.StyleMultiplier = 27;
+            data6.StyleWrapLimit = 27;
+            AddEntry(TileID.Platforms, data6); // the stone platform is messed up in the original TileObjectData and I dont know why
         }
+
         private static void Add2x1()
         {
             TileObjectData data = new TileObjectData();
@@ -107,6 +119,12 @@ namespace Twaila.ObjectData
             data.CopyFrom(TileObjectData.Style3x2);
             data.CoordinateHeights = new int[] { 16, 18 };
             AddEntry(TileID.TinkerersWorkbench, data);
+
+            TileObjectData data2 = new TileObjectData(TileObjectData.Style3x2);
+            data.CoordinateHeights = new int[] { 16, 16 };
+            data.CoordinateWidth = 16;
+            data.StyleHorizontal = true;
+            AddEntry(TileID.OasisPlants, data2);
         }
 
         private static void Add3x3()
@@ -128,11 +146,22 @@ namespace Twaila.ObjectData
 
         public static TileObjectData GetData(Tile tile)
         {
-            TileObjectData data = GetDataForPiles(tile) ?? GetDataForJungleFoilage(tile) ?? GetDataForStalactite(tile);
+            TileObjectData data = GetDataForPiles(tile.TileType, tile.TileFrameY) ?? GetDataForJungleFoilage(tile.TileType, tile.TileFrameY) ?? 
+                GetDataForStalactite(tile.TileType, tile.TileFrameY);
             if(data == null)
             {
-                _data.TryGetValue(tile.type, out data);
+                _data.TryGetValue(tile.TileType, out data);
             }  
+            return data;
+        }
+
+        public static TileObjectData GetData(int tileId, int frameY)
+        {
+            TileObjectData data = GetDataForPiles(tileId, frameY) ?? GetDataForJungleFoilage(tileId, frameY) ?? GetDataForStalactite(tileId, frameY);
+            if (data == null)
+            {
+                _data.TryGetValue(tileId, out data);
+            }
             return data;
         }
 
@@ -140,18 +169,18 @@ namespace Twaila.ObjectData
             The top row of the spritesheet for piles are 1x1 in size while the
             next two rows are 2x1 in size
         */
-        private static TileObjectData GetDataForPiles(Tile tile)
+        private static TileObjectData GetDataForPiles(int tileId, int frameY)
         {
-            if (tile.type == TileID.SmallPiles)
+            if (tileId == TileID.SmallPiles)
             {
                 TileObjectData data = new TileObjectData();
-                if (tile.frameY < 18)
+                if (frameY < 18)
                 {
                     data.CopyFrom(TileObjectData.Style1x1);
                     data.StyleHorizontal = true;
                     data.CoordinateHeights = new int[] { 16 };
                 }
-                else if (tile.frameY < 52)
+                else if (frameY < 52)
                 {
                     data.CopyFrom(TileObjectData.Style2x1);
                     data.StyleHorizontal = true;
@@ -170,18 +199,18 @@ namespace Twaila.ObjectData
             The top half of the spritesheet for jungle foilage are 3x2 in size while the
             bottom half are 2x2 in size
         */
-        private static TileObjectData GetDataForJungleFoilage(Tile tile)
+        private static TileObjectData GetDataForJungleFoilage(int tileId, int frameY)
         {
-            if (tile.type == TileID.PlantDetritus)
+            if (tileId == TileID.PlantDetritus)
             {
                 TileObjectData data = new TileObjectData();
-                if (tile.frameY < 36)
+                if (frameY < 36)
                 {
                     data.CopyFrom(TileObjectData.Style3x2);
                     data.StyleHorizontal = true;
                     data.CoordinateHeights = new int[] { 16, 16 };
                 }
-                else if (tile.frameY < 70)
+                else if (frameY < 70)
                 {
                     data.CopyFrom(TileObjectData.Style2x2);
                     data.StyleHorizontal = true;
@@ -200,17 +229,17 @@ namespace Twaila.ObjectData
             The top half of the spritesheet for stalactites are 1x2 in size while the
             bottom half are 1x1 in size
         */
-        private static TileObjectData GetDataForStalactite(Tile tile)
+        private static TileObjectData GetDataForStalactite(int tileId, int frameY)
         {
-            if (tile.type == TileID.Stalactite)
+            if (tileId == TileID.Stalactite)
             {
                 TileObjectData data = new TileObjectData();
-                if (tile.frameY <= 69)
+                if (frameY <= 69)
                 {
                     data.CopyFrom(TileObjectData.Style1x2);
                     data.CoordinateHeights = new int[] { 16, 16 };
                 }
-                else if (tile.frameY <= 105)
+                else if (frameY <= 105)
                 {
                     data.CopyFrom(TileObjectData.Style1x1);
                     data.CoordinateHeights = new int[] { 16 };
@@ -222,20 +251,6 @@ namespace Twaila.ObjectData
                 return data;
             }
             return null;
-        }
-
-        public static int GetTileStyle(Tile tile)
-        {
-            TileObjectData data = GetData(tile);
-            if(data == null)
-            {
-                return -1;
-            }
-            if (data.StyleHorizontal)
-            {
-                return tile.frameX / data.CoordinateFullWidth;
-            }
-            return tile.frameY / data.CoordinateFullHeight;
         }
     }
 }
