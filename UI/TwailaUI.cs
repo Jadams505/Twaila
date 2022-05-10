@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Util;
@@ -39,10 +40,10 @@ namespace Twaila.UI
                     Enabled = false;
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
-                    if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
+                    if ((TwailaConfig.Get().UIDisplaySettings.HideUIForAir && currentContext.TileType == TileType.Empty) || 
+                        TileUtil.IsBlockedByAntiCheat(currentContext))
                     {
-                        if ((currentContext.TileType == TileType.Empty) || TileUtil.IsBlockedByAntiCheat(currentContext) 
-                            && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
+                        if (!_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
                             break;
@@ -78,19 +79,19 @@ namespace Twaila.UI
             }
             Tile tile = Framing.GetTileSafely(pos);
 
-            if(tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees)
+            if(tile.type == TileID.Trees || tile.type == TileID.MushroomTrees)
             {
                 return new TreeContext(pos);
             }
-            if(tile.TileType == TileID.Cactus)
+            if(tile.type == TileID.Cactus)
             {
                 return new CactusContext(pos);
             }
-            if(tile.TileType == TileID.PalmTree)
+            if(tile.type == TileID.PalmTree)
             {
                 return new PalmTreeContext(pos);
             }
-            if (TileID.Sets.TreeSapling[tile.TileType])
+            if (TileLoader.IsSapling(tile.type))
             {
                 return new SaplingContext(pos);
             }

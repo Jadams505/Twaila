@@ -1,72 +1,23 @@
-﻿using Terraria;
-using Terraria.GameContent.Drawing;
-using Terraria.GameContent.UI;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ID;
-using Terraria.ObjectData;
+using Terraria.ModLoader;
 using Twaila.Context;
-using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
     internal class TileUtil
     {
-        public static TileObjectData GetTileObjectData(Tile tile)
-        {
-            TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
-            return data;
-        }
-
-        public static TileObjectData GetTileObjectData(DummyTile tile, int style = 0)
-        {
-            TileObjectData data = ExtraObjectData.GetData(tile.TileId, tile.TileFrameY) ?? 
-                TileObjectData.GetTileData(tile.TileId, style);
-            return data;
-        }
-
-        public static int GetTileStyle(DummyTile tile)
-        {
-            TileObjectData data = GetTileObjectData(tile);
-            if(data == null)
-            {
-                return -1;
-            }
-
-            int col = tile.TileFrameX / data.CoordinateFullWidth;
-            int row = tile.TileFrameY / data.CoordinateFullHeight;
-            int swl = data.StyleWrapLimit;
-            if (swl == 0)
-            {
-                swl = 1;
-            }
-
-            int style = (!data.StyleHorizontal) ? (col * swl + row) : (row * swl + col);
-            style /= data.StyleMultiplier;
-            return style;
-        }
-
-        public static void GetRealTileFrame(Tile tile, int posX, int posY, out int frameX, out int frameY)
-        {
-            short originalFrameX = tile.TileFrameX, originalFrameY = tile.TileFrameY;
-            Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType, ref originalFrameX, ref originalFrameY, out _, out _, out _,
-                out _, out int addX, out int addY, out _, out _, out _, out _);
-            frameX = originalFrameX + addX;
-            frameY = originalFrameY + addY;
-        }
-
         public static bool IsBlockedByAntiCheat(TileContext context)
         {
             if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)
             {
-                if((context.OnlyWire() && !WiresUI.Settings.DrawWires) || 
-                    (context.OnlyWire() && !context.Tile.Actuator && WiresUI.Settings.HideWires)){
-                    return true;
-                }
                 Player player = Main.player[Main.myPlayer];
-                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.TileId])
+                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.type])
                 {
                     return false;
                 }
-                if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(context.Pos.X, context.Pos.Y, Main.player[Main.myPlayer]))
+                if (player.HasBuff(BuffID.Dangersense) && IsDangersenseTile(context.Tile, context.Pos))
                 {
                     return false;
                 }
@@ -75,10 +26,32 @@ namespace Twaila.Util
             return false;
         }
 
+        public static bool IsDangersenseTile(Tile tile, Point pos)
+        {
+            bool dangerTile = tile.type == TileID.PressurePlates || tile.type == TileID.Traps || tile.type == TileID.Boulder ||
+                tile.type == TileID.Explosives || tile.type == TileID.LandMine || tile.type == TileID.ProjectilePressurePad ||
+                tile.type == TileID.GeyserTrap || tile.type == TileID.BeeHive;
+            if (tile.slope() == 0 && !tile.inActive())
+            {
+                dangerTile = dangerTile || tile.type == TileID.Cobweb || tile.type == TileID.CorruptThorns ||
+                    tile.type == TileID.JungleThorns || tile.type == TileID.CrimtaneThorns || tile.type == TileID.Spikes
+                    || tile.type == TileID.WoodenSpikes || tile.type == TileID.HoneyBlock;
+                if (!Main.player[Main.myPlayer].fireWalk)
+                {
+                    dangerTile = dangerTile || tile.type == TileID.Meteorite || tile.type == TileID.Hellstone || tile.type == TileID.HellstoneBrick;
+                }
+                if (!Main.player[Main.myPlayer].iceSkate)
+                {
+                    dangerTile = dangerTile || tile.type == TileID.BreakableIce;
+                }
+            }
+            return dangerTile || TileLoader.Dangersense(pos.X, pos.Y, tile.type, Main.player[Main.myPlayer]);
+        }
+
         // tile -> wall -> liquid -> tile
         public static void CycleType(TileContext context)
         {
-            if (context.TileType == TileType.Empty)
+            if (context.TileType == TileType.Empty || (!context.HasTile() && !context.HasLiquid() && !context.HasWall()))
             {
                 return;
             }

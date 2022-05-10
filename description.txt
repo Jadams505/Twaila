@@ -33,11 +33,41 @@ This mod is currently in development and is not complete
 - Cycle UI Display Mode (Mouse3 by default): Cycles through the UIDisplay options
 
 [Changelog]
-v0.1.2.0 (4/22/2022)
-- Fixed the majority of 1.4 tiles
-v0.1.1.0 (4/20/2022)
-- Fixed vanity and gem trees
-- Fixed bamboo and seaweed
-v0.1.0.0 (4/18/2022)
-- Port of the 1.3 (v0.4.0.0) version
-- Item ids are now indexed by tile to greatly increase performance
+v0.4.0.0 (4/12/2022)
+- Added Walls and Liquids to the UI
+- The panel now cycles through tile types (tile, wall, liquid) if more than one type applies
+v0.3.1.0 (3/30/2022)
+- Added more config options including AntiCheat, TextShadow, ContentToggles, and Colors
+- Fixed an issue where item textures would not default to tile textures if no item texture was found
+- The panel's text can how handle text tags
+- Toggle UI was changed to Cycle UI Display Mode to allow for the new Automatic display option
+- Plants now properly display on the UI when in their blooming state
+v0.3.0.0 (3/20/2022)
+- Added configuration settings for positioning and anchoring
+- The panel can now be moved with the mouse
+- Added the Trim, Shrink, and Overflow options to handle content that is too big for the panel
+v0.2.2.1 (3/12/2022)
+- Fixed a game crash when hovering over a giant mushroom
+v0.2.2.0 (3/9/2022)
+- Fixed issues with tiles that have extra data or can be activiated (Doors, Campfires, etc)
+- Fixed several incorrect or missing item textures
+- Fixed naming for locked chests and the enchanted sword shrine
+v0.2.1.0 (3/2/2022)
+- Gave names to tiles that don't technically have names in vanilla Terraria
+- Many name and texture fixes
+v0.2.0.0 (2/26/2022)
+- UI Scaling now works properly with the UI
+- The UI updates more efficiently
+- Fixed an issue where the UI would update with tiles that were off screen
+- The UI now explicitly prioritizes smart cursor over mouse coordinates
+- The default texture is now the confused buff texture
+v0.1.3.0 (2/18/2022)
+- Cacti now display the proper name and texture on the UI
+v0.1.2.0 (2/13/2022)
+- Saplings now display the proper name on the UI
+v0.1.1.0 (2/12/2022)
+- Trees now display the proper name and texture on the UI
+- Fixed a blurry texture issue
+v0.1.0.1 (2/11/2022)
+- Initial Release
+- The UI Panel displays the name, mod, and texture of most tiles in vanilla and modded Terraria

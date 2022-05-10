@@ -1,29 +1,54 @@
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ModLoader;
+using Terraria.UI;
 using Twaila.ObjectData;
+using Twaila.UI;
 using Twaila.Util;
 
 namespace Twaila
 {
 	public class Twaila : Mod
 	{
-        public static Twaila Instance => ModContent.GetInstance<Twaila>();
-
+        private static GameTime _lastUpdateTime;
         public override void Load()
         {
-            Keybinds.RegisterKeybinds(this);
-            ExtraObjectData.Initialize();
-        }
-
-        public override void PostAddRecipes()
-        {
-            ItemUtil.LoadDictionary(); // loaded at this point so that all items from all mods have been loaded
+            if (!Main.dedServ)
+            {
+                Keybinds.RegisterKeybinds(this);
+                ExtraObjectData.Initialize();
+                TwailaUI.Load();
+            }
         }
 
         public override void Unload()
         {
+            TwailaUI.Unload();
             Keybinds.Unload();
             ExtraObjectData.Unload();
-            ItemUtil.UnloadDictionary();
+        }
+
+        public override void UpdateUI(GameTime gameTime)
+        {
+            _lastUpdateTime = gameTime;
+            TwailaUI.Update(gameTime);
+        }
+
+        private static bool DrawGUI()
+        {
+            TwailaUI.Draw(_lastUpdateTime);
+            return true;
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            int InventoryLayer = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+            if (InventoryLayer != -1)
+            {
+                layers.Insert(InventoryLayer, new LegacyGameInterfaceLayer(
+                    "Twaila: Panel Layer", DrawGUI, InterfaceScaleType.UI));
+            }
         }
     }
 }
