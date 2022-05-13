@@ -344,30 +344,57 @@ namespace Twaila.UI
                 InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
             }
             int pickPower = InfoUtil.GetPickaxePower(tile.TileType);
-            if(pickPower > 0 && context.TileType == TileType.Tile && TwailaConfig.Get().DisplayContent.ShowPickaxePower)
+            if(pickPower > 0 && context.TileType == TileType.Tile && 
+                TwailaConfig.Get().DisplayContent.ShowPickaxePower == TwailaConfig.DisplayType.Icon)
             {
                 InfoBox.SetAndAppend(InfoType.PickaxePower, pickPower + "% Pick Power");
             }
+
             string iconText = "";
-            string paintTag = InfoUtil.GetPaintTag(tile, context.TileType);
-            if (TwailaConfig.Get().DisplayContent.ShowPaint && paintTag != "")
+            if (InfoUtil.GetPaintInfo(tile, context.TileType, out string paintText, out string paintIcon))
             {
-                iconText += paintTag;
-                InfoBox.SetAndAppend(InfoType.Paint, InfoUtil.GetPaintName(tile, context.TileType));
+                if(TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Icon ||
+                    TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    iconText += paintIcon;
+                }
+                if(TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Name ||
+                    TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    InfoBox.SetAndAppend(InfoType.PaintText, paintText);
+                }
             }
             
             if (!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
-                if (TwailaConfig.Get().DisplayContent.ShowWire)
+                if (InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
                 {
-                    iconText += InfoUtil.GetWireTag(tile);
+                    if (TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Icon ||
+                        TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Both)
+                    {
+                        iconText += wireIcon;
+                    }
+                    if (TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Name ||
+                        TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Both)
+                    {
+                        InfoBox.SetAndAppend(InfoType.WireText, wireText);
+                    }
                 }
             }
             if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
             {
-                if (TwailaConfig.Get().DisplayContent.ShowActuator)
+                if (InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
                 {
-                    iconText += InfoUtil.GetActuatorTag(tile);
+                    if (TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Icon ||
+                        TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Both)
+                    {
+                        iconText += actIcon;
+                    }
+                    if (TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Name ||
+                        TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Both)
+                    {
+                        InfoBox.SetAndAppend(InfoType.ActuatorText, actText);
+                    }
                 }
             }
             if (iconText != "")

@@ -127,6 +127,14 @@ namespace Twaila
         [Label("ReservedImageWidth (%)")]
         public int ReservedImageWidth;
 
+        public enum DisplayType
+        {
+            Name,
+            Icon,
+            Both,
+            Off
+        }
+
         public class Content
         {
             [DefaultValue(true)]
@@ -138,27 +146,27 @@ namespace Twaila
             [DefaultValue(true)]
             public bool ShowMod;
 
-            [DefaultValue(true)]
-            public bool ShowPickaxePower;
+            [DrawTicks]
+            public DisplayType ShowPickaxePower;
 
-            [DefaultValue(true)]
-            public bool ShowWire;
+            [DrawTicks]
+            public DisplayType ShowWire;
 
-            [DefaultValue(true)]
-            public bool ShowActuator;
+            [DrawTicks]
+            public DisplayType ShowActuator;
 
-            [DefaultValue(true)]
-            public bool ShowPaint;
+            [DrawTicks]
+            public DisplayType ShowPaint;
 
             public Content()
             {
                 ShowImage = true;
                 ShowName = true;
                 ShowMod = true;
-                ShowPickaxePower = true;
-                ShowWire = true;
-                ShowActuator = true;
-                ShowPaint = true;
+                ShowPickaxePower = DisplayType.Icon;
+                ShowWire = DisplayType.Icon;
+                ShowActuator = DisplayType.Icon;
+                ShowPaint = DisplayType.Icon;
             }
 
             public override bool Equals(object obj)
