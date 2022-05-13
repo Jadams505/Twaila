@@ -13,6 +13,7 @@ namespace Twaila.UI
     {
         Name,
         PickaxePower,
+        Paint,
         InfoIcons,
         Mod,
         Count

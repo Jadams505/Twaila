@@ -349,10 +349,13 @@ namespace Twaila.UI
                 InfoBox.SetAndAppend(InfoType.PickaxePower, pickPower + "% Pick Power");
             }
             string iconText = "";
-            if (TwailaConfig.Get().DisplayContent.ShowPaint)
+            string paintTag = InfoUtil.GetPaintTag(tile, context.TileType);
+            if (TwailaConfig.Get().DisplayContent.ShowPaint && paintTag != "")
             {
-                iconText += InfoUtil.GetPaintTag(tile, context.TileType);
+                iconText += paintTag;
+                InfoBox.SetAndAppend(InfoType.Paint, InfoUtil.GetPaintName(tile, context.TileType));
             }
+            
             if (!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
                 if (TwailaConfig.Get().DisplayContent.ShowWire)

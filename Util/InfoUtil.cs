@@ -48,73 +48,88 @@ namespace Twaila.Util
             }
         }
 
-        public static string GetPaintTag(Tile tile, TileType type)
+        public static int GetPaintItem(byte color)
         {
-            byte color = GetPaintColor(tile, type);
             switch (color)
             {
                 case PaintID.RedPaint:
-                    return $"[i:{ItemID.RedPaint}]";
+                    return ItemID.RedPaint;
                 case PaintID.OrangePaint:
-                    return $"[i:{ItemID.OrangePaint}]";
+                    return ItemID.OrangePaint;
                 case PaintID.YellowPaint:
-                    return $"[i:{ItemID.YellowPaint}]";
+                    return ItemID.YellowPaint;
                 case PaintID.LimePaint:
-                    return $"[i:{ItemID.LimePaint}]";
+                    return ItemID.LimePaint;
                 case PaintID.GreenPaint:
-                    return $"[i:{ItemID.GreenPaint}]";
+                    return ItemID.GreenPaint;
                 case PaintID.CyanPaint:
-                    return $"[i:{ItemID.CyanPaint}]";
+                    return ItemID.CyanPaint;
                 case PaintID.SkyBluePaint:
-                    return $"[i:{ItemID.SkyBluePaint}]";
+                    return ItemID.SkyBluePaint;
                 case PaintID.BluePaint:
-                    return $"[i:{ItemID.BluePaint}]";
+                    return ItemID.BluePaint;
                 case PaintID.PurplePaint:
-                    return $"[i:{ItemID.PurplePaint}]";
+                    return ItemID.PurplePaint;
                 case PaintID.VioletPaint:
-                    return $"[i:{ItemID.VioletPaint}]";
+                    return ItemID.VioletPaint;
                 case PaintID.PinkPaint:
-                    return $"[i:{ItemID.PinkPaint}]";
+                    return ItemID.PinkPaint;
                 case PaintID.BlackPaint:
-                    return $"[i:{ItemID.BlackPaint}]";
+                    return ItemID.BlackPaint;
                 case PaintID.GrayPaint:
-                    return $"[i:{ItemID.GrayPaint}]";
+                    return ItemID.GrayPaint;
                 case PaintID.WhitePaint:
-                    return $"[i:{ItemID.WhitePaint}]";
+                    return ItemID.WhitePaint;
                 case PaintID.BrownPaint:
-                    return $"[i:{ItemID.BrownPaint}]";
+                    return ItemID.BrownPaint;
                 case PaintID.ShadowPaint:
-                    return $"[i:{ItemID.ShadowPaint}]";
+                    return ItemID.ShadowPaint;
                 case PaintID.NegativePaint:
-                    return $"[i:{ItemID.NegativePaint}]";
+                    return ItemID.NegativePaint;
                 case PaintID.IlluminantPaint:
-                    return $"[i:{ItemID.GlowPaint}]";
+                    return ItemID.GlowPaint;
                 case PaintID.DeepRedPaint:
-                    return $"[i:{ItemID.DeepRedPaint}]";
+                    return ItemID.DeepRedPaint;
                 case PaintID.DeepOrangePaint:
-                    return $"[i:{ItemID.DeepOrangePaint}]";
+                    return ItemID.DeepOrangePaint;
                 case PaintID.DeepYellowPaint:
-                    return $"[i:{ItemID.DeepYellowPaint}]";
+                    return ItemID.DeepYellowPaint;
                 case PaintID.DeepLimePaint:
-                    return $"[i:{ItemID.DeepLimePaint}]";
+                    return ItemID.DeepLimePaint;
                 case PaintID.DeepGreenPaint:
-                    return $"[i:{ItemID.DeepGreenPaint}]";
+                    return ItemID.DeepGreenPaint;
                 case PaintID.DeepTealPaint:
-                    return $"[i:{ItemID.DeepTealPaint}]";
+                    return ItemID.DeepTealPaint;
                 case PaintID.DeepCyanPaint:
-                    return $"[i:{ItemID.DeepCyanPaint}]";
+                    return ItemID.DeepCyanPaint;
                 case PaintID.DeepSkyBluePaint:
-                    return $"[i:{ItemID.DeepSkyBluePaint}]";
+                    return ItemID.DeepSkyBluePaint;
                 case PaintID.DeepBluePaint:
-                    return $"[i:{ItemID.DeepBluePaint}]";
+                    return ItemID.DeepBluePaint;
                 case PaintID.DeepPurplePaint:
-                    return $"[i:{ItemID.DeepPurplePaint}]";
+                    return ItemID.DeepPurplePaint;
                 case PaintID.DeepVioletPaint:
-                    return $"[i:{ItemID.DeepVioletPaint}]";
+                    return ItemID.DeepVioletPaint;
                 case PaintID.DeepPinkPaint:
-                    return $"[i:{ItemID.DeepPinkPaint}]";
+                    return ItemID.DeepPinkPaint;
+            }
+            return -1;
+        }
+
+        public static string GetPaintTag(Tile tile, TileType type)
+        {
+            byte color = GetPaintColor(tile, type);
+            int paintItemId = GetPaintItem(color);
+            if(paintItemId != -1)
+            {
+                return $"[i:{paintItemId}]";
             }
             return "";
+        }
+
+        public static string GetPaintName(Tile tile, TileType type)
+        {
+            return NameUtil.GetNameFromItem(GetPaintItem(GetPaintColor(tile, type)));
         }
 
         public static byte GetPaintColor(Tile tile, TileType type)
