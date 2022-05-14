@@ -16,14 +16,14 @@ namespace Twaila
 
         public override void PostAddRecipes()
         {
-            ItemUtil.LoadDictionary(); // loaded at this point so that all items from all mods have been loaded
+            ItemUtil.Load(); // loaded at this point so that all items from all mods have been loaded
         }
 
         public override void Unload()
         {
             Keybinds.Unload();
             ExtraObjectData.Unload();
-            ItemUtil.UnloadDictionary();
+            ItemUtil.Unload();
         }
     }
 }

@@ -9,6 +9,21 @@ namespace Twaila.Util
 {
     public class InfoUtil
     {
+        public static bool GetPickInfo(Tile tile, ref int lastIndex, out string text, out string icon, out int pickId)
+        {
+            int power = GetPickaxePower(tile.TileType);
+            text = "";
+            icon = "";
+            pickId = -1;
+            if(power > 0)
+            {
+                pickId = ItemUtil.GetPickaxeId(power, lastIndex, out lastIndex);
+                text = power + "% Pick Power";
+                icon = $"[i:{pickId}]";
+                return true;
+            }
+            return false;
+        }
         public static int GetPickaxePower(int tileId)
         {
             ModTile mTile = TileLoader.GetTile(tileId);
@@ -186,15 +201,6 @@ namespace Twaila.Util
             text = "";
             icon = "";
             return false;
-        }
-
-        public static string GetActuatorTag(Tile tile)
-        {
-            if (tile.HasActuator)
-            {
-                return $"[i:{ItemID.Actuator}]";
-            }
-            return "";
         }
     }
 }

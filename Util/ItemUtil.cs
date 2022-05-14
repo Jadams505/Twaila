@@ -55,14 +55,99 @@ namespace Twaila.Util
             return GetItemId(context.Tile, style, context.TileType);
         }
 
-        internal static void LoadDictionary()
+        private class PickPowerPair
+        {
+            public int power;
+            public int id;
+
+            public PickPowerPair(int power, int id)
+            {
+                this.power = power;
+                this.id = id;
+            }
+
+        }
+
+        private static List<(int power, int id)> _pickaxes;
+
+        public static int GetPickId(int pickPower, int startIndex, out int foundIndex)
+        {
+            for(int i = startIndex; i < _pickaxes.Count; ++i)
+            {
+                (int power, int id) pick = _pickaxes[i];
+                if (pick.power > pickPower)
+                {
+                    foundIndex = i;
+                    return pick.id;
+                }
+            }
+            foundIndex = _pickaxes.Count - 1;
+            return _pickaxes[foundIndex].id;
+        }
+
+        public static int GetPickaxeId(int pickPower, int startIndex, out int foundIndex)
+        {
+            if (startIndex < 0 || startIndex >= _pickaxes.Count)
+            {
+                startIndex = 0;
+            }
+            if (_pickaxes[startIndex].power < pickPower)
+            {
+                int index = _pickaxes.BinarySearch(startIndex, _pickaxes.Count - startIndex, (pickPower, -1), new PickPowerSorter());
+                if (index >= 0)
+                {
+                    if(index - 1 > 0 && _pickaxes[index - 1].power >= pickPower)
+                    {
+                        foundIndex = index - 1;
+                    }
+                    else
+                    {
+                        foundIndex = index; // check because its skipping a pickaxe
+                    }
+                }
+                else if (~index == _pickaxes.Count)
+                {
+                    foundIndex = _pickaxes.Count - 1;
+                }
+                else
+                {
+                    foundIndex = _pickaxes.BinarySearch(0, startIndex, (pickPower, -1), new PickPowerSorter());
+                }
+                return _pickaxes[foundIndex].id;
+            }
+            else
+            {
+                foundIndex = startIndex;
+                return _pickaxes[startIndex].id;
+            }
+        }
+
+        private class PickPowerSorter : IComparer<(int power, int id)>
+        {
+            public int Compare((int power, int id) x, (int power, int id) y)
+            {
+                if(x.power < y.power)
+                {
+                    return -1;
+                }
+                if(x.power > y.power)
+                {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+
+        internal static void Load()
         {
             _tileToItemDictionary = new Dictionary<TileStylePair, int>();
+            _pickaxes = new List<(int power, int id)>();
             Populate();
         }
 
-        internal static void UnloadDictionary()
+        internal static void Unload()
         {
+            _pickaxes = null;
             _tileToItemDictionary = null;
         }
 
@@ -109,9 +194,13 @@ namespace Twaila.Util
             {
                 Item item = new Item();
                 item.SetDefaults(i);
+                if (item.pick > 0)
+                {
+                    _pickaxes.Add((item.pick, i));
+                }
                 if (item.createTile != -1)
                 {
-                    if(item.createTile == TileID.ClosedDoor)
+                    if (item.createTile == TileID.ClosedDoor)
                     {
                         AddOpenDoorEntry(i);
                     } 
@@ -145,6 +234,10 @@ namespace Twaila.Util
                 ModItem mItem = ItemLoader.GetItem(i);
                 if(mItem != null)
                 {
+                    if (mItem.Item.pick > 0)
+                    {
+                        _pickaxes.Add((mItem.Item.pick, i));
+                    }
                     dummyTile.TileId = mItem.Item.createTile;
                     if(mItem.Item.createTile != -1 && TileUtil.GetTileObjectData(dummyTile) != null)
                     {
@@ -157,6 +250,7 @@ namespace Twaila.Util
                     }
                 }
             }
+            _pickaxes.Sort(new PickPowerSorter());
             Twaila.Instance.Logger.Info(_tileToItemDictionary.Count + " Pairs Added");
         }
 

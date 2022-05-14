@@ -18,6 +18,7 @@ namespace Twaila.UI
         public TwailaInfoBox InfoBox { get; set; }
         public UITwailaImage Image { get; set; }
         public TileContext Context { get; set; }
+        private int pickIndex = 0;
         private bool _dragging;
         private Point _lastMouse;
         private int _tick = 0;
@@ -290,6 +291,7 @@ namespace Twaila.UI
             }
             else
             {
+                pickIndex = 0;
                 _tick = 0;
             }
             if (_tick >= TwailaConfig.Get().CycleDelay)
@@ -343,15 +345,35 @@ namespace Twaila.UI
             {
                 InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
             }
-            int pickPower = InfoUtil.GetPickaxePower(tile.TileType);
-            if(pickPower > 0 && context.TileType == TileType.Tile && 
-                TwailaConfig.Get().DisplayContent.ShowPickaxePower == TwailaConfig.DisplayType.Icon)
+            string iconText = "";
+            
+            if (context.TileType == TileType.Tile && InfoUtil.GetPickaxePower(tile.TileType) > 0)
             {
-                InfoBox.SetAndAppend(InfoType.PickaxePower, pickPower + "% Pick Power");
+                if (Main.GameUpdateCount % TwailaConfig.Get().CycleDelay == 0)
+                {
+                    pickIndex++;
+                }
+                if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out string pickIcon, out int id))
+                {
+                    if (TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Icon ||
+                    TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Both)
+                    {
+                        iconText += pickIcon;
+                    }
+                    if (TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Name ||
+                        TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Both)
+                    {
+                        InfoBox.SetAndAppend(InfoType.RecommendedPickaxe, NameUtil.GetNameFromItem(id));
+                    }
+                    if (TwailaConfig.Get().DisplayContent.ShowPickaxePower)
+                    {
+                        InfoBox.SetAndAppend(InfoType.PickaxePower, pickText);
+                    }
+                }
             }
 
-            string iconText = "";
-            if (InfoUtil.GetPaintInfo(tile, context.TileType, out string paintText, out string paintIcon))
+            if (TwailaConfig.Get().DisplayContent.ShowPaint != TwailaConfig.DisplayType.Off && 
+                InfoUtil.GetPaintInfo(tile, context.TileType, out string paintText, out string paintIcon))
             {
                 if(TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Icon ||
                     TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Both)
@@ -367,7 +389,8 @@ namespace Twaila.UI
             
             if (!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
-                if (InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
+                if (TwailaConfig.Get().DisplayContent.ShowWire != TwailaConfig.DisplayType.Off && 
+                    InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
                 {
                     if (TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Icon ||
                         TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Both)
@@ -383,7 +406,8 @@ namespace Twaila.UI
             }
             if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
             {
-                if (InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
+                if (TwailaConfig.Get().DisplayContent.ShowActuator != TwailaConfig.DisplayType.Off && 
+                    InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
                 {
                     if (TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Icon ||
                         TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Both)
