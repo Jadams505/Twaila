@@ -363,7 +363,14 @@ namespace Twaila.UI
                     if (TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Name ||
                         TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-                        InfoBox.SetAndAppend(InfoType.RecommendedPickaxe, NameUtil.GetNameFromItem(id));
+                        if(id != -1)
+                        {
+                            InfoBox.SetAndAppend(InfoType.RecommendedPickaxe, NameUtil.GetNameFromItem(id));
+                        }
+                        else
+                        {
+                            pickIndex = 0;
+                        }
                     }
                     if (TwailaConfig.Get().DisplayContent.ShowPickaxePower)
                     {
