@@ -6,6 +6,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Graphics;
@@ -294,13 +295,15 @@ namespace Twaila.UI
                 pickIndex = 0;
                 _tick = 0;
             }
-            if (_tick >= TwailaConfig.Get().CycleDelay)
+            Player player = Main.player[Main.myPlayer];
+            player.TryGetModPlayer(out TwailaPlayer tPlayer);
+            if (_tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
                 TileUtil.CycleType(currentContext);
                 _tick = 0;
             }
             
-            Player player = Main.player[Main.myPlayer];
+            
 
             if(player?.itemAnimation > 0 && currentContext.TileType != TileType.Empty) // attempts to stop rapid updating when mining/hammering
             {
@@ -349,7 +352,8 @@ namespace Twaila.UI
             
             if (context.TileType == TileType.Tile && InfoUtil.GetPickaxePower(tile.TileType) > 0)
             {
-                if (Main.GameUpdateCount % TwailaConfig.Get().CycleDelay == 0)
+                Main.player[Main.myPlayer].TryGetModPlayer(out TwailaPlayer tPlayer);
+                if (Main.GameUpdateCount % TwailaConfig.Get().CycleDelay == 0 && !tPlayer.CyclingPaused)
                 {
                     pickIndex++;
                 }

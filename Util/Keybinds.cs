@@ -1,30 +1,31 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 using Twaila.UI;
+using Microsoft.Xna.Framework.Input;
 
 namespace Twaila.Util
 {
     public class Keybinds
     {
         private static ModKeybind toggleUI;
-        private static ModKeybind toggleDebugTextures;
-        private static ModKeybind info;
+        private static ModKeybind pauseCycling;
+        //private static ModKeybind info;
 
         public static void RegisterKeybinds(Mod mod)
         {
             toggleUI = KeybindLoader.RegisterKeybind(mod, "Cycle UI Display Mode", "Mouse3");
-            toggleDebugTextures = KeybindLoader.RegisterKeybind(mod, "Debug", "O");
-            info = KeybindLoader.RegisterKeybind(mod, "info", "*");
+            pauseCycling = KeybindLoader.RegisterKeybind(mod, "Pause Cycling", Keys.F);
+            //info = KeybindLoader.RegisterKeybind(mod, "info", "*");
         }
 
         public static void Unload()
         {
             toggleUI = null;
-            toggleDebugTextures = null;
-            info = null;
+            pauseCycling = null;
+            //info = null;
         }
 
-        public static void HandleKeys()
+        public static void HandleKeys(TwailaPlayer player)
         {
             if (toggleUI.JustPressed)
             {
@@ -42,15 +43,20 @@ namespace Twaila.Util
                 }
                 Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
             }
-            if (toggleDebugTextures.JustPressed)
+            if (pauseCycling.Current)
             {
-                TwailaUI.debugMode ^= true;
+                player.CyclingPaused = true;
             }
-            
+            else
+            {
+                player.CyclingPaused = false;
+            }
+            /*
             if (info.JustPressed)
             {
                 Main.NewText(Framing.GetTileSafely(TwailaUI.GetMousePos()));
             }
+            */
             
         }
     }
