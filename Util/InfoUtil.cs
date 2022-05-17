@@ -20,16 +20,16 @@ namespace Twaila.Util
                 bool canMine = Main.player[Main.myPlayer].HeldItem.pick >= power;
                 string greenCheck = "[c/00FF00:\u2713]";
                 string redX = "[c/FF0000:\u2717]";
-                text = power + "% Pick Power ";
+                text = power + "% Pick Power";
                 if (canMine)
                 {
-                    text += greenCheck;
+                    text = text.Insert(0, greenCheck + " ");
                 }
                 else
                 {
                     pickId = ItemUtil.GetPickaxeId(power, lastIndex, out lastIndex);
                     icon = $"[i:{pickId}]";
-                    text += redX;
+                    text = text.Insert(0, redX + " ");
                 }
                 return true;
             }

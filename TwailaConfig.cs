@@ -65,7 +65,7 @@ namespace Twaila
         [Label("MaxWidth (%)")]
         public int MaxWidth;
 
-        [DefaultValue(20)]
+        [DefaultValue(30)]
         [Tooltip("Maximum % of the screen's height the panel can be")]
         [Label("MaxHeight (%)")]
         public int MaxHeight;
