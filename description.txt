@@ -1,9 +1,8 @@
-Displays the name and mod of the tile you are looking at in the world
+Displays information about the tile you are hovering over in the world
 
 This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is intended to function in a similar way
 
-[IMPORTANT NOTES]
-This mod is currently in development and is not complete
+Suggestions and Feedback are welcome
 
 [Config Options]
 - Visit the Forum page for more details on config options
@@ -30,9 +29,15 @@ This mod is currently in development and is not complete
 - [c/FFFF00:ReservedImageWidth]: The percentage of the panel that is reserved for the image if the text is too long
 
 [Controls]
-- Cycle UI Display Mode (Mouse3 by default): Cycles through the UIDisplay options
+- Cycle UI Display Mode: Cycles through the UIDisplay options
+- Pause Cycling: Hold to stop the UI from cycling its contents
 
 [Changelog]
+v0.2.1.0 (5/18/2022)
+- A Pause Cycling keybind was added that stops the UI from cycling when held down
+- A green check or red X was added to the front of the pickaxe power line depending on if the held pickaxe can mine the tile
+- Added a recommended pickaxe icon that cycles through pickaxes that can mine the tile
+- Added text based versions of the info icons
 v0.2.0.0 (5/9/2022)
 - Added support for wires, paint color, and pickaxe power
 - Minor bug fixes
