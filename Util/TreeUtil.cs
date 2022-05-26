@@ -175,11 +175,11 @@ namespace Twaila.Util
         public static Texture2D GetImageForModdedTree(SpriteBatch spriteBatch, Tile treeDirt)
         {
             int size = 20;
-            int unimplemented = 0;
             int frame = 0, fWidth = 82, fHeight = 80, xOffset = 30, yOffset = 78;
-            Texture2D topTexture = TileLoader.GetTreeTopTextures(treeDirt.TileType, 82, 0, ref frame, ref fWidth, ref fHeight, ref xOffset, ref yOffset);
-            Texture2D woodTexture = TileLoader.GetTreeTexture(treeDirt);
-            Texture2D branchTexture = TileLoader.GetTreeBranchTextures(treeDirt.TileType, 0, 0, 0, ref unimplemented);
+            Texture2D topTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt.TileType).GetTopTextures().Value;
+            Texture2D woodTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt.TileType).GetTexture().Value;
+            Texture2D branchTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt.TileType).GetBranchTextures().Value;
+
             Rectangle top = new Rectangle(frame * fWidth, 0, fWidth, fHeight);
             Rectangle trunk1 = new Rectangle(44, 108, size, size);
             Rectangle trunk2 = new Rectangle(88, 42, size, size);
@@ -230,11 +230,8 @@ namespace Twaila.Util
         public static Texture2D GetImageForModdedPalmTree(SpriteBatch spriteBatch, int palmTreeSand)
         {
             int size = 20;
-            Tile sandTile = new Tile();
-            sandTile.HasTile = true;
-            sandTile.TileType = (ushort)palmTreeSand;
-            Texture2D woodTexture = TileLoader.GetPalmTreeTexture(sandTile);
-            Texture2D topTexture = TileLoader.GetPalmTreeTopTextures(palmTreeSand);
+            Texture2D woodTexture = PlantLoader.Get<ModPalmTree>(TileID.PalmTree, palmTreeSand).GetTexture().Value;
+            Texture2D topTexture = PlantLoader.Get<ModPalmTree>(TileID.PalmTree, palmTreeSand).GetTopTextures().Value;
 
             Rectangle top = new Rectangle(0, 0, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(0, 0, size, size);
