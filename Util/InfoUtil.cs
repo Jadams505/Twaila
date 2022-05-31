@@ -213,5 +213,31 @@ namespace Twaila.Util
             icon = "";
             return false;
         }
+
+        public static bool GetId(Tile tile, TileType type, out int id)
+        {
+            switch (type)
+            {
+                case TileType.Tile:
+                    if (tile.HasTile)
+                    {
+                        id = tile.TileType;
+                        return true;
+                    }
+                    break;
+                case TileType.Wall:
+                    id = tile.WallType;
+                    return true;
+                case TileType.Liquid:
+                    if(tile.LiquidAmount > 0)
+                    {
+                        id = Main.waterStyle;
+                        return true;
+                    }
+                    break;
+            }
+            id = -1;
+            return false;
+        }
     }
 }

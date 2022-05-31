@@ -348,6 +348,10 @@ namespace Twaila.UI
             {
                 InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
             }
+            if (TwailaConfig.Get().DisplayContent.ShowId && InfoUtil.GetId(tile, context.TileType, out int tileId))
+            {
+                InfoBox.SetAndAppend(InfoType.Id, $"{context.TileType} Id: {tileId}");
+            }
             string iconText = "";
             
             if (context.TileType == TileType.Tile && InfoUtil.GetPickaxePower(tile.TileType) > 0)

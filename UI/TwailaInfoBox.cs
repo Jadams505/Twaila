@@ -12,6 +12,7 @@ namespace Twaila.UI
     public enum InfoType
     {
         Name,
+        Id,
         PickaxePower,
         RecommendedPickaxe,
         PaintText,

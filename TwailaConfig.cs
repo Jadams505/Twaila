@@ -147,6 +147,9 @@ namespace Twaila
             public bool ShowMod;
 
             [DefaultValue(true)]
+            public bool ShowId;
+
+            [DefaultValue(true)]
             public bool ShowPickaxePower;
 
             [DrawTicks]
@@ -166,6 +169,7 @@ namespace Twaila
                 ShowImage = true;
                 ShowName = true;
                 ShowMod = true;
+                ShowId = true;
                 ShowPickaxePower = true;
                 ShowPickaxe = DisplayType.Icon;
                 ShowWire = DisplayType.Icon;
@@ -179,7 +183,8 @@ namespace Twaila
                 {
                     return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName
                         && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire && 
-                        ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint && ShowPickaxe == other.ShowPickaxe;
+                        ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint && ShowPickaxe == other.ShowPickaxe
+                        && ShowId == other.ShowId;
                 }
                 return base.Equals(obj);
             }
