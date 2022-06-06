@@ -10,15 +10,16 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Graphics;
+using Twaila.Systems;
 using Twaila.Util;
 
 namespace Twaila.UI
 {
     public class TwailaPanel : UIPanel, IDragable
     {
-        public TwailaInfoBox InfoBox { get; set; }
-        public UITwailaImage Image { get; set; }
-        public TileContext Context { get; set; }
+        public Layout Layout { get; set; }
+        public BaseContext CurrentContext { get; set; }
+
         private int pickIndex = 0;
         private bool _dragging;
         private Point _lastMouse;
@@ -29,16 +30,14 @@ namespace Twaila.UI
 
         public TwailaPanel()
         {
-            Context = new TileContext();
-            Image = new UITwailaImage();
-            InfoBox = new TwailaInfoBox();
-            Image.MarginRight = 10;
+            Layout = new Layout();
+            Layout.Image.MarginRight = 10;
+            Layout.Apply(this);
+
             Width.Set(0, 0);
             Height.Set(0, 0);
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
-            Append(InfoBox);
-            //Append(Image);
         }
 
         public override void Update(GameTime gameTime)
@@ -53,17 +52,8 @@ namespace Twaila.UI
         private void UpdateFromConfig()
         {
             TwailaConfig config = TwailaConfig.Get();
-            
-            Image.DrawMode = config.ContentSetting;
-            Image.Opacity = 1;
-            InfoBox.ApplyToAll((text) =>
-            {
-                text.OverrideTextColor = config.OverrideColor;
-                text.Opacity = 1;
-                text.Color = config.TextColor.Color;
-                text.TextShadow = config.TextShadow;
-                text.DrawMode = config.ContentSetting;
-            });
+
+            Layout.UpdateFromConfig();
 
             BackgroundColor = config.PanelColor.Color;
             BorderColor = Color.Black;
@@ -71,12 +61,20 @@ namespace Twaila.UI
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
-                Image.Opacity = config.HoverOpacity;
-                InfoBox.ApplyToAll((text) =>
-                {
-                    text.OverrideTextColor = true;
-                    text.Opacity = config.HoverOpacity;
-                });
+                Layout.Image.Opacity = config.HoverOpacity;
+                Layout.InfoBox.ApplyToAll(HoverSettings);
+                HoverSettings(Layout.Name);
+                HoverSettings(Layout.Mod);
+            }
+        }
+
+        private void HoverSettings(UITwailaElement element)
+        {
+            TwailaConfig config = TwailaConfig.Get();
+            if (element is TwailaText text)
+            {
+                text.OverrideTextColor = true;
+                text.Opacity = config.HoverOpacity;
             }
         }
 
@@ -88,114 +86,114 @@ namespace Twaila.UI
         private void UpdateSize()
         {
             SetPadding(TwailaConfig.Get().PanelPadding);
-            SetInitialSizes();
-            float imageHeight = GetDimension(Image, Image.Height.Pixels);
-            float textHeight = InfoBox.Height.Pixels;
-            float imageWidth = GetDimension(Image, Image.image.Width);
-            float textWidth = InfoBox.Width.Pixels;
-            if(InfoBox.IsEmpty())
+            Layout.SetInitialSizes();
+            float imageHeight = GetDimension(Layout.Image, Layout.Image.Height.Pixels);
+            float textHeight = Layout.TextColumnSize().Y;
+            float imageWidth = GetDimension(Layout.Image, Layout.Image.image.Width);
+            float textWidth = Layout.TextColumnSize().X;
+
+            if (Layout.InfoBox.IsEmpty() && !HasChild(Layout.Name) && !HasChild(Layout.Mod))
             {
-                Image.MarginRight = 0;
+                Layout.Image.MarginRight = 0;
             }
             DrawMode drawMode = TwailaConfig.Get().ContentSetting;
             if (drawMode == DrawMode.Shrink)
             {
                 imageWidth *= ImageScale(new Vector2(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
 
-                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - imageWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y / InfoBox.NumberOfAppendedElements());
-                textHeight = 0;
-                InfoBox.ApplyToAll((element) =>
-                {
-                    float height = element.GetTextSize().Y * TextScale(element, new Vector2(maxSize.X, maxSize.Y));
-                    element.Height.Set(height, 0);
-                    textHeight += height;
-                });
-                textWidth = 0;
-                InfoBox.ApplyToAll((element) =>
-                {
-                    float width = element.GetTextSize().X * TextScale(element, maxSize);
-                    element.Width.Set(width, 0);
-                    if(width > textWidth)
-                    {
-                        textWidth = width;
-                    }
-                });
+                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - imageWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y / (Layout.InfoBox.NumberOfAppendedElements() + 2));
 
-                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y);
+                ScaleElement(Layout.Name, maxSize);
+                Layout.InfoBox.ApplyToAll(element => ScaleElement(element, maxSize));
+                Layout.InfoBox.UpdateDimensionsUI();
+                ScaleElement(Layout.Mod, maxSize);
 
-                imageWidth = GetDimension(Image, Image.image.Width) * ImageScale(remainingSpace);
-                imageHeight = GetDimension(Image, Image.image.Height) * ImageScale(remainingSpace);
+                textWidth = Layout.TextColumnSize().X;
+                textHeight = Layout.TextColumnSize().Y;
+
+                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y);
+
+                imageWidth = GetDimension(Layout.Image, Layout.Image.image.Width) * ImageScale(remainingSpace);
+                imageHeight = GetDimension(Layout.Image, Layout.Image.image.Height) * ImageScale(remainingSpace);
             }
             else
             {
                 if (drawMode == DrawMode.Trim)
                 {
-                    float height = 0;
-                    for(int i = 0; i < InfoBox.InfoLines.Length; ++i)
+                    float height = Layout.Name.GetContentSize().Y;
+                    for(int i = 0; i < Layout.InfoBox.InfoLines.Count; ++i)
                     {
-                        if (InfoBox.Appended[i])
+                        if (Layout.InfoBox.Enabled[i])
                         {
-                            TwailaText element = InfoBox.InfoLines[i];
-                            if (element.GetTextSize().Y + height < MaxPanelInnerDimension.Y)
+                            UITwailaElement element = Layout.InfoBox.InfoLines[i];
+                            if (element.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
                             {
-                                height += element.GetTextSize().Y;
+                                height += element.GetContentSize().Y;
                             }
                             else
                             {
-                                InfoBox.RemoveElements((InfoType)i);
+                                Layout.InfoBox.RemoveElement(i);
                             }
                         }
+                    }
+                    if (Layout.Mod.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    {
+                        height += Layout.Mod.GetContentSize().Y;
+                    }
+                    else
+                    {
+                        RemoveChild(Layout.Mod);
                     }
                     textHeight = height;
                 }
                 imageHeight = Math.Min(MaxPanelInnerDimension.Y, imageHeight);
                 textHeight = Math.Min(MaxPanelInnerDimension.Y, textHeight);
                 imageWidth = Math.Min(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, imageWidth);
-                textWidth = Math.Min(MaxPanelInnerDimension.X - imageWidth - GetDimension(Image, Image.MarginRight), textWidth);
-                InfoBox.ApplyToAll((element) =>
-                {
-                    element.Width.Set(textWidth, 0);
-                });
+                textWidth = Math.Min(MaxPanelInnerDimension.X - imageWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), textWidth);
 
-                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Image, Image.MarginRight), MaxPanelInnerDimension.Y);
+                Layout.Name.Width.Set(textWidth, 0);
+                Layout.InfoBox.ApplyToAll(element => element.Width.Set(textWidth, 0));
+                Layout.InfoBox.UpdateDimensionsUI();
+                Layout.Mod.Width.Set(textWidth, 0);
 
-                imageWidth = MathHelper.Clamp(GetDimension(Image, Image.image.Width), 0, remainingSpace.X);
-                imageHeight = MathHelper.Clamp(GetDimension(Image, Image.image.Height), 0, remainingSpace.Y);
+
+                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y);
+
+                imageWidth = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.image.Width), 0, remainingSpace.X);
+                imageHeight = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.image.Height), 0, remainingSpace.Y);
             }
 
             float calculatedHeight = imageHeight > textHeight ? imageHeight : textHeight;
             Height.Set(calculatedHeight + PaddingTop + PaddingBottom, 0);
-            Image.Height.Set(Math.Max(imageHeight, textHeight), 0);
+            Layout.Image.Height.Set(Math.Max(imageHeight, textHeight), 0);
             
-            float calculatedWidth = textWidth + imageWidth + GetDimension(Image, Image.MarginRight) + PaddingLeft + PaddingRight;
+            float calculatedWidth = textWidth + imageWidth + GetDimension(Layout.Image, Layout.Image.MarginRight) + PaddingLeft + PaddingRight;
             Width.Set(calculatedWidth, 0);
-            Image.Width.Set(imageWidth, 0);
+            Layout.Image.Width.Set(imageWidth, 0);
         }
 
-        private void SetInitialSizes()
+        private void ScaleElement(UITwailaElement element, Vector2 maxSize)
         {
-            InfoBox.ApplyToAll((element) =>
-            {
-                element.Width.Set(element.GetTextSize().X, 0);
-                element.Height.Set(element.GetTextSize().Y, 0);
-            });
-            InfoBox.UpdateDimensions();
-            Image.Width.Set(Image.image.Width, 0);
-            Image.Height.Set(Image.image.Height, 0);
-            Image.MarginRight = 10;
+            float scale = ElementScale(element, maxSize);
+            float width = element.GetContentSize().X * scale;
+            float height = element.GetContentSize().Y * scale;
+
+            element.Width.Set(width, 0);
+            element.Height.Set(height, 0);
+            element.Recalculate();
         }
 
         public float ImageScale(Vector2 maxSize)
         {
             float scaleX = 1;
-            if (GetDimension(Image, Image.image.Width) > maxSize.X)
+            if (GetDimension(Layout.Image, Layout.Image.image.Width) > maxSize.X)
             {
-                scaleX = maxSize.X / GetDimension(Image, Image.image.Width);
+                scaleX = maxSize.X / GetDimension(Layout.Image, Layout.Image.image.Width);
             }
             float scaleY = 1;
-            if (GetDimension(Image, Image.image.Height) > maxSize.Y)
+            if (GetDimension(Layout.Image, Layout.Image.image.Height) > maxSize.Y)
             {
-                scaleY = maxSize.Y / GetDimension(Image, Image.image.Height);
+                scaleY = maxSize.Y / GetDimension(Layout.Image, Layout.Image.image.Height);
             }
             return Math.Min(scaleX, scaleY);
         }
@@ -214,7 +212,23 @@ namespace Twaila.UI
             }
             return Math.Min(scaleX, scaleY) * text.Scale;
         }
-        
+
+        public float ElementScale(UITwailaElement element, Vector2 maxSize)
+        {
+            float scaleX = 1;
+            if (element.GetContentSize().X > maxSize.X)
+            {
+                scaleX = maxSize.X / element.GetContentSize().X;
+            }
+            float scaleY = 1;
+            if (element.GetContentSize().Y > maxSize.Y)
+            {
+                scaleY = maxSize.Y / element.GetContentSize().Y;
+            }
+            return Math.Min(scaleX, scaleY);
+        }
+
+
         private void UpdateAlignment()
         {
             if (TwailaConfig.Get().UseDefaultPosition)
@@ -223,9 +237,13 @@ namespace Twaila.UI
                 TwailaConfig.Get().AnchorPosY = 0;
             }
             UpdatePos();
-            Image.Top.Set(0, 0);
-            InfoBox.Left.Set(GetDimension(Image, Image.Width.Pixels + Image.MarginRight), 0);
-            InfoBox.UpdateVertically();
+            Layout.Image.Top.Set(0, 0);
+            float textColX = GetDimension(Layout.Image, Layout.Image.Width.Pixels + Layout.Image.MarginRight);
+            Layout.Name.Left.Set(textColX, 0);
+            Layout.InfoBox.Left.Set(textColX, 0);
+            Layout.Mod.Left.Set(textColX, 0);
+
+            Layout.UpdateTextColumnVertically();
             Recalculate();
         }
 
@@ -280,31 +298,20 @@ namespace Twaila.UI
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
             _tick++;
-            TileContext currentContext = TwailaUI.GetContext(TwailaUI.GetMousePos());
-            if(currentContext.TileType == TileType.Empty || TileUtil.IsBlockedByAntiCheat(currentContext))
+            Point mousePos = TwailaUI.GetMousePos();
+            BaseContext context = ContextSystem.Instance.NextContext(0, mousePos.X, mousePos.Y);
+            if(context == null /*|| TileUtil.IsBlockedByAntiCheat(currentContext)*/)
             {
                 _tick = 0;
                 return;
-            }
-            if (!currentContext.ContentChanged(Context))
-            {
-                currentContext.SetTileType(Context.TileType);
-            }
-            else
-            {
-                pickIndex = 0;
-                _tick = 0;
             }
             Player player = Main.player[Main.myPlayer];
             player.TryGetModPlayer(out TwailaPlayer tPlayer);
             if (_tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
-                TileUtil.CycleType(currentContext);
                 _tick = 0;
             }
-            
-            
-
+            /*
             if(player?.itemAnimation > 0 && currentContext.TileType != TileType.Empty) // attempts to stop rapid updating when mining/hammering
             {
                 if(player?.HeldItem.pick > 0 && currentContext.TileType != TileType.Tile)
@@ -316,144 +323,10 @@ namespace Twaila.UI
                     return;
                 }
             }
-            Tile tile = Framing.GetTileSafely(currentContext.Pos);
-            int itemId = ItemUtil.GetItemId(currentContext);
-            InfoBox.RemoveAll();
-            if (currentContext.TileType != TileType.Empty && !TileUtil.IsBlockedByAntiCheat(currentContext) && currentContext.ContextChanged(Context))
-            {
-                if (TwailaConfig.Get().DisplayContent.ShowImage)
-                {
-                    if (!HasChild(Image))
-                    {
-                        Append(Image);
-                    }
-                    Image.SetImage(GetImage(spriteBatch, currentContext, tile, itemId));
-                }
-                else if (HasChild(Image))
-                {
-                    RemoveChild(Image);
-                }
-            }
-            SetInfoBoxElements(currentContext, tile, itemId);
-            Context = currentContext;
-        }
-
-        private void SetInfoBoxElements(TileContext context, Tile tile, int itemId)
-        {
-            if (TwailaConfig.Get().DisplayContent.ShowName)
-            {
-                InfoBox.SetAndAppend(InfoType.Name, context.GetName(tile, itemId));
-            }
-            if (TwailaConfig.Get().DisplayContent.ShowMod)
-            {
-                InfoBox.SetAndAppend(InfoType.Mod, context.GetMod());
-            }
-            if (TwailaConfig.Get().DisplayContent.ShowId && InfoUtil.GetId(tile, context.TileType, out int tileId))
-            {
-                InfoBox.SetAndAppend(InfoType.Id, $"{context.TileType} Id: {tileId}");
-            }
-            string iconText = "";
-            
-            if (context.TileType == TileType.Tile && InfoUtil.GetPickaxePower(tile.TileType) > 0)
-            {
-                Main.player[Main.myPlayer].TryGetModPlayer(out TwailaPlayer tPlayer);
-                if (Main.GameUpdateCount % TwailaConfig.Get().CycleDelay == 0 && !tPlayer.CyclingPaused)
-                {
-                    pickIndex++;
-                }
-                if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out string pickIcon, out int id))
-                {
-                    if (TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Icon ||
-                    TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Both)
-                    {
-                        iconText += pickIcon;
-                    }
-                    if (TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Name ||
-                        TwailaConfig.Get().DisplayContent.ShowPickaxe == TwailaConfig.DisplayType.Both)
-                    {
-                        if(id != -1)
-                        {
-                            InfoBox.SetAndAppend(InfoType.RecommendedPickaxe, NameUtil.GetNameFromItem(id));
-                        }
-                        else
-                        {
-                            pickIndex = 0;
-                        }
-                    }
-                    if (TwailaConfig.Get().DisplayContent.ShowPickaxePower)
-                    {
-                        InfoBox.SetAndAppend(InfoType.PickaxePower, pickText);
-                    }
-                }
-            }
-
-            if (TwailaConfig.Get().DisplayContent.ShowPaint != TwailaConfig.DisplayType.Off && 
-                InfoUtil.GetPaintInfo(tile, context.TileType, out string paintText, out string paintIcon))
-            {
-                if(TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Icon ||
-                    TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Both)
-                {
-                    iconText += paintIcon;
-                }
-                if(TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Name ||
-                    TwailaConfig.Get().DisplayContent.ShowPaint == TwailaConfig.DisplayType.Both)
-                {
-                    InfoBox.SetAndAppend(InfoType.PaintText, paintText);
-                }
-            }
-            
-            if (!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
-            {
-                if (TwailaConfig.Get().DisplayContent.ShowWire != TwailaConfig.DisplayType.Off && 
-                    InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
-                {
-                    if (TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Icon ||
-                        TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Both)
-                    {
-                        iconText += wireIcon;
-                    }
-                    if (TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Name ||
-                        TwailaConfig.Get().DisplayContent.ShowWire == TwailaConfig.DisplayType.Both)
-                    {
-                        InfoBox.SetAndAppend(InfoType.WireText, wireText);
-                    }
-                }
-            }
-            if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
-            {
-                if (TwailaConfig.Get().DisplayContent.ShowActuator != TwailaConfig.DisplayType.Off && 
-                    InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
-                {
-                    if (TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Icon ||
-                        TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Both)
-                    {
-                        iconText += actIcon;
-                    }
-                    if (TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Name ||
-                        TwailaConfig.Get().DisplayContent.ShowActuator == TwailaConfig.DisplayType.Both)
-                    {
-                        InfoBox.SetAndAppend(InfoType.ActuatorText, actText);
-                    }
-                }
-            }
-            if (iconText != "")
-            {
-                InfoBox.SetAndAppend(InfoType.InfoIcons, iconText);
-            }
-        }
-
-        private static TwailaTexture GetImage(SpriteBatch spriteBatch, TileContext context, Tile tile, int itemId)
-        {
-            if (TwailaConfig.Get().UseItemTextures)
-            {
-                TwailaTexture item = context.GetImage(spriteBatch, itemId);
-                return item?.Texture != null ? item : context.GetImage(spriteBatch, tile);
-            }
-            else
-            {
-                TwailaTexture tileTexture = context.GetImage(spriteBatch, tile);
-                return tileTexture?.Texture != null ? tileTexture : context.GetImage(spriteBatch, itemId);
-            }
+            */
+            Layout.InfoBox.RemoveAll();
+            context.UpdateOnChange(CurrentContext, Layout);
+            CurrentContext = context;
         }
 
         public override void MouseDown(UIMouseEvent evt)

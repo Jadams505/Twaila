@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using Terraria.GameContent;
 using Terraria.UI.Chat;
 
 namespace Twaila.UI
@@ -24,6 +25,10 @@ namespace Twaila.UI
             SetText(text);
         }
 
+        public TwailaText(string text) : this(text, FontAssets.ItemStack.Value, Color.White, 1f) { }
+
+        public TwailaText() : this("Default Text") { }
+
         public Vector2 GetTextSize()
         {
             return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
@@ -40,20 +45,17 @@ namespace Twaila.UI
             Height.Set(GetTextSize().Y, 0);
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch)
+        public override void ApplyConfigSettings(TwailaConfig config)
         {
-            switch (DrawMode)
-            {
-                case DrawMode.Trim:
-                    DrawTrimmed(spriteBatch);
-                    break;
-                case DrawMode.Shrink:
-                    DrawShrunk(spriteBatch);
-                    break;
-                case DrawMode.Overflow:
-                    DrawOverflow(spriteBatch);
-                    break;
-            }        
+            base.ApplyConfigSettings(config);
+            OverrideTextColor = config.OverrideColor;
+            Color = config.TextColor.Color;
+            TextShadow = config.TextShadow;
+        }
+
+        public override Vector2 GetContentSize()
+        {
+            return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
         }
 
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
@@ -143,6 +145,7 @@ namespace Twaila.UI
             Vector2 scale = new Vector2(Scale, Scale);
             DrawText(spriteBatch, snippets, scale);
         }
+
         private void DrawText(SpriteBatch spriteBatch, TextSnippet[] snippets, Vector2 scale)
         {
             ChatManager.ConvertNormalSnippets(snippets);

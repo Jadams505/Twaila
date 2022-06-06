@@ -4,6 +4,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using Twaila.Context;
+using Twaila.Systems;
 using Twaila.Util;
 
 namespace Twaila.UI
@@ -28,7 +29,7 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
-            TileContext currentContext = GetContext(GetMousePos());
+            BaseContext currentContext = _panel.CurrentContext;
             switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
@@ -40,7 +41,7 @@ namespace Twaila.UI
                 case TwailaConfig.DisplayMode.Automatic:
                     if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
                     {
-                        if ((currentContext.TileType == TileType.Empty) || TileUtil.IsBlockedByAntiCheat(currentContext) 
+                        if ((currentContext == null) /*|| TileUtil.IsBlockedByAntiCheat(currentContext) */
                             && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
 
 namespace Twaila.UI
@@ -7,7 +8,8 @@ namespace Twaila.UI
     {
         Shrink, Trim, Overflow
     }
-    public class UITwailaElement : UIElement
+
+    public abstract class UITwailaElement : UIElement
     {
         public DrawMode DrawMode { get; set; }
         public float Opacity { get; set; }
@@ -18,19 +20,33 @@ namespace Twaila.UI
             Opacity = 1.0f;
         }
 
-        protected virtual void DrawShrunk(SpriteBatch spriteBatch)
+        protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-
+            switch (DrawMode)
+            {
+                case DrawMode.Trim:
+                    DrawTrimmed(spriteBatch);
+                    break;
+                case DrawMode.Shrink:
+                    DrawShrunk(spriteBatch);
+                    break;
+                case DrawMode.Overflow:
+                    DrawOverflow(spriteBatch);
+                    break;
+            }
         }
 
-        protected virtual void DrawTrimmed(SpriteBatch spriteBatch)
+        public virtual void ApplyConfigSettings(TwailaConfig config)
         {
-
+            DrawMode = config.ContentSetting;
         }
 
-        protected virtual void DrawOverflow(SpriteBatch spriteBatch)
-        {
+        public abstract Vector2 GetContentSize();
 
-        }
+        protected abstract void DrawShrunk(SpriteBatch spriteBatch);
+
+        protected abstract void DrawTrimmed(SpriteBatch spriteBatch);
+
+        protected abstract void DrawOverflow(SpriteBatch spriteBatch);
     }
 }

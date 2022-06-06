@@ -12,27 +12,22 @@ namespace Twaila.UI
     public class UITwailaImage : UITwailaElement
     {
         internal TwailaTexture image;
+
         public UITwailaImage()
         {
             image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
+        }
+
+        public override Vector2 GetContentSize()
+        {
+            return new Vector2(image.Width, image.Height);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (image?.Texture != null)
             {
-                switch (DrawMode)
-                {
-                    case DrawMode.Trim:
-                        DrawTrimmed(spriteBatch);
-                        break;
-                    case DrawMode.Shrink:
-                        DrawShrunk(spriteBatch);
-                        break;
-                    case DrawMode.Overflow:
-                        DrawOverflow(spriteBatch);
-                        break;
-                }
+                base.DrawSelf(spriteBatch);
             }
         }
 

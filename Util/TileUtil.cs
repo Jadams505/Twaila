@@ -23,7 +23,7 @@ namespace Twaila.Util
             return data;
         }
 
-        public static int GetTileStyle(DummyTile tile)
+        public static int GetTileStyle(Tile tile)
         {
             TileObjectData data = GetTileObjectData(tile);
             if(data == null)

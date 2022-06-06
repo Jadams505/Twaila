@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.GameContent;
+using Terraria.UI;
 
 namespace Twaila.UI
 {
@@ -23,7 +24,7 @@ namespace Twaila.UI
         Count
     }
 
-    public class TwailaInfoBox : UITwailaElement
+    public class TwailaInfoBox : UIElement
     {
         public TwailaText[] InfoLines { get; private set; }
         public bool[] Appended { get; private set; }
