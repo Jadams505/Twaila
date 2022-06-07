@@ -19,6 +19,7 @@ namespace Twaila.UI
     {
         public Layout Layout { get; set; }
         public BaseContext CurrentContext { get; set; }
+        private int _currIndex = 0;
 
         private int pickIndex = 0;
         private bool _dragging;
@@ -299,7 +300,8 @@ namespace Twaila.UI
         {
             _tick++;
             Point mousePos = TwailaUI.GetMousePos();
-            BaseContext context = ContextSystem.Instance.NextContext(0, mousePos.X, mousePos.Y);
+            BaseContext context = ContextSystem.Instance.CurrentContext(_currIndex, mousePos.X, mousePos.Y) ??
+                ContextSystem.Instance.NextContext(ref _currIndex, mousePos.X, mousePos.Y);
             if(context == null /*|| TileUtil.IsBlockedByAntiCheat(currentContext)*/)
             {
                 _tick = 0;
@@ -309,6 +311,7 @@ namespace Twaila.UI
             player.TryGetModPlayer(out TwailaPlayer tPlayer);
             if (_tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
+                context = ContextSystem.Instance.NextContext(ref _currIndex, mousePos.X, mousePos.Y);
                 _tick = 0;
             }
             /*

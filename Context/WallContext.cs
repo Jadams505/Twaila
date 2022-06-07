@@ -1,15 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Graphics;
-using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -32,26 +26,23 @@ namespace Twaila.Context
 
         public override void UpdateOnChange(BaseContext prevContext, Layout layout)
         {
-            if(prevContext is WallContext otherContext)
+            Tile tile = Framing.GetTileSafely(Pos);
+            _wallId = tile.WallType;
+
+            if(!(prevContext is WallContext otherContext && otherContext._wallId == this._wallId))
             {
-                Tile tile = Framing.GetTileSafely(Pos);
-                _wallId = tile.WallType;
-
-                if(otherContext._wallId != this._wallId)
-                {
-                    layout.Image.SetImage(GetImage(Main.spriteBatch));
-                }
-
-                layout.Name.SetText(GetName());
-
-                TwailaText id = new TwailaText("Id: " + tile.WallType);
-                layout.InfoBox.AddAndEnable(id);
-
-                TwailaText color = new TwailaText("Color: " + tile.WallColor);
-                layout.InfoBox.AddAndEnable(color);
-
-                layout.Mod.SetText(GetMod());
+                layout.Image.SetImage(GetImage(Main.spriteBatch));
             }
+
+            layout.Name.SetText(GetName());
+
+            TwailaText id = new TwailaText("Id: " + tile.WallType);
+            layout.InfoBox.AddAndEnable(id);
+
+            TwailaText color = new TwailaText("Color: " + tile.WallColor);
+            layout.InfoBox.AddAndEnable(color);
+
+            layout.Mod.SetText(GetMod());
         }
 
         public TwailaTexture GetImage(SpriteBatch spriteBatch)

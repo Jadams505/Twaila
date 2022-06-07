@@ -22,6 +22,9 @@ namespace Twaila.Systems
         {
             ContextConditions = new List<FetchContext>();
             RegisterWallContext();
+            RegisterTileContext();
+
+            RegisterContext((x, y) => Framing.GetTileSafely(x, y).LiquidAmount > 0 ? new LiquidContext(new Point(x, y)) : null);
         }
 
         private void RegisterWallContext()
@@ -33,6 +36,20 @@ namespace Twaila.Systems
                 if (tile.WallType > 0)
                 {
                     return new WallContext(new Point(x, y));
+                }
+                return null;
+            });
+        }
+
+        private void RegisterTileContext()
+        {
+            RegisterContext((x, y) =>
+            {
+                Tile tile = Framing.GetTileSafely(x, y);
+
+                if (tile.HasTile)
+                {
+                    return new BlockContext(new Point(x, y));
                 }
                 return null;
             });
@@ -53,22 +70,24 @@ namespace Twaila.Systems
             return ContextConditions[currIndex].Invoke(x, y);
         }
 
-        public BaseContext NextContext(int currIndex, int x, int y)
+        public BaseContext NextContext(ref int currIndex, int x, int y)
         {
-            for(int i = currIndex + 1; i < ContextConditions.Count; ++i)
+            for (int i = currIndex + 1; i < ContextConditions.Count; ++i)
             {
-                BaseContext context = ContextConditions[i].Invoke(x, y);
+                BaseContext context = CurrentContext(i, x, y);
                 if (context != null)
                 {
+                    currIndex = i;
                     return context;
                 }
             }
 
             for (int i = 0; i < currIndex + 1; ++i)
             {
-                BaseContext context = ContextConditions[i].Invoke(x, y);
+                BaseContext context = CurrentContext(i, x, y);
                 if (context != null)
                 {
+                    currIndex = i;
                     return context;
                 }
             }

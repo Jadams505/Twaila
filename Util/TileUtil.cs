@@ -23,6 +23,13 @@ namespace Twaila.Util
             return data;
         }
 
+        public static TileObjectData GetTileObjectData(int tileId, int frameX, int frameY, int style = 0)
+        {
+            TileObjectData data = ExtraObjectData.GetData(tileId, frameY) ??
+                TileObjectData.GetTileData(tileId, style);
+            return data;
+        }
+
         public static int GetTileStyle(Tile tile)
         {
             TileObjectData data = GetTileObjectData(tile);
