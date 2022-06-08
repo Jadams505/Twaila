@@ -300,8 +300,8 @@ namespace Twaila.UI
         {
             _tick++;
             Point mousePos = TwailaUI.GetMousePos();
-            BaseContext context = ContextSystem.Instance.CurrentContext(_currIndex, mousePos.X, mousePos.Y) ??
-                ContextSystem.Instance.NextContext(ref _currIndex, mousePos.X, mousePos.Y);
+            BaseContext context = ContextSystem.Instance.CurrentContext(_currIndex, mousePos) ??
+                ContextSystem.Instance.NextContext(ref _currIndex, mousePos);
             if(context == null /*|| TileUtil.IsBlockedByAntiCheat(currentContext)*/)
             {
                 _tick = 0;
@@ -311,7 +311,7 @@ namespace Twaila.UI
             player.TryGetModPlayer(out TwailaPlayer tPlayer);
             if (_tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
-                context = ContextSystem.Instance.NextContext(ref _currIndex, mousePos.X, mousePos.Y);
+                context = ContextSystem.Instance.NextContext(ref _currIndex, mousePos);
                 _tick = 0;
             }
             /*

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Context;
 
@@ -14,7 +15,7 @@ namespace Twaila.Systems
     {
         public static ContextSystem Instance => ModContent.GetInstance<ContextSystem>();
 
-        public delegate BaseContext FetchContext(int x, int y);
+        public delegate BaseContext FetchContext(Point pos);
 
         public List<FetchContext> ContextConditions { get; private set; }
 
@@ -24,18 +25,22 @@ namespace Twaila.Systems
             RegisterWallContext();
             RegisterTileContext();
 
-            RegisterContext((x, y) => Framing.GetTileSafely(x, y).LiquidAmount > 0 ? new LiquidContext(new Point(x, y)) : null);
+            RegisterContext(pos => Framing.GetTileSafely(pos).LiquidAmount > 0 ? new LiquidContext(pos) : null);
+            RegisterContext(pos => Framing.GetTileSafely(pos).TileType == TileID.Cactus ? new CactusContext(pos) : null);
+            RegisterContext(pos => Framing.GetTileSafely(pos).TileType == TileID.PalmTree ? new PalmTreeContext(pos) : null);
+            RegisterContext(pos => TileID.Sets.TreeSapling[Framing.GetTileSafely(pos).TileType] ? new SaplingContext(pos) : null);
+            RegisterContext(pos => Framing.GetTileSafely(pos).TileType == TileID.Trees || Framing.GetTileSafely(pos).TileType == TileID.MushroomTrees ? new TreeContext(pos) : null);
         }
 
         private void RegisterWallContext()
         {
-            RegisterContext((x, y) =>
+            RegisterContext(pos =>
             {
-                Tile tile = Framing.GetTileSafely(x, y);
+                Tile tile = Framing.GetTileSafely(pos);
 
                 if (tile.WallType > 0)
                 {
-                    return new WallContext(new Point(x, y));
+                    return new WallContext(pos);
                 }
                 return null;
             });
@@ -43,13 +48,13 @@ namespace Twaila.Systems
 
         private void RegisterTileContext()
         {
-            RegisterContext((x, y) =>
+            RegisterContext(pos =>
             {
-                Tile tile = Framing.GetTileSafely(x, y);
+                Tile tile = Framing.GetTileSafely(pos);
 
                 if (tile.HasTile)
                 {
-                    return new BlockContext(new Point(x, y));
+                    return new TileContext(pos);
                 }
                 return null;
             });
@@ -65,16 +70,16 @@ namespace Twaila.Systems
             ContextConditions.Add(contextCondition);
         }
 
-        public BaseContext CurrentContext(int currIndex, int x, int y)
+        public BaseContext CurrentContext(int currIndex, Point pos)
         {
-            return ContextConditions[currIndex].Invoke(x, y);
+            return ContextConditions[currIndex].Invoke(pos);
         }
 
-        public BaseContext NextContext(ref int currIndex, int x, int y)
+        public BaseContext NextContext(ref int currIndex, Point pos)
         {
             for (int i = currIndex + 1; i < ContextConditions.Count; ++i)
             {
-                BaseContext context = CurrentContext(i, x, y);
+                BaseContext context = CurrentContext(i, pos);
                 if (context != null)
                 {
                     currIndex = i;
@@ -84,7 +89,7 @@ namespace Twaila.Systems
 
             for (int i = 0; i < currIndex + 1; ++i)
             {
-                BaseContext context = CurrentContext(i, x, y);
+                BaseContext context = CurrentContext(i, pos);
                 if (context != null)
                 {
                     currIndex = i;

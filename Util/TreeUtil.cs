@@ -172,13 +172,13 @@ namespace Twaila.Util
                 bottomMiddle, topTexture, woodTexture, branchTexture);
         }
 
-        public static Texture2D GetImageForModdedTree(SpriteBatch spriteBatch, Tile treeDirt)
+        public static Texture2D GetImageForModdedTree(SpriteBatch spriteBatch, int treeDirt)
         {
             int size = 20;
             int frame = 0, fWidth = 82, fHeight = 80, xOffset = 30, yOffset = 78;
-            Texture2D topTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt.TileType).GetTopTextures().Value;
-            Texture2D woodTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt.TileType).GetTexture().Value;
-            Texture2D branchTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt.TileType).GetBranchTextures().Value;
+            Texture2D topTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt).GetTopTextures().Value;
+            Texture2D woodTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt).GetTexture().Value;
+            Texture2D branchTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt).GetBranchTextures().Value;
 
             Rectangle top = new Rectangle(frame * fWidth, 0, fWidth, fHeight);
             Rectangle trunk1 = new Rectangle(44, 108, size, size);

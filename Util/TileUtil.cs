@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -13,13 +14,6 @@ namespace Twaila.Util
         public static TileObjectData GetTileObjectData(Tile tile)
         {
             TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
-            return data;
-        }
-
-        public static TileObjectData GetTileObjectData(DummyTile tile, int style = 0)
-        {
-            TileObjectData data = ExtraObjectData.GetData(tile.TileId, tile.TileFrameY) ?? 
-                TileObjectData.GetTileData(tile.TileId, style);
             return data;
         }
 
@@ -60,60 +54,32 @@ namespace Twaila.Util
             frameY = originalFrameY + addY;
         }
 
-        public static bool IsBlockedByAntiCheat(TileContext context)
+        public static bool IsBlockedByAntiCheat(Tile tile, Point pos)
         {
-            if (TwailaConfig.Get().AntiCheat && context.TileType != TileType.Empty)
+            if (TwailaConfig.Get().AntiCheat)
             {
-                if((context.OnlyWire() && !WiresUI.Settings.DrawWires) || 
-                    (context.OnlyWire() && !context.Tile.Actuator && WiresUI.Settings.HideWires)){
+                if((OnlyWire(tile) && !WiresUI.Settings.DrawWires) || 
+                    (OnlyWire(tile) && !tile.HasActuator && WiresUI.Settings.HideWires)){
                     return true;
                 }
                 Player player = Main.player[Main.myPlayer];
-                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[context.Tile.TileId])
+                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[tile.TileType])
                 {
                     return false;
                 }
-                if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(context.Pos.X, context.Pos.Y, Main.player[Main.myPlayer]))
+                if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(pos.X, pos.Y, Main.player[Main.myPlayer]))
                 {
                     return false;
                 }
-                return !Main.Map.IsRevealed(context.Pos.X, context.Pos.Y);
+                return !Main.Map.IsRevealed(pos.X, pos.Y);
             }
             return false;
         }
 
-        // tile -> wall -> liquid -> tile
-        public static void CycleType(TileContext context)
+        private static bool OnlyWire(Tile tile)
         {
-            if (context.TileType == TileType.Empty)
-            {
-                return;
-            }
-
-            TileType type = context.TileType;
-            do
-            {
-                type = Cycle(type);
-                context.SetTileType(type);
-            } while (context.TileType != type);
+            return (tile.RedWire || tile.BlueWire || tile.GreenWire || tile.YellowWire || tile.HasActuator)
+                && !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
         }
-
-        private static TileType Cycle(TileType type)
-        {
-            if (type == TileType.Tile)
-            {
-                return TileType.Wall;
-            }
-            if (type == TileType.Wall)
-            {
-                return TileType.Liquid;
-            }
-            if (type == TileType.Liquid)
-            {
-                return TileType.Tile;
-            }
-            return TileType.Empty;
-        }
-
     }
 }

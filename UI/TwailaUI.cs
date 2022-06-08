@@ -70,33 +70,6 @@ namespace Twaila.UI
             return new Point(targetX, targetY);
         }
 
-        public static TileContext GetContext(Point pos)
-        {
-            if(!InBounds(pos.X, pos.Y))
-            {
-                return new TileContext();
-            }
-            Tile tile = Framing.GetTileSafely(pos);
-
-            if(tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees)
-            {
-                return new TreeContext(pos);
-            }
-            if(tile.TileType == TileID.Cactus)
-            {
-                return new CactusContext(pos);
-            }
-            if(tile.TileType == TileID.PalmTree)
-            {
-                return new PalmTreeContext(pos);
-            }
-            if (TileID.Sets.TreeSapling[tile.TileType])
-            {
-                return new SaplingContext(pos);
-            }
-            return new TileContext(pos);
-        }
-
         public static bool InBounds(int targetX, int targetY)
         {
             if (targetX < (Main.screenPosition.X - 16) / 16) // left

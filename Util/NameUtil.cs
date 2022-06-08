@@ -285,19 +285,19 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetNameForTree(TreeContext context)
+        public static string GetNameForTree(int treeId, int dirtId)
         {
             string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
             string toAppend = "";
-            if (context.Tile.TileId == TileID.Trees)
+            if (treeId == TileID.Trees)
             {
                 toAppend = " " + tree;
-                if (context.TreeDirt == TileID.Grass || context.TreeDirt == TileID.GolfGrass)
+                if (dirtId == TileID.Grass || dirtId == TileID.GolfGrass)
                 {
                     return tree;
                 }
             }
-            int itemId = TreeUtil.GetTreeWood(context.TreeDirt);
+            int itemId = TreeUtil.GetTreeWood(dirtId);
             if (itemId != -1)
             {
                 return Lang.GetItemNameValue(itemId) + toAppend;
@@ -305,19 +305,19 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetNameForPalmTree(PalmTreeContext context)
+        public static string GetNameForPalmTree(int treeId, int sandId)
         {
             string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
             string toAppend = "";
-            if (context.Tile.TileId == TileID.PalmTree)
+            if (treeId == TileID.PalmTree)
             {
                 toAppend = " " + palmTree;
-                if (context.PalmTreeSand == TileID.Sand)
+                if (sandId == TileID.Sand)
                 {
                     return palmTree;
                 }
             }
-            int itemId = TreeUtil.GetTreeWood(context.PalmTreeSand);
+            int itemId = TreeUtil.GetTreeWood(sandId);
             if (itemId != -1)
             {
                 return Lang.GetItemNameValue(itemId) + toAppend;
@@ -325,16 +325,16 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetNameForSapling(SaplingContext context)
+        public static string GetNameForSapling(int saplingId, int dirtId)
         {
             string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
             string sapling = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Saplings, 0));
             string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
             string toAppend = "";
-            if (TileID.Sets.TreeSapling[context.Tile.TileId])
+            if (TileID.Sets.TreeSapling[saplingId])
             {
-                if (TileLoader.CanGrowModPalmTree(context.SaplingDirt) || context.SaplingDirt == TileID.Crimsand || 
-                    context.SaplingDirt == TileID.Ebonsand || context.SaplingDirt == TileID.Pearlsand)
+                if (TileLoader.CanGrowModPalmTree(dirtId) || dirtId == TileID.Crimsand ||
+                    dirtId == TileID.Ebonsand || dirtId == TileID.Pearlsand)
                 {
                     toAppend = " " + palmTree + " " + sapling;
                 }
@@ -342,16 +342,16 @@ namespace Twaila.Util
                 {
                     toAppend = " " + tree + " " + sapling;
                 }
-                if (context.SaplingDirt == TileID.Grass)
+                if (dirtId == TileID.Grass)
                 {
                     return tree + " " + sapling;
                 }
-                if (context.SaplingDirt == TileID.Sand)
+                if (dirtId == TileID.Sand)
                 {
                     return palmTree + " " + sapling;
                 }
             }
-            int itemId = TreeUtil.GetTreeWood(context.SaplingDirt);
+            int itemId = TreeUtil.GetTreeWood(dirtId);
             if (itemId != -1)
             {
                 return Lang.GetItemNameValue(itemId) + toAppend;
@@ -359,18 +359,18 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetNameForCactus(CactusContext context)
+        public static string GetNameForCactus(int cactusId, int sandId)
         {
             string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
-            if (context.Tile.TileId == TileID.Cactus)
+            if (cactusId == TileID.Cactus)
             {
-                if (context.CactusSand == -1)
+                if (sandId == -1)
                 {
                     return null;
                 }
-                if (TileLoader.CanGrowModCactus(context.CactusSand))
+                if (TileLoader.CanGrowModCactus(sandId))
                 {
-                    ModTile mTile = TileLoader.GetTile(context.CactusSand);
+                    ModTile mTile = TileLoader.GetTile(sandId);
                     if (mTile != null)
                     {
                         int dropId = mTile.ItemDrop;
@@ -381,7 +381,7 @@ namespace Twaila.Util
                 else
                 {
                     int itemId = -1;
-                    switch (context.CactusSand)
+                    switch (sandId)
                     {
                         case TileID.Crimsand:
                             itemId = ItemID.CrimsandBlock;
@@ -422,28 +422,6 @@ namespace Twaila.Util
                 }
             }
             return null;
-        }
-
-        public static string GetModName(TileContext context)
-        {
-            switch (context.TileType)
-            {
-                case TileType.Tile:
-                    ModTile mTile = TileLoader.GetTile(context.Tile.TileId);
-                    if (mTile != null)
-                    {
-                        return mTile.Mod.DisplayName;
-                    }
-                    break;
-                case TileType.Wall:
-                    ModWall mWall = WallLoader.GetWall(context.Tile.WallId);
-                    if(mWall != null)
-                    {
-                        return mWall.Mod.DisplayName;
-                    }
-                    break;
-            }
-            return "Terraria";
         }
     }
 }

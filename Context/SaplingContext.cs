@@ -4,52 +4,70 @@ using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Twaila.Graphics;
 using Terraria.ID;
+using Twaila.UI;
+using Terraria.ModLoader;
 
 namespace Twaila.Context
 {
     public class SaplingContext : TileContext
     {
-        public int SaplingDirt { get; private set; }
+        public int DirtId { get; private set; }
 
         public SaplingContext(Point pos) : base(pos)
         {
-            SaplingDirt = GetSaplingTile();
+
         }
 
-        public override bool ContentChanged(TileContext other)
+        public override bool Applies()
         {
-            if (other is SaplingContext otherSaplingContext)
-            {
-                if (SaplingDirt == otherSaplingContext.SaplingDirt)
-                {
-                    return StyleChanged(other);
-                }
-            }
-            return true;
+            return TileID.Sets.TreeSapling[TileId];
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
+        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+        {
+            Tile tile = Framing.GetTileSafely(Pos);
+
+            TileId = tile.TileType;
+            FrameX = tile.TileFrameX;
+            FrameY = tile.TileFrameY;
+            DirtId = GetSaplingTile();
+
+            layout.Name.SetText(GetName());
+
+            if (!(prevContext is SaplingContext otherContext && otherContext.DirtId == DirtId &&
+                !StyleChanged(otherContext)))
+            {
+                layout.Image.SetImage(GetImage(Main.spriteBatch, tile));
+            }
+
+            TwailaText id = new TwailaText("Id: " + tile.TileType);
+            layout.InfoBox.AddAndEnable(id);
+
+            layout.Mod.SetText(GetMod());
+        }
+
+        private TwailaTexture GetImage(SpriteBatch spriteBatch, Tile tile)
         {
             return new TwailaTexture(ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y));
         }
 
-        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
+        private string GetName()
         {
-            Texture2D texture = ImageUtil.GetItemTexture(itemId);
-            return new TwailaTexture(texture);
+            return NameUtil.GetNameForSapling(TileId, DirtId);
         }
 
-        protected override string GetTileName(Tile tile, int itemId)
+        private string GetMod()
         {
-            return NameUtil.GetNameForSapling(this) ?? base.GetTileName(tile, itemId);
+            ModTile mTile = TileLoader.GetTile(TileId);
+            if (mTile != null)
+            {
+                return mTile.Mod.DisplayName;
+            }
+            return "Terraria";
         }
 
         private int GetSaplingTile()
         {
-            if (!TileID.Sets.TreeSapling[Tile.TileId])
-            {
-                return -1;
-            }
             int y = Pos.Y;
             do
             {

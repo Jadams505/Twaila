@@ -5,76 +5,88 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Graphics;
+using Twaila.UI;
 using Twaila.Util;
 
 namespace Twaila.Context
 {
     public class TreeContext : TileContext
     {
-        public int TreeDirt { get; private set; }
+        protected int DirtId { get; private set; }
 
         public TreeContext(Point pos) : base(pos)
         {
-            TreeDirt = GetTreeDirt(out _);
+            DirtId = GetTreeDirt();
         }
 
-        public override bool ContentChanged(TileContext other)
+        public override bool Applies()
         {
-            if(other is TreeContext otherTreeContext)
-            {
-                if(TreeDirt == otherTreeContext.TreeDirt)
-                {
-                    if(TreeDirt == TileID.JungleGrass)
-                    {
-                        return Math.Sign(Pos.Y - Main.worldSurface) != Math.Sign(otherTreeContext.Pos.Y - Main.worldSurface);
-                    }
-                    return false;
-                }
-            }
-            return true;
+            return TileId == TileID.Trees || TileId == TileID.MushroomTrees;
         }
 
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
+        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+        {
+            Tile tile = Framing.GetTileSafely(Pos);
+
+            TileId = tile.TileType;
+            FrameX = tile.TileFrameX;
+            FrameY = tile.TileFrameY;
+            DirtId = GetTreeDirt();
+
+            layout.Name.SetText(GetName());
+
+            if (!(prevContext is TreeContext otherContext && otherContext.DirtId == DirtId && 
+                DirtId != TileID.JungleGrass && Math.Sign(Pos.Y - Main.worldSurface) == Math.Sign(otherContext.Pos.Y - Main.worldSurface)))
+            {
+                layout.Image.SetImage(GetImage(Main.spriteBatch));
+            }
+
+            TwailaText id = new TwailaText("Id: " + tile.TileType);
+            layout.InfoBox.AddAndEnable(id);
+
+            layout.Mod.SetText(GetMod());
+        }
+
+        private TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
             float scale = 0.5f;
-            if (tile.TileType == TileID.Trees)
+            if (TileId == TileID.Trees)
             {
-                if (TileLoader.CanGrowModTree(TreeDirt))
+                if (TileLoader.CanGrowModTree(DirtId))
                 {
-                    GetTreeDirt(out Tile? dirtTile);
-                    Texture2D treeTexture = dirtTile != null ? TreeUtil.GetImageForModdedTree(spriteBatch, dirtTile.Value) : null;
+                    Texture2D treeTexture = TreeUtil.GetImageForModdedTree(spriteBatch, DirtId);
                     return new TwailaTexture(treeTexture, scale);
                 }
-                int treeWood = TreeUtil.GetTreeWood(TreeDirt);
+                int treeWood = TreeUtil.GetTreeWood(DirtId);
                 if (treeWood != -1)
                 {
                     return new TwailaTexture(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, Pos.Y), scale);
                 }
             }
-            else if (tile.TileType == TileID.MushroomTrees)
+            else if (TileId == TileID.MushroomTrees)
             {
                 return new TwailaTexture(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
             }
             return null;
         }
 
-        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
+        private string GetName()
         {
-            return null;
+            return NameUtil.GetNameForTree(TileId, DirtId);
         }
 
-        protected override string GetTileName(Tile tile, int itemId)
+        private string GetMod()
         {
-            return NameUtil.GetNameForTree(this) ?? base.GetTileName(tile, itemId);
-        }
-
-        private int GetTreeDirt(out Tile? dirtTile)
-        {
-            if (Tile.TileId != TileID.Trees)
+            ModTile mTile = TileLoader.GetTile(DirtId);
+            if (mTile != null)
             {
-                dirtTile = null;
-                return -1;
+                return mTile.Mod.DisplayName;
             }
+            return "Terraria";
+        }
+
+        private int GetTreeDirt()
+        {
             int x = Pos.X, y = Pos.Y;
             if (Main.tile[x - 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
             {
@@ -91,10 +103,8 @@ namespace Twaila.Context
 
             if (!Main.tile[x, y].HasTile)
             {
-                dirtTile = null;
                 return -1;
             }
-            dirtTile = Main.tile[x, y];
             return Main.tile[x, y].TileType;
         }
     }

@@ -5,59 +5,109 @@ using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Terraria.ModLoader;
 using Twaila.Graphics;
+using Twaila.UI;
+using Terraria.Map;
 
 namespace Twaila.Context
 {
     public class CactusContext : TileContext
     {
-        public int CactusSand { get; private set; }
+        protected int SandTileId { get; set; }
 
         public CactusContext(Point pos) : base(pos)
         {
-           CactusSand = GetCactusSand();
         }
 
-        public override bool ContentChanged(TileContext other)
+        public override bool Applies()
         {
-            if (other is CactusContext otherCactusContext)
+            Tile tile = Framing.GetTileSafely(Pos);
+            return tile.TileType == TileID.Cactus;
+        }
+
+        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+        {
+            Tile tile = Framing.GetTileSafely(Pos);
+
+            TileId = tile.TileType;
+            FrameX = tile.TileFrameX;
+            FrameY = tile.TileFrameY;
+            SandTileId = GetCactusSand();
+
+            layout.Name.SetText(GetName());
+
+            if (!(prevContext is CactusContext otherContext && otherContext.SandTileId == SandTileId))
             {
-                if (CactusSand == otherCactusContext.CactusSand)
+                layout.Image.SetImage(GetImage(Main.spriteBatch));
+            }
+
+            TwailaText id = new TwailaText("Id: " + tile.TileType);
+            layout.InfoBox.AddAndEnable(id);
+
+            layout.Mod.SetText(GetMod());
+        }
+
+
+        private TwailaTexture GetImage(SpriteBatch spriteBatch)
+        {
+            if (TileLoader.CanGrowModCactus(SandTileId))
+            {
+                return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, SandTileId, true));
+            }
+            return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, SandTileId, false));
+        }
+
+        private string GetName()
+        {
+            string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
+            if (SandTileId == -1)
+            {
+                return null;
+            }
+            if (TileLoader.CanGrowModCactus(SandTileId))
+            {
+                ModTile mTile = TileLoader.GetTile(SandTileId);
+                if (mTile != null)
                 {
-                    return false;
+                    int dropId = mTile.ItemDrop;
+                    ModItem mItem = ItemLoader.GetItem(dropId);
+                    return mItem == null ? mTile.Name : mItem.DisplayName.GetDefault() + " " + cactus;
                 }
             }
-            return true;
-        }
-
-        protected override TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
-        {
-            if (tile.TileType == TileID.Cactus)
+            else
             {
-                if (TileLoader.CanGrowModCactus(CactusSand))
+                int itemId = -1;
+                switch (SandTileId)
                 {
-                    return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, CactusSand, true));
+                    case TileID.Crimsand:
+                        itemId = ItemID.CrimsandBlock;
+                        break;
+                    case TileID.Ebonsand:
+                        itemId = ItemID.EbonsandBlock;
+                        break;
+                    case TileID.Pearlsand:
+                        itemId = ItemID.PearlsandBlock;
+                        break;
                 }
-                return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, CactusSand, false));
+                if (itemId != -1)
+                {
+                    return Lang.GetItemNameValue(itemId) + " " + cactus;
+                }
             }
-            return null;
+            return cactus;
         }
 
-        protected override TwailaTexture GetTileItemImage(SpriteBatch spriteBatch, int itemId)
+        private string GetMod()
         {
-            return null;
-        }
-
-        protected override string GetTileName(Tile tile, int itemId)
-        {
-            return NameUtil.GetNameForCactus(this) ?? base.GetTileName(tile, itemId);
+            ModTile mTile = TileLoader.GetTile(SandTileId);
+            if(mTile != null)
+            {
+                return mTile.Mod.DisplayName;
+            }
+            return "Terraria";
         }
 
         private int GetCactusSand()
         {
-            if (Tile.TileId != TileID.Cactus)
-            {
-                return -1;
-            }
             int x = Pos.X, y = Pos.Y;
             do
             {

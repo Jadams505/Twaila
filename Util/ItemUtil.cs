@@ -8,6 +8,11 @@ using Twaila.Context;
 
 namespace Twaila.Util
 {
+    public enum TileType
+    {
+        Tile, Wall, Liquid, Empty
+    }
+
     internal class ItemUtil
     {
         private class TileStylePair
@@ -228,7 +233,6 @@ namespace Twaila.Util
                     AddEntry(i, 0, TileType.Wall, mWall.ItemDrop);
                 }
             }
-            DummyTile dummyTile = new DummyTile();
             for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i) // modded items
             {
                 ModItem mItem = ItemLoader.GetItem(i);
@@ -238,8 +242,7 @@ namespace Twaila.Util
                     {
                         _pickaxes.Add((mItem.Item.pick, i));
                     }
-                    dummyTile.TileId = mItem.Item.createTile;
-                    if(mItem.Item.createTile != -1 && TileUtil.GetTileObjectData(dummyTile) != null)
+                    if(mItem.Item.createTile != -1 && TileUtil.GetTileObjectData(mItem.Item.createTile, 0, 0) != null)
                     {
                         AddOpenDoorEntry(i);
                         AddEntry(mItem.Item.createTile, mItem.Item.placeStyle, TileType.Tile, i);
