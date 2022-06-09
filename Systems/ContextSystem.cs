@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,69 +11,39 @@ namespace Twaila.Systems
     {
         public static ContextSystem Instance => ModContent.GetInstance<ContextSystem>();
 
-        public delegate BaseContext FetchContext(Point pos);
-
-        public List<FetchContext> ContextConditions { get; private set; }
+        public List<ContextEntry> ContextEntries { get; private set; }
 
         public override void Load()
         {
-            ContextConditions = new List<FetchContext>();
-            RegisterWallContext();
-            RegisterTileContext();
+            ContextEntries = new List<ContextEntry>();
 
-            RegisterContext(pos => Framing.GetTileSafely(pos).LiquidAmount > 0 ? new LiquidContext(pos) : null);
-            RegisterContext(pos => Framing.GetTileSafely(pos).TileType == TileID.Cactus ? new CactusContext(pos) : null);
-            RegisterContext(pos => Framing.GetTileSafely(pos).TileType == TileID.PalmTree ? new PalmTreeContext(pos) : null);
-            RegisterContext(pos => TileID.Sets.TreeSapling[Framing.GetTileSafely(pos).TileType] ? new SaplingContext(pos) : null);
-            RegisterContext(pos => Framing.GetTileSafely(pos).TileType == TileID.Trees || Framing.GetTileSafely(pos).TileType == TileID.MushroomTrees ? new TreeContext(pos) : null);
-        }
+            ContextEntry tileEntry = new ContextEntry(pos => Framing.GetTileSafely(pos).HasTile ? new TileContext(pos) : null);
+            tileEntry.ApplicableContexts.Add(pos => Framing.GetTileSafely(pos).TileType == TileID.PalmTree ? new PalmTreeContext(pos) : null);
+            tileEntry.ApplicableContexts.Add(pos => Framing.GetTileSafely(pos).TileType == TileID.Cactus ? new CactusContext(pos) : null);
+            tileEntry.ApplicableContexts.Add(pos => Framing.GetTileSafely(pos).TileType == TileID.Trees || Framing.GetTileSafely(pos).TileType == TileID.MushroomTrees ? new TreeContext(pos) : null);
+            tileEntry.ApplicableContexts.Add(pos => TileID.Sets.TreeSapling[Framing.GetTileSafely(pos).TileType] ? new SaplingContext(pos) : null);
+            ContextEntries.Add(tileEntry);
 
-        private void RegisterWallContext()
-        {
-            RegisterContext(pos =>
-            {
-                Tile tile = Framing.GetTileSafely(pos);
-
-                if (tile.WallType > 0)
-                {
-                    return new WallContext(pos);
-                }
-                return null;
-            });
-        }
-
-        private void RegisterTileContext()
-        {
-            RegisterContext(pos =>
-            {
-                Tile tile = Framing.GetTileSafely(pos);
-
-                if (tile.HasTile)
-                {
-                    return new TileContext(pos);
-                }
-                return null;
-            });
+            ContextEntry wallEntry = new ContextEntry(pos => Framing.GetTileSafely(pos).WallType > 0 ? new WallContext(pos) : null);
+            ContextEntries.Add(wallEntry);
+         
+            ContextEntry liquidEntry = new ContextEntry(pos => Framing.GetTileSafely(pos).LiquidAmount > 0 ? new LiquidContext(pos) : null);
+            ContextEntries.Add(liquidEntry);
         }
 
         public override void Unload()
         {
-            ContextConditions = null;
-        }
-
-        public void RegisterContext(FetchContext contextCondition)
-        {
-            ContextConditions.Add(contextCondition);
+            ContextEntries = null;
         }
 
         public BaseContext CurrentContext(int currIndex, Point pos)
         {
-            return ContextConditions[currIndex].Invoke(pos);
+            return ContextEntries[currIndex].Context(pos);
         }
 
         public BaseContext NextContext(ref int currIndex, Point pos)
         {
-            for (int i = currIndex + 1; i < ContextConditions.Count; ++i)
+            for (int i = currIndex + 1; i < ContextEntries.Count; ++i)
             {
                 BaseContext context = CurrentContext(i, pos);
                 if (context != null)
@@ -97,6 +63,35 @@ namespace Twaila.Systems
                 }
             }
             return null;
+        }
+    }
+
+    public class ContextEntry
+    {
+        public delegate BaseContext ContextFetcher(Point pos);
+
+        public List<ContextFetcher> ApplicableContexts { get; set; }
+
+        public ContextFetcher DefaultContext { get; set; }
+
+        public ContextEntry(ContextFetcher defaultContext)
+        {
+            DefaultContext = defaultContext;
+            ApplicableContexts = new List<ContextFetcher>();
+        }
+
+        public BaseContext Context(Point pos)
+        {
+            BaseContext foundContext = null;
+            ApplicableContexts.ForEach(entry =>
+            {
+                BaseContext context = entry.Invoke(pos);
+                if (context != null)
+                {
+                    foundContext = context;
+                }
+            });
+            return foundContext ?? DefaultContext.Invoke(pos);
         }
     }
 }
