@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Twaila.Graphics;
-using Twaila.Systems;
 using Twaila.UI;
 
 namespace Twaila.Context
@@ -20,7 +15,17 @@ namespace Twaila.Context
             Pos = pos;
         }
 
-        public abstract bool Applies();
+        public abstract void Update();
+
+        public abstract bool ContextChanged(BaseContext other);
+
+        protected abstract string GetName();
+
+        protected abstract TwailaTexture GetImage(SpriteBatch spriteBatch);
+
+        protected abstract List<UITwailaElement> InfoElements();
+
+        protected abstract string GetMod();
 
         public abstract void UpdateOnChange(BaseContext prevContext, Layout layout);
     }

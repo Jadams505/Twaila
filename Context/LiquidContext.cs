@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Twaila.Graphics;
@@ -8,54 +9,79 @@ using Twaila.Util;
 
 namespace Twaila.Context
 {
-    public class LiquidContext : BaseContext
+    public class LiquidContext : WireContext
     {
-        private int _liquidId;
-        private int _waterStyle;
+        protected int LiquidId { get; set; }
+        protected int WaterStyle { get; set; }
+
+        protected string Id { get; set; }
 
         public LiquidContext(Point point) : base(point)
         {
-
+            Update();
         }
 
-        public override bool Applies()
+        public override bool ContextChanged(BaseContext other)
         {
-            Tile tile = Framing.GetTileSafely(Pos);
-            return tile.LiquidAmount > 0;
-        }
-
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-
-            _liquidId = tile.LiquidType;
-            _waterStyle = Main.waterStyle;
-
-            layout.Name.SetText(GetName(tile));
-
-            if(!(prevContext is LiquidContext other && other._liquidId == _liquidId && 
-                (_liquidId != LiquidID.Water || other._waterStyle == _waterStyle)))
+            if(other?.GetType() == typeof(LiquidContext))
             {
-                layout.Image.SetImage(GetImage(Main.spriteBatch, tile));
+                LiquidContext otherContext = (LiquidContext)other;
+                return otherContext.LiquidId != LiquidId || (LiquidId == LiquidID.Water && otherContext.WaterStyle != WaterStyle);
+            }
+            return true;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            Tile tile = Framing.GetTileSafely(Pos);
+            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+
+            LiquidId = tile.LiquidType;
+            WaterStyle = Main.waterStyle;
+
+            string iconText = "";
+
+            if (content.ShowId)
+            {
+                if (LiquidId == LiquidID.Water)
+                {
+                    Id = $"Water Style: {WaterStyle}";
+                }
+                else
+                {
+                    Id = $"Liquid Id: {LiquidId}";
+                }
             }
 
-            TwailaText id = new TwailaText("Id: " + tile.LiquidType);
-            layout.InfoBox.AddAndEnable(id);
-
-            layout.Mod.SetText(GetMod());
+            InfoIcons = iconText + InfoIcons;
         }
 
-        private string GetName(Tile tile)
+        protected override string GetName()
         {
+            Tile tile = Framing.GetTileSafely(Pos);
             return NameUtil.GetNameForLiquids(tile) ?? "Default Liquid";
         }
 
-        private TwailaTexture GetImage(SpriteBatch spriteBatch, Tile tile)
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
+            Tile tile = Framing.GetTileSafely(Pos);
             return new TwailaTexture(ImageUtil.GetLiquidImageFromTile(spriteBatch, tile));
         }
 
-        private string GetMod()
+        protected override List<UITwailaElement> InfoElements()
+        {
+            List<UITwailaElement> elements = base.InfoElements();
+
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new TwailaText(Id));
+            }
+
+            return elements;
+        }
+
+        protected override string GetMod()
         {
             return "Terraria";
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -9,47 +10,85 @@ using Twaila.Util;
 
 namespace Twaila.Context
 {
-    public class TileContext : BaseContext
+    public class TileContext : WireContext
     {
         protected ushort TileId { get; set; }
         protected short FrameX { get; set; }
         protected short FrameY { get; set; }
 
+        protected string Id { get; set; }
+        protected string PickPower { get; set; }
+        protected string RecommendedPickaxe { get; set; }
+        protected string PaintText { get; set; }
+
+
         public TileContext(Point point) : base(point)
         {
-            Tile tile = Framing.GetTileSafely(Pos);
-
-            TileId = tile.TileType;
-            FrameX = tile.TileFrameX;
-            FrameY = tile.TileFrameY;
+            Update();
         }
 
-        public override bool Applies()
+        public override void Update()
         {
+            base.Update();
             Tile tile = Framing.GetTileSafely(Pos);
-            return tile.HasTile;
-        }
-
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-            int itemId = ItemUtil.GetItemId(tile, TileType.Tile);
+            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
 
             TileId = tile.TileType;
             FrameX = tile.TileFrameX;
             FrameY = tile.TileFrameY;
 
-            layout.Name.SetText(GetName(tile, itemId));
+            int index = 0;
+            string iconText = "";
 
-            if (!(prevContext is TileContext otherContext && otherContext.TileId == TileId && !StyleChanged(otherContext)))
+            if (content.ShowId)
             {
-                layout.Image.SetImage(GetTileImage(Main.spriteBatch, tile));
+                Id = $"Tile Id: {TileId}";
             }
 
-            TwailaText id = new TwailaText("Id: " + tile.TileType);
-            layout.InfoBox.AddAndEnable(id);
+            if (InfoUtil.GetPickInfo(tile, ref index, out string pickText, out string pickIcon, out int pickId))
+            {
+                if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
+                {
+                    iconText += pickIcon;
+                }
 
-            layout.Mod.SetText(GetMod());
+                if (pickId != -1)
+                {
+                    if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
+                    {
+                        RecommendedPickaxe = NameUtil.GetNameFromItem(pickId);
+                    }
+                }
+
+                if (content.ShowPickaxePower)
+                {
+                    PickPower = pickText;
+                }
+            }
+
+            if (InfoUtil.GetPaintInfo(tile, TileType.Tile, out string paintText, out string paintIcon))
+            {
+                if (content.ShowPaint == TwailaConfig.DisplayType.Icon || content.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    iconText += paintIcon;
+                }
+                if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    PaintText = paintText;
+                }
+            }
+
+            InfoIcons = iconText + InfoIcons;
+        }
+
+        public override bool ContextChanged(BaseContext other)
+        {
+            if(other?.GetType() == typeof(TileContext))
+            {
+                TileContext otherContext = (TileContext)other;
+                return otherContext.TileId != TileId || StyleChanged(otherContext);
+            }
+            return true;
         }
 
         protected bool StyleChanged(TileContext other)
@@ -68,31 +107,53 @@ namespace Twaila.Context
             return oldRow != newRow || oldCol != newCol;
         }
 
-        private TwailaTexture GetTileImage(SpriteBatch spriteBatch, Tile tile)
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
+            Tile tile = Framing.GetTileSafely(Pos);
             Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
                     TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType);
             if (texture != null)
             {
                 return new TwailaTexture(texture, 0.5f);
             }
-            /*
-            if (OnlyWire())
-            {
-                return new TwailaTexture(ImageUtil.GetImageForWireAndActuator(spriteBatch, tile));
-            }
-            */
             texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return new TwailaTexture(texture);
         }
 
-        private string GetName(Tile tile, int itemId)
+        protected override List<UITwailaElement> InfoElements()
         {
+            List<UITwailaElement> elements = base.InfoElements();
+
+            if (!string.IsNullOrEmpty(PaintText))
+            {
+                elements.Insert(0, new TwailaText(PaintText));
+            }
+            if (!string.IsNullOrEmpty(RecommendedPickaxe))
+            {
+                elements.Insert(0, new TwailaText(RecommendedPickaxe));
+            }
+            if (!string.IsNullOrEmpty(PickPower))
+            {
+                elements.Insert(0, new TwailaText(PickPower));
+            }
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new TwailaText(Id));
+            }
+
+            return elements;
+        }
+
+        protected override string GetName()
+        {
+            Tile tile = Framing.GetTileSafely(Pos);
+            int itemId = ItemUtil.GetItemId(tile, TileType.Tile);
+
             return NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
                 ?? NameUtil.GetNameFromMap(tile, Pos.X, Pos.Y) ?? "Default Name";
         }
 
-        private string GetMod()
+        protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(TileId);
             if (mTile != null)

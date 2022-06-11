@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Twaila.Graphics;
 using Terraria.ID;
-using Twaila.UI;
 using Terraria.ModLoader;
 
 namespace Twaila.Context
@@ -15,48 +14,37 @@ namespace Twaila.Context
 
         public SaplingContext(Point pos) : base(pos)
         {
-
+            DirtId = GetSaplingTile();
         }
 
-        public override bool Applies()
+        public override bool ContextChanged(BaseContext other)
         {
-            return TileID.Sets.TreeSapling[TileId];
+            if(other?.GetType() == typeof(SaplingContext))
+            {
+                SaplingContext otherContext = (SaplingContext)other;
+                return otherContext.DirtId != DirtId || StyleChanged(otherContext);
+            }
+            return true;
         }
 
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+        public override void Update()
+        {
+            base.Update();
+            DirtId = GetSaplingTile();
+        }
+
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos);
-
-            TileId = tile.TileType;
-            FrameX = tile.TileFrameX;
-            FrameY = tile.TileFrameY;
-            DirtId = GetSaplingTile();
-
-            layout.Name.SetText(GetName());
-
-            if (!(prevContext is SaplingContext otherContext && otherContext.DirtId == DirtId &&
-                !StyleChanged(otherContext)))
-            {
-                layout.Image.SetImage(GetImage(Main.spriteBatch, tile));
-            }
-
-            TwailaText id = new TwailaText("Id: " + tile.TileType);
-            layout.InfoBox.AddAndEnable(id);
-
-            layout.Mod.SetText(GetMod());
-        }
-
-        private TwailaTexture GetImage(SpriteBatch spriteBatch, Tile tile)
-        {
             return new TwailaTexture(ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y));
         }
 
-        private string GetName()
+        protected override string GetName()
         {
             return NameUtil.GetNameForSapling(TileId, DirtId);
         }
 
-        private string GetMod()
+        protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(TileId);
             if (mTile != null)

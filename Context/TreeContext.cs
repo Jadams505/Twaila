@@ -5,7 +5,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Graphics;
-using Twaila.UI;
 using Twaila.Util;
 
 namespace Twaila.Context
@@ -19,35 +18,23 @@ namespace Twaila.Context
             DirtId = GetTreeDirt();
         }
 
-        public override bool Applies()
+        public override void Update()
         {
-            return TileId == TileID.Trees || TileId == TileID.MushroomTrees;
-        }
-
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-
-            TileId = tile.TileType;
-            FrameX = tile.TileFrameX;
-            FrameY = tile.TileFrameY;
+            base.Update();
             DirtId = GetTreeDirt();
-
-            layout.Name.SetText(GetName());
-
-            if (!(prevContext is TreeContext otherContext && otherContext.DirtId == DirtId && 
-                DirtId != TileID.JungleGrass && Math.Sign(Pos.Y - Main.worldSurface) == Math.Sign(otherContext.Pos.Y - Main.worldSurface)))
-            {
-                layout.Image.SetImage(GetImage(Main.spriteBatch));
-            }
-
-            TwailaText id = new TwailaText("Id: " + tile.TileType);
-            layout.InfoBox.AddAndEnable(id);
-
-            layout.Mod.SetText(GetMod());
         }
 
-        private TwailaTexture GetImage(SpriteBatch spriteBatch)
+        public override bool ContextChanged(BaseContext other)
+        {
+            if(other?.GetType() == typeof(TreeContext))
+            {
+                TreeContext otherContext = (TreeContext)other;
+                return otherContext.DirtId != DirtId || (DirtId == TileID.JungleGrass && Math.Sign(Pos.Y - Main.worldSurface) != Math.Sign(otherContext.Pos.Y - Main.worldSurface));
+            }
+            return true;
+        }
+
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
             float scale = 0.5f;
             if (TileId == TileID.Trees)
@@ -70,12 +57,12 @@ namespace Twaila.Context
             return null;
         }
 
-        private string GetName()
+        protected override string GetName()
         {
             return NameUtil.GetNameForTree(TileId, DirtId);
         }
 
-        private string GetMod()
+        protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(DirtId);
             if (mTile != null)

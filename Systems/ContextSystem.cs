@@ -29,6 +29,17 @@ namespace Twaila.Systems
          
             ContextEntry liquidEntry = new ContextEntry(pos => Framing.GetTileSafely(pos).LiquidAmount > 0 ? new LiquidContext(pos) : null);
             ContextEntries.Add(liquidEntry);
+
+            ContextEntry wireEntry = new ContextEntry(pos =>
+            {
+                Tile tile = Framing.GetTileSafely(pos);
+                if (!tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0 &&
+                    (tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire || tile.HasActuator)){
+                    return new WireContext(pos);
+                }
+                return null;
+            });
+            ContextEntries.Add(wireEntry);
         }
 
         public override void Unload()

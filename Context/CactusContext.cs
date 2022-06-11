@@ -16,38 +16,26 @@ namespace Twaila.Context
 
         public CactusContext(Point pos) : base(pos)
         {
-        }
-
-        public override bool Applies()
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-            return tile.TileType == TileID.Cactus;
-        }
-
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-
-            TileId = tile.TileType;
-            FrameX = tile.TileFrameX;
-            FrameY = tile.TileFrameY;
             SandTileId = GetCactusSand();
-
-            layout.Name.SetText(GetName());
-
-            if (!(prevContext is CactusContext otherContext && otherContext.SandTileId == SandTileId))
-            {
-                layout.Image.SetImage(GetImage(Main.spriteBatch));
-            }
-
-            TwailaText id = new TwailaText("Id: " + tile.TileType);
-            layout.InfoBox.AddAndEnable(id);
-
-            layout.Mod.SetText(GetMod());
         }
 
+        public override bool ContextChanged(BaseContext other)
+        {
+            if (other?.GetType() == typeof(CactusContext))
+            {
+                CactusContext otherContext = (CactusContext)other;
+                return otherContext.SandTileId != SandTileId;
+            }
+            return true;
+        }
 
-        private TwailaTexture GetImage(SpriteBatch spriteBatch)
+        public override void Update()
+        {
+            base.Update();
+            SandTileId = GetCactusSand();
+        }
+
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
             if (TileLoader.CanGrowModCactus(SandTileId))
             {
@@ -56,7 +44,7 @@ namespace Twaila.Context
             return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, SandTileId, false));
         }
 
-        private string GetName()
+        protected override string GetName()
         {
             string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
             if (SandTileId == -1)
@@ -96,7 +84,7 @@ namespace Twaila.Context
             return cactus;
         }
 
-        private string GetMod()
+        protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(SandTileId);
             if(mTile != null)

@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Twaila.Util;
 using Twaila.Graphics;
-using Twaila.UI;
 
 namespace Twaila.Context
 {
@@ -15,36 +14,26 @@ namespace Twaila.Context
 
         public PalmTreeContext(Point pos) : base(pos)
         {
-        }
-
-        public override bool Applies()
-        {
-            return TileId == TileID.PalmTree;
-        }
-
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-
-            TileId = tile.TileType;
-            FrameX = tile.TileFrameX;
-            FrameY = tile.TileFrameY;
             SandId = GetPalmTreeSand();
-
-            layout.Name.SetText(GetName());
-
-            if (!(prevContext is PalmTreeContext otherContext && otherContext.SandId == SandId))
-            {
-                layout.Image.SetImage(GetImage(Main.spriteBatch));
-            }
-
-            TwailaText id = new TwailaText("Id: " + tile.TileType);
-            layout.InfoBox.AddAndEnable(id);
-
-            layout.Mod.SetText(GetMod());
         }
 
-        private TwailaTexture GetImage(SpriteBatch spriteBatch)
+        public override void Update()
+        {
+            base.Update();
+            SandId = GetPalmTreeSand();
+        }
+
+        public override bool ContextChanged(BaseContext other)
+        {
+            if(other?.GetType() == typeof(PalmTreeContext))
+            {
+                PalmTreeContext otherContext = (PalmTreeContext)other;
+                return otherContext.SandId != SandId;
+            }
+            return true;
+        }
+
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
             if (TileLoader.CanGrowModPalmTree(SandId))
             {
@@ -58,12 +47,12 @@ namespace Twaila.Context
             return null;
         }
 
-        private string GetName()
+        protected override string GetName()
         {
             return NameUtil.GetNameForPalmTree(TileId, SandId);
         }
 
-        private string GetMod()
+        protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(SandId);
             if (mTile != null)

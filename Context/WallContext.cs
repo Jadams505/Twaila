@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.UI;
@@ -9,56 +9,89 @@ using Twaila.Util;
 
 namespace Twaila.Context
 {
-    public class WallContext : BaseContext
+    public class WallContext : WireContext
     {
+        protected ushort WallId { get; set; }
 
-        private ushort _wallId;
+        protected string Id { get; set; }
+        protected string PaintText { get; set; }
 
         public WallContext(Point pos) : base(pos)
         {
+            Update();
         }
 
-        public override bool Applies()
+        public override bool ContextChanged(BaseContext other)
         {
-            Tile tile = Framing.GetTileSafely(Pos.X, Pos.Y);
-            return tile.WallType > WallID.None;
-        }
-
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
-        {
-            Tile tile = Framing.GetTileSafely(Pos);
-            _wallId = tile.WallType;
-
-            if(!(prevContext is WallContext otherContext && otherContext._wallId == this._wallId))
+            if(other?.GetType() == typeof(WallContext))
             {
-                layout.Image.SetImage(GetImage(Main.spriteBatch));
+                WallContext otherContext = (WallContext)other;
+                return otherContext.WallId != WallId;
+            }
+            return true;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            Tile tile = Framing.GetTileSafely(Pos);
+            WallId = tile.WallType;
+
+            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+
+            string iconText = "";
+
+            if (content.ShowId)
+            {
+                Id = $"Wall Id: {WallId}";
             }
 
-            layout.Name.SetText(GetName());
+            if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out string paintIcon))
+            {
+                if (content.ShowPaint == TwailaConfig.DisplayType.Icon || content.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    iconText += paintIcon;
+                }
+                if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    PaintText = paintText;
+                }
+            }
 
-            TwailaText id = new TwailaText("Id: " + tile.WallType);
-            layout.InfoBox.AddAndEnable(id);
-
-            TwailaText color = new TwailaText("Color: " + tile.WallColor);
-            layout.InfoBox.AddAndEnable(color);
-
-            layout.Mod.SetText(GetMod());
+            InfoIcons = iconText + InfoIcons;
         }
 
-        public TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
             return new TwailaTexture(ImageUtil.GetWallImageFromTile(spriteBatch, Framing.GetTileSafely(Pos)));
         }
 
-        public string GetName()
+        protected override List<UITwailaElement> InfoElements()
+        {
+            List<UITwailaElement> elements = base.InfoElements();
+
+            if (!string.IsNullOrEmpty(PaintText))
+            {
+                elements.Insert(0, new TwailaText(PaintText));
+            }
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new TwailaText(Id));
+            }
+            
+
+            return elements;
+        }
+
+        protected override string GetName()
         {
             Tile tile = Framing.GetTileSafely(Pos);
             return NameUtil.GetNameFromItem(ItemUtil.GetItemId(tile, TileType.Wall)) ?? "Default Wall";
         }
 
-        public string GetMod()
+        protected override string GetMod()
         {
-            ModWall mWall = WallLoader.GetWall(_wallId);
+            ModWall mWall = WallLoader.GetWall(WallId);
             if (mWall != null)
             {
                 return mWall.Mod.DisplayName;
