@@ -19,12 +19,13 @@ namespace Twaila.UI
     {
         public Layout Layout { get; set; }
         public BaseContext CurrentContext { get; set; }
-        private int _currIndex = 0;
+        public int currIndex = 0;
+        public int tick = 0;
 
         private int pickIndex = 0;
         private bool _dragging;
         private Point _lastMouse;
-        private int _tick = 0;
+        
 
         private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height);
         private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
@@ -290,7 +291,7 @@ namespace Twaila.UI
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
             base.DrawChildren(spriteBatch);
-            if (!IsDragging())
+            if (!IsDragging() && !Main.gamePaused)
             {
                 UpdatePanelContents(spriteBatch);
             }    
@@ -298,37 +299,59 @@ namespace Twaila.UI
 
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
-            _tick++;
+            tick++;
             Point mousePos = TwailaUI.GetMousePos();
-            BaseContext context = ContextSystem.Instance.CurrentContext(_currIndex, mousePos) ??
-                ContextSystem.Instance.NextContext(ref _currIndex, mousePos);
-            if(context == null /*|| TileUtil.IsBlockedByAntiCheat(currentContext)*/)
+            if (!TwailaUI.InBounds(mousePos.X, mousePos.Y))
             {
-                _tick = 0;
+                tick = 0;
+                return;
+            }
+            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos) ??
+                ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+            if(context == null)
+            {
+                tick = 0;
                 return;
             }
             Player player = Main.player[Main.myPlayer];
             player.TryGetModPlayer(out TwailaPlayer tPlayer);
-            if (_tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
+            if(player.itemAnimation > 0)
             {
-                context = ContextSystem.Instance.NextContext(ref _currIndex, mousePos);
-                _tick = 0;
-            }
-            /*
-            if(player?.itemAnimation > 0 && currentContext.TileType != TileType.Empty) // attempts to stop rapid updating when mining/hammering
-            {
-                if(player?.HeldItem.pick > 0 && currentContext.TileType != TileType.Tile)
+                if (player.HeldItem.pick > 0 && context is not TileContext)
                 {
+                    tick = 0;
                     return;
                 }
-                if(player?.HeldItem.hammer > 0 && currentContext.TileType != TileType.Wall)
+                if(player.HeldItem.hammer > 0 && context is not WallContext)
                 {
+                    tick = 0;
                     return;
                 }
             }
-            */
+            if (tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
+            {
+                context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+                pickIndex++;
+                tick = 0;
+            }
+            
             Layout.InfoBox.RemoveAll();
-            context.UpdateOnChange(CurrentContext, Layout);
+            if (context is TileContext tileContext)
+            {
+                if (context.ContextChanged(CurrentContext))
+                {
+                    pickIndex = 0;
+                }
+                tileContext.pickIndex = pickIndex;
+                context = tileContext;
+                context.UpdateOnChange(CurrentContext, Layout);
+                pickIndex = tileContext.pickIndex;
+            }
+            else
+            {
+                pickIndex = 0;
+                context.UpdateOnChange(CurrentContext, Layout);
+            }
             CurrentContext = context;
         }
 

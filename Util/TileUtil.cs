@@ -58,10 +58,6 @@ namespace Twaila.Util
         {
             if (TwailaConfig.Get().AntiCheat)
             {
-                if((OnlyWire(tile) && !WiresUI.Settings.DrawWires) || 
-                    (OnlyWire(tile) && !tile.HasActuator && WiresUI.Settings.HideWires)){
-                    return true;
-                }
                 Player player = Main.player[Main.myPlayer];
                 if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[tile.TileType])
                 {
@@ -74,12 +70,6 @@ namespace Twaila.Util
                 return !Main.Map.IsRevealed(pos.X, pos.Y);
             }
             return false;
-        }
-
-        private static bool OnlyWire(Tile tile)
-        {
-            return (tile.RedWire || tile.BlueWire || tile.GreenWire || tile.YellowWire || tile.HasActuator)
-                && !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
         }
     }
 }

@@ -1,33 +1,39 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
 using Terraria.ModLoader;
 using Twaila.UI;
-using Microsoft.Xna.Framework.Input;
 
-namespace Twaila.Util
+namespace Twaila.Systems
 {
-    public class Keybinds
+    public class KeybindSystem : ModSystem
     {
-        private static ModKeybind toggleUI;
-        private static ModKeybind pauseCycling;
-        //private static ModKeybind info;
+        public static ModKeybind ToggleUI { get; private set; }
+        public static ModKeybind PauseCycling { get; private set; }
+        public static ModKeybind NextContext { get; private set; }
 
-        public static void RegisterKeybinds(Mod mod)
+
+        public override void Load()
         {
-            toggleUI = KeybindLoader.RegisterKeybind(mod, "Cycle UI Display Mode", "Mouse3");
-            pauseCycling = KeybindLoader.RegisterKeybind(mod, "Pause Cycling", Keys.F);
-            //info = KeybindLoader.RegisterKeybind(mod, "info", "*");
+            ToggleUI = KeybindLoader.RegisterKeybind(Mod, "Cycle UI Display Mode", "Mouse3");
+            PauseCycling = KeybindLoader.RegisterKeybind(Mod, "Pause Cycling", Keys.F);
+            NextContext = KeybindLoader.RegisterKeybind(Mod, "Next Context", Keys.Right);
         }
 
-        public static void Unload()
+        public override void Unload()
         {
-            toggleUI = null;
-            pauseCycling = null;
-            //info = null;
+            ToggleUI = null;
+            PauseCycling = null;
+            NextContext = null;
         }
 
         public static void HandleKeys(TwailaPlayer player)
         {
-            if (toggleUI.JustPressed)
+            if (ToggleUI.JustPressed)
             {
                 switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
                 {
@@ -43,7 +49,7 @@ namespace Twaila.Util
                 }
                 Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
             }
-            if (pauseCycling.Current)
+            if (PauseCycling.Current)
             {
                 player.CyclingPaused = true;
             }
@@ -51,13 +57,10 @@ namespace Twaila.Util
             {
                 player.CyclingPaused = false;
             }
-            /*
-            if (info.JustPressed)
+            if (NextContext.JustPressed)
             {
-                Main.NewText(Framing.GetTileSafely(TwailaUI.GetMousePos()));
+                TwailaUI.NextContext();
             }
-            */
-            
         }
     }
 }

@@ -48,29 +48,34 @@ namespace Twaila.Context
             GreenWire = tile.GreenWire;
 
             string iconText = "";
-            if (InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
+            if(!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
-                if (content.ShowWire == TwailaConfig.DisplayType.Icon || content.ShowWire == TwailaConfig.DisplayType.Both)
+                if (InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
                 {
-                    iconText += wireIcon;
-                }
-                if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
-                {
-                    WireText = wireText;
+                    if (content.ShowWire == TwailaConfig.DisplayType.Icon || content.ShowWire == TwailaConfig.DisplayType.Both)
+                    {
+                        iconText += wireIcon;
+                    }
+                    if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
+                    {
+                        WireText = wireText;
+                    }
                 }
             }
-
-            if (InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
+            if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
             {
-                if (content.ShowActuator == TwailaConfig.DisplayType.Icon || content.ShowActuator == TwailaConfig.DisplayType.Both)
+                if (InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
                 {
-                    iconText += actIcon;
+                    if (content.ShowActuator == TwailaConfig.DisplayType.Icon || content.ShowActuator == TwailaConfig.DisplayType.Both)
+                    {
+                        iconText += actIcon;
+                    }
+                    if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
+                    {
+                        ActuatorText = actText;
+                    }
                 }
-                if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
-                {
-                    ActuatorText = actText;
-                }
-            }
+            }   
 
             InfoIcons = iconText;
         }

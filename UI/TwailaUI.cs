@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -89,6 +90,15 @@ namespace Twaila.UI
                 return false;
             }
             return true;
+        }
+
+        public static void NextContext()
+        {
+            if(++_panel.currIndex >= ContextSystem.Instance.ContextEntries.Count)
+            {
+                _panel.currIndex = 0;
+            }
+            _panel.tick = 0;
         }
 
         public static void Load()

@@ -1,6 +1,6 @@
 ﻿using Terraria.GameInput;
 using Terraria.ModLoader;
-using Twaila.Util;
+using Twaila.Systems;
 
 namespace Twaila
 {
@@ -10,7 +10,7 @@ namespace Twaila
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            Keybinds.HandleKeys(this);
+            KeybindSystem.HandleKeys(this);
         }
 
         public override void PreSavePlayer()

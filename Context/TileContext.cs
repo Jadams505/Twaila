@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Twaila.Graphics;
+using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -12,6 +13,8 @@ namespace Twaila.Context
 {
     public class TileContext : WireContext
     {
+        public int pickIndex;
+
         protected ushort TileId { get; set; }
         protected short FrameX { get; set; }
         protected short FrameY { get; set; }
@@ -37,7 +40,6 @@ namespace Twaila.Context
             FrameX = tile.TileFrameX;
             FrameY = tile.TileFrameY;
 
-            int index = 0;
             string iconText = "";
 
             if (content.ShowId)
@@ -45,7 +47,7 @@ namespace Twaila.Context
                 Id = $"Tile Id: {TileId}";
             }
 
-            if (InfoUtil.GetPickInfo(tile, ref index, out string pickText, out string pickIcon, out int pickId))
+            if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out string pickIcon, out int pickId))
             {
                 if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                 {

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Twaila.UI;
 
-namespace Twaila.UI
+namespace Twaila.Systems
 {
-    public class ModInterface : ModSystem
+    public class UISystem : ModSystem
     {
         private static GameTime _lastUpdateTime;
 

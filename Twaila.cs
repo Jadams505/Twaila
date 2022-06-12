@@ -13,7 +13,6 @@ namespace Twaila
 
         public override void Load()
         {
-            Keybinds.RegisterKeybinds(this);
             ExtraObjectData.Initialize();
         }
 
@@ -24,7 +23,6 @@ namespace Twaila
 
         public override void Unload()
         {
-            Keybinds.Unload();
             ExtraObjectData.Unload();
             ItemUtil.Unload();
         }
