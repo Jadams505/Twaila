@@ -15,25 +15,30 @@ namespace Twaila.Systems
 
         public List<ContextEntry> ContextEntries { get; private set; }
 
+        public ContextEntry TileEntry { get; private set; }
+        public ContextEntry WallEntry { get; private set; }
+        public ContextEntry LiquidEntry { get; private set; }
+        public ContextEntry WireEntry { get; private set; }
+
         public override void Load()
         {
             ContextEntries = new List<ContextEntry>();
 
-            ContextEntry tileEntry = new ContextEntry(CreateTileContext);
-            tileEntry.ApplicableContexts.Add(CreatePalmTreeContext);
-            tileEntry.ApplicableContexts.Add(CreateCactusContext);
-            tileEntry.ApplicableContexts.Add(CreateTreeContext);
-            tileEntry.ApplicableContexts.Add(CreateSaplingContext);
-            ContextEntries.Add(tileEntry);
+            TileEntry = new ContextEntry(CreateTileContext);
+            TileEntry.ApplicableContexts.Add(CreatePalmTreeContext);
+            TileEntry.ApplicableContexts.Add(CreateCactusContext);
+            TileEntry.ApplicableContexts.Add(CreateTreeContext);
+            TileEntry.ApplicableContexts.Add(CreateSaplingContext);
+            ContextEntries.Add(TileEntry);
 
-            ContextEntry wallEntry = new ContextEntry(CreateWallContext);
-            ContextEntries.Add(wallEntry);
-         
-            ContextEntry liquidEntry = new ContextEntry(CreateLiquidContext);
-            ContextEntries.Add(liquidEntry);
+            WallEntry = new ContextEntry(CreateWallContext);
+            ContextEntries.Add(WallEntry);
 
-            ContextEntry wireEntry = new ContextEntry(CreateWireContext);
-            ContextEntries.Add(wireEntry);
+            LiquidEntry = new ContextEntry(CreateLiquidContext);
+            ContextEntries.Add(LiquidEntry);
+
+            WireEntry = new ContextEntry(CreateWireContext);
+            ContextEntries.Add(WireEntry);
         }
 
         public override void Unload()

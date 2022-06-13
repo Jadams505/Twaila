@@ -34,7 +34,7 @@ namespace Twaila.UI
                     height = iconSize.Y;
                 }
             });
-            return new Vector2(width + PADDING * (IconImages.Count - 1), height);
+            return new Vector2(MAX_SIZE * IconImages.Count + PADDING * (IconImages.Count - 1), MAX_SIZE + PADDING);
         }
 
         protected override void DrawOverflow(SpriteBatch spriteBatch)
@@ -88,18 +88,6 @@ namespace Twaila.UI
         public static float IconScale(Texture2D iconImage)
         {
             return MathHelper.Clamp(MAX_SIZE / Math.Max(iconImage.Width, iconImage.Height), 0, 1);
-        }
-
-        public static Vector2 IconScaleVector(Texture2D iconImage)
-        {
-            return new Vector2(MathHelper.Clamp(MAX_SIZE / iconImage.Width, 0, 1),
-                MathHelper.Clamp(MAX_SIZE / iconImage.Height, 0, 1));
-        }
-
-        public static Vector2 IconSizeVector(Texture2D image)
-        {
-            Vector2 scale = IconScaleVector(image);
-            return new Vector2(image.Width * scale.X, image.Height * scale.Y);
         }
 
         public static Vector2 IconSize(Texture2D image)

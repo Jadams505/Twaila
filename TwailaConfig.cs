@@ -146,7 +146,7 @@ namespace Twaila
             [DefaultValue(true)]
             public bool ShowMod;
 
-            [DefaultValue(true)]
+            [DefaultValue(false)]
             public bool ShowId;
 
             [DefaultValue(true)]
@@ -169,7 +169,7 @@ namespace Twaila
                 ShowImage = true;
                 ShowName = true;
                 ShowMod = true;
-                ShowId = true;
+                ShowId = false;
                 ShowPickaxePower = true;
                 ShowPickaxe = DisplayType.Icon;
                 ShowWire = DisplayType.Icon;

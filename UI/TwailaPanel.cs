@@ -279,33 +279,36 @@ namespace Twaila.UI
         {
             tick++;
             Point mousePos = TwailaUI.GetMousePos();
+            Player player = Main.player[Main.myPlayer];
+
             if (!TwailaUI.InBounds(mousePos.X, mousePos.Y))
             {
                 tick = 0;
                 return;
             }
+
             BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos) ??
                 ContextSystem.Instance.NextContext(ref currIndex, mousePos);
-            if(context == null)
+            if (player.itemAnimation > 0)
+            {
+                if (player.HeldItem.pick > 0) // swinging a pickaxe
+                {
+                    context = ContextSystem.Instance.TileEntry.Context(mousePos);
+                }
+                if (player.HeldItem.hammer > 0) // swinging a hammer
+                {
+                    context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                }
+            }
+            
+            if (context == null)
             {
                 tick = 0;
                 return;
             }
-            Player player = Main.player[Main.myPlayer];
+            
             player.TryGetModPlayer(out TwailaPlayer tPlayer);
-            if(player.itemAnimation > 0)
-            {
-                if (player.HeldItem.pick > 0 && context is not TileContext)
-                {
-                    tick = 0;
-                    return;
-                }
-                if(player.HeldItem.hammer > 0 && context is not WallContext)
-                {
-                    tick = 0;
-                    return;
-                }
-            }
+            
             if (tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
                 context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
