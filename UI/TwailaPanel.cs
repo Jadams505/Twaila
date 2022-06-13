@@ -73,10 +73,10 @@ namespace Twaila.UI
         private void HoverSettings(UITwailaElement element)
         {
             TwailaConfig config = TwailaConfig.Get();
+            element.Opacity = config.HoverOpacity;
             if (element is TwailaText text)
             {
                 text.OverrideTextColor = true;
-                text.Opacity = config.HoverOpacity;
             }
         }
 
@@ -122,8 +122,16 @@ namespace Twaila.UI
             {
                 if (drawMode == DrawMode.Trim)
                 {
-                    float height = Layout.Name.GetContentSize().Y;
-                    for(int i = 0; i < Layout.InfoBox.InfoLines.Count; ++i)
+                    float height = 0;
+                    if (Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    {
+                        height += Layout.Name.GetContentSize().Y;
+                    }
+                    else
+                    {
+                        RemoveChild(Layout.Name);
+                    }
+                    for (int i = 0; i < Layout.InfoBox.InfoLines.Count; ++i)
                     {
                         if (Layout.InfoBox.Enabled[i])
                         {
@@ -135,6 +143,7 @@ namespace Twaila.UI
                             else
                             {
                                 Layout.InfoBox.RemoveElement(i);
+                                i--;
                             }
                         }
                     }
@@ -176,7 +185,7 @@ namespace Twaila.UI
 
         private void ScaleElement(UITwailaElement element, Vector2 maxSize)
         {
-            float scale = ElementScale(element, maxSize);
+            float scale = element.GetScale(maxSize);
             float width = element.GetContentSize().X * scale;
             float height = element.GetContentSize().Y * scale;
 
@@ -199,37 +208,6 @@ namespace Twaila.UI
             }
             return Math.Min(scaleX, scaleY);
         }
-
-        public float TextScale(TwailaText text, Vector2 maxSize)
-        {
-            float scaleX = 1;
-            if (text.GetTextSize().X > maxSize.X)
-            {
-                scaleX = maxSize.X / text.GetTextSize().X;
-            }
-            float scaleY = 1;
-            if (text.GetTextSize().Y > maxSize.Y)
-            {
-                scaleY = maxSize.Y / text.GetTextSize().Y;
-            }
-            return Math.Min(scaleX, scaleY) * text.Scale;
-        }
-
-        public float ElementScale(UITwailaElement element, Vector2 maxSize)
-        {
-            float scaleX = 1;
-            if (element.GetContentSize().X > maxSize.X)
-            {
-                scaleX = maxSize.X / element.GetContentSize().X;
-            }
-            float scaleY = 1;
-            if (element.GetContentSize().Y > maxSize.Y)
-            {
-                scaleY = maxSize.Y / element.GetContentSize().Y;
-            }
-            return Math.Min(scaleX, scaleY);
-        }
-
 
         private void UpdateAlignment()
         {
@@ -333,6 +311,15 @@ namespace Twaila.UI
                 context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
                 pickIndex++;
                 tick = 0;
+            }
+
+            if (!HasChild(Layout.Mod))
+            {
+                Append(Layout.Mod);
+            }
+            if (!HasChild(Layout.Name))
+            {
+                Append(Layout.Name);
             }
             
             Layout.InfoBox.RemoveAll();

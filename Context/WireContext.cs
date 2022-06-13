@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Twaila.Graphics;
 using Twaila.UI;
@@ -19,7 +20,8 @@ namespace Twaila.Context
 
         protected string WireText { get; set; }
         protected string ActuatorText { get; set; }
-        protected string InfoIcons { get; set; }
+
+        protected TwailaIconLine Icons { get; set; }
 
         public WireContext(Point point) : base(point)
         {
@@ -46,15 +48,21 @@ namespace Twaila.Context
             BlueWire = tile.BlueWire;
             YellowWire = tile.YellowWire;
             GreenWire = tile.GreenWire;
+            Icons = new TwailaIconLine();
 
-            string iconText = "";
             if(!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
-                if (InfoUtil.GetWireInfo(tile, out string wireText, out string wireIcon))
+                if (InfoUtil.GetWireInfo(tile, out string wireText, out int[] wireIcons))
                 {
                     if (content.ShowWire == TwailaConfig.DisplayType.Icon || content.ShowWire == TwailaConfig.DisplayType.Both)
                     {
-                        iconText += wireIcon;
+                        foreach (int icon in wireIcons)
+                        {
+                            if(icon > 0)
+                            {
+                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon));
+                            }
+                        }
                     }
                     if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
                     {
@@ -64,20 +72,21 @@ namespace Twaila.Context
             }
             if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
             {
-                if (InfoUtil.GetActuatorInfo(tile, out string actText, out string actIcon))
+                if (InfoUtil.GetActuatorInfo(tile, out string actText, out int actIcon))
                 {
                     if (content.ShowActuator == TwailaConfig.DisplayType.Icon || content.ShowActuator == TwailaConfig.DisplayType.Both)
                     {
-                        iconText += actIcon;
+                        if (actIcon > 0)
+                        {
+                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon));
+                        }
                     }
                     if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
                     {
                         ActuatorText = actText;
                     }
                 }
-            }   
-
-            InfoIcons = iconText;
+            }
         }
 
         public override void UpdateOnChange(BaseContext prevContext, Layout layout)
@@ -124,9 +133,9 @@ namespace Twaila.Context
             {
                 elements.Add(new TwailaText(ActuatorText));
             }
-            if (!string.IsNullOrEmpty(InfoIcons))
+            if(Icons.IconImages.Count > 0)
             {
-                elements.Add(new TwailaText(InfoIcons));
+                elements.Add(Icons);
             }
 
             return elements;

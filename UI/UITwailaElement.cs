@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria.UI;
 
 namespace Twaila.UI
@@ -39,6 +40,21 @@ namespace Twaila.UI
         public virtual void ApplyConfigSettings(TwailaConfig config)
         {
             DrawMode = config.ContentSetting;
+        }
+
+        public float GetScale(Vector2 maxSize)
+        {
+            float scaleX = 1;
+            if (GetContentSize().X > maxSize.X)
+            {
+                scaleX = maxSize.X / GetContentSize().X;
+            }
+            float scaleY = 1;
+            if (GetContentSize().Y > maxSize.Y)
+            {
+                scaleY = maxSize.Y / GetContentSize().Y;
+            }
+            return Math.Min(scaleX, scaleY);
         }
 
         public abstract Vector2 GetContentSize();

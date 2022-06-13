@@ -9,11 +9,10 @@ namespace Twaila.Util
 {
     public class InfoUtil
     {
-        public static bool GetPickInfo(Tile tile, ref int lastIndex, out string text, out string icon, out int pickId)
+        public static bool GetPickInfo(Tile tile, ref int lastIndex, out string text, out int pickId)
         {
             int power = GetPickaxePower(tile.TileType);
             text = "";
-            icon = "";
             pickId = -1;
             if(power > 0)
             {
@@ -28,7 +27,6 @@ namespace Twaila.Util
                 else
                 {
                     pickId = ItemUtil.GetPickaxeId(power, lastIndex, out lastIndex);
-                    icon = $"[i:{pickId}]";
                     text = text.Insert(0, redX + " ");
                 }
                 return true;
@@ -76,16 +74,14 @@ namespace Twaila.Util
             }
         }
 
-        public static bool GetPaintInfo(Tile tile, TileType type, out string text, out string icon)
+        public static bool GetPaintInfo(Tile tile, TileType type, out string text, out int icon)
         {
             byte color = GetPaintColor(tile, type);
-            int paintItemId = GetPaintItem(color);
+            icon = GetPaintItem(color);
             text = "";
-            icon = "";
-            if (paintItemId != -1)
+            if (icon != -1)
             {
-                text = NameUtil.GetNameFromItem(paintItemId);
-                icon = $"[i:{paintItemId}]";
+                text = NameUtil.GetNameFromItem(icon);
                 return true;
             }
             return false;
@@ -172,45 +168,49 @@ namespace Twaila.Util
             return -1;
         }
 
-        public static bool GetWireInfo(Tile tile, out string text, out string icon)
+        public static bool GetWireInfo(Tile tile, out string text, out int[] icons)
         {
             string[] colors = new string[4];
-            string[] icons = new string[4];
+            icons = new int[4];
+            bool hasWire = false;
             if (tile.RedWire)
             {
                 colors[0] = "Red";
-                icons[0] = $"[i:{ItemID.Wrench}]";
+                icons[0] = ItemID.Wrench;
+                hasWire = true;
             }
             if (tile.BlueWire)
             {
                 colors[1] = "Blue";
-                icons[1] = $"[i:{ItemID.BlueWrench}]";
+                icons[1] = ItemID.BlueWrench;
+                hasWire = true;
             }
             if (tile.GreenWire)
             {
                 colors[2] = "Green";
-                icons[2] = $"[i:{ItemID.GreenWrench}]";
+                icons[2] = ItemID.GreenWrench;
+                hasWire = true;
             }
             if (tile.YellowWire)
             {
                 colors[3] = "Yellow";
-                icons[3] = $"[i:{ItemID.YellowWrench}]";
+                icons[3] = ItemID.YellowWrench;
+                hasWire = true;
             }
             text = "Wire: " + string.Join(" ", Array.FindAll(colors, (match) => !string.IsNullOrEmpty(match)));
-            icon = string.Join("", icons);
-            return icon != "";
+            return hasWire;
         }
 
-        public static bool GetActuatorInfo(Tile tile, out string text, out string icon)
+        public static bool GetActuatorInfo(Tile tile, out string text, out int icon)
         {
             if (tile.HasActuator)
             {
                 text = $"{NameUtil.GetNameFromItem(ItemID.Actuator)}";
-                icon = $"[i:{ItemID.Actuator}]";
+                icon = ItemID.Actuator;
                 return true;
             }
             text = "";
-            icon = "";
+            icon = -1;
             return false;
         }
 

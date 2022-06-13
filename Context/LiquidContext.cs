@@ -40,8 +40,6 @@ namespace Twaila.Context
             LiquidId = tile.LiquidType;
             WaterStyle = Main.waterStyle;
 
-            string iconText = "";
-
             if (content.ShowId)
             {
                 if (LiquidId == LiquidID.Water)
@@ -53,8 +51,6 @@ namespace Twaila.Context
                     Id = $"Liquid Id: {LiquidId}";
                 }
             }
-
-            InfoIcons = iconText + InfoIcons;
         }
 
         protected override string GetName()

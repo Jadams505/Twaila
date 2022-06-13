@@ -29,11 +29,6 @@ namespace Twaila.UI
 
         public TwailaText() : this("Default Text") { }
 
-        public Vector2 GetTextSize()
-        {
-            return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
-        }
-
         public void SetText(string text)
         {
             if(text == null || text.Length == 0)
@@ -41,8 +36,8 @@ namespace Twaila.UI
                 text = "Default Text";
             }
             Text = text;
-            Width.Set(GetTextSize().X, 0);
-            Height.Set(GetTextSize().Y, 0);
+            Width.Set(GetContentSize().X, 0);
+            Height.Set(GetContentSize().Y, 0);
         }
 
         public override void ApplyConfigSettings(TwailaConfig config)
@@ -116,14 +111,14 @@ namespace Twaila.UI
         protected override void DrawShrunk(SpriteBatch spriteBatch)
         {
             float scaleX = 1;
-            if (GetTextSize().X > GetDimensions().Width)
+            if (GetContentSize().X > GetDimensions().Width)
             {
-                scaleX = GetDimensions().Width / GetTextSize().X;
+                scaleX = GetDimensions().Width / GetContentSize().X;
             }
             float scaleY = 1;
-            if (GetTextSize().Y > GetDimensions().Height)
+            if (GetContentSize().Y > GetDimensions().Height)
             {
-                scaleY = GetDimensions().Height / GetTextSize().Y;
+                scaleY = GetDimensions().Height / GetContentSize().Y;
             }
             float scale = Math.Min(scaleX, scaleY) * Scale;
             TextSnippet[] snippets = ChatManager.ParseMessage(Text, Color).ToArray();

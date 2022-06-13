@@ -5,7 +5,6 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Twaila.Graphics;
-using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -40,22 +39,34 @@ namespace Twaila.Context
             FrameX = tile.TileFrameX;
             FrameY = tile.TileFrameY;
 
-            string iconText = "";
-
             if (content.ShowId)
             {
                 Id = $"Tile Id: {TileId}";
             }
 
-            if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out string pickIcon, out int pickId))
+            if (InfoUtil.GetPaintInfo(tile, TileType.Tile, out string paintText, out int paintIcon))
             {
-                if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
+                if (content.ShowPaint == TwailaConfig.DisplayType.Icon || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
-                    iconText += pickIcon;
+                    if (paintIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon));
+                    }
                 }
+                if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
+                {
+                    PaintText = paintText;
+                }
+            }
 
+            if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out int pickId))
+            {
                 if (pickId != -1)
                 {
+                    if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(pickId));
+                    }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
                         RecommendedPickaxe = NameUtil.GetNameFromItem(pickId);
@@ -67,20 +78,6 @@ namespace Twaila.Context
                     PickPower = pickText;
                 }
             }
-
-            if (InfoUtil.GetPaintInfo(tile, TileType.Tile, out string paintText, out string paintIcon))
-            {
-                if (content.ShowPaint == TwailaConfig.DisplayType.Icon || content.ShowPaint == TwailaConfig.DisplayType.Both)
-                {
-                    iconText += paintIcon;
-                }
-                if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
-                {
-                    PaintText = paintText;
-                }
-            }
-
-            InfoIcons = iconText + InfoIcons;
         }
 
         public override bool ContextChanged(BaseContext other)

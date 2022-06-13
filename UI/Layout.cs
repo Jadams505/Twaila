@@ -74,8 +74,8 @@ namespace Twaila.UI
                 element.Width.Set(element.GetContentSize().X, 0);
                 element.Height.Set(element.GetContentSize().Y, 0);
             });
-            Mod.Width.Set(Name.GetContentSize().X, 0);
-            Mod.Height.Set(Name.GetContentSize().Y, 0);
+            Mod.Width.Set(Mod.GetContentSize().X, 0);
+            Mod.Height.Set(Mod.GetContentSize().Y, 0);
 
             InfoBox.UpdateDimensions();
             Image.Width.Set(Image.image.Width, 0);

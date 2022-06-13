@@ -35,30 +35,29 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos);
-            WallId = tile.WallType;
-
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
 
-            string iconText = "";
+            WallId = tile.WallType;
 
             if (content.ShowId)
             {
                 Id = $"Wall Id: {WallId}";
             }
 
-            if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out string paintIcon))
+            if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out int paintIcon))
             {
                 if (content.ShowPaint == TwailaConfig.DisplayType.Icon || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
-                    iconText += paintIcon;
+                    if (paintIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon));
+                    }
                 }
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
                     PaintText = paintText;
                 }
             }
-
-            InfoIcons = iconText + InfoIcons;
         }
 
         protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
