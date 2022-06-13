@@ -81,7 +81,7 @@ namespace Twaila.Context
                     return Lang.GetItemNameValue(itemId) + " " + cactus;
                 }
             }
-            return cactus;
+            return cactus ?? base.GetName();
         }
 
         protected override string GetMod()

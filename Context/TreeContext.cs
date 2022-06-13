@@ -59,7 +59,7 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            return NameUtil.GetNameForTree(TileId, DirtId);
+            return NameUtil.GetNameForTree(TileId, DirtId) ?? base.GetName();
         }
 
         protected override string GetMod()

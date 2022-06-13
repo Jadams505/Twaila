@@ -175,14 +175,22 @@ namespace Twaila.Util
         public static Texture2D GetImageForModdedTree(SpriteBatch spriteBatch, int treeDirt)
         {
             int size = 20;
-            int frame = 0, fWidth = 82, fHeight = 80, xOffset = 30, yOffset = 78;
-            Texture2D topTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt).GetTopTextures().Value;
-            Texture2D woodTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt).GetTexture().Value;
-            Texture2D branchTexture = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt).GetBranchTextures().Value;
+            int frame = 0, fWidth = 80, fHeight = 80, xOffset = 30, yOffset = 78;
+
+            ModTree mTree = PlantLoader.Get<ModTree>(TileID.Trees, treeDirt);
+
+            if(mTree == null)
+            {
+                return null;
+            }
+
+            Texture2D topTexture = mTree.GetTopTextures().Value;
+            Texture2D woodTexture = mTree.GetTexture().Value;
+            Texture2D branchTexture = mTree.GetBranchTextures().Value;
 
             Rectangle top = new Rectangle(frame * fWidth, 0, fWidth, fHeight);
-            Rectangle trunk1 = new Rectangle(44, 108, size, size);
-            Rectangle trunk2 = new Rectangle(88, 42, size, size);
+            Rectangle trunk1 = new Rectangle(44, 110, size, size);
+            Rectangle trunk2 = new Rectangle(88, 44, size, size);
             Rectangle trunk3 = new Rectangle(66, 66, size, size);
             Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
             Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
@@ -230,8 +238,16 @@ namespace Twaila.Util
         public static Texture2D GetImageForModdedPalmTree(SpriteBatch spriteBatch, int palmTreeSand)
         {
             int size = 20;
-            Texture2D woodTexture = PlantLoader.Get<ModPalmTree>(TileID.PalmTree, palmTreeSand).GetTexture().Value;
-            Texture2D topTexture = PlantLoader.Get<ModPalmTree>(TileID.PalmTree, palmTreeSand).GetTopTextures().Value;
+
+            ModPalmTree mPalmTree = PlantLoader.Get<ModPalmTree>(TileID.PalmTree, palmTreeSand);
+
+            if(mPalmTree == null)
+            {
+                return null;
+            }
+
+            Texture2D woodTexture = mPalmTree.GetTexture().Value;
+            Texture2D topTexture = mPalmTree.GetTopTextures().Value;
 
             Rectangle top = new Rectangle(0, 0, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(0, 0, size, size);
