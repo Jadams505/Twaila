@@ -31,8 +31,14 @@ Suggestions and Feedback are welcome
 [Controls]
 - Cycle UI Display Mode: Cycles through the UIDisplay options
 - Pause Cycling: Hold to stop the UI from cycling its contents
+- Next Context: Cycles the UI contents
 
 [Changelog]
+v0.2.2.0 (6/14/2022)
+- Added the Next Context keybind to allow for manual cycling of the UI
+- Added support for the Id of the tile/wall/liquid
+- Fixed an issue where the panel icons would not change opacity when the panel was being hovered over
+- Fixed issues with tree texture framing
 v0.2.1.1 (5/30/2022)
 - Adjusted to the new tree implementation
 v0.2.1.0 (5/18/2022)
