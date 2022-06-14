@@ -75,6 +75,24 @@ namespace Twaila.Systems
             return null;
         }
 
+        public List<ContextEntry> ContextEntriesAt(Point pos)
+        {
+            return ContextEntries.FindAll(entry => entry.Context(pos) != null);
+        }
+
+        public int ContextEntryCountAt(Point pos)
+        {
+            int count = 0;
+            ContextEntries.ForEach(entry =>
+            {
+                if (entry.Context(pos) != null)
+                {
+                    count++;
+                }
+            });
+            return count;
+        }
+
         private static TileContext CreateTileContext(Point pos)
         {
             Tile tile = Framing.GetTileSafely(pos);
