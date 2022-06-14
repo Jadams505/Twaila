@@ -33,10 +33,17 @@ namespace Twaila.Context
             DirtId = GetSaplingTile();
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos);
             return new TwailaTexture(ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y));
+        }
+
+        protected override TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        {
+            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos), TileType.Tile);
+            Texture2D texture = ImageUtil.GetItemTexture(itemId);
+            return new TwailaTexture(texture);
         }
 
         protected override string GetName()

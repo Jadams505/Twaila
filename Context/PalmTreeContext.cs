@@ -33,7 +33,7 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
         {
             if (TileLoader.CanGrowModPalmTree(SandId))
             {
@@ -44,6 +44,11 @@ namespace Twaila.Context
             {
                 return new TwailaTexture(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
             }
+            return null;
+        }
+
+        protected override TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        {
             return null;
         }
 

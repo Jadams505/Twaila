@@ -108,6 +108,32 @@ namespace Twaila.Context
 
         protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
         {
+            if (TwailaConfig.Get().UseItemTextures)
+            {
+                TwailaTexture itemTexture = ItemImage(spriteBatch);
+                if(itemTexture?.Texture != null)
+                {
+                    return itemTexture;
+                }
+                return TileImage(spriteBatch);
+            }
+            TwailaTexture tileTexture = TileImage(spriteBatch);
+            if (tileTexture?.Texture != null)
+            {
+                return tileTexture;
+            }
+            return ItemImage(spriteBatch);
+        }
+
+        protected virtual TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        {
+            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos), TileType.Tile);
+            Texture2D texture = ImageUtil.GetItemTexture(itemId);
+            return new TwailaTexture(texture);
+        }
+
+        protected virtual TwailaTexture TileImage(SpriteBatch spriteBatch)
+        {
             Tile tile = Framing.GetTileSafely(Pos);
             Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
                     TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType);

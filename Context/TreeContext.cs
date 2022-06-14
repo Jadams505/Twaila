@@ -34,7 +34,7 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
         {
             float scale = 0.5f;
             if (TileId == TileID.Trees)
@@ -54,6 +54,11 @@ namespace Twaila.Context
             {
                 return new TwailaTexture(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
             }
+            return null;
+        }
+
+        protected override TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        {
             return null;
         }
 
