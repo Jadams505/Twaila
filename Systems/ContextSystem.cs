@@ -19,6 +19,7 @@ namespace Twaila.Systems
         public ContextEntry WallEntry { get; private set; }
         public ContextEntry LiquidEntry { get; private set; }
         public ContextEntry WireEntry { get; private set; }
+        public ContextEntry NpcEntry { get; private set; }
 
         public override void Load()
         {
@@ -39,6 +40,9 @@ namespace Twaila.Systems
 
             WireEntry = new ContextEntry(CreateWireContext);
             ContextEntries.Add(WireEntry);
+
+            NpcEntry = new ContextEntry(CreateNpcContext);
+            ContextEntries.Add(NpcEntry);
         }
 
         public override void Unload()
@@ -200,6 +204,16 @@ namespace Twaila.Systems
                     return new WireContext(pos);
                 }
             }
+            return null;
+        }
+
+        private static NpcContext CreateNpcContext(Point pos)
+        {
+            if (NpcContext.IntersectsNPC(pos))
+            {
+                return new NpcContext(pos);
+            }
+
             return null;
         }
     }
