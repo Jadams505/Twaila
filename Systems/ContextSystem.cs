@@ -25,23 +25,23 @@ namespace Twaila.Systems
         {
             ContextEntries = new List<ContextEntry>();
 
-            TileEntry = new ContextEntry(CreateTileContext);
+            TileEntry = new ContextEntry(CreateTileContext, nameof(TileEntry));
             TileEntry.ApplicableContexts.Add(CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CreateCactusContext);
             TileEntry.ApplicableContexts.Add(CreateTreeContext);
             TileEntry.ApplicableContexts.Add(CreateSaplingContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(CreateWallContext);
+            WallEntry = new ContextEntry(CreateWallContext, nameof(WallEntry));
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(CreateLiquidContext);
+            LiquidEntry = new ContextEntry(CreateLiquidContext, nameof(LiquidEntry));
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(CreateWireContext);
+            WireEntry = new ContextEntry(CreateWireContext, nameof(WireEntry));
             ContextEntries.Add(WireEntry);
 
-            NpcEntry = new ContextEntry(CreateNpcContext);
+            NpcEntry = new ContextEntry(CreateNpcContext, nameof(NpcEntry));
             ContextEntries.Add(NpcEntry);
         }
 
@@ -209,7 +209,7 @@ namespace Twaila.Systems
 
         private static NpcContext CreateNpcContext(Point pos)
         {
-            if (NpcContext.IntersectsNPC(pos))
+            if (NpcContext.IntersectsNPC(pos, out _))
             {
                 return new NpcContext(pos);
             }
@@ -227,10 +227,13 @@ namespace Twaila.Systems
 
         public ContextFetcher DefaultContext { get; set; }
 
-        public ContextEntry(ContextFetcher defaultContext)
+        public string Name { get; set; }
+
+        public ContextEntry(ContextFetcher defaultContext, string name)
         {
             DefaultContext = defaultContext;
             ApplicableContexts = new List<ContextFetcher>();
+            Name = name;
         }
 
         public BaseContext Context(Point pos)

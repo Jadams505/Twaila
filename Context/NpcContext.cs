@@ -15,10 +15,12 @@ namespace Twaila.Context
 {
     public class NpcContext : BaseContext
     {
-        protected int NpcId { get; set; }
-        protected int NpcIndex { get; set; }
+        protected NPC Npc { get; set; }
 
         protected string Id { get; set; }
+        protected string Hp { get; set; }
+        protected string Defense { get; set; }
+        protected string Damage { get; set; }
 
         public NpcContext(Point pos) : base(pos)
         {
@@ -30,7 +32,7 @@ namespace Twaila.Context
             if (other?.GetType() == typeof(NpcContext))
             {
                 NpcContext otherContext = (NpcContext)other;
-                return NpcId != otherContext.NpcId;
+                return Npc?.type != otherContext.Npc?.type;
             }
             return true;
         }
@@ -38,27 +40,22 @@ namespace Twaila.Context
         public override void Update()
         {
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
-            int type = 0;
-            int i = 0;
-            while(type == 0 && i < Main.npc.Length)
-            {
-                NPC npc = Main.npc[i];
-                Rectangle npcHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.frame.Width, npc.frame.Height);
-                Rectangle mouseHitbox = new Rectangle(Pos.X * 16, Pos.Y * 16, 0, 0);
-                npcHitbox.Intersects(ref mouseHitbox, out bool mouseOver);
-                if (mouseOver)
-                {
-                    type = npc.type;
-                    NpcIndex = i;
 
-                    if (content.ShowId)
-                    {
-                        Id = $"Npc Id: {NpcId}";
-                    }
-                }
-                i++;
+            IntersectsNPC(new Point(Pos.X, Pos.Y), out NPC foundNPC);
+
+            Npc = foundNPC;
+
+            if (content.ShowId)
+            {
+                Id = $"Npc Id: {Npc.type}";
             }
-            NpcId = type;
+
+            Hp = $"Hp: {Npc.life} / {Npc.lifeMax}";
+
+            Defense = $"Defense: {Npc.defense}";
+
+            Damage = $"Attack: {Npc.damage}";
+
         }
 
         public override void UpdateOnChange(BaseContext prevContext, Layout layout)
@@ -69,8 +66,13 @@ namespace Twaila.Context
 
             if (ContextChanged(prevContext))
             {
-                layout.Image.SetImage(GetImage(Main.spriteBatch));
-            }
+                Color color = Color.White;
+                if (Npc?.color != new Color(0, 0, 0, 0))
+                {
+                    color = Npc.color;
+                }
+                layout.Image.SetImage(GetImage(Main.spriteBatch), color);
+            }      
 
             InfoElements().ForEach(element => layout.InfoBox.AddAndEnable(element));
 
@@ -81,33 +83,38 @@ namespace Twaila.Context
         {
             TextureBuilder builer = new TextureBuilder();
 
-            NPC npc = Main.npc[NpcIndex];
+            if(Npc != null)
+            {
+                Rectangle drawFrame = new Rectangle(0, 0, Npc.frame.Width, Npc.frame.Height);
 
-            Rectangle drawFrame = new Rectangle(0, 0, npc.frame.Width, npc.frame.Height);
+                builer.AddComponent(drawFrame, TextureAssets.Npc[Npc.type].Value, Point.Zero);
 
-            builer.AddComponent(drawFrame, TextureAssets.Npc[NpcId].Value, Point.Zero);
+                Texture2D texture = builer.Build(spriteBatch.GraphicsDevice);
 
-            Texture2D texture = builer.Build(spriteBatch.GraphicsDevice);
+                return new TwailaTexture(texture);
+            }
 
-            return new TwailaTexture(texture);
+            return null;
         }
 
         protected override string GetMod()
         {
-            ModNPC mNpc = NPCLoader.GetNPC(NpcId);
-            if(mNpc != null)
+            if(Npc != null)
             {
-                return mNpc.Mod.DisplayName;
+                ModNPC mNpc = NPCLoader.GetNPC(Npc.type);
+                if (mNpc != null)
+                {
+                    return mNpc.Mod.DisplayName;
+                }
             }
             return "Terraria";
         }
 
         protected override string GetName()
         {
-            NPC npc = Main.npc[NpcIndex];
-            if (npc != null)
+            if (Npc != null)
             {
-                return npc.GivenOrTypeName;
+                return Npc.FullName;
             }
             return null;
         }
@@ -115,6 +122,23 @@ namespace Twaila.Context
         protected override List<UITwailaElement> InfoElements()
         {
             List<UITwailaElement> elements = new List<UITwailaElement>();
+
+
+
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new TwailaText(Defense));
+            }
+
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new TwailaText(Damage));
+            }
+
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new TwailaText(Hp));
+            }
 
             if (!string.IsNullOrEmpty(Id))
             {
@@ -124,18 +148,21 @@ namespace Twaila.Context
             return elements;
         }
 
-        public static bool IntersectsNPC(Point pos)
+        public static bool IntersectsNPC(Point pos, out NPC target)
         {
             foreach(NPC npc in Main.npc)
             {
-                Rectangle npcHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.frame.Width, npc.frame.Height);
+                Rectangle npcHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height);
                 Rectangle mouseHitbox = new Rectangle(pos.X * 16, pos.Y * 16, 0, 0);
-                npcHitbox.Intersects(ref mouseHitbox, out bool mouseOver);
+                Rectangle rectangle = new Rectangle((int)(Main.mouseX + Main.screenPosition.X), (int)(Main.mouseY + Main.screenPosition.Y), 1, 1);
+                npcHitbox.Intersects(ref rectangle, out bool mouseOver);
                 if (mouseOver)
                 {
+                    target = npc;
                     return true;
                 }
             }
+            target = null;
             return false;
         }
     }

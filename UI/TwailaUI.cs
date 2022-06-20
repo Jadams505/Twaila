@@ -97,6 +97,7 @@ namespace Twaila.UI
             {
                 _panel.currIndex = 0;
             }
+            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
             _panel.tick = 0;
         }
 

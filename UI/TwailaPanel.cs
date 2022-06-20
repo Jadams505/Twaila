@@ -272,7 +272,7 @@ namespace Twaila.UI
             if (!IsDragging() && !Main.gamePaused)
             {
                 UpdatePanelContents(spriteBatch);
-            }    
+            }
         }
 
         private void UpdatePanelContents(SpriteBatch spriteBatch)
@@ -287,8 +287,13 @@ namespace Twaila.UI
                 return;
             }
 
-            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos) ??
-                ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos);
+
+            if (!TwailaConfig.Get().ForceContext)
+            {
+                context ??= ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+            }
+            
             if (player.itemAnimation > 0)
             {
                 if (player.HeldItem.pick > 0) // swinging a pickaxe
@@ -312,9 +317,12 @@ namespace Twaila.UI
             
             if (tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
-                context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
-                pickIndex++;
+                if (!TwailaConfig.Get().ForceContext)
+                {
+                    context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+                }
                 tick = 0;
+                pickIndex++;
             }
 
             if (!HasChild(Layout.Mod))

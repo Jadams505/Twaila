@@ -13,9 +13,12 @@ namespace Twaila.UI
     {
         internal TwailaTexture image;
 
+        public Color ColorFilter { get; set; }
+
         public UITwailaImage()
         {
             image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
+            ColorFilter = Color.White;
         }
 
         public override Vector2 GetContentSize()
@@ -35,7 +38,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, 
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), ColorFilter * Opacity, 0, 
                 Vector2.Zero, image.Scale, 0, 0);
         }
 
@@ -43,7 +46,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, image.Scale, 0, 0);
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), ColorFilter * Opacity, 0, Vector2.Zero, image.Scale, 0, 0);
         }
 
         protected override void DrawShrunk(SpriteBatch spriteBatch)
@@ -51,7 +54,7 @@ namespace Twaila.UI
             Rectangle drawDim = DrawDimensions();
             float scale = CalculatedScale();
             spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
+                new Rectangle(0, 0, drawDim.Width, drawDim.Height), ColorFilter * Opacity, 0, Vector2.Zero, scale, 0, 0);
         }
 
         public Rectangle DrawDimensions()
@@ -104,10 +107,22 @@ namespace Twaila.UI
 
         public void SetImage(TwailaTexture texture)
         {
+            ColorFilter = Color.White;
             image = texture;
+            if (image?.Texture == null)
+            {
+                image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
+            }
+        }
+
+        public void SetImage(TwailaTexture texture, Color color)
+        {
+            image = texture;
+            ColorFilter = color;
             if(image?.Texture == null)
             {
                 image = new TwailaTexture(TextureAssets.Buff[BuffID.Confused].Value);
+                color = Color.White;
             }
         }
     }

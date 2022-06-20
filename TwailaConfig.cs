@@ -90,6 +90,9 @@ namespace Twaila
             On, Off, Automatic
         }
 
+        [DefaultValue(false)]
+        public bool ForceContext;
+
         [DefaultValue(true)]
         public bool ShowBackground;
 
