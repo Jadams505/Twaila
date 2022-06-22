@@ -55,6 +55,10 @@ namespace Twaila.UI
         {
             TwailaConfig config = TwailaConfig.Get();
 
+            AppendOrRemove(Layout.Image, config.DisplayContent.ShowImage);
+            AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
+            AppendOrRemove(Layout.Name, config.DisplayContent.ShowName);
+
             Layout.UpdateFromConfig();
 
             BackgroundColor = config.PanelColor.Color;
@@ -67,6 +71,21 @@ namespace Twaila.UI
                 Layout.InfoBox.ApplyToAll(HoverSettings);
                 HoverSettings(Layout.Name);
                 HoverSettings(Layout.Mod);
+            }
+        }
+
+        private void AppendOrRemove(UIElement element, bool append)
+        {
+            if (append)
+            {
+                if (!HasChild(element))
+                {
+                    Append(element);
+                }
+            }
+            else if (HasChild(element))
+            {
+                RemoveChild(element);
             }
         }
 
@@ -123,7 +142,7 @@ namespace Twaila.UI
                 if (drawMode == DrawMode.Trim)
                 {
                     float height = 0;
-                    if (Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    if (TwailaConfig.Get().DisplayContent.ShowName && Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += Layout.Name.GetContentSize().Y;
                     }
@@ -147,7 +166,7 @@ namespace Twaila.UI
                             }
                         }
                     }
-                    if (Layout.Mod.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    if (TwailaConfig.Get().DisplayContent.ShowMod && Layout.Mod.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += Layout.Mod.GetContentSize().Y;
                     }
@@ -316,16 +335,6 @@ namespace Twaila.UI
                 pickIndex++;
                 tick = 0;
             }
-
-            if (!HasChild(Layout.Mod))
-            {
-                Append(Layout.Mod);
-            }
-            if (!HasChild(Layout.Name))
-            {
-                Append(Layout.Name);
-            }
-            
             Layout.InfoBox.RemoveAll();
             if (context is TileContext tileContext)
             {
