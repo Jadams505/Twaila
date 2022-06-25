@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.UI;
 using Twaila.Util;
@@ -56,7 +57,13 @@ namespace Twaila.Context
         protected override string GetName()
         {
             Tile tile = Framing.GetTileSafely(Pos);
-            return NameUtil.GetNameForLiquids(tile) ?? "Default Liquid";
+            string displayName = NameUtil.GetNameForLiquids(tile);
+            string internalName = NameUtil.GetInternalLiquidName(WaterStyle, false);
+            string fullName = NameUtil.GetInternalLiquidName(WaterStyle, true);
+
+            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Liquid";
         }
 
         protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
@@ -105,6 +112,11 @@ namespace Twaila.Context
 
         protected override string GetMod()
         {
+            if(WaterStyle >= WaterStyleID.Count)
+            {
+                ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
+                return mWater?.Mod.DisplayName;
+            }
             return "Terraria";
         }
 

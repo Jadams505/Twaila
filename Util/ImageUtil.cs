@@ -63,10 +63,10 @@ namespace Twaila.Util
                 switch (tile.LiquidType)
                 {
                     case LiquidID.Lava:
-                        texture = TextureAssets.Liquid[1].Value;
+                        texture = TextureAssets.Liquid[WaterStyleID.Lava].Value;
                         break;
                     case LiquidID.Honey:
-                        texture = TextureAssets.Liquid[11].Value;
+                        texture = TextureAssets.Liquid[WaterStyleID.Honey].Value;
                         break;
                     case LiquidID.Water:
                         texture = TextureAssets.Liquid[Main.waterStyle].Value;

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System.Text;
+using Terraria;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
@@ -253,32 +254,36 @@ namespace Twaila.Util
                     const string water = "Water";
                     switch (Main.waterStyle)
                     {
-                        case 0:
+                        case WaterStyleID.Purity:
                             return water;
-                        case 1:
+                        case WaterStyleID.Lava:
                             return "Lava";
-                        case 2: 
+                        case WaterStyleID.Corrupt: 
                             return "Corrupt " + water;
-                        case 3:
+                        case WaterStyleID.Jungle:
                             return "Jungle " + water;
-                        case 4:
+                        case WaterStyleID.Hallow:
                             return "Hallowed " + water;
-                        case 5:
+                        case WaterStyleID.Snow:
                             return "Tundra " + water;
-                        case 6:
+                        case WaterStyleID.Desert:
                             return "Desert " + water;
-                        case 7:
+                        case WaterStyleID.Underground:
                             return "Underground " + water;
-                        case 8:
+                        case WaterStyleID.Cavern:
                             return "Cavern " + water;
-                        case 9:
+                        case WaterStyleID.Bloodmoon:
                             return "Blood Moon " + water;
-                        case 10:
+                        case WaterStyleID.Crimson:
                             return "Crimson " + water;
-                        case 11:
+                        case WaterStyleID.Honey:
                             return "Honey";
-                        case 12:
+                        case WaterStyleID.UndergroundDesert:
                             return "Desert " + water;
+                    }
+                    if(Main.waterStyle >= WaterStyleID.Count)
+                    {
+                        return SplitCamelCase(GetInternalLiquidName(Main.waterStyle, false));
                     }
                 }
             }
@@ -424,6 +429,21 @@ namespace Twaila.Util
             return null;
         }
 
+        public static string SplitCamelCase(string word)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach(char letter in word)
+            {
+                if (char.IsUpper(letter) && builder.Length != 0)
+                {
+                    builder.Append(' ');
+                }
+                builder.Append(letter);
+            }
+            return builder.ToString();
+        }
+
         public static string GetName(TwailaConfig.NameType nameType, string displayName, string internalName, string fullName)
         {
             switch (nameType)
@@ -448,6 +468,12 @@ namespace Twaila.Util
         {
             ModWall mWall = WallLoader.GetWall(wallId);
             return fullName ? mWall?.GetType().FullName : mWall?.Name;
+        }
+
+        public static string GetInternalLiquidName(int waterStyle, bool fullName)
+        {
+            ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(waterStyle);
+            return fullName ? mWater?.GetType().FullName : mWater?.Name;
         }
     }
 }
