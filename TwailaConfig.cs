@@ -135,13 +135,21 @@ namespace Twaila
             Off
         }
 
+        public enum NameType
+        {
+            DisplayName,
+            InternalName,
+            FullName,
+            Off
+        }
+
         public class Content
         {
             [DefaultValue(true)]
             public bool ShowImage;
 
-            [DefaultValue(true)]
-            public bool ShowName;
+            [DrawTicks]
+            public NameType ShowName;
 
             [DefaultValue(true)]
             public bool ShowMod;
@@ -164,10 +172,11 @@ namespace Twaila
             [DrawTicks]
             public DisplayType ShowPaint;
 
+            
+
             public Content()
             {
                 ShowImage = true;
-                ShowName = true;
                 ShowMod = true;
                 ShowId = false;
                 ShowPickaxePower = true;
@@ -175,6 +184,7 @@ namespace Twaila
                 ShowWire = DisplayType.Icon;
                 ShowActuator = DisplayType.Icon;
                 ShowPaint = DisplayType.Icon;
+                ShowName = NameType.DisplayName;
             }
 
             public override bool Equals(object obj)

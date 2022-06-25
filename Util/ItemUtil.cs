@@ -107,16 +107,24 @@ namespace Twaila.Util
                     }
                     else
                     {
-                        foundIndex = index; // check because its skipping a pickaxe
+                        foundIndex = index;
                     }
                 }
-                else if (~index == _pickaxes.Count)
+                else if (~index < _pickaxes.Count)
+                {
+                    foundIndex = ~index;
+                }
+                else if(~index == _pickaxes.Count)
                 {
                     foundIndex = _pickaxes.Count - 1;
                 }
                 else
                 {
                     foundIndex = _pickaxes.BinarySearch(0, startIndex, (pickPower, -1), new PickPowerSorter());
+                }
+                if(foundIndex < 0 || foundIndex >= _pickaxes.Count)
+                {
+                    foundIndex = 0;
                 }
                 return _pickaxes[foundIndex].id;
             }

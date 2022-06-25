@@ -48,7 +48,13 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            return NameUtil.GetNameForSapling(TileId, DirtId) ?? base.GetName();
+            string displayName = NameUtil.GetNameForSapling(TileId, DirtId);
+            string internalName = NameUtil.GetInternalTileName(TileId, false);
+            string fullName = NameUtil.GetInternalTileName(TileId, true);
+
+            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }
 
         protected override string GetMod()

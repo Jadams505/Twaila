@@ -51,42 +51,13 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
-            if (SandTileId == -1)
-            {
-                return null;
-            }
-            if (TileLoader.CanGrowModCactus(SandTileId))
-            {
-                ModTile mTile = TileLoader.GetTile(SandTileId);
-                if (mTile != null)
-                {
-                    int dropId = mTile.ItemDrop;
-                    ModItem mItem = ItemLoader.GetItem(dropId);
-                    return mItem == null ? mTile.Name : mItem.DisplayName.GetDefault() + " " + cactus;
-                }
-            }
-            else
-            {
-                int itemId = -1;
-                switch (SandTileId)
-                {
-                    case TileID.Crimsand:
-                        itemId = ItemID.CrimsandBlock;
-                        break;
-                    case TileID.Ebonsand:
-                        itemId = ItemID.EbonsandBlock;
-                        break;
-                    case TileID.Pearlsand:
-                        itemId = ItemID.PearlsandBlock;
-                        break;
-                }
-                if (itemId != -1)
-                {
-                    return Lang.GetItemNameValue(itemId) + " " + cactus;
-                }
-            }
-            return cactus ?? base.GetName();
+            string displayName = NameUtil.GetNameForCactus(TileId, SandTileId);
+            string internalName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().Name;
+            string fullName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().FullName;
+
+            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }
 
         protected override string GetMod()

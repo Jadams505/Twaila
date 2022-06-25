@@ -423,5 +423,31 @@ namespace Twaila.Util
             }
             return null;
         }
+
+        public static string GetName(TwailaConfig.NameType nameType, string displayName, string internalName, string fullName)
+        {
+            switch (nameType)
+            {
+                case TwailaConfig.NameType.DisplayName:
+                    return displayName ?? internalName ?? fullName;
+                case TwailaConfig.NameType.InternalName:
+                    return internalName ?? fullName ?? displayName;
+                case TwailaConfig.NameType.FullName:
+                    return fullName ?? internalName ?? displayName;
+            }
+            return null;
+        }
+
+        public static string GetInternalTileName(int tileId, bool fullName)
+        {
+            ModTile mTile = TileLoader.GetTile(tileId);
+            return fullName ? mTile?.GetType().FullName : mTile?.Name;
+        }
+
+        public static string GetInternalWallName(int wallId, bool fullName)
+        {
+            ModWall mWall = WallLoader.GetWall(wallId);
+            return fullName ? mWall?.GetType().FullName : mWall?.Name;
+        }
     }
 }

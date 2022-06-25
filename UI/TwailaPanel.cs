@@ -57,7 +57,7 @@ namespace Twaila.UI
 
             AppendOrRemove(Layout.Image, config.DisplayContent.ShowImage);
             AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
-            AppendOrRemove(Layout.Name, config.DisplayContent.ShowName);
+            AppendOrRemove(Layout.Name, config.DisplayContent.ShowName != TwailaConfig.NameType.Off);
 
             Layout.UpdateFromConfig();
 
@@ -142,7 +142,8 @@ namespace Twaila.UI
                 if (drawMode == DrawMode.Trim)
                 {
                     float height = 0;
-                    if (TwailaConfig.Get().DisplayContent.ShowName && Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    if (TwailaConfig.Get().DisplayContent.ShowName != TwailaConfig.NameType.Off && 
+                        Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += Layout.Name.GetContentSize().Y;
                     }
