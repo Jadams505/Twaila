@@ -312,17 +312,17 @@ namespace Twaila.UI
             if (!TwailaConfig.Get().LockContext)
             {
                 context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
-            }
 
-            if (player.itemAnimation > 0)
-            {
-                if (player.HeldItem.pick > 0) // swinging a pickaxe
+                if (player.itemAnimation > 0)
                 {
-                    context = ContextSystem.Instance.TileEntry.Context(mousePos);
-                }
-                if (player.HeldItem.hammer > 0) // swinging a hammer
-                {
-                    context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                    if (player.HeldItem.pick > 0) // swinging a pickaxe
+                    {
+                        context = ContextSystem.Instance.TileEntry.Context(mousePos);
+                    }
+                    if (player.HeldItem.hammer > 0) // swinging a hammer
+                    {
+                        context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                    }
                 }
             }
 
@@ -333,9 +333,7 @@ namespace Twaila.UI
                 return;
             }
 
-            player.TryGetModPlayer(out TwailaPlayer tPlayer);
-
-            if (tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
+            if (tick >= TwailaConfig.Get().CycleDelay)
             {
                 if (!TwailaConfig.Get().LockContext)
                 {

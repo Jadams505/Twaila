@@ -320,9 +320,10 @@ namespace Twaila.Util
             {
                 case TileID.Campfire:
                     int campfireStyle = TileUtil.GetTileStyle(tile);
-                    if(tile.TileFrameY >= 54)
+                    int styleCount = TileObjectData.GetTileData(tile).StyleWrapLimit;
+                    if (campfireStyle >= styleCount)
                     {
-                        return campfireStyle - 14;
+                        return campfireStyle - styleCount;
                     }
                     return campfireStyle;
                 case TileID.Statues:

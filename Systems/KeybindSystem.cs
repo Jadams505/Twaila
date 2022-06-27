@@ -13,7 +13,6 @@ namespace Twaila.Systems
     public class KeybindSystem : ModSystem
     {
         public static ModKeybind ToggleUI { get; private set; }
-        public static ModKeybind PauseCycling { get; private set; }
         public static ModKeybind NextContext { get; private set; }
         public static ModKeybind PrevContext { get; private set; }
         public static ModKeybind LockContext { get; private set; }
@@ -22,7 +21,6 @@ namespace Twaila.Systems
         public override void Load()
         {
             ToggleUI = KeybindLoader.RegisterKeybind(Mod, "Cycle UI Display Mode", "Mouse3");
-            PauseCycling = KeybindLoader.RegisterKeybind(Mod, "Pause Cycling", Keys.F);
             NextContext = KeybindLoader.RegisterKeybind(Mod, "Next Context", Keys.Right);
             PrevContext = KeybindLoader.RegisterKeybind(Mod, "Previous Context", Keys.Left);
             LockContext = KeybindLoader.RegisterKeybind(Mod, "Lock Context", Keys.Up);
@@ -31,7 +29,6 @@ namespace Twaila.Systems
         public override void Unload()
         {
             ToggleUI = null;
-            PauseCycling = null;
             NextContext = null;
             PrevContext = null;
             LockContext = null;
@@ -55,8 +52,6 @@ namespace Twaila.Systems
                 }
                 Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
             }
-
-            player.CyclingPaused = PauseCycling.Current;
 
             if (LockContext.JustPressed)
             {
