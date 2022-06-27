@@ -24,20 +24,20 @@ namespace Twaila.Systems
         {
             ContextEntries = new List<ContextEntry>();
 
-            TileEntry = new ContextEntry(CreateTileContext);
+            TileEntry = new ContextEntry(CreateTileContext, "Tile");
             TileEntry.ApplicableContexts.Add(CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CreateCactusContext);
             TileEntry.ApplicableContexts.Add(CreateTreeContext);
             TileEntry.ApplicableContexts.Add(CreateSaplingContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(CreateWallContext);
+            WallEntry = new ContextEntry(CreateWallContext, "Wall");
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(CreateLiquidContext);
+            LiquidEntry = new ContextEntry(CreateLiquidContext, "Liquid");
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(CreateWireContext);
+            WireEntry = new ContextEntry(CreateWireContext, "Wire");
             ContextEntries.Add(WireEntry);
         }
 
@@ -51,28 +51,46 @@ namespace Twaila.Systems
             return ContextEntries[currIndex].Context(pos);
         }
 
-        public BaseContext NextContext(ref int currIndex, Point pos)
+        public BaseContext NextNonNullContext(ref int currIndex, Point pos)
         {
-            for (int i = currIndex + 1; i < ContextEntries.Count; ++i)
+            int i = currIndex;
+            BaseContext context;
+            do
             {
-                BaseContext context = CurrentContext(i, pos);
-                if (context != null)
-                {
-                    currIndex = i;
-                    return context;
-                }
+                i = NextContextIndex(i);
+                context = CurrentContext(i, pos);
             }
+            while (context == null && i != currIndex);
 
-            for (int i = 0; i < currIndex + 1; ++i)
+            currIndex = i;
+            return context;
+        }
+
+        public BaseContext PrevNonNullContext(ref int currIndex, Point pos)
+        {
+            int i = currIndex;
+            BaseContext context;
+            do
             {
-                BaseContext context = CurrentContext(i, pos);
-                if (context != null)
-                {
-                    currIndex = i;
-                    return context;
-                }
+                i = PrevContextIndex(i);
+                context = CurrentContext(i, pos);
             }
-            return null;
+            while (context == null && i != currIndex);
+
+            currIndex = i;
+            return context;
+        }
+
+        public int NextContextIndex(int currIndex)
+        {
+            int nextIndex = currIndex + 1;
+            return nextIndex < ContextEntries.Count ? nextIndex : 0;
+        }
+
+        public int PrevContextIndex(int currIndex)
+        {
+            int prevIndex = currIndex - 1;
+            return prevIndex >= 0 ? prevIndex : ContextEntries.Count - 1;
         }
 
         public List<ContextEntry> ContextEntriesAt(Point pos)
@@ -213,10 +231,13 @@ namespace Twaila.Systems
 
         public ContextFetcher DefaultContext { get; set; }
 
-        public ContextEntry(ContextFetcher defaultContext)
+        public string Name { get; set; }
+
+        public ContextEntry(ContextFetcher defaultContext, string name)
         {
             DefaultContext = defaultContext;
             ApplicableContexts = new List<ContextFetcher>();
+            Name = name;
         }
 
         public BaseContext Context(Point pos)

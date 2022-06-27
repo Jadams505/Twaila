@@ -93,12 +93,33 @@ namespace Twaila.UI
 
         public static void NextContext()
         {
-            if(++_panel.currIndex >= ContextSystem.Instance.ContextEntries.Count)
-            {
-                _panel.currIndex = 0;
-            }
+            _panel.currIndex = ContextSystem.Instance.NextContextIndex(_panel.currIndex);
+            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
             _panel.tick = 0;
         }
+
+        public static void PrevContext()
+        {
+            _panel.currIndex = ContextSystem.Instance.PrevContextIndex(_panel.currIndex);
+            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            _panel.tick = 0;
+        }
+
+        public static void NextNonNullContext()
+        {
+            ContextSystem.Instance.NextNonNullContext(ref _panel.currIndex, GetMousePos());
+            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            _panel.tick = 0;
+        }
+
+        public static void PrevNonNullContext()
+        {
+            ContextSystem.Instance.PrevNonNullContext(ref _panel.currIndex, GetMousePos());
+            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            _panel.tick = 0;
+        }
+
+        
 
         public static void Load()
         {

@@ -307,8 +307,13 @@ namespace Twaila.UI
                 return;
             }
 
-            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos) ??
-                ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos);
+
+            if (!TwailaConfig.Get().LockContext)
+            {
+                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+            }
+
             if (player.itemAnimation > 0)
             {
                 if (player.HeldItem.pick > 0) // swinging a pickaxe
@@ -320,22 +325,26 @@ namespace Twaila.UI
                     context = ContextSystem.Instance.WallEntry.Context(mousePos);
                 }
             }
-            
+
             if (context == null)
             {
                 tick = 0;
                 CurrentContext = null;
                 return;
             }
-            
+
             player.TryGetModPlayer(out TwailaPlayer tPlayer);
-            
+
             if (tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
             {
-                context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
-                pickIndex++;
+                if (!TwailaConfig.Get().LockContext)
+                {
+                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+                }
                 tick = 0;
+                pickIndex++;
             }
+
             Layout.InfoBox.RemoveAll();
             if (context is TileContext tileContext)
             {
