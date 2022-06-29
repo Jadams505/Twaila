@@ -115,7 +115,7 @@ namespace Twaila.Systems
         {
             Tile tile = Framing.GetTileSafely(pos);
 
-            if(tile.HasTile && !TileUtil.IsBlockedByAntiCheat(tile, pos))
+            if(tile.HasTile && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new TileContext(pos);
             }
@@ -127,7 +127,7 @@ namespace Twaila.Systems
         {
             Tile tile = Framing.GetTileSafely(pos);
 
-            if (tile.TileType == TileID.PalmTree && !TileUtil.IsBlockedByAntiCheat(tile, pos))
+            if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new PalmTreeContext(pos);
             }
@@ -139,7 +139,7 @@ namespace Twaila.Systems
         {
             Tile tile = Framing.GetTileSafely(pos);
 
-            if(tile.TileType == TileID.Cactus && !TileUtil.IsBlockedByAntiCheat(tile, pos))
+            if(tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new CactusContext(pos);
             }
@@ -151,7 +151,7 @@ namespace Twaila.Systems
         {
             Tile tile = Framing.GetTileSafely(pos);
 
-            if((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsBlockedByAntiCheat(tile, pos))
+            if((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new TreeContext(pos);
             }
@@ -163,7 +163,7 @@ namespace Twaila.Systems
         {
             Tile tile = Framing.GetTileSafely(pos);
 
-            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsBlockedByAntiCheat(tile, pos))
+            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new SaplingContext(pos);
             }
@@ -198,6 +198,7 @@ namespace Twaila.Systems
         private static WireContext CreateWireContext(Point pos)
         {
             Tile tile = Framing.GetTileSafely(pos);
+            Player player = Main.player[Main.myPlayer];
 
             bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
 
