@@ -1,0 +1,39 @@
+﻿Displays information about the tile you are hovering over in the world
+
+This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is intended to function in a similar way
+
+Suggestions and Feedback are welcome
+
+Forum Page: https://forums.terraria.org/index.php?threads/terrarias-waila-twaila-mod.111090/
+
+[h1]Config Options[/h1]
+
+Visit the Forum page for more details on config options
+
+[list]
+[*]AntiCheat: Only updates the UI if the tile has been reveled on the map
+[*]Content Toggles: Toggles the various UI features on and off 
+[*]UseDefaultPosition: Centers the panel on the top of the screen
+[*]LockPosition: Stops the mouse from being able to move the panel
+[*]AnchorX, AnchorY: Represents what part of the panel's positioning is constant when the content changes its size
+[*]AnchorPosX, AnchorPosY: The exact pixel location of the anchor point
+[*]MaxWidth, MaxHeight: The maximum percentage of the screen the panel can be
+[*]PanelPadding: How much space there is (in pixels) between the content and the edge of the panel
+[*]CycleDelay: How many ticks before the panel cycles its type 
+[*]ContentSetting: Settings that describe what to do with the content when it is too big for the panel
+[*]HoverOpacity: How visible the panel should be when it is hovered over
+[*]ShowBackground: Displays the background panel
+[*]UIDisplay: Options for when the panel should be visible or hidden
+[*]HideUIForAir: Hides the UI when hovering over tiles that would otherwise not be upated by the UI
+[*]Panel Color: Changes the color of the background panel
+[*]TextShadow: Displays a black border around the text
+[*]OverrideColor: Overrides any pre-existing colors on the text
+[*]Text Color: Changes the color of the text
+[*]UseItemTextures: Priotizes displaying the texture of the item that places the tile as opposed to the texture of the tile itself (Only works for tiles that have items that place them)
+[*]ReservedImageWidth: The percentage of the panel that is reserved for the image if the text is too long
+[/list]
+
+[h1][Controls][/h1]
+- Cycle UI Display Mode: Cycles through the UIDisplay options
+- Pause Cycling: Hold to stop the UI from cycling its contents
+- Next Context: Cycles the UI contents
