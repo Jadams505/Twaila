@@ -36,11 +36,6 @@ namespace Twaila.UI
             element.Append(Name);
         }
 
-        public void UpdateImage(TwailaTexture image)
-        {
-            Image.SetImage(image);
-        }
-
         public void UpdateFromConfig()
         {
             TwailaConfig config = TwailaConfig.Get();
@@ -85,16 +80,29 @@ namespace Twaila.UI
 
         public Vector2 TextColumnSize()
         {
-            float width = Math.Max(Name.Width.Pixels, Math.Max(InfoBox.Width.Pixels, Mod.Width.Pixels));
-            return new Vector2(width, Name.Height.Pixels + InfoBox.Height.Pixels + Mod.Height.Pixels);
+            Vector2 nameDim = GetDimension(Name);
+            Vector2 infoDim = GetDimension(InfoBox);
+            Vector2 modDim = GetDimension(Mod);
+
+            float width = Math.Max(nameDim.X, Math.Max(infoDim.X, modDim.X));
+            return new Vector2(width, nameDim.Y + infoDim.Y + modDim.Y);
         }
 
         public void UpdateTextColumnVertically()
         {
             Name.Top.Set(0, 0);
             InfoBox.UpdateVertically();
-            InfoBox.Top.Set(Name.Height.Pixels, 0);
-            Mod.Top.Set(InfoBox.Height.Pixels + Name.Height.Pixels, 0);
+            InfoBox.Top.Set(GetDimension(Name).Y, 0);
+            Mod.Top.Set(InfoBox.Height.Pixels + GetDimension(Name).Y, 0);
+        }
+
+        private Vector2 GetDimension(UIElement element)
+        {
+            if (element.Parent != null && element.Parent.HasChild(element))
+            {
+                return new Vector2(element.Width.Pixels, element.Height.Pixels);
+            }
+            return Vector2.Zero;
         }
     }
 }

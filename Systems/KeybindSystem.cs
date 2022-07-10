@@ -13,22 +13,25 @@ namespace Twaila.Systems
     public class KeybindSystem : ModSystem
     {
         public static ModKeybind ToggleUI { get; private set; }
-        public static ModKeybind PauseCycling { get; private set; }
         public static ModKeybind NextContext { get; private set; }
+        public static ModKeybind PrevContext { get; private set; }
+        public static ModKeybind LockContext { get; private set; }
 
 
         public override void Load()
         {
             ToggleUI = KeybindLoader.RegisterKeybind(Mod, "Cycle UI Display Mode", "Mouse3");
-            PauseCycling = KeybindLoader.RegisterKeybind(Mod, "Pause Cycling", Keys.F);
             NextContext = KeybindLoader.RegisterKeybind(Mod, "Next Context", Keys.Right);
+            PrevContext = KeybindLoader.RegisterKeybind(Mod, "Previous Context", Keys.Left);
+            LockContext = KeybindLoader.RegisterKeybind(Mod, "Lock Context", Keys.Up);
         }
 
         public override void Unload()
         {
             ToggleUI = null;
-            PauseCycling = null;
             NextContext = null;
+            PrevContext = null;
+            LockContext = null;
         }
 
         public static void HandleKeys(TwailaPlayer player)
@@ -49,17 +52,44 @@ namespace Twaila.Systems
                 }
                 Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
             }
-            if (PauseCycling.Current)
+
+            if (LockContext.JustPressed)
             {
-                player.CyclingPaused = true;
+                if (TwailaConfig.Get().LockContext)
+                {
+                    TwailaConfig.Get().LockContext = false;
+                    Main.NewText("Context Unlocked");
+                }
+                else
+                {
+                    TwailaConfig.Get().LockContext = true;
+                    Main.NewText("Context Locked");
+                }
+            }
+
+            if (TwailaConfig.Get().LockContext)
+            {
+                if (NextContext.JustPressed)
+                {
+                    TwailaUI.NextContext();
+                }
+
+                if (PrevContext.JustPressed)
+                {
+                    TwailaUI.PrevContext();
+                }
             }
             else
             {
-                player.CyclingPaused = false;
-            }
-            if (NextContext.JustPressed)
-            {
-                TwailaUI.NextContext();
+                if (NextContext.JustPressed)
+                {
+                    TwailaUI.NextNonNullContext();
+                }
+
+                if (PrevContext.JustPressed)
+                {
+                    TwailaUI.PrevNonNullContext();
+                }
             }
         }
     }

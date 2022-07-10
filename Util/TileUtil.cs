@@ -54,22 +54,41 @@ namespace Twaila.Util
             frameY = originalFrameY + addY;
         }
 
+        public static bool IsTileBlockedByAntiCheat(Tile tile, Point pos)
+        {
+            if (TwailaConfig.Get().AntiCheat)
+            {
+                Player player = Main.player[Main.myPlayer];
+                if(tile.TileType == TileID.EchoBlock)
+                {
+                    return !player.CanSeeInvisibleBlocks;
+                }
+                return !IsTileRevealedToPlayer(player, tile, pos);
+            }
+            return false;
+        }
+
         public static bool IsBlockedByAntiCheat(Tile tile, Point pos)
         {
             if (TwailaConfig.Get().AntiCheat)
             {
                 Player player = Main.player[Main.myPlayer];
-                if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[tile.TileType])
-                {
-                    return false;
-                }
-                if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(pos.X, pos.Y, Main.player[Main.myPlayer]))
-                {
-                    return false;
-                }
-                return !Main.Map.IsRevealed(pos.X, pos.Y);
+                return !IsTileRevealedToPlayer(player, tile, pos);
             }
             return false;
+        }
+
+        public static bool IsTileRevealedToPlayer(Player player, Tile tile, Point tilePos)
+        {
+            if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[tile.TileType])
+            {
+                return true;
+            }
+            if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(tilePos.X, tilePos.Y, Main.player[Main.myPlayer]))
+            {
+                return true;
+            }
+            return Main.Map.IsRevealed(tilePos.X, tilePos.Y);
         }
     }
 }

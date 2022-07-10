@@ -55,6 +55,10 @@ namespace Twaila.UI
         {
             TwailaConfig config = TwailaConfig.Get();
 
+            AppendOrRemove(Layout.Image, config.DisplayContent.ShowImage);
+            AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
+            AppendOrRemove(Layout.Name, config.DisplayContent.ShowName != TwailaConfig.NameType.Off);
+
             Layout.UpdateFromConfig();
 
             BackgroundColor = config.PanelColor.Color;
@@ -67,6 +71,21 @@ namespace Twaila.UI
                 Layout.InfoBox.ApplyToAll(HoverSettings);
                 HoverSettings(Layout.Name);
                 HoverSettings(Layout.Mod);
+            }
+        }
+
+        private void AppendOrRemove(UIElement element, bool append)
+        {
+            if (append)
+            {
+                if (!HasChild(element))
+                {
+                    Append(element);
+                }
+            }
+            else if (HasChild(element))
+            {
+                RemoveChild(element);
             }
         }
 
@@ -123,7 +142,8 @@ namespace Twaila.UI
                 if (drawMode == DrawMode.Trim)
                 {
                     float height = 0;
-                    if (Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    if (TwailaConfig.Get().DisplayContent.ShowName != TwailaConfig.NameType.Off && 
+                        Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += Layout.Name.GetContentSize().Y;
                     }
@@ -147,7 +167,7 @@ namespace Twaila.UI
                             }
                         }
                     }
-                    if (Layout.Mod.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    if (TwailaConfig.Get().DisplayContent.ShowMod && Layout.Mod.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += Layout.Mod.GetContentSize().Y;
                     }
@@ -289,51 +309,40 @@ namespace Twaila.UI
 
             BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos);
 
-            if (!TwailaConfig.Get().ForceContext)
+            if (!TwailaConfig.Get().LockContext)
             {
-                context ??= ContextSystem.Instance.NextContext(ref currIndex, mousePos);
-            }
-            
-            if (player.itemAnimation > 0)
-            {
-                if (player.HeldItem.pick > 0) // swinging a pickaxe
+                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+
+                if (player.itemAnimation > 0)
                 {
-                    context = ContextSystem.Instance.TileEntry.Context(mousePos);
-                }
-                if (player.HeldItem.hammer > 0) // swinging a hammer
-                {
-                    context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                    if (player.HeldItem.pick > 0) // swinging a pickaxe
+                    {
+                        context = ContextSystem.Instance.TileEntry.Context(mousePos);
+                    }
+                    if (player.HeldItem.hammer > 0) // swinging a hammer
+                    {
+                        context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                    }
                 }
             }
-            
+
             if (context == null)
             {
                 tick = 0;
                 CurrentContext = null;
                 return;
             }
-            
-            player.TryGetModPlayer(out TwailaPlayer tPlayer);
-            
-            if (tick >= TwailaConfig.Get().CycleDelay && !tPlayer.CyclingPaused)
+
+            if (tick >= TwailaConfig.Get().CycleDelay)
             {
-                if (!TwailaConfig.Get().ForceContext)
+                if (!TwailaConfig.Get().LockContext)
                 {
-                    context = ContextSystem.Instance.NextContext(ref currIndex, mousePos);
+                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
                 }
                 tick = 0;
                 pickIndex++;
             }
 
-            if (!HasChild(Layout.Mod))
-            {
-                Append(Layout.Mod);
-            }
-            if (!HasChild(Layout.Name))
-            {
-                Append(Layout.Name);
-            }
-            
             Layout.InfoBox.RemoveAll();
             if (context is TileContext tileContext)
             {

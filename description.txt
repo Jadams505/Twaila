@@ -34,6 +34,18 @@ Suggestions and Feedback are welcome
 - Next Context: Cycles the UI contents
 
 [Changelog]
+v0.2.4.0 (7/09/2022)
+- Added a Lock Context config option and keybind toggle to allow for more control of the panel
+- Added a Previous Context keybind
+- Removed the Pause Cycling keybind
+- Fixed a issue with campfire naming
+- Echo blocks are now properly blocked by AntiCheat
+v0.2.3.0 (6/25/2022)
+- Added modded water style support
+- Added internal name support
+- Fixed out of bounds issue with pickaxes
+v0.2.2.1 (6/22/2022)
+- Fixed certain items not toggling properly
 v0.2.2.0 (6/14/2022)
 - Added the Next Context keybind to allow for manual cycling of the UI
 - Added support for the Id of the tile/wall/liquid

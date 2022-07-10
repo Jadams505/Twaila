@@ -174,8 +174,14 @@ namespace Twaila.Context
             Tile tile = Framing.GetTileSafely(Pos);
             int itemId = ItemUtil.GetItemId(tile, TileType.Tile);
 
-            return NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
-                ?? NameUtil.GetNameFromMap(tile, Pos.X, Pos.Y) ?? "Default Name";
+            string displayName = NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
+                ?? NameUtil.GetNameFromMap(tile, Pos.X, Pos.Y);
+            string internalName = NameUtil.GetInternalTileName(TileId, false);
+            string fullName = NameUtil.GetInternalTileName(TileId, true);
+
+            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Name";
         }
 
         protected override string GetMod()
