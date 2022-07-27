@@ -48,6 +48,12 @@ namespace Twaila.UI
             TextShadow = config.TextShadow;
         }
 
+        public override void ApplyHoverSettings(TwailaConfig config)
+        {
+            base.ApplyHoverSettings(config);
+            OverrideTextColor = true;
+        }
+
         public override Vector2 GetContentSize()
         {
             return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
@@ -110,17 +116,7 @@ namespace Twaila.UI
 
         protected override void DrawShrunk(SpriteBatch spriteBatch)
         {
-            float scaleX = 1;
-            if (GetContentSize().X > GetDimensions().Width)
-            {
-                scaleX = GetDimensions().Width / GetContentSize().X;
-            }
-            float scaleY = 1;
-            if (GetContentSize().Y > GetDimensions().Height)
-            {
-                scaleY = GetDimensions().Height / GetContentSize().Y;
-            }
-            float scale = Math.Min(scaleX, scaleY) * Scale;
+            float scale = GetScale(new Vector2(GetDimensions().Width, GetDimensions().Height)) * Scale;
             TextSnippet[] snippets = ChatManager.ParseMessage(Text, Color).ToArray();
             
             foreach(TextSnippet snippet in snippets)
@@ -148,7 +144,7 @@ namespace Twaila.UI
             {
                 ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black * Opacity, 0, Vector2.Zero, scale);
             }
-            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color * Opacity, 0, Vector2.Zero, scale, out int unimplemented, -1, OverrideTextColor);
+            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color * Opacity, 0, Vector2.Zero, scale, out _, -1, OverrideTextColor);
         }
     }
 }

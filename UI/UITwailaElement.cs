@@ -40,6 +40,12 @@ namespace Twaila.UI
         public virtual void ApplyConfigSettings(TwailaConfig config)
         {
             DrawMode = config.ContentSetting;
+            Opacity = 1;
+        }
+
+        public virtual void ApplyHoverSettings(TwailaConfig config)
+        {
+            Opacity = config.HoverOpacity;
         }
 
         public float GetScale(Vector2 maxSize)

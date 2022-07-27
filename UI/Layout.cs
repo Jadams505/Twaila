@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
 using Terraria.UI;
-using Twaila.Graphics;
 
 namespace Twaila.UI
 {
@@ -50,14 +45,7 @@ namespace Twaila.UI
         private void ApplyConfig(UITwailaElement element)
         {
             TwailaConfig config = TwailaConfig.Get();
-            element.DrawMode = config.ContentSetting;
-            element.Opacity = 1;
-            if (element is TwailaText text)
-            {
-                text.OverrideTextColor = config.OverrideColor;
-                text.Color = config.TextColor.Color;
-                text.TextShadow = config.TextShadow;
-            }
+            element.ApplyConfigSettings(config);
         }
 
         public void SetInitialSizes()

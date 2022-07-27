@@ -2,16 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
-using Terraria.GameContent.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
-using Twaila.Graphics;
 using Twaila.Systems;
-using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -67,10 +62,11 @@ namespace Twaila.UI
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
-                Layout.Image.Opacity = config.HoverOpacity;
-                Layout.InfoBox.ApplyToAll(HoverSettings);
-                HoverSettings(Layout.Name);
-                HoverSettings(Layout.Mod);
+
+                Layout.Image.ApplyHoverSettings(config);
+                Layout.InfoBox.ApplyToAll(element => element.ApplyHoverSettings(config));
+                Layout.Name.ApplyHoverSettings(config);
+                Layout.Mod.ApplyHoverSettings(config);
             }
         }
 
@@ -86,16 +82,6 @@ namespace Twaila.UI
             else if (HasChild(element))
             {
                 RemoveChild(element);
-            }
-        }
-
-        private void HoverSettings(UITwailaElement element)
-        {
-            TwailaConfig config = TwailaConfig.Get();
-            element.Opacity = config.HoverOpacity;
-            if (element is TwailaText text)
-            {
-                text.OverrideTextColor = true;
             }
         }
 

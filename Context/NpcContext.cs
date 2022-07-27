@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
@@ -52,7 +48,7 @@ namespace Twaila.Context
 
             Hp = $"Hp: {Npc.life} / {Npc.lifeMax}";
 
-            Defense = $"Defense: {Npc.defense}";
+            Defense = Npc.defense.ToString();
 
             Damage = $"Attack: {Npc.damage}";
 
@@ -72,7 +68,7 @@ namespace Twaila.Context
                     color = Npc.color;
                 }
                 layout.Image.SetImage(GetImage(Main.spriteBatch), color);
-            }      
+            }
 
             InfoElements().ForEach(element => layout.InfoBox.AddAndEnable(element));
 
@@ -123,19 +119,18 @@ namespace Twaila.Context
         {
             List<UITwailaElement> elements = new List<UITwailaElement>();
 
-
-
-            if (!string.IsNullOrEmpty(Id))
+            if (!string.IsNullOrEmpty(Defense))
             {
-                elements.Insert(0, new TwailaText(Defense));
+                elements.Insert(0, new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Defense").Value,
+                    Defense.ToString()));
             }
 
-            if (!string.IsNullOrEmpty(Id))
+            if (!string.IsNullOrEmpty(Damage))
             {
                 elements.Insert(0, new TwailaText(Damage));
             }
 
-            if (!string.IsNullOrEmpty(Id))
+            if (!string.IsNullOrEmpty(Hp))
             {
                 elements.Insert(0, new TwailaText(Hp));
             }
