@@ -41,7 +41,8 @@ namespace Twaila.UI
                 case TwailaConfig.DisplayMode.Automatic:
                     if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
                     {
-                        if (ContextSystem.Instance.ContextEntryCountAt(GetMousePos()) == 0
+                        if ((ContextSystem.Instance.ContextEntryCountAt(GetMousePos()) == 0 ||
+                            (TwailaConfig.Get().LockContext && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetMousePos()) == null))
                             && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
