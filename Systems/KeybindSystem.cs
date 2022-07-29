@@ -15,7 +15,7 @@ namespace Twaila.Systems
         public static ModKeybind ToggleUI { get; private set; }
         public static ModKeybind NextContext { get; private set; }
         public static ModKeybind PrevContext { get; private set; }
-        public static ModKeybind LockContext { get; private set; }
+        public static ModKeybind CycleContextMode { get; private set; }
 
 
         public override void Load()
@@ -23,7 +23,7 @@ namespace Twaila.Systems
             ToggleUI = KeybindLoader.RegisterKeybind(Mod, "Cycle UI Display Mode", "Mouse3");
             NextContext = KeybindLoader.RegisterKeybind(Mod, "Next Context", Keys.Right);
             PrevContext = KeybindLoader.RegisterKeybind(Mod, "Previous Context", Keys.Left);
-            LockContext = KeybindLoader.RegisterKeybind(Mod, "Lock Context", Keys.Up);
+            CycleContextMode = KeybindLoader.RegisterKeybind(Mod, "Cycle Context Mode", Keys.Up);
         }
 
         public override void Unload()
@@ -31,7 +31,7 @@ namespace Twaila.Systems
             ToggleUI = null;
             NextContext = null;
             PrevContext = null;
-            LockContext = null;
+            CycleContextMode = null;
         }
 
         public static void HandleKeys(TwailaPlayer player)
@@ -53,21 +53,20 @@ namespace Twaila.Systems
                 Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
             }
 
-            if (LockContext.JustPressed)
+            if (CycleContextMode.JustPressed)
             {
-                if (TwailaConfig.Get().LockContext)
+                if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual)
                 {
-                    TwailaConfig.Get().LockContext = false;
-                    Main.NewText("Context Unlocked");
+                    TwailaConfig.Get().ContextMode = TwailaConfig.ContextUpdateMode.Automatic;
                 }
-                else
+                else if(TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
                 {
-                    TwailaConfig.Get().LockContext = true;
-                    Main.NewText("Context Locked");
+                    TwailaConfig.Get().ContextMode = TwailaConfig.ContextUpdateMode.Manual;
                 }
+                Main.NewText($"Context Mode: {TwailaConfig.Get().ContextMode}");
             }
 
-            if (TwailaConfig.Get().LockContext)
+            if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual)
             {
                 if (NextContext.JustPressed)
                 {
@@ -79,7 +78,7 @@ namespace Twaila.Systems
                     TwailaUI.PrevContext();
                 }
             }
-            else
+            else if(TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
             {
                 if (NextContext.JustPressed)
                 {

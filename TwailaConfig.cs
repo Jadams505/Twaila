@@ -90,8 +90,13 @@ namespace Twaila
             On, Off, Automatic
         }
 
-        [DefaultValue(false)]
-        public bool LockContext;
+        public enum ContextUpdateMode
+        {
+            Manual, Automatic
+        }
+
+        [DefaultValue(ContextUpdateMode.Automatic)]
+        public ContextUpdateMode ContextMode;
 
         [DefaultValue(true)]
         public bool ShowBackground;
