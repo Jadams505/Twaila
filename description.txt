@@ -7,7 +7,7 @@ Suggestions and Feedback are welcome
 [Config Options]
 - Visit the Forum page for more details on config options
 
-- [c/FFFF00:AntiCheat]: Only updates the UI if the tile has been reveled on the map
+- [c/FFFF00:AntiCheat]: Only updates the UI if the tile has been revealed on the map
 - [c/FFFF00:Content Toggles]: Toggles the various UI features on and off 
 - [c/FFFF00:UseDefaultPosition]: Centers the panel on the top of the screen
 - [c/FFFF00:LockPosition]: Stops the mouse from being able to move the panel
@@ -18,6 +18,7 @@ Suggestions and Feedback are welcome
 - [c/FFFF00:CycleDelay]: How many ticks before the panel cycles its type 
 - [c/FFFF00:ContentSetting]: Settings that describe what to do with the content when it is too big for the panel
 - [c/FFFF00:HoverOpacity]: How visible the panel should be when it is hovered over
+- [c/FFFF00:ContextMode]: Determines how the panel updates either Automatic or Manual
 - [c/FFFF00:ShowBackground]: Displays the background panel
 - [c/FFFF00:UIDisplay]: Options for when the panel should be visible or hidden
 - [c/FFFF00:HideUIForAir]: Hides the UI when hovering over tiles that would otherwise not be upated by the UI
@@ -29,11 +30,15 @@ Suggestions and Feedback are welcome
 - [c/FFFF00:ReservedImageWidth]: The percentage of the panel that is reserved for the image if the text is too long
 
 [Controls]
-- Cycle UI Display Mode: Cycles through the UIDisplay options
-- Pause Cycling: Hold to stop the UI from cycling its contents
-- Next Context: Cycles the UI contents
+- [c/FFFF00:Cycle UI Display Mode]: Cycles through the UIDisplay options
+- [c/FFFF00:Next Context]: Cycles the UI contents forwards
+- [c/FFFF00:Previous Context]: Cycles the UI contents backwards
+- [c/FFFF00:Cycle Context Mode]: Cycles between Automatic and Manual context modes
 
 [Changelog]
+v0.2.4.1 (7/29/2022)
+- Fixed an issue with HideUIForAir and the Lock Context
+- Renamed Lock Context to Cycle Context Mode
 v0.2.4.0 (7/09/2022)
 - Added a Lock Context config option and keybind toggle to allow for more control of the panel
 - Added a Previous Context keybind

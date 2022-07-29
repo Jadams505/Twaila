@@ -96,6 +96,7 @@ namespace Twaila
         }
 
         [DefaultValue(ContextUpdateMode.Automatic)]
+        [DrawTicks]
         public ContextUpdateMode ContextMode;
 
         [DefaultValue(true)]
