@@ -1,6 +1,3 @@
-﻿v0.2.4.0 (7/09/2022)
-- Added a Lock Context config option and keybind toggle to allow for more control of the panel
-- Added a Previous Context keybind
-- Removed the Pause Cycling keybind
-- Fixed a issue with campfire naming
-- Echo blocks are now properly blocked by AntiCheat
+﻿
+- Fixed an issue with HideUIForAir and the Lock Context
+- Renamed Lock Context to Cycle Context Mode

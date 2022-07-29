@@ -295,7 +295,7 @@ namespace Twaila.UI
 
             BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos);
 
-            if (!TwailaConfig.Get().LockContext)
+            if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
             {
                 context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
 
@@ -321,7 +321,7 @@ namespace Twaila.UI
 
             if (tick >= TwailaConfig.Get().CycleDelay)
             {
-                if (!TwailaConfig.Get().LockContext)
+                if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
                 {
                     context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
                 }

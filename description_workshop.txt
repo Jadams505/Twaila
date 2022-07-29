@@ -7,11 +7,9 @@ Suggestions and Feedback are welcome
 Forum Page: https://forums.terraria.org/index.php?threads/terrarias-waila-twaila-mod.111090/
 
 [h1]Config Options[/h1]
-
 Visit the Forum page for more details on config options
-
 [list]
-[*]AntiCheat: Only updates the UI if the tile has been reveled on the map
+[*]AntiCheat: Only updates the UI if the tile has been revealed on the map
 [*]Content Toggles: Toggles the various UI features on and off 
 [*]UseDefaultPosition: Centers the panel on the top of the screen
 [*]LockPosition: Stops the mouse from being able to move the panel
@@ -22,6 +20,7 @@ Visit the Forum page for more details on config options
 [*]CycleDelay: How many ticks before the panel cycles its type 
 [*]ContentSetting: Settings that describe what to do with the content when it is too big for the panel
 [*]HoverOpacity: How visible the panel should be when it is hovered over
+[*]ContextMode: Determines how the panel updates either Automatic or Manual
 [*]ShowBackground: Displays the background panel
 [*]UIDisplay: Options for when the panel should be visible or hidden
 [*]HideUIForAir: Hides the UI when hovering over tiles that would otherwise not be upated by the UI
@@ -33,7 +32,10 @@ Visit the Forum page for more details on config options
 [*]ReservedImageWidth: The percentage of the panel that is reserved for the image if the text is too long
 [/list]
 
-[h1][Controls][/h1]
-- Cycle UI Display Mode: Cycles through the UIDisplay options
-- Pause Cycling: Hold to stop the UI from cycling its contents
-- Next Context: Cycles the UI contents
+[h1]Controls[/h1]
+[list]
+[*]Cycle UI Display Mode: Cycles through the UIDisplay options
+[*]Next Context: Cycles the UI contents forwards
+[*]Previous Context: Cycles the UI contents backwards
+[*]Cycle Context Mode: Cycles between Automatic and Manual context modes
+[/list]
