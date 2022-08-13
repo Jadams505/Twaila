@@ -20,10 +20,11 @@ namespace Twaila.Systems
 
         public override void Load()
         {
-            ToggleUI = KeybindLoader.RegisterKeybind(Mod, "Cycle UI Display Mode", "Mouse3");
-            NextContext = KeybindLoader.RegisterKeybind(Mod, "Next Context", Keys.Right);
-            PrevContext = KeybindLoader.RegisterKeybind(Mod, "Previous Context", Keys.Left);
-            CycleContextMode = KeybindLoader.RegisterKeybind(Mod, "Cycle Context Mode", Keys.Up);
+            bool IsChinese = Terraria.Localization.Language.ActiveCulture.LegacyId.Equals(7);
+            ToggleUI = KeybindLoader.RegisterKeybind(Mod, IsChinese ? "循环UI显示模式" : "Cycle UI Display Mode", "Mouse3");
+            NextContext = KeybindLoader.RegisterKeybind(Mod, IsChinese ? "下一个内容" : "Next Context", Keys.Right);
+            PrevContext = KeybindLoader.RegisterKeybind(Mod, IsChinese ? "上一个内容" : "Previous Context", Keys.Left);
+            CycleContextMode = KeybindLoader.RegisterKeybind(Mod, IsChinese ? "循环内容模式" : "Cycle Context Mode", Keys.Up);
         }
 
         public override void Unload()

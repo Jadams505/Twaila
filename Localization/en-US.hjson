@@ -1,0 +1,112 @@
+﻿Mods:
+{
+    Twaila:
+    {
+        enum:
+        {
+            Left: "Left"
+            Center: "Center"
+            Right: "Right"
+            Bottom: "Bottom"
+            Top: "Top"
+            Name: "Name"
+            Icon: "Icon"
+            Both: "Both"
+            On: "On"
+            Off: "Off"
+            DisplayName: "DisplayName"
+            InternalName: "InternalName"
+            FullName: "FullName"
+            Shrink: "Shrink"
+            Trim: "Trim"
+            Overflow: "Overflow"
+            Automatic: "Automatic"
+            Manual: "Manual"
+        }
+        Content:
+        {
+            ShowImage: "ShowImage"
+            ShowName: "ShowName"
+            ShowMod: "ShowMod"
+            ShowId: "ShowId"
+            ShowPickaxePower: "ShowPickaxePower"
+            ShowPickaxe: "ShowPickaxe"
+            ShowWire: "ShowWire"
+            ShowActuator: "ShowActuator"
+            ShowPaint: "ShowPaint"
+        }
+        ModConfig: "ModConfig"
+        Features: "Features"
+        AntiCheat: 
+        {
+            Label: "AntiCheat"
+            Tooltip: "When this is ON only tiles that are revealed on the map will show on the panel"
+        }
+        DisplayContent: "Content Toggles"
+        UIPosition: "UI Position"
+        UseDefaultPosition:
+        {
+            Label: "UseDefaultPosition"
+            Tooltip: "Dragging the panel automatically disables this"
+        }
+        LockPosition:
+        {
+            Label: "LockPosition"
+            Tooltip: "When this is OFF you can use the mouse to move the panel"
+        }
+        UIPanel: "UI Panel"
+        MaxWidth:
+        {
+            Label: "MaxWidth (%)"
+            Tooltip: "Maximum % of the screen's width the panel can be"
+        }
+        MaxHeight:
+        {
+            Label: "MaxHeight (%)"
+            Tooltip: "Maximum % of the screen's height the panel can be"
+        }
+        CycleDelay:
+        {
+            Label: "CycleDelay"
+            Tooltip: "The amount of time in ticks before the panel will cycle to the next type"
+        }
+        UIDisplaySettings: "UI Display"
+        PanelColor: "Panel Color"
+        UIText: "UI Text"
+        OverrideColor:
+        {
+            Label: "OverrideColor"
+            Tooltip: "Turn this on to override any pre-existing text color"
+        }
+        TextColor: "Text Color"
+        UIImage: "UI Image"
+        UseItemTextures:
+        {
+            Label: "UseItemTextures"
+            Tooltip: "ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world"
+        }
+        ReservedImageWidth:
+        {
+            Label: "ReservedImageWidth (%)"
+            Tooltip: "The % of the panel's width that is allocated for the image when the text is too long"
+        }
+        AutomaticOptions: "Automatic Options"
+        HideUIForAir: 
+        {
+            Label: "HideUIForAir"
+            Tooltip: "ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile"
+        }
+        AnchorX: "AnchorX"
+        AnchorY: "AnchorY"
+        AnchorPosX: "AnchorPosX"
+        AnchorPosY: "AnchorPosY"
+        PanelPadding: "PanelPadding"
+        ContentSetting: "ContentSetting"
+        HoverOpacity: "HoverOpacity"
+        ContextMode: "ContextMode"
+        ShowBackground: "ShowBackground"
+        UIDisplay: "UIDisplay"
+        Color: "Color"
+        TextShadow: "TextShadow"
+    }
+}

@@ -1,13 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria.ModLoader.Config;
 using Terraria.UI;
 
 namespace Twaila.UI
 {
     public enum DrawMode
     {
-        Shrink, Trim, Overflow
+        [Label("$Mods.Twaila.enum.Shrink")] Shrink,
+        [Label("$Mods.Twaila.enum.Trim")] Trim,
+        [Label("$Mods.Twaila.enum.Overflow")] Overflow
     }
 
     public abstract class UITwailaElement : UIElement

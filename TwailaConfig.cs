@@ -8,177 +8,210 @@ using Twaila.UI;
 
 namespace Twaila
 {
+    [Label("$Mods.Twaila.ModConfig")]
     public class TwailaConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
-        [Header("Features")]
+        [Header("$Mods.Twaila.Features")]
 
         [DefaultValue(true)]
-        [Tooltip("When this is ON only tiles that are revealed on the map will show on the panel")]
+        [Tooltip("$Mods.Twaila.AntiCheat.Tooltip")]
+        [Label("$Mods.Twaila.AntiCheat.Label")]
         public bool AntiCheat;
 
         [SeparatePage]
-        [Label("Content Toggles")]
+        [Label("$Mods.Twaila.DisplayContent")]
         public Content DisplayContent = new Content();
 
 
-        [Header("UI Position")]
+        [Header("$Mods.Twaila.UIPosition")]
 
         [DefaultValue(true)]
-        [Tooltip("Dragging the panel automatically disables this")]
+        [Tooltip("$Mods.Twaila.UseDefaultPosition.Tooltip")]
+        [Label("$Mods.Twaila.UseDefaultPosition.Label")]
         public bool UseDefaultPosition;
 
         [DefaultValue(true)]
-        [Tooltip("When this is OFF you can use the mouse to move the panel")]
+        [Tooltip("$Mods.Twaila.LockPosition.Tooltip")]
+        [Label("$Mods.Twaila.LockPosition.Label")]
         public bool LockPosition;
 
         [DrawTicks]
         [DefaultValue(HorizontalAnchor.Center)]
+        [Label("$Mods.Twaila.AnchorX")]
         public HorizontalAnchor AnchorX = HorizontalAnchor.Center;
         public enum HorizontalAnchor
         {
-            Left, Center, Right
+            [Label("$Mods.Twaila.enum.Left")]Left,
+            [Label("$Mods.Twaila.enum.Center")]Center,
+            [Label("$Mods.Twaila.enum.Right")]Right
         };
 
         [DrawTicks]
         [DefaultValue(VerticalAnchor.Top)]
+        [Label("$Mods.Twaila.AnchorY")]
         public VerticalAnchor AnchorY = VerticalAnchor.Top;
         public enum VerticalAnchor
         {
-            Bottom, Center, Top
+            [Label("$Mods.Twaila.enum.Bottom")] Bottom,
+            [Label("$Mods.Twaila.enum.Center")] Center,
+            [Label("$Mods.Twaila.enum.Top")] Top
         };
 
         [DefaultValue(0)]
         [Range(0, 2000)]
+        [Label("$Mods.Twaila.AnchorPosX")]
         public int AnchorPosX;
 
         [DefaultValue(0)]
         [Range(0, 2000)]
+        [Label("$Mods.Twaila.AnchorPosY")]
         public int AnchorPosY;
 
 
-        [Header("UI Panel")]
+        [Header("$Mods.Twaila.UIPanel")]
 
         [DefaultValue(30)]
-        [Tooltip("Maximum % of the screen's width the panel can be")]
-        [Label("MaxWidth (%)")]
+        [Tooltip("$Mods.Twaila.MaxWidth.Tooltip")]
+        [Label("$Mods.Twaila.MaxWidth.Label")]
         public int MaxWidth;
 
         [DefaultValue(30)]
-        [Tooltip("Maximum % of the screen's height the panel can be")]
-        [Label("MaxHeight (%)")]
+        [Tooltip("$Mods.Twaila.MaxHeight.Tooltip")]
+        [Label("$Mods.Twaila.MaxHeight.Label")]
         public int MaxHeight;
 
         [DefaultValue(12)]
+        [Label("$Mods.Twaila.PanelPadding")]
         public int PanelPadding;
 
         [DefaultValue(120)]
         [Range(0, 1000)]
-        [Tooltip("The amount of time in ticks before the panel will cycle to the next type")]
+        [Tooltip("$Mods.Twaila.CycleDelay.Tooltip")]
+        [Label("$Mods.Twaila.CycleDelay.Label")]
         public int CycleDelay;
 
         [DefaultValue(DrawMode.Shrink)]
         [DrawTicks]
+        [Label("$Mods.Twaila.ContentSetting")]
         public DrawMode ContentSetting = DrawMode.Shrink;
 
         [DefaultValue(0.25f)]
+        [Label("$Mods.Twaila.HoverOpacity")]
         public float HoverOpacity;
 
         public enum DisplayMode
         {
-            On, Off, Automatic
+            [Label("$Mods.Twaila.enum.On")] On,
+            [Label("$Mods.Twaila.enum.Off")] Off,
+            [Label("$Mods.Twaila.enum.Automatic")] Automatic
         }
 
         public enum ContextUpdateMode
         {
-            Manual, Automatic
+            [Label("$Mods.Twaila.enum.Manual")] Manual,
+            [Label("$Mods.Twaila.enum.Automatic")] Automatic
         }
 
         [DefaultValue(ContextUpdateMode.Automatic)]
         [DrawTicks]
+        [Label("$Mods.Twaila.ContextMode")]
         public ContextUpdateMode ContextMode;
 
         [DefaultValue(true)]
+        [Label("$Mods.Twaila.ShowBackground")]
         public bool ShowBackground;
 
         [SeparatePage]
-        [Label("UI Display")]
+        [Label("$Mods.Twaila.UIDisplaySettings")]
         public DisplaySettings UIDisplaySettings = new DisplaySettings();
 
         [SeparatePage]
-        [Label("Panel Color")]
+        [Label("$Mods.Twaila.PanelColor")]
         public ColorWrapper PanelColor = new ColorWrapper(44, 57, 105, 178);
 
 
-        [Header("UI Text")]
+        [Header("$Mods.Twaila.UIText")]
 
         [DefaultValue(true)]
+        [Label("$Mods.Twaila.TextShadow")]
         public bool TextShadow;
 
         [DefaultValue(false)]
-        [Tooltip("Turn this on to override any pre-existing text color")]
+        [Tooltip("$Mods.Twaila.OverrideColor.Tooltip")]
+        [Label("$Mods.Twaila.OverrideColor.Label")]
         public bool OverrideColor;
 
         [SeparatePage]
-        [Label("Text Color")]
+        [Label("$Mods.Twaila.TextColor")]
         public ColorWrapper TextColor = new ColorWrapper(255, 255, 255, 255);
 
 
-        [Header("UI Image")]
+        [Header("$Mods.Twaila.UIImage")]
 
         [DefaultValue(false)]
-        [Tooltip("ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world")]
+        [Tooltip("$Mods.Twaila.UseItemTextures.Tooltip")]
+        [Label("$Mods.Twaila.UseItemTextures.Label")]
         public bool UseItemTextures;
 
         [DefaultValue(25)]
-        [Tooltip("The % of the panel's width that is allocated for the image when the text is too long")]
-        [Label("ReservedImageWidth (%)")]
+        [Tooltip("$Mods.Twaila.ReservedImageWidth.Tooltip")]
+        [Label("$Mods.Twaila.ReservedImageWidth.Label")]
         public int ReservedImageWidth;
 
         public enum DisplayType
         {
-            Name,
-            Icon,
-            Both,
-            Off
+            [Label("$Mods.Twaila.enum.Name")] Name,
+            [Label("$Mods.Twaila.enum.Icon")] Icon,
+            [Label("$Mods.Twaila.enum.Both")] Both,
+            [Label("$Mods.Twaila.enum.Off")] Off
         }
 
         public enum NameType
         {
-            DisplayName,
-            InternalName,
-            FullName,
-            Off
+            [Label("$Mods.Twaila.enum.DisplayName")] DisplayName,
+            [Label("$Mods.Twaila.enum.InternalName")] InternalName,
+            [Label("$Mods.Twaila.enum.FullName")] FullName,
+            [Label("$Mods.Twaila.enum.Off")] Off
         }
 
         public class Content
         {
             [DefaultValue(true)]
+            [Label("$Mods.Twaila.Content.ShowImage")]
             public bool ShowImage;
 
             [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowName")]
             public NameType ShowName;
 
             [DefaultValue(true)]
+            [Label("$Mods.Twaila.Content.ShowMod")]
             public bool ShowMod;
 
             [DefaultValue(false)]
+            [Label("$Mods.Twaila.Content.ShowId")]
             public bool ShowId;
 
             [DefaultValue(true)]
+            [Label("$Mods.Twaila.Content.ShowPickaxePower")]
             public bool ShowPickaxePower;
 
             [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowPickaxe")]
             public DisplayType ShowPickaxe;
 
             [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowWire")]
             public DisplayType ShowWire;
 
             [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowActuator")]
             public DisplayType ShowActuator;
 
             [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowPaint")]
             public DisplayType ShowPaint;
 
             
@@ -216,6 +249,7 @@ namespace Twaila
 
         public class ColorWrapper
         {
+            [Label("$Mods.Twaila.Color")]
             public Color Color;
 
             public ColorWrapper(byte r, byte g, byte b, byte a)
@@ -247,11 +281,13 @@ namespace Twaila
         {
             [DefaultValue(DisplayMode.Automatic)]
             [DrawTicks]
+            [Label("$Mods.Twaila.UIDisplay")]
             public DisplayMode UIDisplay = DisplayMode.Automatic;
 
-            [Header("Automatic Options")]
+            [Header("$Mods.Twaila.AutomaticOptions")]
             [DefaultValue(false)]
-            [Tooltip("ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile")]
+            [Tooltip("$Mods.Twaila.HideUIForAir.Tooltip")]
+            [Label("$Mods.Twaila.HideUIForAir.Label")]
             public bool HideUIForAir;
 
             public DisplaySettings()
