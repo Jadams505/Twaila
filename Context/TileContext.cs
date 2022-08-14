@@ -69,7 +69,7 @@ namespace Twaila.Context
                     }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-                        RecommendedPickaxe = NameUtil.GetNameFromItem(pickId);
+                        RecommendedPickaxe = $"{NameUtil.GetNameFromItem(pickId)} {InfoUtil.GetPickPowerForItem(pickId)}%";
                     }
                 }
 

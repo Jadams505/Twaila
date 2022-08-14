@@ -77,62 +77,21 @@ namespace Twaila.Util
 
         public static int GetPickId(int pickPower, int startIndex, out int foundIndex)
         {
-            for(int i = startIndex; i < _pickaxes.Count; ++i)
+            if (startIndex < 0 || startIndex >= _pickaxes.Count)
+            {
+                startIndex = 0;
+            }
+            for (int i = startIndex; i < _pickaxes.Count; ++i)
             {
                 (int power, int id) pick = _pickaxes[i];
-                if (pick.power > pickPower)
+                if (pick.power >= pickPower)
                 {
                     foundIndex = i;
                     return pick.id;
                 }
             }
-            foundIndex = _pickaxes.Count - 1;
-            return _pickaxes[foundIndex].id;
-        }
-
-        public static int GetPickaxeId(int pickPower, int startIndex, out int foundIndex)
-        {
-            if (startIndex < 0 || startIndex >= _pickaxes.Count)
-            {
-                startIndex = 0;
-            }
-            if (_pickaxes[startIndex].power < pickPower)
-            {
-                int index = _pickaxes.BinarySearch(startIndex, _pickaxes.Count - startIndex, (pickPower, -1), new PickPowerSorter());
-                if (index >= 0)
-                {
-                    if(index - 1 > 0 && _pickaxes[index - 1].power >= pickPower)
-                    {
-                        foundIndex = index - 1;
-                    }
-                    else
-                    {
-                        foundIndex = index;
-                    }
-                }
-                else if (~index < _pickaxes.Count)
-                {
-                    foundIndex = ~index;
-                }
-                else if(~index == _pickaxes.Count)
-                {
-                    foundIndex = _pickaxes.Count - 1;
-                }
-                else
-                {
-                    foundIndex = _pickaxes.BinarySearch(0, startIndex, (pickPower, -1), new PickPowerSorter());
-                }
-                if(foundIndex < 0 || foundIndex >= _pickaxes.Count)
-                {
-                    foundIndex = 0;
-                }
-                return _pickaxes[foundIndex].id;
-            }
-            else
-            {
-                foundIndex = startIndex;
-                return _pickaxes[startIndex].id;
-            }
+            foundIndex = -1;
+            return -1;
         }
 
         private class PickPowerSorter : IComparer<(int power, int id)>

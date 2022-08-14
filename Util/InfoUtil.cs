@@ -26,13 +26,26 @@ namespace Twaila.Util
                 }
                 else
                 {
-                    pickId = ItemUtil.GetPickaxeId(power, lastIndex, out lastIndex);
+                    pickId = ItemUtil.GetPickId(power, lastIndex, out lastIndex);
                     text = text.Insert(0, redX + " ");
                 }
                 return true;
             }
             return false;
         }
+
+        public static int GetPickPowerForItem(int itemId)
+        {
+            ModItem mItem = ItemLoader.GetItem(itemId);
+            if(mItem != null)
+            {
+                return mItem.Item.pick;
+            }
+            Item item = new Item();
+            item.SetDefaults(itemId);
+            return item.pick;
+        }
+
         public static int GetPickaxePower(int tileId)
         {
             ModTile mTile = TileLoader.GetTile(tileId);
