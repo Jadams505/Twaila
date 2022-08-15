@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -29,6 +30,7 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(CreateCactusContext);
             TileEntry.ApplicableContexts.Add(CreateTreeContext);
             TileEntry.ApplicableContexts.Add(CreateSaplingContext);
+            TileEntry.ApplicableContexts.Add(CreateFoodPlatterContext);
             ContextEntries.Add(TileEntry);
 
             WallEntry = new ContextEntry(CreateWallContext, "Wall");
@@ -166,6 +168,18 @@ namespace Twaila.Systems
             if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new SaplingContext(pos);
+            }
+
+            return null;
+        }
+
+        private static FoodPlatterContext CreateFoodPlatterContext(Point pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos);
+
+            if (TEFoodPlatter.Find(pos.X, pos.Y) != -1)
+            {
+                return new FoodPlatterContext(pos);
             }
 
             return null;
