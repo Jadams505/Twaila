@@ -426,6 +426,10 @@ namespace Twaila.Util
                 case TileID.HallowedPlants:
                     if (tile.TileFrameX == 144) return ItemID.Mushroom;
                     break;
+                case TileID.Crystals:
+                    if (tile.TileFrameX >= 324)
+                        return ItemID.QueenSlimeCrystal;
+                    break;
                 case TileID.HolidayLights:
                     if (tile.TileFrameX == 0 || tile.TileFrameX == 54)
                     {
