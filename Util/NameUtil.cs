@@ -63,6 +63,10 @@ namespace Twaila.Util
                     return "Corrupt Plant";
                 case TileID.Sunflower:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Sunflower, 0));
+                case TileID.ClosedDoor:
+                    if (tile.TileFrameY >= 594 && tile.TileFrameY <= 630 && tile.TileFrameX <= 36)
+                        return "Locked " + GetNameFromItem(ItemID.LihzahrdDoor);
+                    break;
                 case TileID.Vines:
                     return GetNameFromItem(ItemID.Vine);
                 case TileID.JungleGrass:
