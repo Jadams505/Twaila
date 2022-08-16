@@ -31,6 +31,7 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(CreateTreeContext);
             TileEntry.ApplicableContexts.Add(CreateSaplingContext);
             TileEntry.ApplicableContexts.Add(CreateFoodPlatterContext);
+            TileEntry.ApplicableContexts.Add(CreateItemFrameContext);
             ContextEntries.Add(TileEntry);
 
             WallEntry = new ContextEntry(CreateWallContext, "Wall");
@@ -175,13 +176,25 @@ namespace Twaila.Systems
 
         private static FoodPlatterContext CreateFoodPlatterContext(Point pos)
         {
-            Tile tile = Framing.GetTileSafely(pos);
-
             if (TEFoodPlatter.Find(pos.X, pos.Y) != -1)
             {
                 return new FoodPlatterContext(pos);
             }
 
+            return null;
+        }
+
+        private static ItemFrameContext CreateItemFrameContext(Point pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos);
+            if(tile.TileType == TileID.ItemFrame)
+            {
+                Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 2);
+                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1)
+                {
+                    return new ItemFrameContext(pos);
+                }
+            }
             return null;
         }
 

@@ -7,6 +7,7 @@ using Twaila.ObjectData;
 using Twaila.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
+using Terraria.DataStructures;
 
 namespace Twaila.Util
 {
@@ -317,6 +318,36 @@ namespace Twaila.Util
             builer.AddComponent(foodBox, foodTexture, drawPos);
 
             return builer.Build(spriteBatch.GraphicsDevice);
+        }
+
+        public static Texture2D GetImageForFoodItem(SpriteBatch spriteBatch, int foodItemId)
+        {
+            TextureBuilder builer = new TextureBuilder();
+
+            Texture2D foodTexture = GetItemTexture(foodItemId);
+            Rectangle foodBox = ItemID.Sets.IsFood[foodItemId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3,
+                frameX: 0, frameY: 0) : foodTexture.Frame();
+
+            builer.AddComponent(foodBox, foodTexture, Point.Zero);
+
+            return builer.Build(spriteBatch.GraphicsDevice);
+        }
+
+        public static Texture2D GetImageForFrameItem(SpriteBatch spriteBatch, int itemId)
+        {
+            Texture2D texture = GetItemTexture(itemId);
+            DrawAnimation animation = Main.itemAnimations[itemId];
+
+            if (animation != null)
+            {
+                TextureBuilder builer = new TextureBuilder();
+                Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
+
+                builer.AddComponent(box, texture, Point.Zero);
+
+                return builer.Build(spriteBatch.GraphicsDevice);
+            }
+            return texture;
         }
 
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)

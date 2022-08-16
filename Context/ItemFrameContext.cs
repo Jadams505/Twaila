@@ -4,22 +4,20 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.UI;
 using Twaila.Util;
 
 namespace Twaila.Context
 {
-    public class FoodPlatterContext : TileContext
+    public class ItemFrameContext : TileContext
     {
-        protected int FoodItemId { get; set; }
+        protected int ItemId { get; set; }
         protected string ItemText { get; set; }
 
-        public FoodPlatterContext(Point point) : base(point)
+        public ItemFrameContext(Point point) : base(point)
         {
-            FoodItemId = 0;
+            ItemId = 0;
             ItemText = "";
         }
 
@@ -28,38 +26,29 @@ namespace Twaila.Context
             base.Update();
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
 
-            FoodItemId = GetFoodItemId();
+            ItemId = GetItemId();
 
-            if (FoodItemId > 0)
+            if (ItemId > 0)
             {
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    Icons.IconImages.Insert(0, ImageUtil.GetImageForFoodItem(Main.spriteBatch, FoodItemId));
+                    Icons.IconImages.Insert(0, ImageUtil.GetImageForFrameItem(Main.spriteBatch, ItemId));
                 }
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    ItemText = Lang.GetItemNameValue(FoodItemId);
+                    ItemText = Lang.GetItemNameValue(ItemId);
                 }
             }
         }
 
         public override bool ContextChanged(BaseContext other)
         {
-            if(other?.GetType() == typeof(FoodPlatterContext))
+            if (other?.GetType() == typeof(ItemFrameContext))
             {
-                FoodPlatterContext otherContext = (FoodPlatterContext)other;
-                return otherContext.FoodItemId != FoodItemId;
+                ItemFrameContext otherContext = (ItemFrameContext)other;
+                return otherContext.ItemId != ItemId;
             }
             return true;
-        }
-
-        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
-        {
-            if(FoodItemId != 0)
-            {
-                return new TwailaTexture(ImageUtil.GetImageForPlate(spriteBatch, FoodItemId));
-            }
-            return base.TileImage(spriteBatch);
         }
 
         protected override List<UITwailaElement> InfoElements()
@@ -73,10 +62,11 @@ namespace Twaila.Context
             return elements;
         }
 
-        private int GetFoodItemId()
+        private int GetItemId()
         {
-            int id = TEFoodPlatter.Find(Pos.X, Pos.Y);
-            Item item = ((TEFoodPlatter)TileEntity.ByID[id]).item;
+            Point targetPos = TileUtil.TileEntityCoordinates(Pos.X, Pos.Y, width: 2, height: 2);
+            int id = TEItemFrame.Find(targetPos.X, targetPos.Y);
+            Item item = ((TEItemFrame)TileEntity.ByID[id]).item;
             return item.type;
         }
     }
