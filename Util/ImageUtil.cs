@@ -91,7 +91,7 @@ namespace Twaila.Util
                 ?? TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType) ?? GetImageForMannequins(spriteBatch, tile)
                 ?? GetImageForSnakeRope(spriteBatch, tile.TileType) ?? GetImageForCattail(spriteBatch, tile)
                 ?? GetImageForRelic(spriteBatch, tile) ?? GetImageForPylon(spriteBatch, tile) ??
-                GetImageForVoidVault(spriteBatch, tile);
+                GetImageForVoidVault(spriteBatch, tile) ?? GetImageForMarbleColumn(spriteBatch, tile);
         }
 
         /*
@@ -293,6 +293,33 @@ namespace Twaila.Util
                 {
                     return GetItemTexture(ItemID.Wire);
                 } 
+            }
+            return null;
+        }
+
+        public static Texture2D GetImageForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
+        {
+            int width = 16;
+            int height = 18;
+            int paddingX = 2;
+            int paddingY = 6;
+            int startY = 66;
+            if (tile.TileType == TileID.MarbleColumn)
+            {
+                Texture2D texture = GetTileTexture(tile.TileType);
+                if (texture != null)
+                {
+                    TextureBuilder builder = new TextureBuilder();
+                    for (int row = 0; row < 2; ++row)
+                    {
+                        for (int col = 0; col < 2; ++col)
+                        {
+                            Rectangle copyRectangle = new Rectangle(col * (width + paddingX), startY + row * (height + paddingY), width, height);
+                            builder.AddComponent(copyRectangle, texture, new Point(width * col, height * row));
+                        }
+                    }
+                    return builder.Build(spriteBatch.GraphicsDevice);
+                }
             }
             return null;
         }
