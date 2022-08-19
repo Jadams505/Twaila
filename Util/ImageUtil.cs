@@ -333,7 +333,7 @@ namespace Twaila.Util
             return builer.Build(spriteBatch.GraphicsDevice);
         }
 
-        public static Texture2D GetImageForFrameItem(SpriteBatch spriteBatch, int itemId)
+        public static Texture2D GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
         {
             Texture2D texture = GetItemTexture(itemId);
             DrawAnimation animation = Main.itemAnimations[itemId];

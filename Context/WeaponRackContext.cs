@@ -8,12 +8,12 @@ using Twaila.Util;
 
 namespace Twaila.Context
 {
-    public class ItemFrameContext : TileContext
+    public class WeaponRackContext : TileContext
     {
         protected int ItemId { get; set; }
         protected string ItemText { get; set; }
 
-        public ItemFrameContext(Point point) : base(point)
+        public WeaponRackContext (Point point) : base(point)
         {
             ItemId = 0;
             ItemText = "";
@@ -41,9 +41,9 @@ namespace Twaila.Context
 
         public override bool ContextChanged(BaseContext other)
         {
-            if (other?.GetType() == typeof(ItemFrameContext))
+            if (other?.GetType() == typeof(WeaponRackContext))
             {
-                ItemFrameContext otherContext = (ItemFrameContext)other;
+                WeaponRackContext otherContext = (WeaponRackContext)other;
                 return otherContext.ItemId != ItemId;
             }
             return true;
@@ -62,9 +62,9 @@ namespace Twaila.Context
 
         private int GetItemId()
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(Pos.X, Pos.Y, width: 2, height: 2);
-            int id = TEItemFrame.Find(targetPos.X, targetPos.Y);
-            Item item = ((TEItemFrame)TileEntity.ByID[id]).item;
+            Point targetPos = TileUtil.TileEntityCoordinates(Pos.X, Pos.Y, width: 3, height: 3);
+            int id = TEWeaponsRack.Find(targetPos.X, targetPos.Y);
+            Item item = ((TEWeaponsRack)TileEntity.ByID[id]).item;
             return item.type;
         }
     }

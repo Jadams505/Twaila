@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.UI;
 using Twaila.Util;
@@ -34,7 +32,7 @@ namespace Twaila.Context
             {
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    Icons.IconImages.Insert(0, ImageUtil.GetImageForFoodItem(Main.spriteBatch, FoodItemId));
+                    Icons.IconImages.Insert(0, ImageUtil.GetImageForIconItem(Main.spriteBatch, FoodItemId));
                 }
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {

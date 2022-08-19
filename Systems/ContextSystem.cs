@@ -32,6 +32,7 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(CreateSaplingContext);
             TileEntry.ApplicableContexts.Add(CreateFoodPlatterContext);
             TileEntry.ApplicableContexts.Add(CreateItemFrameContext);
+            TileEntry.ApplicableContexts.Add(CreateWeaponRackContext);
             ContextEntries.Add(TileEntry);
 
             WallEntry = new ContextEntry(CreateWallContext, "Wall");
@@ -193,6 +194,20 @@ namespace Twaila.Systems
                 if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1)
                 {
                     return new ItemFrameContext(pos);
+                }
+            }
+            return null;
+        }
+
+        private static WeaponRackContext CreateWeaponRackContext(Point pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos);
+            if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
+            {
+                Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 3);
+                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1)
+                {
+                    return new WeaponRackContext(pos);
                 }
             }
             return null;
