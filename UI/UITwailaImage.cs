@@ -50,8 +50,15 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             float scale = CalculatedScale();
-            spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y),
-                new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
+            if(image.Drawer != null)
+            {
+                image.Drawer.Invoke(spriteBatch, new Point(drawDim.X, drawDim.Y));
+            }
+            else
+            {
+                spriteBatch?.Draw(image.Texture, new Vector2(drawDim.X, drawDim.Y), 
+                    new Rectangle(0, 0, drawDim.Width, drawDim.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
+            }
         }
 
         public Rectangle DrawDimensions()
