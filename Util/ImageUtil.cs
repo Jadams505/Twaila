@@ -320,7 +320,7 @@ namespace Twaila.Util
             return builer.Build(spriteBatch.GraphicsDevice);
         }
 
-        public static TextureDrawer DrawImageForPlate(SpriteBatch spriteBatch, int foodId)
+        public static TwailaRender GetRenderForPlate(SpriteBatch spriteBatch, int foodId)
         {
             RenderBuilder builder = new RenderBuilder();
 
@@ -333,13 +333,13 @@ namespace Twaila.Util
 
             Point drawPos = Point.Zero;
 
-            builder.AddInstruction(plateTexture, drawPos, plateBox);
+            builder.AddImage(plateTexture, drawPos, plateBox);
             drawPos.Y += 16;
             drawPos.Y -= foodBox.Height;
             drawPos.X -= (foodBox.Width - 16) / 2;
-            builder.AddInstruction(foodTexture, drawPos, foodBox);
+            builder.AddImage(foodTexture, drawPos, foodBox);
 
-            return builder.Draw;
+            return builder.Build();
         }
 
         public static Texture2D GetImageForFoodItem(SpriteBatch spriteBatch, int foodItemId)

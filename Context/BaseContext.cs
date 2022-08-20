@@ -21,7 +21,7 @@ namespace Twaila.Context
 
         protected abstract string GetName();
 
-        protected abstract TwailaTexture GetImage(SpriteBatch spriteBatch);
+        protected abstract TwailaRender GetImage(SpriteBatch spriteBatch);
 
         protected abstract List<UITwailaElement> InfoElements();
 

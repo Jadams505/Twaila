@@ -51,13 +51,11 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             if(FoodItemId != 0)
             {
-                TwailaTexture texture = new TwailaTexture(ImageUtil.GetImageForPlate(spriteBatch, FoodItemId));
-                texture.Drawer = ImageUtil.DrawImageForPlate(spriteBatch, FoodItemId);
-                return texture;
+                return ImageUtil.GetRenderForPlate(spriteBatch, FoodItemId);
             }
             return base.TileImage(spriteBatch);
         }

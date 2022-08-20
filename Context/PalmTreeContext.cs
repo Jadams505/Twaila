@@ -33,22 +33,17 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             if (TileLoader.CanGrowModPalmTree(SandId))
             {
-                return new TwailaTexture(TreeUtil.GetImageForModdedPalmTree(spriteBatch, SandId), 0.5f);
+                return new TwailaRender(TreeUtil.GetImageForModdedPalmTree(spriteBatch, SandId), 0.5f);
             }
             int palmTreeWood = TreeUtil.GetTreeWood(SandId);
             if (palmTreeWood != -1)
             {
-                return new TwailaTexture(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
+                return new TwailaRender(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
             }
-            return null;
-        }
-
-        protected override TwailaTexture ItemImage(SpriteBatch spriteBatch)
-        {
             return null;
         }
 

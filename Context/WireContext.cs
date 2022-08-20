@@ -116,9 +116,9 @@ namespace Twaila.Context
             return "Terraria";
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            return new TwailaTexture(ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)));
+            return new TwailaRender(ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)));
         }
 
         protected override List<UITwailaElement> InfoElements()
