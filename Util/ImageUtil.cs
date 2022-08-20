@@ -300,7 +300,7 @@ namespace Twaila.Util
 
         public static Texture2D GetImageForPlate(SpriteBatch spriteBatch, int foodItemId)
         {
-            TextureBuilder builer = new TextureBuilder();
+            TextureBuilder builder = new TextureBuilder();
 
             Texture2D foodTexture = GetItemTexture(foodItemId);
             Rectangle foodBox = ItemID.Sets.IsFood[foodItemId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3, 
@@ -311,26 +311,26 @@ namespace Twaila.Util
 
             Point drawPos = Point.Zero;
 
-            builer.AddComponent(plateBox, plateTexture, drawPos);
+            builder.AddComponent(plateBox, plateTexture, drawPos);
             drawPos.Y += 16;
             drawPos.Y -= foodBox.Height;
             drawPos.X -= (foodBox.Width - 16) / 2;
-            builer.AddComponent(foodBox, foodTexture, drawPos);
+            builder.AddComponent(foodBox, foodTexture, drawPos);
 
-            return builer.Build(spriteBatch.GraphicsDevice);
+            return builder.Build(spriteBatch.GraphicsDevice);
         }
 
         public static Texture2D GetImageForFoodItem(SpriteBatch spriteBatch, int foodItemId)
         {
-            TextureBuilder builer = new TextureBuilder();
+            TextureBuilder builder = new TextureBuilder();
 
             Texture2D foodTexture = GetItemTexture(foodItemId);
             Rectangle foodBox = ItemID.Sets.IsFood[foodItemId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3,
                 frameX: 0, frameY: 0) : foodTexture.Frame();
 
-            builer.AddComponent(foodBox, foodTexture, Point.Zero);
+            builder.AddComponent(foodBox, foodTexture, Point.Zero);
 
-            return builer.Build(spriteBatch.GraphicsDevice);
+            return builder.Build(spriteBatch.GraphicsDevice);
         }
 
         public static Texture2D GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
@@ -340,12 +340,12 @@ namespace Twaila.Util
 
             if (animation != null)
             {
-                TextureBuilder builer = new TextureBuilder();
+                TextureBuilder builder = new TextureBuilder();
                 Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
 
-                builer.AddComponent(box, texture, Point.Zero);
+                builder.AddComponent(box, texture, Point.Zero);
 
-                return builer.Build(spriteBatch.GraphicsDevice);
+                return builder.Build(spriteBatch.GraphicsDevice);
             }
             return texture;
         }
