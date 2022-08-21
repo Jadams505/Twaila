@@ -55,7 +55,7 @@ namespace Twaila.Context
         {
             if(FoodItemId != 0)
             {
-                return ImageUtil.GetRenderForPlate(spriteBatch, FoodItemId);
+                return ImageUtil.GetRenderForPlate(FoodItemId);
             }
             return base.TileImage(spriteBatch);
         }

@@ -118,7 +118,7 @@ namespace Twaila.Context
                 return TileImage(spriteBatch);
             }
             TwailaRender tileTexture = TileImage(spriteBatch);
-            if (tileTexture.CanDraw())
+            if (tileTexture != null && tileTexture.CanDraw())
             {
                 return tileTexture;
             }
@@ -129,7 +129,7 @@ namespace Twaila.Context
         {
             int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos), TileType.Tile);
             Texture2D texture = ImageUtil.GetItemTexture(itemId);
-            return new TwailaRender(texture);
+            return texture.ToRender();
         }
 
         protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
@@ -142,7 +142,7 @@ namespace Twaila.Context
                 return new TwailaRender(texture, 0.5f);
             }
             texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
-            return new TwailaRender(texture);
+            return texture.ToRender();
         }
 
         protected override List<UITwailaElement> InfoElements()

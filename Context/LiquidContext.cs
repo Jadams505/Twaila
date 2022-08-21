@@ -89,13 +89,13 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(Pos);
             int itemId = ItemUtil.GetItemId(tile, TileType.Liquid);
-            return new TwailaRender(ImageUtil.GetItemTexture(itemId));
+            return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 
         protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos);
-            return new TwailaRender(ImageUtil.GetLiquidImageFromTile(spriteBatch, tile));
+            return ImageUtil.GetLiquidRenderFromTile(tile);
         }
 
         protected override List<UITwailaElement> InfoElements()

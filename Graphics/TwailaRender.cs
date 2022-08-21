@@ -103,14 +103,14 @@ namespace Twaila.Graphics
             {
                 Point drawPos = new Point(bounds.X + draw.Position.X, bounds.Y + draw.Position.Y);
                 Rectangle source = draw.Source;
-                if(drawPos.X + draw.Size().X > bounds.X + bounds.Width)
+                if(draw.Position.X + draw.Size().X > bounds.Width)
                 {
-                    source.Width = (int)((bounds.Width - drawPos.X) / draw.Scale);
+                    source.Width = (int)((bounds.Width - draw.Position.X) / draw.Scale);
                 }
 
-                if (drawPos.Y + draw.Size().Y > bounds.Y + bounds.Height)
+                if (draw.Position.Y + draw.Size().Y > bounds.Height)
                 {
-                    source.Height = (int)((bounds.Height - drawPos.Y) / draw.Scale);
+                    source.Height = (int)((bounds.Height - draw.Position.Y) / draw.Scale);
                 }
 
                 if(source.Width > 0 && source.Height > 0)

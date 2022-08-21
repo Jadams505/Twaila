@@ -118,7 +118,7 @@ namespace Twaila.Context
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            return new TwailaRender(ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)));
+            return ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)).ToRender();
         }
 
         protected override List<UITwailaElement> InfoElements()

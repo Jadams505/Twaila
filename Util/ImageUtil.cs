@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 
 namespace Twaila.Util
 {
-    internal class ImageUtil
+    public static class ImageUtil
     {
         public static Texture2D GetImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
@@ -54,6 +54,25 @@ namespace Twaila.Util
             return null;
         }
 
+        public static TwailaRender GetWallRenderFromTile(Tile tile)
+        {
+            if (tile.WallType > 0)
+            {
+                int size = 32;
+                int startX = 324, startY = 108;
+                Texture2D texture = GetWallTexture(tile);
+
+                if (texture != null)
+                {
+                    RenderBuilder builder = new RenderBuilder();
+                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
+                    builder.AddImage(source: copyRectangle, texture: texture, position: Point.Zero);
+                    return builder.Build();
+                }
+            }
+            return null;
+        }
+
         public static Texture2D GetLiquidImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.LiquidAmount > 0)
@@ -80,6 +99,37 @@ namespace Twaila.Util
                     Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
                     builder.AddComponent(copyRectangle, texture, new Point(0, 0));
                     return builder.Build(spriteBatch.GraphicsDevice);
+                }
+            }
+            return null;
+        }
+
+        public static TwailaRender GetLiquidRenderFromTile(Tile tile)
+        {
+            if (tile.LiquidAmount > 0)
+            {
+                int size = 16;
+                int startX = 0, startY = 0;
+                Texture2D texture = null;
+                switch (tile.LiquidType)
+                {
+                    case LiquidID.Lava:
+                        texture = TextureAssets.Liquid[WaterStyleID.Lava].Value;
+                        break;
+                    case LiquidID.Honey:
+                        texture = TextureAssets.Liquid[WaterStyleID.Honey].Value;
+                        break;
+                    case LiquidID.Water:
+                        texture = TextureAssets.Liquid[Main.waterStyle].Value;
+                        break;
+                }
+
+                if (texture != null)
+                {
+                    RenderBuilder builder = new RenderBuilder();
+                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
+                    builder.AddImage(source: copyRectangle, texture: texture, position: Point.Zero);
+                    return builder.Build();
                 }
             }
             return null;
@@ -298,29 +348,7 @@ namespace Twaila.Util
             return null;
         }
 
-        public static Texture2D GetImageForPlate(SpriteBatch spriteBatch, int foodItemId)
-        {
-            TextureBuilder builer = new TextureBuilder();
-
-            Texture2D foodTexture = GetItemTexture(foodItemId);
-            Rectangle foodBox = ItemID.Sets.IsFood[foodItemId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3, 
-                frameX: 0, frameY: 2) : foodTexture.Frame();
-
-            Texture2D plateTexture = GetTileTexture(TileID.FoodPlatter);
-            Rectangle plateBox = plateTexture.Frame(horizontalFrames: 2);
-
-            Point drawPos = Point.Zero;
-
-            builer.AddComponent(plateBox, plateTexture, drawPos);
-            drawPos.Y += 16;
-            drawPos.Y -= foodBox.Height;
-            drawPos.X -= (foodBox.Width - 16) / 2;
-            builer.AddComponent(foodBox, foodTexture, drawPos);
-
-            return builer.Build(spriteBatch.GraphicsDevice);
-        }
-
-        public static TwailaRender GetRenderForPlate(SpriteBatch spriteBatch, int foodId)
+        public static TwailaRender GetRenderForPlate(int foodId)
         {
             RenderBuilder builder = new RenderBuilder();
 
@@ -342,19 +370,6 @@ namespace Twaila.Util
             return builder.Build();
         }
 
-        public static Texture2D GetImageForFoodItem(SpriteBatch spriteBatch, int foodItemId)
-        {
-            TextureBuilder builer = new TextureBuilder();
-
-            Texture2D foodTexture = GetItemTexture(foodItemId);
-            Rectangle foodBox = ItemID.Sets.IsFood[foodItemId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3,
-                frameX: 0, frameY: 0) : foodTexture.Frame();
-
-            builer.AddComponent(foodBox, foodTexture, Point.Zero);
-
-            return builer.Build(spriteBatch.GraphicsDevice);
-        }
-
         public static Texture2D GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
         {
             Texture2D texture = GetItemTexture(itemId);
@@ -370,6 +385,23 @@ namespace Twaila.Util
                 return builer.Build(spriteBatch.GraphicsDevice);
             }
             return texture;
+        }
+
+        public static TwailaRender GetRenderForIconItem(int itemId)
+        {
+            Texture2D texture = GetItemTexture(itemId);
+            DrawAnimation animation = Main.itemAnimations[itemId];
+
+            if (animation != null)
+            {
+                RenderBuilder builer = new RenderBuilder();
+                Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
+
+                builer.AddImage(source: box, texture: texture, position: Point.Zero);
+
+                return builer.Build();
+            }
+            return texture.ToRender();
         }
 
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
@@ -454,6 +486,11 @@ namespace Twaila.Util
                 return TextureAssets.Item[itemId].Value;
             }
             return null;
+        }
+
+        public static TwailaRender ToRender(this Texture2D texture)
+        {
+            return new TwailaRender(texture);
         }
     }
 }
