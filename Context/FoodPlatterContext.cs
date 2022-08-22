@@ -32,7 +32,7 @@ namespace Twaila.Context
             {
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    Icons.IconImages.Insert(0, ImageUtil.GetImageForIconItem(Main.spriteBatch, FoodItemId));
+                    Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(FoodItemId));
                 }
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
@@ -51,11 +51,11 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             if(FoodItemId != 0)
             {
-                return new TwailaTexture(ImageUtil.GetImageForPlate(spriteBatch, FoodItemId));
+                return ImageUtil.GetRenderForPlate(FoodItemId);
             }
             return base.TileImage(spriteBatch);
         }

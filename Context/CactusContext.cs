@@ -35,16 +35,16 @@ namespace Twaila.Context
             SandTileId = GetCactusSand();
         }
 
-        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             if (TileLoader.CanGrowModCactus(SandTileId))
             {
-                return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, SandTileId, true));
+                return TreeUtil.GetImageForCactus(spriteBatch, SandTileId, true).ToRender();
             }
-            return new TwailaTexture(TreeUtil.GetImageForCactus(spriteBatch, SandTileId, false));
+            return TreeUtil.GetImageForCactus(spriteBatch, SandTileId, false).ToRender();
         }
 
-        protected override TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             return null;
         }

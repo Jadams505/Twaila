@@ -66,36 +66,36 @@ namespace Twaila.Context
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Liquid";
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
             if (TwailaConfig.Get().UseItemTextures)
             {
-                TwailaTexture itemTexture = ItemImage(spriteBatch);
-                if (itemTexture?.Texture != null)
+                TwailaRender itemTexture = ItemImage(spriteBatch);
+                if (itemTexture.CanDraw())
                 {
                     return itemTexture;
                 }
                 return TileImage(spriteBatch);
             }
-            TwailaTexture tileTexture = TileImage(spriteBatch);
-            if (tileTexture?.Texture != null)
+            TwailaRender tileTexture = TileImage(spriteBatch);
+            if (tileTexture.CanDraw())
             {
                 return tileTexture;
             }
             return ItemImage(spriteBatch);
         }
 
-        protected virtual TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos);
             int itemId = ItemUtil.GetItemId(tile, TileType.Liquid);
-            return new TwailaTexture(ImageUtil.GetItemTexture(itemId));
+            return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 
-        protected virtual TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos);
-            return new TwailaTexture(ImageUtil.GetLiquidImageFromTile(spriteBatch, tile));
+            return ImageUtil.GetLiquidRenderFromTile(tile);
         }
 
         protected override List<UITwailaElement> InfoElements()
