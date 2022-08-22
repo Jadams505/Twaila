@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
+using Twaila.Graphics;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -37,6 +39,12 @@ namespace Twaila.Context
                     ItemText = Lang.GetItemNameValue(ItemId);
                 }
             }
+        }
+
+        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+        {
+            Tile tile = Framing.GetTileSafely(Pos);
+            return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, Pos.X, Pos.Y, ItemId);
         }
 
         public override bool ContextChanged(BaseContext other)

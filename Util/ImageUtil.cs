@@ -437,6 +437,39 @@ namespace Twaila.Util
             return builer.Build();
         }
 
+        public static TwailaRender GetRenderForWeaponRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
+        {
+            RenderBuilder builer = new RenderBuilder();
+
+            Texture2D itemTexture = GetItemTexture(itemId);
+            DrawAnimation itemAnimation = Main.itemAnimations[itemId];
+            Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
+
+            Texture2D rackTexture = GetImageFromTileDrawing(spriteBatch, tile, posX, posY);
+            Rectangle rackBox = rackTexture.Frame();
+
+            Vector2 drawPos = Vector2.Zero;
+
+            float rackSize = 40f;
+            float scale = 1f;
+
+            if (itemBox.Width > rackSize || itemBox.Height > rackSize)
+            {
+                scale = (itemBox.Width <= itemBox.Height) ? (rackSize / itemBox.Height) : (rackSize / itemBox.Width);
+            }
+
+            builer.AddImage(source: rackBox, texture: rackTexture, position: drawPos.ToPoint());
+
+            drawPos.X += rackBox.Width / 2;
+            drawPos.Y += rackBox.Height / 2;
+            drawPos.X -= itemBox.Width / 2 * scale;
+            drawPos.Y -= itemBox.Height / 2 * scale;
+
+            builer.AddImage(source: itemBox, texture: itemTexture, position: drawPos.ToPoint(), scale: scale);
+
+            return builer.Build();
+        }
+
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {
             TextureBuilder builder = new TextureBuilder();
