@@ -101,9 +101,10 @@ namespace Twaila.Graphics
         {
             foreach (DrawInfo draw in Info)
             {
-                Point drawPos = new Point(bounds.X + draw.Position.X, bounds.Y + draw.Position.Y);
+                Vector2 drawPos = new Vector2(bounds.X + draw.Position.X * scale, bounds.Y + draw.Position.Y * scale);
                 Rectangle source = draw.Source;
-                if(draw.Position.X + draw.Size().X > bounds.Width)
+
+                if (draw.Position.X + draw.Size().X > bounds.Width)
                 {
                     source.Width = (int)((bounds.Width - draw.Position.X) / draw.Scale);
                 }
@@ -115,7 +116,7 @@ namespace Twaila.Graphics
 
                 if(source.Width > 0 && source.Height > 0)
                 {
-                    spriteBatch.Draw(draw.Texture, drawPos.ToVector2(), source, draw.Color.MultiplyRGBA(color), 0, Vector2.Zero, draw.Scale * scale, 0, 0);
+                    spriteBatch.Draw(draw.Texture, drawPos, source, draw.Color.MultiplyRGBA(color), 0, Vector2.Zero, draw.Scale * scale, 0, 0);
                 }
             }
         }

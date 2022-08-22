@@ -14,11 +14,11 @@ namespace Twaila.UI
         public const float MAX_SIZE = 20.8f;
         public const int PADDING = 2;
 
-        public List<Texture2D> IconImages { get; private set; }
+        public List<TwailaRender> IconImages { get; private set; }
 
         public TwailaIconLine() : base()
         {
-            IconImages = new List<Texture2D>();
+            IconImages = new List<TwailaRender>();
         }
 
         public override Vector2 GetContentSize()
@@ -43,7 +43,8 @@ namespace Twaila.UI
             IconImages.ForEach(image =>
             {
                 float scale = IconScale(image);
-                spriteBatch.Draw(image, drawPos, new Rectangle(0, 0, image.Width, image.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
+                Rectangle bounds = new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)image.Width, (int)image.Height);
+                image.Draw(spriteBatch, bounds, Color.White * Opacity, scale);
                 drawPos.X += image.Width * scale + PADDING;
             });
         }
@@ -57,7 +58,10 @@ namespace Twaila.UI
             {
                 Vector2 iconSize = IconSize(image);
                 Vector2 centerPos = new Vector2((int)drawPos.X, (int)(drawPos.Y + (Height.Pixels - (iconSize.Y * scale)) / 2));
-                spriteBatch.Draw(image, centerPos, new Rectangle(0, 0, image.Width, image.Height), Color.White * Opacity, 0, Vector2.Zero, MathHelper.Clamp(scale * IconScale(image), 0, 1), 0, 0);
+                Rectangle bounds = new Rectangle((int)centerPos.X, (int)centerPos.Y, (int)image.Width, (int)image.Height);
+                float drawScale = MathHelper.Clamp(scale * IconScale(image), 0, 1);
+
+                image.Draw(spriteBatch, bounds, Color.White * Opacity, drawScale);
                 drawPos.X += iconSize.X * scale + PADDING;
             });
         }
@@ -79,18 +83,20 @@ namespace Twaila.UI
                 if(width <= Width.Pixels)
                 {
                     Vector2 centerPos = new Vector2((int)drawPos.X, (int)(drawPos.Y + (Height.Pixels - IconSize(image).Y) / 2));
-                    spriteBatch.Draw(image, centerPos, new Rectangle(0, 0, image.Width, image.Height), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
+                    Rectangle bounds = new Rectangle((int)centerPos.X, (int)centerPos.Y, (int)image.Width, (int)image.Height);
+
+                    image.Draw(spriteBatch, bounds, Color.White * Opacity, scale);
                     drawPos.X += image.Width * scale + PADDING;
                 }
             });
         }
 
-        public static float IconScale(Texture2D iconImage)
+        public static float IconScale(TwailaRender iconImage)
         {
             return MathHelper.Clamp(MAX_SIZE / Math.Max(iconImage.Width, iconImage.Height), 0, 1);
         }
 
-        public static Vector2 IconSize(Texture2D image)
+        public static Vector2 IconSize(TwailaRender image)
         {
             float scale = IconScale(image);
             return new Vector2(image.Width * scale, image.Height * scale);

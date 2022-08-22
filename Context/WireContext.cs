@@ -60,7 +60,7 @@ namespace Twaila.Context
                         {
                             if(icon > 0)
                             {
-                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon));
+                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon).ToRender());
                             }
                         }
                     }
@@ -78,7 +78,7 @@ namespace Twaila.Context
                     {
                         if (actIcon > 0)
                         {
-                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon));
+                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon).ToRender());
                         }
                     }
                     if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)

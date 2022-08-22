@@ -32,7 +32,7 @@ namespace Twaila.Context
             {
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    Icons.IconImages.Insert(0, ImageUtil.GetImageForIconItem(Main.spriteBatch, FoodItemId));
+                    Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(FoodItemId));
                 }
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
