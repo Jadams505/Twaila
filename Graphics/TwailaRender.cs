@@ -116,12 +116,12 @@ namespace Twaila.Graphics
 
                 if(source.Width > 0 && source.Height > 0)
                 {
-                    spriteBatch.Draw(draw.Texture, drawPos, source, draw.Color.MultiplyRGBA(color), 0, Vector2.Zero, draw.Scale * scale, 0, 0);
+                    spriteBatch.Draw(draw.Texture, drawPos, source, draw.Color.MultiplyRGBA(color), 0, Vector2.Zero, draw.Scale * scale, draw.Effects, 0);
                 }
             }
         }
 
-        private void Shift(int xOffset, int yOffset)
+		private void Shift(int xOffset, int yOffset)
         {
             foreach (DrawInfo draw in Info)
             {

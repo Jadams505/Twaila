@@ -26,7 +26,10 @@ namespace Twaila.Context
 
         public TileContext(Point point) : base(point)
         {
-            Update();
+            Id = "";
+            PickPower = "";
+            RecommendedPickaxe = "";
+            PaintText = "";
         }
 
         public override void Update()

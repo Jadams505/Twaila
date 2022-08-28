@@ -18,7 +18,8 @@ namespace Twaila.Context
 
         public WallContext(Point pos) : base(pos)
         {
-            Update();
+            Id = "";
+            PaintText = "";
         }
 
         public override bool ContextChanged(BaseContext other)

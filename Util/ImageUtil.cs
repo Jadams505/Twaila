@@ -8,6 +8,7 @@ using Twaila.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace Twaila.Util
 {
@@ -470,6 +471,47 @@ namespace Twaila.Util
             return builer.Build();
         }
 
+        public static TwailaRender GetRenderForHatRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int hat1, int hat2)
+        {
+			RenderBuilder builer = new RenderBuilder();
+
+			Texture2D rackTexture = GetImageFromTileDrawing(spriteBatch, tile, posX, posY);
+			Rectangle rackBox = rackTexture.Frame();
+			Vector2 drawPos = Vector2.Zero;
+
+			builer.AddImage(source: rackBox, texture: rackTexture, position: drawPos.ToPoint());
+
+			Item item = new Item();
+			item.SetDefaults(hat1);
+
+            bool left = tile.TileFrameX < 54;
+
+			if (item.headSlot != -1)
+            {
+				Texture2D hat1Texture = GetArmorTexture(item, EquipType.Head);
+				Rectangle hat1Box = hat1Texture.Frame(verticalFrames: 20);
+
+				Point pos = left ? new Point(18, 2) : new Point(-10, 2);
+				SpriteEffects flip = left ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+				builer.AddImage(hat1Texture, pos, hat1Box, Color.White, flip, scale: 1);
+			}
+
+			item.SetDefaults(hat2);
+
+            if(item.headSlot != -1)
+            {
+				Texture2D hat2Texture = GetArmorTexture(item, EquipType.Head);
+				Rectangle hat2Box = hat2Texture.Frame(verticalFrames: 20);
+
+                Point pos = left ? new Point(-10, 20) : new Point(16, 20);
+                SpriteEffects flip = left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+				builer.AddImage(hat2Texture, pos, hat2Box, Color.White, flip, scale: 1);
+			}
+			return builer.Build();
+		}
+
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {
             TextureBuilder builder = new TextureBuilder();
@@ -554,7 +596,24 @@ namespace Twaila.Util
             return null;
         }
 
-        public static TwailaRender ToRender(this Texture2D texture)
+        public static Texture2D GetArmorTexture(Item item, EquipType equipType)
+        {
+            switch (equipType)
+            {
+                case EquipType.Head:
+                    Main.instance.LoadArmorHead(item.headSlot);
+                    return TextureAssets.ArmorHead[item.headSlot].Value;
+                case EquipType.Body:
+					Main.instance.LoadArmorBody(item.bodySlot);
+					return TextureAssets.ArmorBody[item.bodySlot].Value;
+                case EquipType.Legs:
+					Main.instance.LoadArmorLegs(item.legSlot);
+					return TextureAssets.ArmorLeg[item.legSlot].Value;
+			}
+            return null;
+        }
+
+		public static TwailaRender ToRender(this Texture2D texture)
         {
             return new TwailaRender(texture);
         }

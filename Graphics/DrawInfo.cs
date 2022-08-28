@@ -10,19 +10,21 @@ namespace Twaila.Graphics
         public Point Position { get; set; }
         public Rectangle Source { get; set; }
         public Color Color { get; set; }
+        public SpriteEffects Effects { get; set; }
         public float Scale { get; set; }
 
-        public DrawInfo(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
+        public DrawInfo(Texture2D texture, Point position, Rectangle source, Color color, SpriteEffects effects = SpriteEffects.None, float scale = 1)
         {
             Texture = texture;
             Position = position;
             Source = source;
             Color = color;
             Scale = scale;
+            Effects = effects;
         }
 
         public DrawInfo(Texture2D texture, Point position, Rectangle source, float scale = 1) :
-            this(texture, position, source, Color.White, scale)
+            this(texture, position, source, Color.White, scale: scale)
         {
 
         }

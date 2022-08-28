@@ -25,8 +25,10 @@ namespace Twaila.Context
 
         public WireContext(Point point) : base(point)
         {
-            Update();
-        }
+			Icons = new TwailaIconLine();
+            WireText = "";
+            ActuatorText = "";
+		}
 
         public override bool ContextChanged(BaseContext other)
         {
@@ -48,7 +50,7 @@ namespace Twaila.Context
             BlueWire = tile.BlueWire;
             YellowWire = tile.YellowWire;
             GreenWire = tile.GreenWire;
-            Icons = new TwailaIconLine();
+            //Icons = new TwailaIconLine();
 
             if(!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {

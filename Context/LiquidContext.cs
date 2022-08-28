@@ -19,7 +19,7 @@ namespace Twaila.Context
 
         public LiquidContext(Point point) : base(point)
         {
-            Update();
+            Id = "";
         }
 
         public override bool ContextChanged(BaseContext other)

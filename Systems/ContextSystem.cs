@@ -33,6 +33,7 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(CreateFoodPlatterContext);
             TileEntry.ApplicableContexts.Add(CreateItemFrameContext);
             TileEntry.ApplicableContexts.Add(CreateWeaponRackContext);
+            TileEntry.ApplicableContexts.Add(CreateHatRackContext);
             ContextEntries.Add(TileEntry);
 
             WallEntry = new ContextEntry(CreateWallContext, "Wall");
@@ -212,6 +213,20 @@ namespace Twaila.Systems
             }
             return null;
         }
+
+        private static HatRackContext CreateHatRackContext(Point pos)
+        {
+			Tile tile = Framing.GetTileSafely(pos);
+			if (tile.TileType == TileID.HatRack)
+			{
+				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 4);
+				if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1)
+				{
+					return new HatRackContext(pos);
+				}
+			}
+			return null;
+		}
 
         private static WallContext CreateWallContext(Point pos)
         {
