@@ -44,6 +44,7 @@ namespace Twaila.Context
 		public override void Update()
 		{
 			base.Update();
+			TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
 
 			PopulateItems();
 
@@ -52,7 +53,14 @@ namespace Twaila.Context
 				int id = ItemIds[i];
 				if(id > 0)
 				{
-					Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(id));
+					if(content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
+					{
+						Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(id));
+					}
+					if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
+					{
+						ItemTexts[i] = NameUtil.GetNameFromItem(id);
+					}
 				}
 			}		
 		}
@@ -69,7 +77,16 @@ namespace Twaila.Context
 
 		protected override List<UITwailaElement> InfoElements()
 		{
-			return base.InfoElements();
+			List<UITwailaElement> elements = base.InfoElements();
+
+			foreach(string name in ItemTexts)
+			{
+				if (!string.IsNullOrEmpty(name))
+				{
+					elements.Insert(0, new TwailaText(name));
+				}
+			}
+			return elements;
 		}
 
 		private void PopulateItems()
