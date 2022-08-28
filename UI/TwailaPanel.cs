@@ -329,7 +329,6 @@ namespace Twaila.UI
             if (context == null)
             {
                 tick = 0;
-                CurrentContext = null;
                 return;
             }
 
