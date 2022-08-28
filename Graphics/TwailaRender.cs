@@ -106,12 +106,30 @@ namespace Twaila.Graphics
 
                 if (draw.Position.X + draw.Size().X > bounds.Width)
                 {
-                    source.Width = (int)((bounds.Width - draw.Position.X) / draw.Scale);
+                    int sizeX = (int)((bounds.Width - draw.Position.X) / draw.Scale);
+					if (draw.Effects == SpriteEffects.FlipHorizontally)
+					{
+						source.X = source.Width - sizeX;
+						drawPos.X -= source.X;
+					}
+					else
+                    {
+                        source.Width = sizeX;
+                    } 
                 }
 
                 if (draw.Position.Y + draw.Size().Y > bounds.Height)
                 {
-                    source.Height = (int)((bounds.Height - draw.Position.Y) / draw.Scale);
+                    int sizeY = (int)((bounds.Height - draw.Position.Y) / draw.Scale);
+					if (draw.Effects == SpriteEffects.FlipVertically)
+					{
+						source.Y = source.Height - sizeY;
+						drawPos.Y -= source.Y;
+					}
+					else
+                    {
+                        source.Height = sizeY;
+                    } 
                 }
 
                 if(source.Width > 0 && source.Height > 0)
