@@ -34,6 +34,7 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(CreateItemFrameContext);
             TileEntry.ApplicableContexts.Add(CreateWeaponRackContext);
             TileEntry.ApplicableContexts.Add(CreateHatRackContext);
+            TileEntry.ApplicableContexts.Add(CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
             WallEntry = new ContextEntry(CreateWallContext, "Wall");
@@ -228,7 +229,21 @@ namespace Twaila.Systems
 			return null;
 		}
 
-        private static WallContext CreateWallContext(Point pos)
+		private static DisplayDollContext CreateDisplayDollContext(Point pos)
+		{
+			Tile tile = Framing.GetTileSafely(pos);
+			if (tile.TileType == TileID.Mannequin || tile.TileType == TileID.Womannequin || tile.TileType == TileID.DisplayDoll)
+			{
+				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 3);
+				if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1)
+				{
+					return new DisplayDollContext(pos);
+				}
+			}
+			return null;
+		}
+
+		private static WallContext CreateWallContext(Point pos)
         {
             Tile tile = Framing.GetTileSafely(pos);
 
