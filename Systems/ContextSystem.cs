@@ -179,7 +179,8 @@ namespace Twaila.Systems
 
         private static FoodPlatterContext CreateFoodPlatterContext(Point pos)
         {
-            if (TEFoodPlatter.Find(pos.X, pos.Y) != -1)
+            Tile tile = Framing.GetTileSafely(pos);
+            if (TEFoodPlatter.Find(pos.X, pos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
             {
                 return new FoodPlatterContext(pos);
             }
@@ -193,7 +194,7 @@ namespace Twaila.Systems
             if(tile.TileType == TileID.ItemFrame)
             {
                 Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 2);
-                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1)
+                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
                 {
                     return new ItemFrameContext(pos);
                 }
@@ -207,7 +208,7 @@ namespace Twaila.Systems
             if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
             {
                 Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 3);
-                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1)
+                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
                 {
                     return new WeaponRackContext(pos);
                 }
@@ -221,7 +222,7 @@ namespace Twaila.Systems
 			if (tile.TileType == TileID.HatRack)
 			{
 				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 4);
-				if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1)
+				if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
 				{
 					return new HatRackContext(pos);
 				}
@@ -235,7 +236,7 @@ namespace Twaila.Systems
 			if (tile.TileType == TileID.Mannequin || tile.TileType == TileID.Womannequin || tile.TileType == TileID.DisplayDoll)
 			{
 				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 3);
-				if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1)
+				if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
 				{
 					return new DisplayDollContext(pos);
 				}
