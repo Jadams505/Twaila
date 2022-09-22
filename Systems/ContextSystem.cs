@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -29,6 +30,11 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(CreateCactusContext);
             TileEntry.ApplicableContexts.Add(CreateTreeContext);
             TileEntry.ApplicableContexts.Add(CreateSaplingContext);
+            TileEntry.ApplicableContexts.Add(CreateFoodPlatterContext);
+            TileEntry.ApplicableContexts.Add(CreateItemFrameContext);
+            TileEntry.ApplicableContexts.Add(CreateWeaponRackContext);
+            TileEntry.ApplicableContexts.Add(CreateHatRackContext);
+            TileEntry.ApplicableContexts.Add(CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
             WallEntry = new ContextEntry(CreateWallContext, "Wall");
@@ -171,7 +177,74 @@ namespace Twaila.Systems
             return null;
         }
 
-        private static WallContext CreateWallContext(Point pos)
+        private static FoodPlatterContext CreateFoodPlatterContext(Point pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos);
+            if (TEFoodPlatter.Find(pos.X, pos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
+            {
+                return new FoodPlatterContext(pos);
+            }
+
+            return null;
+        }
+
+        private static ItemFrameContext CreateItemFrameContext(Point pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos);
+            if(tile.TileType == TileID.ItemFrame)
+            {
+                Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 2);
+                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
+                {
+                    return new ItemFrameContext(pos);
+                }
+            }
+            return null;
+        }
+
+        private static WeaponRackContext CreateWeaponRackContext(Point pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos);
+            if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
+            {
+                Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 3);
+                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
+                {
+                    return new WeaponRackContext(pos);
+                }
+            }
+            return null;
+        }
+
+        private static HatRackContext CreateHatRackContext(Point pos)
+        {
+			Tile tile = Framing.GetTileSafely(pos);
+			if (tile.TileType == TileID.HatRack)
+			{
+				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 4);
+				if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
+				{
+					return new HatRackContext(pos);
+				}
+			}
+			return null;
+		}
+
+		private static DisplayDollContext CreateDisplayDollContext(Point pos)
+		{
+			Tile tile = Framing.GetTileSafely(pos);
+			if (tile.TileType == TileID.Mannequin || tile.TileType == TileID.Womannequin || tile.TileType == TileID.DisplayDoll)
+			{
+				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 3);
+				if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
+				{
+					return new DisplayDollContext(pos);
+				}
+			}
+			return null;
+		}
+
+		private static WallContext CreateWallContext(Point pos)
         {
             Tile tile = Framing.GetTileSafely(pos);
 

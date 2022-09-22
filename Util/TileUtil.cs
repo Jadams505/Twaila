@@ -90,5 +90,14 @@ namespace Twaila.Util
             }
             return Main.Map.IsRevealed(tilePos.X, tilePos.Y);
         }
+
+        public static Point TileEntityCoordinates(int tileCoordX, int tileCoordY, int size = 18, int width = 1, int height = 1)
+        {
+            Tile tile = Framing.GetTileSafely(tileCoordX, tileCoordY);
+            int posXAdjusted = tileCoordX - tile.TileFrameX / size % width;
+            int posYAdjusted = tileCoordY - tile.TileFrameY / size % height;
+
+             return new Point(posXAdjusted, posYAdjusted);
+        }
     }
 }

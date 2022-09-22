@@ -26,7 +26,10 @@ namespace Twaila.Context
 
         public TileContext(Point point) : base(point)
         {
-            Update();
+            Id = "";
+            PickPower = "";
+            RecommendedPickaxe = "";
+            PaintText = "";
         }
 
         public override void Update()
@@ -50,7 +53,7 @@ namespace Twaila.Context
                 {
                     if (paintIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon));
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon).ToRender());
                     }
                 }
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
@@ -65,7 +68,7 @@ namespace Twaila.Context
                 {
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(pickId));
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(pickId).ToRender());
                     }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
@@ -106,43 +109,43 @@ namespace Twaila.Context
             return oldRow != newRow || oldCol != newCol;
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
             if (TwailaConfig.Get().UseItemTextures)
             {
-                TwailaTexture itemTexture = ItemImage(spriteBatch);
-                if(itemTexture?.Texture != null)
+                TwailaRender itemTexture = ItemImage(spriteBatch);
+                if(itemTexture != null && itemTexture.CanDraw())
                 {
                     return itemTexture;
                 }
                 return TileImage(spriteBatch);
             }
-            TwailaTexture tileTexture = TileImage(spriteBatch);
-            if (tileTexture?.Texture != null)
+            TwailaRender tileTexture = TileImage(spriteBatch);
+            if (tileTexture != null && tileTexture.CanDraw())
             {
                 return tileTexture;
             }
             return ItemImage(spriteBatch);
         }
 
-        protected virtual TwailaTexture ItemImage(SpriteBatch spriteBatch)
+        protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos), TileType.Tile);
             Texture2D texture = ImageUtil.GetItemTexture(itemId);
-            return new TwailaTexture(texture);
+            return texture.ToRender();
         }
 
-        protected virtual TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos);
             Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
                     TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType);
             if (texture != null)
             {
-                return new TwailaTexture(texture, 0.5f);
+                return new TwailaRender(texture, 0.5f);
             }
             texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
-            return new TwailaTexture(texture);
+            return texture.ToRender();
         }
 
         protected override List<UITwailaElement> InfoElements()

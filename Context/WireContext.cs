@@ -25,8 +25,10 @@ namespace Twaila.Context
 
         public WireContext(Point point) : base(point)
         {
-            Update();
-        }
+			Icons = new TwailaIconLine();
+            WireText = "";
+            ActuatorText = "";
+		}
 
         public override bool ContextChanged(BaseContext other)
         {
@@ -48,7 +50,7 @@ namespace Twaila.Context
             BlueWire = tile.BlueWire;
             YellowWire = tile.YellowWire;
             GreenWire = tile.GreenWire;
-            Icons = new TwailaIconLine();
+            //Icons = new TwailaIconLine();
 
             if(!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
@@ -60,7 +62,7 @@ namespace Twaila.Context
                         {
                             if(icon > 0)
                             {
-                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon));
+                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon).ToRender());
                             }
                         }
                     }
@@ -78,7 +80,7 @@ namespace Twaila.Context
                     {
                         if (actIcon > 0)
                         {
-                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon));
+                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon).ToRender());
                         }
                     }
                     if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
@@ -116,9 +118,9 @@ namespace Twaila.Context
             return "Terraria";
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            return new TwailaTexture(ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)));
+            return ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)).ToRender();
         }
 
         protected override List<UITwailaElement> InfoElements()
