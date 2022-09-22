@@ -16,15 +16,14 @@ namespace Twaila.Graphics
             _drawInstructions = new List<DrawInfo>();
         }
 
-        public void AddImage(Texture2D texture, Point position, Rectangle source, Color color,
-            SpriteEffects effects = SpriteEffects.None, float scale = 1)
+        public void AddImage(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
         {
-            _drawInstructions.Add(new DrawInfo(texture, position, source, color, effects, scale));
+            _drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
         }
 
         public void AddImage(Texture2D texture, Point position, Rectangle source, float scale = 1)
         {
-            AddImage(texture, position, source, Color.White, SpriteEffects.None, scale);
+            AddImage(texture, position, source, Color.White, scale);
         }
 
         public TwailaRender Build()

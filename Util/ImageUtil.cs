@@ -461,56 +461,15 @@ namespace Twaila.Util
 
             builer.AddImage(source: rackBox, texture: rackTexture, position: drawPos.ToPoint());
 
-            drawPos.X += rackBox.Width / 2;
+			drawPos.X += rackBox.Width / 2;
             drawPos.Y += rackBox.Height / 2;
             drawPos.X -= itemBox.Width / 2 * scale;
             drawPos.Y -= itemBox.Height / 2 * scale;
 
-            builer.AddImage(source: itemBox, texture: itemTexture, position: drawPos.ToPoint(), scale: scale);
+            builer.AddImage(itemTexture, drawPos.ToPoint(), itemBox, Color.White, scale);
 
             return builer.Build();
         }
-
-        public static TwailaRender GetRenderForHatRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int hat1, int hat2)
-        {
-			RenderBuilder builer = new RenderBuilder();
-
-			Texture2D rackTexture = GetImageFromTileDrawing(spriteBatch, tile, posX, posY);
-			Rectangle rackBox = rackTexture.Frame();
-			Vector2 drawPos = Vector2.Zero;
-
-			builer.AddImage(source: rackBox, texture: rackTexture, position: drawPos.ToPoint());
-
-			Item item = new Item();
-			item.SetDefaults(hat1);
-
-            bool left = tile.TileFrameX < 54;
-
-			if (item.headSlot != -1)
-            {
-				Texture2D hat1Texture = GetArmorTexture(item, EquipType.Head);
-				Rectangle hat1Box = hat1Texture.Frame(verticalFrames: 20);
-
-				Point pos = left ? new Point(18, 2) : new Point(-10, 2);
-				SpriteEffects flip = left ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-				builer.AddImage(hat1Texture, pos, hat1Box, Color.White, flip, scale: 1);
-			}
-
-			item.SetDefaults(hat2);
-
-            if(item.headSlot != -1)
-            {
-				Texture2D hat2Texture = GetArmorTexture(item, EquipType.Head);
-				Rectangle hat2Box = hat2Texture.Frame(verticalFrames: 20);
-
-                Point pos = left ? new Point(-10, 20) : new Point(16, 20);
-                SpriteEffects flip = left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-				builer.AddImage(hat2Texture, pos, hat2Box, Color.White, flip, scale: 1);
-			}
-			return builer.Build();
-		}
 
         public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
         {

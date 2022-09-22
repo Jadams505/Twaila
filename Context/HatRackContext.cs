@@ -65,16 +65,6 @@ namespace Twaila.Context
 			}		
 		}
 
-		protected override TwailaRender TileImage(SpriteBatch spriteBatch)
-		{
-			Tile tile = Framing.GetTileSafely(Pos);
-			if (ItemIds[0] > 0 || ItemIds[1] > 0)
-			{
-				return ImageUtil.GetRenderForHatRack(spriteBatch, tile, Pos.X, Pos.Y, ItemIds[0], ItemIds[1]);
-			}
-			return base.TileImage(spriteBatch);
-		}
-
 		protected override List<UITwailaElement> InfoElements()
 		{
 			List<UITwailaElement> elements = base.InfoElements();
