@@ -35,7 +35,16 @@ Suggestions and Feedback are welcome
 - [c/FFFF00:Previous Context]: Cycles the UI contents backwards
 - [c/FFFF00:Cycle Context Mode]: Cycles between Automatic and Manual context modes
 
+[Credits]
+The Golden Knight - Developer
+SweelLong - Chinese Translations
+
 [Changelog]
+v0.2.4.2 (8/16/2022)
+- Chinese Translations added thanks to SweelLong
+- Added pickaxe power to the recommended pickaxe line
+- Fixed an issue with incorrectly recommending the strongest pickaxe
+- Fixed issues with the following tiles: Gelatin Crystal, Marble Column, Beds, Locked Temple Door
 v0.2.4.1 (7/29/2022)
 - Fixed an issue with HideUIForAir and the Lock Context
 - Renamed Lock Context to Cycle Context Mode

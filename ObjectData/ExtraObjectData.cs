@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -18,6 +19,7 @@ namespace Twaila.ObjectData
             Add2x3();
             Add3x2();
             Add3x3();
+            Add4x2();
         }
 
         public static void Unload()
@@ -137,6 +139,15 @@ namespace Twaila.ObjectData
             data2.CoordinateHeights = new int[] { 16, 16, 16 };
             data2.StyleHorizontal = true;
             AddEntry(TileID.GemLocks, data2);
+        }
+
+        private static void Add4x2()
+        {
+            TileObjectData data = new TileObjectData();
+            data.CopyFrom(TileObjectData.Style4x2);
+            data.CoordinateHeights = new int[] { 16, 18 };
+            data.CoordinatePaddingFix = new Point16(0, -2);
+            AddEntry(TileID.Beds, data);
         }
 
         private static void AddEntry(int tileId, TileObjectData copyFrom)

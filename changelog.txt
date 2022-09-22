@@ -1,3 +1,5 @@
 ﻿
-- Fixed an issue with HideUIForAir and the Lock Context
-- Renamed Lock Context to Cycle Context Mode
+- Chinese Translations added thanks to SweelLong
+- Added pickaxe power to the recommended pickaxe line
+- Fixed an issue with incorrectly recommending the strongest pickaxe
+- Fixed issues with the following tiles: Gelatin Crystal, Marble Column, Beds, Locked Temple Door
