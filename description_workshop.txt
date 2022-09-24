@@ -41,5 +41,5 @@ Visit the Forum page for more details on config options
 [/list]
 
 [h1]Credits[/h1]
-The Golden Knight - Developer
+Jadams - Developer
 SweelLong - Chinese Translations

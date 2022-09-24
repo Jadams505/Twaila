@@ -72,12 +72,12 @@ namespace Twaila
 
         [Header("$Mods.Twaila.UIPanel")]
 
-        [DefaultValue(30)]
+        [DefaultValue(40)]
         [Tooltip("$Mods.Twaila.MaxWidth.Tooltip")]
         [Label("$Mods.Twaila.MaxWidth.Label")]
         public int MaxWidth;
 
-        [DefaultValue(30)]
+        [DefaultValue(40)]
         [Tooltip("$Mods.Twaila.MaxHeight.Tooltip")]
         [Label("$Mods.Twaila.MaxHeight.Label")]
         public int MaxHeight;

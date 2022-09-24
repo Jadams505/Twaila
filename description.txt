@@ -36,10 +36,14 @@ Suggestions and Feedback are welcome
 - [c/FFFF00:Cycle Context Mode]: Cycles between Automatic and Manual context modes
 
 [Credits]
-The Golden Knight - Developer
+Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.3.0.0 (9/23/2022)
+- Added support for vanilla tile entities (Mannequins, Item Frames, Plates, etc)
+- Added the ShowContainedItems content toggle
+- Increased the default for MaxWidth and MaxHeight to 40
 v0.2.4.2 (8/16/2022)
 - Chinese Translations added thanks to SweelLong
 - Added pickaxe power to the recommended pickaxe line
