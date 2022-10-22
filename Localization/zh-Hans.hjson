@@ -3,6 +3,13 @@ Mods:
 {
     Twaila:
     {
+		Keybind:
+		{
+			CycleUIDisplayMode: "循环UI显示模式"
+			NextContext: "下一个内容"
+			PreviousContext: "上一个内容"
+			CycleContextMode: "循环内容模式"
+		}
         enum:
         {
             Left: "左边"

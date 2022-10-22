@@ -2,6 +2,13 @@
 {
     Twaila:
     {
+		Keybind:
+		{
+			CycleUIDisplayMode: "Cycle UI Display Mode"
+			NextContext: "Next Context"
+			PreviousContext: "Previous Context"
+			CycleContextMode: "Cycle Context Mode"
+		}
         enum:
         {
             Left: "Left"
