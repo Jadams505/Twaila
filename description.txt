@@ -40,6 +40,9 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.3.0.1 (10/22/2022)
+- Adjusted to the new keybind localization
+- Fixed a bug where you could move the panel in the full screen map
 v0.3.0.0 (9/23/2022)
 - Added support for vanilla tile entities (Mannequins, Item Frames, Plates, etc)
 - Added the ShowContainedItems content toggle

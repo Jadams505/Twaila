@@ -1,4 +1,3 @@
 ﻿
-- Added support for vanilla tile entities (Mannequins, Item Frames, Plates, etc)
-- Added the ShowContainedItems content toggle
-- Increased the default for MaxWidth and MaxHeight to 40
+- Adjusted to the new keybind localization
+- Fixed a bug where you could move the panel in the full screen map

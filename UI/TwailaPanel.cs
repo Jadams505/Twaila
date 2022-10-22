@@ -380,7 +380,7 @@ namespace Twaila.UI
 
         public bool IsDragging()
         {
-            return _dragging && !Main.ingameOptionsWindow && !Main.hideUI;
+            return _dragging && !Main.ingameOptionsWindow && !Main.hideUI && !Main.mapFullscreen;
         }
 
         public void Drag()
