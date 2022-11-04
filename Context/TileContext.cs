@@ -139,7 +139,7 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(Pos);
             Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
-                    TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType);
+                    TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType) ?? TreeUtil.GetImageForAshTree(spriteBatch, tile.TileType);
             if (texture != null)
             {
                 return new TwailaRender(texture, 0.5f);

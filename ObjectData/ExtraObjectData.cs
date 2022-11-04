@@ -6,7 +6,7 @@ using Terraria.ObjectData;
 
 namespace Twaila.ObjectData
 {
-    internal class ExtraObjectData
+    public class ExtraObjectData
     {
         private static Dictionary<int, TileObjectData> _data;
 

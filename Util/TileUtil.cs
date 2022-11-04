@@ -9,7 +9,7 @@ using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
-    internal class TileUtil
+    public class TileUtil
     {
         public static TileObjectData GetTileObjectData(Tile tile)
         {

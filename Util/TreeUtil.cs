@@ -8,7 +8,7 @@ using Twaila.Graphics;
 
 namespace Twaila.Util
 {
-    internal class TreeUtil
+    public class TreeUtil
     {
         public static Texture2D GetImageForVanillaTree(SpriteBatch spriteBatch, int woodType, int depth)
         {
@@ -98,6 +98,32 @@ namespace Twaila.Util
             return BuildImageForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
                 bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
         }
+
+		public static Texture2D GetImageForAshTree(SpriteBatch spriteBatch, int tileId)
+		{
+			if(tileId == TileID.TreeAsh)
+			{
+				int size = 20;
+				Texture2D topTexture = TextureAssets.TreeTop[31].Value;
+				Texture2D woodTexture = TextureAssets.Tile[tileId].Value;
+				Texture2D branchTexture = TextureAssets.TreeBranch[31].Value;
+				Rectangle top = new Rectangle(120, 0, 114, 96);
+				Rectangle trunk1 = new Rectangle(44, 108, size, size);
+				Rectangle trunk2 = new Rectangle(88, 42, size, size);
+				Rectangle trunk3 = new Rectangle(66, 66, size, size);
+				Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
+				Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
+				Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
+				Rectangle bottomLeft = new Rectangle(44, 176, size, size);
+				Rectangle bottomRight = new Rectangle(22, 154, size, size);
+				int topOffsetX = 46;
+				int topOffsetY = 94;
+
+				return BuildImageForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
+					bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+			}
+			return null;
+		}
 
         public static Texture2D GetImageForGemTree(SpriteBatch spriteBatch, int tileId)
         {

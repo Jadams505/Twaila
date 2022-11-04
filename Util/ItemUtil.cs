@@ -13,7 +13,7 @@ namespace Twaila.Util
         Tile, Wall, Liquid, Empty
     }
 
-    internal class ItemUtil
+    public class ItemUtil
     {
         private class TileStylePair
         {

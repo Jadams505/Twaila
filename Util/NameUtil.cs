@@ -8,7 +8,7 @@ using Twaila.Context;
 
 namespace Twaila.Util
 {
-    internal class NameUtil
+    public class NameUtil
     {
         public static string GetNameFromItem(int itemId)
         {
@@ -237,6 +237,8 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.BambooBlock);
                 case TileID.Seaweed:
                     return GetNameFromItem(ItemID.Seaweed);
+				case TileID.TreeAsh:
+					return GetNameFromItem(ItemID.AshWood).Replace("Wood", "Tree");
             }
             return null;
         }
