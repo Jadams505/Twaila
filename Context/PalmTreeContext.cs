@@ -44,7 +44,7 @@ namespace Twaila.Context
             {
                 return new TwailaRender(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
             }
-            return null;
+            return new TwailaRender();
         }
 
         protected override string GetName()

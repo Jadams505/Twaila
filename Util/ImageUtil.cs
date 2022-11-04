@@ -71,8 +71,8 @@ namespace Twaila.Util
                     return builder.Build();
                 }
             }
-            return null;
-        }
+			return new TwailaRender();
+		}
 
         public static Texture2D GetLiquidImageFromTile(SpriteBatch spriteBatch, Tile tile)
         {
@@ -133,7 +133,7 @@ namespace Twaila.Util
                     return builder.Build();
                 }
             }
-            return null;
+            return new TwailaRender();
         }
 
         public static Texture2D GetImageCustom(SpriteBatch spriteBatch, Tile tile)

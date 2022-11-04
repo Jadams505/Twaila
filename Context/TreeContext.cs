@@ -54,7 +54,7 @@ namespace Twaila.Context
             {
                 return new TwailaRender(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
             }
-            return null;
+            return new TwailaRender();
         }
 
         protected override string GetName()

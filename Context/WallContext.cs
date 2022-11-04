@@ -66,14 +66,14 @@ namespace Twaila.Context
             if (TwailaConfig.Get().UseItemTextures)
             {
                 TwailaRender itemTexture = ItemImage(spriteBatch);
-                if (itemTexture.CanDraw())
+                if (itemTexture != null && itemTexture.CanDraw())
                 {
                     return itemTexture;
                 }
                 return TileImage(spriteBatch);
             }
             TwailaRender tileTexture = TileImage(spriteBatch);
-            if (tileTexture.CanDraw())
+            if (tileTexture != null && tileTexture.CanDraw())
             {
                 return tileTexture;
             }

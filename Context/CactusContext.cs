@@ -46,7 +46,7 @@ namespace Twaila.Context
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            return null;
+            return new TwailaRender();
         }
 
         protected override string GetName()

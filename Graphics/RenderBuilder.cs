@@ -18,7 +18,10 @@ namespace Twaila.Graphics
 
         public void AddImage(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
         {
-            _drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
+			if(texture != null)
+			{
+				_drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
+			}
         }
 
         public void AddImage(Texture2D texture, Point position, Rectangle source, float scale = 1)

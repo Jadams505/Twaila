@@ -62,13 +62,12 @@ namespace Twaila.Graphics
 
                 Width = texture.Width * scale;
                 Height = texture.Height * scale;
-            }   
-        }
+			}
+		}
 
         public TwailaRender()
         {
-            List<DrawInfo> list = new List<DrawInfo>();
-            Info = list;
+			Info = new List<DrawInfo>();
         }
 
         public bool CanDraw()
