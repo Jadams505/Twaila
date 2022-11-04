@@ -68,6 +68,7 @@ namespace Twaila.ObjectData
             AddEntry(TileID.MushroomPlants, data4);
             AddEntry(TileID.HallowedPlants, data4);
             AddEntry(TileID.CrimsonPlants, data4); //FleshWeeds
+			AddEntry(TileID.AshPlants, data4);
 
             TileObjectData data5 = new TileObjectData(TileObjectData.Style1x1);
             data5.CoordinateHeights = new int[] { 32 };

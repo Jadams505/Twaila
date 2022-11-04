@@ -237,9 +237,25 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.BambooBlock);
                 case TileID.Seaweed:
                     return GetNameFromItem(ItemID.Seaweed);
+				case TileID.VioletMoss:
+					return GetNameFromItem(ItemID.VioletMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+				case TileID.VioletMossBrick:
+					return GetNameFromItem(ItemID.VioletMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+				case TileID.RainbowMoss:
+					return GetNameFromItem(ItemID.RainbowMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+				case TileID.RainbowMossBrick:
+					return GetNameFromItem(ItemID.RainbowMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+				case TileID.AshGrass:
+					return GetNameFromItem(ItemID.AshGrassSeeds).Replace("Seeds", "Block");
 				case TileID.TreeAsh:
 					return GetNameFromItem(ItemID.AshWood).Replace("Wood", "Tree");
-            }
+				case TileID.CorruptVines:
+					return "Corrupt " + GetNameFromItem(ItemID.Vine);
+				case TileID.AshPlants:
+					return "Ash Plant";
+				case TileID.AshVines:
+					return "Ash " + GetNameFromItem(ItemID.Vine);
+			}
             return null;
         }
 
