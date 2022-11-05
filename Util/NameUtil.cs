@@ -257,6 +257,14 @@ namespace Twaila.Util
 					return "Ash " + GetNameFromItem(ItemID.Vine);
 				case TileID.PlanteraThorns:
 					return "Plantera " + Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.CorruptThorns, 0));
+				case TileID.CorruptJungleGrass:
+					return "Corrupt " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
+				case TileID.CrimsonJungleGrass:
+					return "Crimson " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
+				case TileID.LifeCrystalBoulder:
+					return TwailaConfig.Get().AntiCheat ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
+				case TileID.DirtiestBlock:
+					return TwailaConfig.Get().AntiCheat ? GetNameFromItem(ItemID.DirtBlock) : GetNameFromItem(ItemID.DirtiestBlock);
 			}
             return null;
         }

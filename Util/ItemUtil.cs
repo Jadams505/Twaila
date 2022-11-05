@@ -500,6 +500,12 @@ namespace Twaila.Util
                     return ItemID.Amber;
 				case TileID.GlowTulip:
 					return ItemID.GlowTulip;
+				case TileID.CorruptJungleGrass:
+					return ItemID.CorruptSeeds;
+				case TileID.CrimsonJungleGrass:
+					return ItemID.CrimsonSeeds;
+				case TileID.DirtiestBlock:
+					return ItemID.DirtiestBlock;
             }
             if (tile.HasActuator && !tile.HasTile)
             {
