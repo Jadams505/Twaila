@@ -255,6 +255,8 @@ namespace Twaila.Util
 					return "Ash Plant";
 				case TileID.AshVines:
 					return "Ash " + GetNameFromItem(ItemID.Vine);
+				case TileID.PlanteraThorns:
+					return "Plantera " + Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.CorruptThorns, 0));
 			}
             return null;
         }
@@ -454,16 +456,19 @@ namespace Twaila.Util
         public static string SplitCamelCase(string word)
         {
             StringBuilder builder = new StringBuilder();
-
-            foreach(char letter in word)
-            {
-                if (char.IsUpper(letter) && builder.Length != 0)
-                {
-                    builder.Append(' ');
-                }
-                builder.Append(letter);
-            }
-            return builder.ToString();
+			if(word != null)
+			{
+				foreach (char letter in word)
+				{
+					if (char.IsUpper(letter) && builder.Length != 0)
+					{
+						builder.Append(' ');
+					}
+					builder.Append(letter);
+				}
+				return builder.ToString();
+			}
+			return word;
         }
 
         public static string GetName(TwailaConfig.NameType nameType, string displayName, string internalName, string fullName)

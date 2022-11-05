@@ -85,6 +85,11 @@ namespace Twaila.ObjectData
             data6.StyleMultiplier = 27;
             data6.StyleWrapLimit = 27;
             AddEntry(TileID.Platforms, data6); // the stone platform is messed up in the original TileObjectData and I dont know why
+
+			TileObjectData data7 = new TileObjectData(TileObjectData.Style1x1);
+			data7.CoordinateHeights = new int[] { 34 };
+			data7.CoordinateWidth = 24;
+			AddEntry(TileID.GlowTulip, data7);
         }
 
         private static void Add2x1()

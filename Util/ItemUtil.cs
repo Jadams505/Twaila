@@ -498,6 +498,8 @@ namespace Twaila.Util
                     return ItemID.Grate;
                 case TileID.AmberStoneBlock:
                     return ItemID.Amber;
+				case TileID.GlowTulip:
+					return ItemID.GlowTulip;
             }
             if (tile.HasActuator && !tile.HasTile)
             {

@@ -63,7 +63,7 @@ namespace Twaila.UI
 
             BackgroundColor = config.PanelColor.Color;
             BorderColor = Color.Black;
-            if (IsMouseHovering && !IsDragging())
+            if (ContainsPoint(Main.mouseX, Main.mouseY) && !IsDragging())
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
