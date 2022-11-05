@@ -680,6 +680,8 @@ namespace Twaila.Util
                     return ItemID.HoneyBucket;
                 case LiquidID.Lava:
                     return ItemID.LavaBucket;
+				case LiquidID.Shimmer:
+					return ItemID.BottomlessShimmerBucket;
             }
             return -1;
         }

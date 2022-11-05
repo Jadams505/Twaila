@@ -281,6 +281,10 @@ namespace Twaila.Util
                 {
                     return "Honey";
                 }
+				if(tile.LiquidType == LiquidID.Shimmer)
+				{
+					return "Shimmer";
+				}
                 if(tile.LiquidType == LiquidID.Water)
                 {
                     const string water = "Water";
@@ -312,8 +316,10 @@ namespace Twaila.Util
                             return "Honey";
                         case WaterStyleID.UndergroundDesert:
                             return "Desert " + water;
+						case 13:
+							return "Ocean " + water;
                     }
-                    if(Main.waterStyle >= WaterStyleID.Count)
+                    if(Main.waterStyle >= Main.maxLiquidTypes)
                     {
                         return SplitCamelCase(GetInternalLiquidName(Main.waterStyle, false));
                     }
