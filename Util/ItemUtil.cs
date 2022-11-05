@@ -526,12 +526,6 @@ namespace Twaila.Util
                     return ItemID.DirtWall;
                 case WallID.EbonstoneUnsafe:
                     return ItemID.EbonstoneEcho;
-                case WallID.BlueDungeonUnsafe:
-                    return ItemID.BlueBrickWall;
-                case WallID.GreenDungeonUnsafe:
-                    return ItemID.GreenBrickWall;
-                case WallID.PinkDungeonUnsafe:
-                    return ItemID.PinkBrickWall;
                 case WallID.HellstoneBrickUnsafe:
                     return ItemID.HellstoneBrickWall;
                 case WallID.ObsidianBrickUnsafe:
@@ -570,8 +564,6 @@ namespace Twaila.Util
                     return ItemID.LivingLeafWall;
                 case WallID.Cave7Unsafe:
                     return ItemID.Cave7Echo;
-                case WallID.SpiderUnsafe:
-                    return ItemID.SpiderEcho;
                 case WallID.GrassUnsafe:
                     return ItemID.GrassWall;
                 case WallID.JungleUnsafe:
@@ -594,20 +586,6 @@ namespace Twaila.Util
                     return ItemID.CrimstoneEcho;
                 case WallID.HiveUnsafe:
                     return ItemID.HiveWall;
-                case WallID.LihzahrdBrickUnsafe:
-                    return ItemID.LihzahrdBrickWall;
-                case WallID.BlueDungeonSlabUnsafe:
-                    return ItemID.BlueSlabWall;
-                case WallID.BlueDungeonTileUnsafe:
-                    return ItemID.BlueTiledWall;
-                case WallID.PinkDungeonSlabUnsafe:
-                    return ItemID.PinkSlabWall;
-                case WallID.PinkDungeonTileUnsafe:
-                    return ItemID.PinkTiledWall;
-                case WallID.GreenDungeonSlabUnsafe:
-                    return ItemID.GreenSlabWall;
-                case WallID.GreenDungeonTileUnsafe:
-                    return ItemID.GreenTiledWall;
                 case WallID.CaveWall:
                     return ItemID.CaveWall1Echo;
                 case WallID.CaveWall2:
@@ -618,8 +596,6 @@ namespace Twaila.Util
                     return ItemID.GraniteWall;
                 case WallID.Cave8Unsafe:
                     return ItemID.Cave8Echo;
-                case WallID.Sandstone:
-                    return ItemID.SandstoneWall;
                 case WallID.CorruptionUnsafe1:
                     return ItemID.Corruption1Echo;
                 case WallID.CorruptionUnsafe2:
@@ -676,8 +652,6 @@ namespace Twaila.Util
                     return ItemID.Rocks3Echo;
                 case WallID.RocksUnsafe4:
                     return ItemID.Rocks4Echo;
-                case WallID.HardenedSand:
-                    return ItemID.HardenedSandWall;
                 case WallID.CorruptHardenedSand:
                     return ItemID.CorruptHardenedSandWall;
                 case WallID.CrimsonHardenedSand:
