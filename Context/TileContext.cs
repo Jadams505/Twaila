@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Twaila.Graphics;
@@ -22,6 +23,8 @@ namespace Twaila.Context
         protected string PickPower { get; set; }
         protected string RecommendedPickaxe { get; set; }
         protected string PaintText { get; set; }
+		protected string IlluminantText { get; set; }
+		protected string EchoText { get; set; }
 
 
         public TileContext(Point point) : base(point)
@@ -30,6 +33,8 @@ namespace Twaila.Context
             PickPower = "";
             RecommendedPickaxe = "";
             PaintText = "";
+			IlluminantText = "";
+			EchoText = "";
         }
 
         public override void Update()
@@ -61,6 +66,27 @@ namespace Twaila.Context
                     PaintText = paintText;
                 }
             }
+
+			if (InfoUtil.GetCoatingInfo(tile, TileType.Tile, out string illuminantText, out string echoText,
+				out int illuminantIcon, out int echoIcon))
+			{
+				if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
+				{
+					if(illuminantIcon > 0)
+					{
+						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+					}
+					if(echoIcon > 0)
+					{
+						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+					}
+				}
+				if(content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
+				{
+					IlluminantText = illuminantText;
+					EchoText = echoText;
+				}
+			}
 
             if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out int pickId))
             {
@@ -156,7 +182,15 @@ namespace Twaila.Context
             {
                 elements.Insert(0, new TwailaText(PaintText));
             }
-            if (!string.IsNullOrEmpty(RecommendedPickaxe))
+			if (!string.IsNullOrEmpty(IlluminantText))
+			{
+				elements.Insert(0, new TwailaText(IlluminantText));
+			}
+			if (!string.IsNullOrEmpty(EchoText))
+			{
+				elements.Insert(0, new TwailaText(EchoText));
+			}
+			if (!string.IsNullOrEmpty(RecommendedPickaxe))
             {
                 elements.Insert(0, new TwailaText(RecommendedPickaxe));
             }

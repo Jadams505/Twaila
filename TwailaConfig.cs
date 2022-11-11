@@ -214,6 +214,10 @@ namespace Twaila
             [Label("$Mods.Twaila.Content.ShowPaint")]
             public DisplayType ShowPaint;
 
+			[DrawTicks]
+			[Label("$Mods.Twaila.Content.ShowCoating")]
+			public DisplayType ShowCoating = DisplayType.Off;
+
             [DrawTicks]
             [Label("$Mods.Twaila.Content.ShowContainedItems")]
             public DisplayType ShowContainedItems;
@@ -228,7 +232,8 @@ namespace Twaila
                 ShowWire = DisplayType.Icon;
                 ShowActuator = DisplayType.Icon;
                 ShowPaint = DisplayType.Icon;
-                ShowContainedItems = DisplayType.Icon;
+				ShowCoating = DisplayType.Icon;
+				ShowContainedItems = DisplayType.Icon;
                 ShowName = NameType.DisplayName;
             }
 
@@ -239,7 +244,7 @@ namespace Twaila
                     return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName
                         && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire && 
                         ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint && ShowPickaxe == other.ShowPickaxe
-                        && ShowId == other.ShowId && ShowContainedItems == other.ShowContainedItems;
+                        && ShowId == other.ShowId && ShowContainedItems == other.ShowContainedItems && ShowCoating == other.ShowCoating;
                 }
                 return base.Equals(obj);
             }

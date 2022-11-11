@@ -41,6 +41,7 @@
             ShowWire: "ShowWire"
             ShowActuator: "ShowActuator"
             ShowPaint: "ShowPaint"
+		    ShowCoating: "ShowCoating"
             ShowContainedItems: "ShowContainedItems"
         }
         ModConfig: "ModConfig"

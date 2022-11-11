@@ -15,12 +15,16 @@ namespace Twaila.Context
 
         protected string Id { get; set; }
         protected string PaintText { get; set; }
+		protected string IlluminantText { get; set; }
+		protected string EchoText { get; set; }
 
-        public WallContext(Point pos) : base(pos)
+		public WallContext(Point pos) : base(pos)
         {
             Id = "";
             PaintText = "";
-        }
+			IlluminantText = "";
+			EchoText = "";
+		}
 
         public override bool ContextChanged(BaseContext other)
         {
@@ -59,7 +63,28 @@ namespace Twaila.Context
                     PaintText = paintText;
                 }
             }
-        }
+
+			if (InfoUtil.GetCoatingInfo(tile, TileType.Wall, out string illuminantText, out string echoText,
+				out int illuminantIcon, out int echoIcon))
+			{
+				if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
+				{
+					if (illuminantIcon > 0)
+					{
+						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+					}
+					if (echoIcon > 0)
+					{
+						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+					}
+				}
+				if (content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
+				{
+					IlluminantText = illuminantText;
+					EchoText = echoText;
+				}
+			}
+		}
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
@@ -101,7 +126,15 @@ namespace Twaila.Context
             {
                 elements.Insert(0, new TwailaText(PaintText));
             }
-            if (!string.IsNullOrEmpty(Id))
+			if (!string.IsNullOrEmpty(IlluminantText))
+			{
+				elements.Insert(0, new TwailaText(IlluminantText));
+			}
+			if (!string.IsNullOrEmpty(EchoText))
+			{
+				elements.Insert(0, new TwailaText(EchoText));
+			}
+			if (!string.IsNullOrEmpty(Id))
             {
                 elements.Insert(0, new TwailaText(Id));
             }

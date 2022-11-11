@@ -181,7 +181,48 @@ namespace Twaila.Util
             return -1;
         }
 
-        public static bool GetWireInfo(Tile tile, out string text, out int[] icons)
+		public static bool GetCoatingInfo(Tile tile, TileType type, out string illuminantText, out string echoText,
+			out int illuminantIcon, out int echoIcon)
+		{
+			illuminantText = "";
+			echoText = "";
+			illuminantIcon = 0;
+			echoIcon = 0;
+			if(GetCoatingState(tile, type, out bool ill, out bool echo))
+			{
+				if (ill)
+				{
+					illuminantIcon = ItemID.GlowPaint;
+					illuminantText = NameUtil.GetNameFromItem(illuminantIcon);
+				}
+				if (echo)
+				{
+					echoIcon = ItemID.EchoCoating;
+					echoText = NameUtil.GetNameFromItem(echoIcon);
+				}
+				return true;
+			}
+			return false;
+		}
+
+		public static bool GetCoatingState(Tile tile, TileType type, out bool illuminant, out bool echo)
+		{
+			illuminant = false;
+			echo = false;
+			if (type == TileType.Tile)
+			{
+				illuminant = tile.IsTileFullbright;
+				echo = tile.IsTileInvisible;
+			}
+			else if (type == TileType.Wall)
+			{
+				illuminant = tile.IsWallFullbright;
+				echo = tile.IsWallInvisible;
+			}
+			return illuminant || echo;
+		}
+
+		public static bool GetWireInfo(Tile tile, out string text, out int[] icons)
         {
             string[] colors = new string[4];
             icons = new int[4];
