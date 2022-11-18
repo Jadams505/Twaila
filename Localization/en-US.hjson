@@ -46,11 +46,31 @@
         }
         ModConfig: "ModConfig"
         Features: "Features"
-        AntiCheat: 
+        AntiCheatSettings: 
         {
-            Label: "AntiCheat"
-            Tooltip: "When this is ON only tiles that are revealed on the map will show on the panel"
+            Label: "Anti Cheat Settings"
+            Tooltip: "Various settings to prevent cheating"
         }
+		HideUnrevealedTiles:
+		{
+			Label: "Hide Unrevealed Tiles"
+            Tooltip: "Hides tiles that are not revealed on the player's map"
+		}
+		HideWires:
+		{
+			Label: "Hide Wires"
+            Tooltip: "Hides wires that the player cannot see"
+		}
+		HideEchoTiles:
+		{
+			Label: "Hide Echo Tiles"
+            Tooltip: "Hides echo tiles that the player cannot see"
+		}
+		HideSuspiciousTiles:
+		{
+			Label: "Hide Suspicious Tiles"
+            Tooltip: "Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)"
+		}
         DisplayContent: "Content Toggles"
         UIPosition: "UI Position"
         UseDefaultPosition:

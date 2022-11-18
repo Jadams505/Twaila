@@ -42,14 +42,36 @@ Mods:
             ShowWire: "显示电线"
             ShowActuator: "显示致动器"
             ShowPaint: "显示油漆"
+		#	ShowCoating: "ShowCoating"
+		#	ShowContainedItems: "ShowContainedItems"
         }
         ModConfig: "模组配置"
         Features: "特征"
-        AntiCheat: 
+		AntiCheatSettings: 
         {
             Label: "反作弊"
-            Tooltip: "启用此项后，只有地图上显示的物块才会展示在面板上"
+		#   Tooltip: "Various settings to prevent cheating"
         }
+		HideUnrevealedTiles:
+		{
+		#	Label: "Hide Unrevealed Tiles"
+            Tooltip: "启用此项后，只有地图上显示的物块才会展示在面板上"
+		}
+		#HideWires:
+		#{
+		#	Label: "Hide Wires"
+		#   Tooltip: "Hides wires that the player cannot see"
+		#}
+		#HideEchoTiles:
+		#{
+		#	Label: "Hide Echo Tiles"
+		#   Tooltip: "Hides echo tiles that the player cannot see"
+		#}
+		#HideSuspiciousTiles:
+		#{
+		#	Label: "Hide Suspicious Tiles"
+		#   Tooltip: "Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)"
+		#}
         DisplayContent: "内容切换"
         UIPosition: "UI位置"
         UseDefaultPosition:

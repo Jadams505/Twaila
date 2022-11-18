@@ -283,11 +283,11 @@ namespace Twaila.Systems
 
             if (noTile)
             {
-                if (hasWire && (!TwailaConfig.Get().AntiCheat || canSeeWire))
+                if (hasWire && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeWire))
                 {
                     return new WireContext(pos);
                 }
-                if (tile.HasActuator && (!TwailaConfig.Get().AntiCheat || canSeeActuator))
+                if (tile.HasActuator && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeActuator))
                 {
                     return new WireContext(pos);
                 }

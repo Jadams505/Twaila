@@ -262,9 +262,9 @@ namespace Twaila.Util
 				case TileID.CrimsonJungleGrass:
 					return "Crimson " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
 				case TileID.LifeCrystalBoulder:
-					return TwailaConfig.Get().AntiCheat ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
+					return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
 				case TileID.DirtiestBlock:
-					return TwailaConfig.Get().AntiCheat ? GetNameFromItem(ItemID.DirtBlock) : GetNameFromItem(ItemID.DirtiestBlock);
+					return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.DirtBlock) : GetNameFromItem(ItemID.DirtiestBlock);
 			}
             return null;
         }

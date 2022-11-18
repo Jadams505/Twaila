@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.IO;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
@@ -15,10 +17,10 @@ namespace Twaila
 
         [Header("$Mods.Twaila.Features")]
 
-        [DefaultValue(true)]
-        [Tooltip("$Mods.Twaila.AntiCheat.Tooltip")]
-        [Label("$Mods.Twaila.AntiCheat.Label")]
-        public bool AntiCheat;
+		[SeparatePage]
+        [Tooltip("$Mods.Twaila.AntiCheatSettings.Tooltip")]
+        [Label("$Mods.Twaila.AntiCheatSettings.Label")]
+        public AntiCheatSettings AntiCheat = new AntiCheatSettings();
 
         [SeparatePage]
         [Label("$Mods.Twaila.DisplayContent")]
@@ -316,10 +318,58 @@ namespace Twaila
             public override int GetHashCode()
             {
                 return new { UIDisplay, HideUIForAir }.GetHashCode();
-            }
-        }
+			}
+		}
 
-        public void Save()
+		public class AntiCheatSettings
+		{
+			[DefaultValue(true)]
+			[Tooltip("$Mods.Twaila.HideUnrevealedTiles.Tooltip")]
+			[Label("$Mods.Twaila.HideUnrevealedTiles.Label")]
+			public bool HideUnrevealedTiles;
+
+			[DefaultValue(true)]
+			[Tooltip("$Mods.Twaila.HideWires.Tooltip")]
+			[Label("$Mods.Twaila.HideWires.Label")]
+			public bool HideWires;
+
+			[DefaultValue(true)]
+			[Tooltip("$Mods.Twaila.HideEchoTiles.Tooltip")]
+			[Label("$Mods.Twaila.HideEchoTiles.Label")]
+			public bool HideEchoTiles;
+
+			[DefaultValue(true)]
+			[Tooltip("$Mods.Twaila.HideSuspiciousTiles.Tooltip")]
+			[Label("$Mods.Twaila.HideSuspiciousTiles.Label")]
+			public bool HideSuspiciousTiles;
+
+			public AntiCheatSettings()
+			{
+				HideUnrevealedTiles = true;
+				HideWires = true;
+				HideEchoTiles = true;
+				HideSuspiciousTiles = true;
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (obj is AntiCheatSettings other)
+				{
+					return HideUnrevealedTiles == other.HideUnrevealedTiles 
+						&& HideWires == other.HideWires
+						&& HideEchoTiles == other.HideEchoTiles
+						&& HideSuspiciousTiles == other.HideSuspiciousTiles;
+				}
+				return base.Equals(obj);
+			}
+
+			public override int GetHashCode()
+			{
+				return HashCode.Combine(HideUnrevealedTiles, HideWires, HideEchoTiles, HideSuspiciousTiles);
+			}
+		}
+
+		public void Save()
         {
             Directory.CreateDirectory(ConfigManager.ModConfigPath);
             string filename = Mod.Name + "_" + Name + ".json";

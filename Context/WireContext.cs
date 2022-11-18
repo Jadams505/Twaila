@@ -52,7 +52,7 @@ namespace Twaila.Context
             GreenWire = tile.GreenWire;
             //Icons = new TwailaIconLine();
 
-            if(!TwailaConfig.Get().AntiCheat || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
+            if(!TwailaConfig.Get().AntiCheat.HideWires || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
             {
                 if (InfoUtil.GetWireInfo(tile, out string wireText, out int[] wireIcons))
                 {
@@ -72,7 +72,7 @@ namespace Twaila.Context
                     }
                 }
             }
-            if (!TwailaConfig.Get().AntiCheat || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
+            if (!TwailaConfig.Get().AntiCheat.HideWires || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
             {
                 if (InfoUtil.GetActuatorInfo(tile, out string actText, out int actIcon))
                 {
