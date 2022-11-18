@@ -59,14 +59,28 @@ namespace Twaila.Util
             if (TwailaConfig.Get().AntiCheat)
             {
                 Player player = Main.player[Main.myPlayer];
-                if(tile.TileType == TileID.EchoBlock)
+                if(tile.TileType == TileID.EchoBlock || (tile.TileType == TileID.Platforms && tile.TileFrameY == 864))
                 {
-                    return !player.CanSeeInvisibleBlocks;
+                    return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
                 }
                 return !IsTileRevealedToPlayer(player, tile, pos);
             }
             return false;
         }
+
+		public static bool IsWallBlockedByAntiCheat(Tile tile, Point pos)
+		{
+			if (TwailaConfig.Get().AntiCheat)
+			{
+				Player player = Main.LocalPlayer;
+				if (tile.WallType == WallID.EchoWall)
+				{
+					return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
+				}
+				return !IsTileRevealedToPlayer(player, tile, pos);
+			}
+			return false;
+		}
 
         public static bool IsBlockedByAntiCheat(Tile tile, Point pos)
         {

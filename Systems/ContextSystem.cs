@@ -248,7 +248,7 @@ namespace Twaila.Systems
         {
             Tile tile = Framing.GetTileSafely(pos);
 
-            if(Framing.GetTileSafely(pos).WallType > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos))
+            if(Framing.GetTileSafely(pos).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos))
             {
                 return new WallContext(pos);
             }
