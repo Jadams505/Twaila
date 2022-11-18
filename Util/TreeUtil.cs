@@ -418,11 +418,12 @@ namespace Twaila.Util
 
         public static int GetTreeWood(int treeDirt)
         {
-            switch (treeDirt)
+			switch (treeDirt)
             {
                 case TileID.CorruptGrass:
                 case TileID.Ebonsand:
-                    return ItemID.Ebonwood;
+				case TileID.CorruptJungleGrass:
+					return ItemID.Ebonwood;
                 case TileID.JungleGrass:
                     return ItemID.RichMahogany;
                 case TileID.HallowedGrass:
@@ -433,6 +434,7 @@ namespace Twaila.Util
                     return ItemID.BorealWood;
                 case TileID.CrimsonGrass:
                 case TileID.Crimsand:
+				case TileID.CrimsonJungleGrass:
                     return ItemID.Shadewood;
                 case TileID.MushroomGrass:
                     return ItemID.GlowingMushroom;
