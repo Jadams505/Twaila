@@ -362,7 +362,7 @@ namespace Twaila.UI
             CurrentContext = context;
         }
 
-        public override void MouseDown(UIMouseEvent evt)
+        public override void LeftMouseDown(UIMouseEvent evt)
         {   
             _lastMouse = new Point(Main.mouseX, Main.mouseY);
             if (!TwailaConfig.Get().LockPosition)
@@ -373,7 +373,7 @@ namespace Twaila.UI
             }
         }
 
-        public override void MouseUp(UIMouseEvent evt)
+        public override void LeftMouseUp(UIMouseEvent evt)
         {
             _dragging = false;
         }
