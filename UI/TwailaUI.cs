@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Map;
 using Terraria.UI;
 using Twaila.Context;
 using Twaila.Systems;
@@ -41,8 +42,8 @@ namespace Twaila.UI
                 case TwailaConfig.DisplayMode.Automatic:
                     if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
                     {
-                        if ((ContextSystem.Instance.ContextEntryCountAt(GetMousePos()) == 0 ||
-                            (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetMousePos()) == null))
+                        if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 ||
+                            (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
                             && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
@@ -55,24 +56,27 @@ namespace Twaila.UI
             _interface?.Update(time);
         }
 
-        public static Point GetMousePos()
+        public static TwailaPoint GetCursorInfo()
         {
-            int targetX, targetY;
-            if (Main.SmartCursorShowing)
-            {
-                targetX = Main.SmartCursorX;
-                targetY = Main.SmartCursorY;
-            }
-            else
-            {
-                targetX = Player.tileTargetX;
-                targetY = Player.tileTargetY;
-            }
-            return new Point(targetX, targetY);
+			Point mouse = new Point(Main.mouseX, Main.mouseY);
+			Point tile = new Point(Player.tileTargetX, Player.tileTargetY);
+			Point smart = new Point(Main.SmartCursorX, Main.SmartCursorY);
+
+			float mapSpaceX = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.X) + (Main.screenWidth / 2.0f);
+			float mapSpaceY = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.Y) + (Main.screenHeight / 2.0f);
+			float x = (Main.mouseX - mapSpaceX) / Main.mapFullscreenScale + 10;
+			float y = (Main.mouseY - mapSpaceY) / Main.mapFullscreenScale + 10;
+			Point map = new Point((int)x, (int)y);
+
+			return new TwailaPoint(mouse, tile, smart, map);
         }
 
         public static bool InBounds(int targetX, int targetY)
         {
+			if (Main.mapFullscreen)
+			{
+				return targetX >= 0 && targetX < Main.maxTilesX && targetY >= 0 && targetY < Main.maxTilesY;
+			}
             if (targetX < (Main.screenPosition.X - 16) / 16) // left
             {
                 return false;
@@ -108,14 +112,14 @@ namespace Twaila.UI
 
         public static void NextNonNullContext()
         {
-            ContextSystem.Instance.NextNonNullContext(ref _panel.currIndex, GetMousePos());
+            ContextSystem.Instance.NextNonNullContext(ref _panel.currIndex, GetCursorInfo());
             Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
             _panel.tick = 0;
         }
 
         public static void PrevNonNullContext()
         {
-            ContextSystem.Instance.PrevNonNullContext(ref _panel.currIndex, GetMousePos());
+            ContextSystem.Instance.PrevNonNullContext(ref _panel.currIndex, GetCursorInfo());
             Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
             _panel.tick = 0;
         }

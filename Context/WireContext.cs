@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Twaila.Graphics;
+using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -23,14 +22,40 @@ namespace Twaila.Context
 
         protected TwailaIconLine Icons { get; set; }
 
-        public WireContext(Point point) : base(point)
+        public WireContext(TwailaPoint point) : base(point)
         {
 			Icons = new TwailaIconLine();
             WireText = "";
             ActuatorText = "";
 		}
 
-        public override bool ContextChanged(BaseContext other)
+		public static WireContext CreateWireContext(TwailaPoint pos)
+		{
+			Tile tile = Framing.GetTileSafely(pos.BestPos());
+
+			bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
+
+			bool hasWire = tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
+
+			bool canSeeWire = WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires;
+
+			bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
+
+			if (noTile)
+			{
+				if (hasWire && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeWire))
+				{
+					return new WireContext(pos);
+				}
+				if (tile.HasActuator && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeActuator))
+				{
+					return new WireContext(pos);
+				}
+			}
+			return null;
+		}
+
+		public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(WireContext))
             {
@@ -42,7 +67,7 @@ namespace Twaila.Context
 
         public override void Update()
         {
-            Tile tile = Framing.GetTileSafely(Pos);
+            Tile tile = Framing.GetTileSafely(Pos.BestPos());
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
 
             HasActuator = tile.HasActuator;
@@ -109,7 +134,7 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos), TileType.Tile);
+            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
             return NameUtil.GetNameFromItem(itemId);
         }
 
@@ -120,7 +145,7 @@ namespace Twaila.Context
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            return ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos)).ToRender();
+            return ImageUtil.GetImageForWireAndActuator(spriteBatch, Framing.GetTileSafely(Pos.BestPos())).ToRender();
         }
 
         protected override List<UITwailaElement> InfoElements()
@@ -145,7 +170,7 @@ namespace Twaila.Context
 
         public bool HasWire()
         {
-            Tile tile = Framing.GetTileSafely(Pos);
+            Tile tile = Framing.GetTileSafely(Pos.BestPos());
             return tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
         }
     }

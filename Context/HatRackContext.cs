@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
-using Twaila.Graphics;
 using Twaila.UI;
 using System.Reflection;
 using Twaila.Util;
+using Twaila.Systems;
+using Terraria.ID;
 
 namespace Twaila.Context
 {
@@ -18,10 +17,25 @@ namespace Twaila.Context
 		protected int[] ItemIds { get; set; }
 		protected string[] ItemTexts { get; set; }
 
-		public HatRackContext(Point pos) : base(pos)
+		public HatRackContext(TwailaPoint pos) : base(pos)
 		{
 			ItemIds = new int[MAX_ITEM_COUNT];
 			ItemTexts = new string[MAX_ITEM_COUNT];
+		}
+
+		public static HatRackContext CreateHatRackContext(TwailaPoint pos)
+		{
+			Point bestPos = pos.BestPos();
+			Tile tile = Framing.GetTileSafely(bestPos);
+			if (tile.TileType == TileID.HatRack)
+			{
+				Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 3, height: 4);
+				if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+				{
+					return new HatRackContext(pos);
+				}
+			}
+			return null;
 		}
 
 		public override bool ContextChanged(BaseContext other)
@@ -81,7 +95,7 @@ namespace Twaila.Context
 
 		private void PopulateItems()
 		{
-			Point targetPos = TileUtil.TileEntityCoordinates(Pos.X, Pos.Y, width: 3, height: 4);
+			Point targetPos = TileUtil.TileEntityCoordinates(Pos.BestPos().X, Pos.BestPos().Y, width: 3, height: 4);
 			int id = TEHatRack.Find(targetPos.X, targetPos.Y);
 			TEHatRack instance = (TEHatRack)TileEntity.ByID[id];
 			Item[] items = (Item[])instance.GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);

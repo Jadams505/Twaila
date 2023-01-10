@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Terraria.ModLoader;
 using Twaila.Graphics;
-using Twaila.UI;
-using Terraria.Map;
+using Twaila.Systems;
 
 namespace Twaila.Context
 {
@@ -14,9 +12,21 @@ namespace Twaila.Context
     {
         protected int SandTileId { get; set; }
 
-        public CactusContext(Point pos) : base(pos)
+        public CactusContext(TwailaPoint pos) : base(pos)
         {
             SandTileId = GetCactusSand();
+        }
+
+        public static CactusContext CreateCactusContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
+
+            if (tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new CactusContext(pos);
+            }
+
+            return null;
         }
 
         public override bool ContextChanged(BaseContext other)
@@ -72,7 +82,7 @@ namespace Twaila.Context
 
         private int GetCactusSand()
         {
-            int x = Pos.X, y = Pos.Y;
+            int x = Pos.BestPos().X, y = Pos.BestPos().Y;
             do
             {
                 if (Main.tile[x, y + 1].TileType == TileID.Cactus)

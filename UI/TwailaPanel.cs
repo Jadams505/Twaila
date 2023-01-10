@@ -298,30 +298,30 @@ namespace Twaila.UI
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
             tick++;
-            Point mousePos = TwailaUI.GetMousePos();
+            TwailaPoint mouseInfo = TwailaUI.GetCursorInfo();
             Player player = Main.player[Main.myPlayer];
 
-            if (!TwailaUI.InBounds(mousePos.X, mousePos.Y))
+            if (!TwailaUI.InBounds(mouseInfo.BestPos().X, mouseInfo.BestPos().Y))
             {
                 tick = 0;
                 return;
             }
 
-            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos);
+            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mouseInfo);
 
             if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
             {
-                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
 
                 if (player.itemAnimation > 0)
                 {
                     if (player.HeldItem.pick > 0) // swinging a pickaxe
                     {
-                        context = ContextSystem.Instance.TileEntry.Context(mousePos);
+                        context = ContextSystem.Instance.TileEntry.Context(mouseInfo);
                     }
                     if (player.HeldItem.hammer > 0) // swinging a hammer
                     {
-                        context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                        context = ContextSystem.Instance.WallEntry.Context(mouseInfo);
                     }
                 }
             }
@@ -336,7 +336,7 @@ namespace Twaila.UI
             {
                 if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
                 {
-                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
                 }
                 tick = 0;
                 pickIndex++;

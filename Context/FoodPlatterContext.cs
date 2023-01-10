@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Twaila.Graphics;
+using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -15,13 +16,25 @@ namespace Twaila.Context
         protected int FoodItemId { get; set; }
         protected string ItemText { get; set; }
 
-        public FoodPlatterContext(Point point) : base(point)
+        public FoodPlatterContext(TwailaPoint point) : base(point)
         {
             FoodItemId = 0;
             ItemText = "";
         }
 
-        public override void Update()
+		public static FoodPlatterContext CreateFoodPlatterContext(TwailaPoint pos)
+		{
+			Point tilePos = pos.BestPos();
+			Tile tile = Framing.GetTileSafely(tilePos);
+			if (TEFoodPlatter.Find(tilePos.X, tilePos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
+			{
+				return new FoodPlatterContext(pos);
+			}
+
+			return null;
+		}
+
+		public override void Update()
         {
             base.Update();
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
@@ -73,7 +86,7 @@ namespace Twaila.Context
 
         private int GetFoodItemId()
         {
-            int id = TEFoodPlatter.Find(Pos.X, Pos.Y);
+            int id = TEFoodPlatter.Find(Pos.BestPos().X, Pos.BestPos().Y);
             Item item = ((TEFoodPlatter)TileEntity.ByID[id]).item;
             return item.type;
         }

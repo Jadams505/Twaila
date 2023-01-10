@@ -4,6 +4,8 @@ using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
+using Terraria.ID;
+using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
@@ -17,11 +19,26 @@ namespace Twaila.Context
 
 		protected TwailaIconLine DisplayContentIcons { get; set; }
 
-		public DisplayDollContext(Point point) : base(point)
+		public DisplayDollContext(TwailaPoint point) : base(point)
 		{
 			ItemIds = new int[MAX_ITEM_COUNT];
 			ItemTexts = new string[MAX_ITEM_COUNT];
 			DisplayContentIcons = new TwailaIconLine();
+		}
+
+		public static DisplayDollContext CreateDisplayDollContext(TwailaPoint pos)
+		{
+			Point bestPos = pos.BestPos();
+			Tile tile = Framing.GetTileSafely(bestPos);
+			if (tile.TileType == TileID.Mannequin || tile.TileType == TileID.Womannequin || tile.TileType == TileID.DisplayDoll)
+			{
+				Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 2, height: 3);
+				if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+				{
+					return new DisplayDollContext(pos);
+				}
+			}
+			return null;
 		}
 
 		public override bool ContextChanged(BaseContext other)
@@ -92,7 +109,7 @@ namespace Twaila.Context
 
 		private void PopulateItems()
 		{
-			Point targetPos = TileUtil.TileEntityCoordinates(Pos.X, Pos.Y, width: 2, height: 3);
+			Point targetPos = TileUtil.TileEntityCoordinates(Pos.BestPos().X, Pos.BestPos().Y, width: 2, height: 3);
 			int id = TEDisplayDoll.Find(targetPos.X, targetPos.Y);
 			TEDisplayDoll instance = (TEDisplayDoll)TileEntity.ByID[id];
 			Item[] items = (Item[])instance.GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);

@@ -14,7 +14,7 @@ namespace Twaila.Util
         {
             int size = 20;
             Texture2D topTexture = TextureAssets.TreeTop[0].Value;
-            Texture2D woodTexture = TextureAssets.Tile[TileID.Trees].Value;
+            Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.Trees);
             Texture2D branchTexture = TextureAssets.TreeBranch[0].Value;
             SetTexturesForTrees(woodType, depth, ref topTexture, ref woodTexture, ref branchTexture);
             Rectangle top = new Rectangle(82, 0, size * 4, size * 4);
@@ -61,7 +61,7 @@ namespace Twaila.Util
         {
             int size = 20;
             Texture2D topTexture;
-            Texture2D woodTexture = TextureAssets.Tile[tileId].Value;
+            Texture2D woodTexture = ImageUtil.GetTileTexture(tileId);
             Texture2D branchTexture;
             Rectangle top;
             Rectangle trunk1 = new Rectangle(44, 108, size, size);
@@ -105,7 +105,7 @@ namespace Twaila.Util
 			{
 				int size = 20;
 				Texture2D topTexture = TextureAssets.TreeTop[31].Value;
-				Texture2D woodTexture = TextureAssets.Tile[tileId].Value;
+				Texture2D woodTexture = ImageUtil.GetTileTexture(tileId);
 				Texture2D branchTexture = TextureAssets.TreeBranch[31].Value;
 				Rectangle top = new Rectangle(120, 0, 114, 96);
 				Rectangle trunk1 = new Rectangle(44, 108, size, size);
@@ -129,7 +129,7 @@ namespace Twaila.Util
         {
             int size = 20;
             Texture2D topTexture;
-            Texture2D woodTexture = TextureAssets.Tile[tileId].Value;
+            Texture2D woodTexture = ImageUtil.GetTileTexture(tileId);
             Texture2D branchTexture;
             Rectangle top;
             Rectangle trunk1 = new Rectangle(44, 108, size, size);
@@ -247,8 +247,8 @@ namespace Twaila.Util
                     palmTreeType = 3;
                     break;
             }
-            Texture2D woodTexture = TextureAssets.Tile[TileID.PalmTree].Value;
-            Texture2D topTexture = TextureAssets.TreeTop[15].Value;
+            Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.PalmTree);
+			Texture2D topTexture = TextureAssets.TreeTop[15].Value;
 
             Rectangle top = new Rectangle(82, palmTreeType * 82, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(0, palmTreeType * 22, size, size);
@@ -289,7 +289,7 @@ namespace Twaila.Util
         public static Texture2D GetImageForMushroomTree(SpriteBatch spriteBatch)
         {
             Texture2D topTexture = TextureAssets.ShroomCap.Value;
-            Texture2D woodTexture = TextureAssets.Tile[TileID.MushroomTrees].Value;
+            Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.MushroomTrees);
 
             Rectangle top = new Rectangle(124, 0, 60, 42);
             Rectangle trunk = new Rectangle(0, 0, 18, 54);
@@ -312,7 +312,7 @@ namespace Twaila.Util
         {
             int size = 16;
             int padding = 2;
-            Texture2D cactusTexture = modded ? TileLoader.GetCactusTexture(cactusSand) : TextureAssets.Tile[TileID.Cactus].Value;
+            Texture2D cactusTexture = modded ? TileLoader.GetCactusTexture(cactusSand) : ImageUtil.GetTileTexture(TileID.Cactus);
             if (!modded)
             {
                 switch (cactusSand)
@@ -327,7 +327,7 @@ namespace Twaila.Util
                         cactusTexture = TextureAssets.CrimsonCactus.Value;
                         break;
                     default:
-                        cactusTexture = TextureAssets.Tile[TileID.Cactus].Value;
+                        cactusTexture = ImageUtil.GetTileTexture(TileID.Cactus);
                         break;
                 }
             }
@@ -562,7 +562,7 @@ namespace Twaila.Util
                     break;
                 case ItemID.Wood:
                     topTexture = TextureAssets.TreeTop[0].Value;
-                    woodTexture = TextureAssets.Tile[TileID.Trees].Value;
+                    woodTexture = ImageUtil.GetTileTexture(TileID.Trees);
                     branchTexture = TextureAssets.TreeBranch[0].Value;
                     break;
             }

@@ -45,5 +45,10 @@ namespace Twaila.Systems
                     "Twaila: Panel Layer", DrawGUI, InterfaceScaleType.UI));
             }
         }
-    }
+
+		public override void PostDrawFullscreenMap(ref string mouseText)
+		{
+			_ = DrawGUI();
+		}
+	}
 }

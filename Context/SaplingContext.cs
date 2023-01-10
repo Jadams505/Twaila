@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Twaila.Util;
 using Twaila.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Twaila.Systems;
+using Microsoft.Xna.Framework;
 
 namespace Twaila.Context
 {
@@ -12,12 +13,24 @@ namespace Twaila.Context
     {
         public int DirtId { get; private set; }
 
-        public SaplingContext(Point pos) : base(pos)
+        public SaplingContext(TwailaPoint pos) : base(pos)
         {
             DirtId = GetSaplingTile();
         }
 
-        public override bool ContextChanged(BaseContext other)
+		public static SaplingContext CreateSaplingContext(TwailaPoint pos)
+		{
+			Tile tile = Framing.GetTileSafely(pos.BestPos());
+
+			if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+			{
+				return new SaplingContext(pos);
+			}
+
+			return null;
+		}
+
+		public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(SaplingContext))
             {
@@ -35,13 +48,13 @@ namespace Twaila.Context
 
         protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
-            Tile tile = Framing.GetTileSafely(Pos);
-            return ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.X, Pos.Y).ToRender();
+            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            return ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.BestPos().X, Pos.BestPos().Y).ToRender();
         }
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos), TileType.Tile);
+            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
             Texture2D texture = ImageUtil.GetItemTexture(itemId);
             return texture.ToRender();
         }
@@ -69,17 +82,18 @@ namespace Twaila.Context
 
         private int GetSaplingTile()
         {
-            int y = Pos.Y;
+			Point bestPos = Pos.BestPos();
+            int y = bestPos.Y;
             do
             {
                 y++;
-            } while (TileID.Sets.TreeSapling[Main.tile[Pos.X, y].TileType] && Main.tile[Pos.X, y].HasTile);
+            } while (TileID.Sets.TreeSapling[Main.tile[bestPos.X, y].TileType] && Main.tile[bestPos.X, y].HasTile);
 
-            if (!Main.tile[Pos.X, y].HasTile)
+            if (!Main.tile[bestPos.X, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[Pos.X, y].TileType;
+            return Main.tile[bestPos.X, y].TileType;
         }
     }
 }

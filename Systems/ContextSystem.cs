@@ -25,25 +25,25 @@ namespace Twaila.Systems
         {
             ContextEntries = new List<ContextEntry>();
 
-            TileEntry = new ContextEntry(CreateTileContext, "Tile");
-            TileEntry.ApplicableContexts.Add(CreatePalmTreeContext);
-            TileEntry.ApplicableContexts.Add(CreateCactusContext);
-            TileEntry.ApplicableContexts.Add(CreateTreeContext);
-            TileEntry.ApplicableContexts.Add(CreateSaplingContext);
-            TileEntry.ApplicableContexts.Add(CreateFoodPlatterContext);
-            TileEntry.ApplicableContexts.Add(CreateItemFrameContext);
-            TileEntry.ApplicableContexts.Add(CreateWeaponRackContext);
-            TileEntry.ApplicableContexts.Add(CreateHatRackContext);
-            TileEntry.ApplicableContexts.Add(CreateDisplayDollContext);
+            TileEntry = new ContextEntry(TileContext.CreateTileContext, "Tile");
+            TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
+            TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
+            TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
+            TileEntry.ApplicableContexts.Add(SaplingContext.CreateSaplingContext);
+            TileEntry.ApplicableContexts.Add(FoodPlatterContext.CreateFoodPlatterContext);
+            TileEntry.ApplicableContexts.Add(ItemFrameContext.CreateItemFrameContext);
+            TileEntry.ApplicableContexts.Add(WeaponRackContext.CreateWeaponRackContext);
+            TileEntry.ApplicableContexts.Add(HatRackContext.CreateHatRackContext);
+            TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(CreateWallContext, "Wall");
+            WallEntry = new ContextEntry(WallContext.CreateWallContext, "Wall");
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(CreateLiquidContext, "Liquid");
+            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, "Liquid");
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(CreateWireContext, "Wire");
+            WireEntry = new ContextEntry(WireContext.CreateWireContext, "Wire");
             ContextEntries.Add(WireEntry);
         }
 
@@ -52,12 +52,12 @@ namespace Twaila.Systems
             ContextEntries = null;
         }
 
-        public BaseContext CurrentContext(int currIndex, Point pos)
+        public BaseContext CurrentContext(int currIndex, TwailaPoint pos)
         {
             return ContextEntries[currIndex].Context(pos);
         }
 
-        public BaseContext NextNonNullContext(ref int currIndex, Point pos)
+        public BaseContext NextNonNullContext(ref int currIndex, TwailaPoint pos)
         {
             int i = currIndex;
             BaseContext context;
@@ -72,7 +72,7 @@ namespace Twaila.Systems
             return context;
         }
 
-        public BaseContext PrevNonNullContext(ref int currIndex, Point pos)
+        public BaseContext PrevNonNullContext(ref int currIndex, TwailaPoint pos)
         {
             int i = currIndex;
             BaseContext context;
@@ -99,204 +99,60 @@ namespace Twaila.Systems
             return prevIndex >= 0 ? prevIndex : ContextEntries.Count - 1;
         }
 
-        public List<ContextEntry> ContextEntriesAt(Point pos)
+        public List<ContextEntry> ContextEntriesAt(TwailaPoint pos)
         {
             return ContextEntries.FindAll(entry => entry.Context(pos) != null);
         }
 
-        public int ContextEntryCountAt(Point pos)
+        public int ContextEntryCountAt(TwailaPoint pos)
         {
             int count = 0;
-            ContextEntries.ForEach(entry =>
-            {
-                if (entry.Context(pos) != null)
-                {
-                    count++;
-                }
-            });
+			foreach(var entry in ContextEntries)
+			{
+				if (entry.Context(pos) != null)
+				{
+					count++;
+				}
+			}
             return count;
         }
+	}
 
-        private static TileContext CreateTileContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
+	public struct TwailaPoint
+	{
+		public Point MousePos;
 
-            if(tile.HasTile && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-            {
-                return new TileContext(pos);
-            }
+		public Point TilePos;
 
-            return null;
-        }
+		public Point SmartCursorPos;
 
-        private static PalmTreeContext CreatePalmTreeContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
+		public Point MapPos;
 
-            if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-            {
-                return new PalmTreeContext(pos);
-            }
-
-            return null;
-        }
-
-        private static CactusContext CreateCactusContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-
-            if(tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-            {
-                return new CactusContext(pos);
-            }
-
-            return null;
-        }
-
-        private static TreeContext CreateTreeContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-
-            if((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-            {
-                return new TreeContext(pos);
-            }
-
-            return null;
-        }
-
-        private static SaplingContext CreateSaplingContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-
-            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-            {
-                return new SaplingContext(pos);
-            }
-
-            return null;
-        }
-
-        private static FoodPlatterContext CreateFoodPlatterContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-            if (TEFoodPlatter.Find(pos.X, pos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-            {
-                return new FoodPlatterContext(pos);
-            }
-
-            return null;
-        }
-
-        private static ItemFrameContext CreateItemFrameContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-            if(tile.TileType == TileID.ItemFrame)
-            {
-                Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 2);
-                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-                {
-                    return new ItemFrameContext(pos);
-                }
-            }
-            return null;
-        }
-
-        private static WeaponRackContext CreateWeaponRackContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-            if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
-            {
-                Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 3);
-                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-                {
-                    return new WeaponRackContext(pos);
-                }
-            }
-            return null;
-        }
-
-        private static HatRackContext CreateHatRackContext(Point pos)
-        {
-			Tile tile = Framing.GetTileSafely(pos);
-			if (tile.TileType == TileID.HatRack)
-			{
-				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 3, height: 4);
-				if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-				{
-					return new HatRackContext(pos);
-				}
-			}
-			return null;
-		}
-
-		private static DisplayDollContext CreateDisplayDollContext(Point pos)
+		public TwailaPoint(Point mouse, Point tile, Point smart, Point map)
 		{
-			Tile tile = Framing.GetTileSafely(pos);
-			if (tile.TileType == TileID.Mannequin || tile.TileType == TileID.Womannequin || tile.TileType == TileID.DisplayDoll)
-			{
-				Point targetPos = TileUtil.TileEntityCoordinates(pos.X, pos.Y, width: 2, height: 3);
-				if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, pos))
-				{
-					return new DisplayDollContext(pos);
-				}
-			}
-			return null;
+			MousePos = mouse;
+			TilePos = tile;
+			SmartCursorPos = smart;
+			MapPos = map;
 		}
 
-		private static WallContext CreateWallContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
+		public Point BestPos()
+		{
+			if (Main.SmartCursorShowing)
+			{
+				return SmartCursorPos;
+			}
+			
+			if (Main.mapFullscreen)
+			{
+				return MapPos;
+			}
+			
+			return TilePos;
+		}
+	}
 
-            if(Framing.GetTileSafely(pos).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos))
-            {
-                return new WallContext(pos);
-            }
-
-            return null;
-        }
-
-        private static LiquidContext CreateLiquidContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-
-            if (tile.LiquidAmount > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos))
-            {
-                return new LiquidContext(pos);
-            }
-
-            return null;
-        }
-
-        private static WireContext CreateWireContext(Point pos)
-        {
-            Tile tile = Framing.GetTileSafely(pos);
-            Player player = Main.player[Main.myPlayer];
-
-            bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
-
-            bool hasWire = tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
-
-            bool canSeeWire = WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires;
-
-            bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
-
-            if (noTile)
-            {
-                if (hasWire && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeWire))
-                {
-                    return new WireContext(pos);
-                }
-                if (tile.HasActuator && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeActuator))
-                {
-                    return new WireContext(pos);
-                }
-            }
-            return null;
-        }
-    }
-
-    public delegate BaseContext ContextFetcher(Point pos);
+	public delegate BaseContext ContextFetcher(TwailaPoint pos);
 
     public class ContextEntry
     {
@@ -314,17 +170,18 @@ namespace Twaila.Systems
             Name = name;
         }
 
-        public BaseContext Context(Point pos)
+        public BaseContext Context(TwailaPoint pos)
         {
             BaseContext foundContext = null;
-            ApplicableContexts.ForEach(entry =>
-            {
-                BaseContext context = entry.Invoke(pos);
-                if (context != null)
-                {
-                    foundContext = context;
-                }
-            });
+			foreach(var entry in ApplicableContexts)
+			{
+				BaseContext context = entry.Invoke(pos);
+				if (context != null)
+				{
+					foundContext = context;
+					break;
+				}
+			}
             return foundContext ?? DefaultContext.Invoke(pos);
         }
     }
