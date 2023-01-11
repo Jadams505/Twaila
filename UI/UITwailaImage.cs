@@ -15,7 +15,7 @@ namespace Twaila.UI
 
         public UITwailaImage()
         {
-            Render = new TwailaRender(TextureAssets.Buff[BuffID.Confused].Value);
+            Render = new TwailaRender(TextureAssets.Buff[BuffID.Confused].ForceVanillaLoad());
         }
 
         public override Vector2 GetContentSize()
@@ -103,7 +103,7 @@ namespace Twaila.UI
             Render = render;
             if(Render == null || !Render.CanDraw())
             {
-                Render = new TwailaRender(TextureAssets.Buff[BuffID.Confused].Value);
+                Render = new TwailaRender(TextureAssets.Buff[BuffID.Confused].ForceVanillaLoad());
             }
         }
     }

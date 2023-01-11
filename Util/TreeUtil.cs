@@ -13,9 +13,9 @@ namespace Twaila.Util
         public static Texture2D GetImageForVanillaTree(SpriteBatch spriteBatch, int woodType, int depth)
         {
             int size = 20;
-            Texture2D topTexture = TextureAssets.TreeTop[0].Value;
+            Texture2D topTexture = TextureAssets.TreeTop[0].ForceVanillaLoad();
             Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.Trees);
-            Texture2D branchTexture = TextureAssets.TreeBranch[0].Value;
+            Texture2D branchTexture = TextureAssets.TreeBranch[0].ForceVanillaLoad();
             SetTexturesForTrees(woodType, depth, ref topTexture, ref woodTexture, ref branchTexture);
             Rectangle top = new Rectangle(82, 0, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(44, 108, size, size);
@@ -79,15 +79,15 @@ namespace Twaila.Util
             {
                 case TileID.VanityTreeSakura:
                     top = new Rectangle(125, 16, 106, 86);
-                    topTexture = TextureAssets.TreeTop[29].Value;
-                    branchTexture = TextureAssets.TreeBranch[29].Value;
+                    topTexture = TextureAssets.TreeTop[29].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[29].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 78;
                     break;
                 case TileID.VanityTreeYellowWillow:
                     top = new Rectangle(124, 0, 116, 94);
-                    topTexture = TextureAssets.TreeTop[30].Value;
-                    branchTexture = TextureAssets.TreeBranch[30].Value;
+                    topTexture = TextureAssets.TreeTop[30].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[30].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 92;
                     break;
@@ -104,9 +104,9 @@ namespace Twaila.Util
 			if(tileId == TileID.TreeAsh)
 			{
 				int size = 20;
-				Texture2D topTexture = TextureAssets.TreeTop[31].Value;
+				Texture2D topTexture = TextureAssets.TreeTop[31].ForceVanillaLoad();
 				Texture2D woodTexture = ImageUtil.GetTileTexture(tileId);
-				Texture2D branchTexture = TextureAssets.TreeBranch[31].Value;
+				Texture2D branchTexture = TextureAssets.TreeBranch[31].ForceVanillaLoad();
 				Rectangle top = new Rectangle(120, 0, 114, 96);
 				Rectangle trunk1 = new Rectangle(44, 108, size, size);
 				Rectangle trunk2 = new Rectangle(88, 42, size, size);
@@ -144,50 +144,50 @@ namespace Twaila.Util
             {
                 case TileID.TreeTopaz:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[22].Value;
-                    branchTexture = TextureAssets.TreeBranch[22].Value;
+                    topTexture = TextureAssets.TreeTop[22].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[22].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
                 case TileID.TreeAmethyst:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[23].Value;
-                    branchTexture = TextureAssets.TreeBranch[23].Value;
+                    topTexture = TextureAssets.TreeTop[23].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[23].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
                 case TileID.TreeSapphire:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[24].Value;
-                    branchTexture = TextureAssets.TreeBranch[24].Value;
+                    topTexture = TextureAssets.TreeTop[24].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[24].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
                 case TileID.TreeEmerald:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[25].Value;
-                    branchTexture = TextureAssets.TreeBranch[25].Value;
+                    topTexture = TextureAssets.TreeTop[25].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[25].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
                 case TileID.TreeRuby:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[26].Value;
-                    branchTexture = TextureAssets.TreeBranch[26].Value;
+                    topTexture = TextureAssets.TreeTop[26].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[26].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
                 case TileID.TreeDiamond:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[27].Value;
-                    branchTexture = TextureAssets.TreeBranch[27].Value;
+                    topTexture = TextureAssets.TreeTop[27].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[27].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
                 case TileID.TreeAmber:
                     top = new Rectangle(2, 0, 114, 96);
-                    topTexture = TextureAssets.TreeTop[28].Value;
-                    branchTexture = TextureAssets.TreeBranch[28].Value;
+                    topTexture = TextureAssets.TreeTop[28].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[28].ForceVanillaLoad();
                     topOffsetX = 44;
                     topOffsetY = 94;
                     break;
@@ -248,7 +248,7 @@ namespace Twaila.Util
                     break;
             }
             Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.PalmTree);
-			Texture2D topTexture = TextureAssets.TreeTop[15].Value;
+			Texture2D topTexture = TextureAssets.TreeTop[15].ForceVanillaLoad();
 
             Rectangle top = new Rectangle(82, palmTreeType * 82, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(0, palmTreeType * 22, size, size);
@@ -288,7 +288,7 @@ namespace Twaila.Util
 
         public static Texture2D GetImageForMushroomTree(SpriteBatch spriteBatch)
         {
-            Texture2D topTexture = TextureAssets.ShroomCap.Value;
+            Texture2D topTexture = TextureAssets.ShroomCap.ForceVanillaLoad();
             Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.MushroomTrees);
 
             Rectangle top = new Rectangle(124, 0, 60, 42);
@@ -318,13 +318,13 @@ namespace Twaila.Util
                 switch (cactusSand)
                 {
                     case TileID.Ebonsand:
-                        cactusTexture = TextureAssets.EvilCactus.Value;
+                        cactusTexture = TextureAssets.EvilCactus.ForceVanillaLoad();
                         break;
                     case TileID.Pearlsand:
-                        cactusTexture = TextureAssets.GoodCactus.Value;
+                        cactusTexture = TextureAssets.GoodCactus.ForceVanillaLoad();
                         break;
                     case TileID.Crimsand:
-                        cactusTexture = TextureAssets.CrimsonCactus.Value;
+                        cactusTexture = TextureAssets.CrimsonCactus.ForceVanillaLoad();
                         break;
                     default:
                         cactusTexture = ImageUtil.GetTileTexture(TileID.Cactus);
@@ -524,46 +524,46 @@ namespace Twaila.Util
             switch (woodType)
             {
                 case ItemID.Ebonwood:
-                    topTexture = TextureAssets.TreeTop[1].Value;
-                    woodTexture = TextureAssets.Wood[0].Value;
-                    branchTexture = TextureAssets.TreeBranch[1].Value;
+                    topTexture = TextureAssets.TreeTop[1].ForceVanillaLoad();
+                    woodTexture = TextureAssets.Wood[0].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[1].ForceVanillaLoad();
                     break;
                 case ItemID.RichMahogany:
                     if (depth >= Main.worldSurface)
                     {
-                        topTexture = TextureAssets.TreeTop[13].Value;
-                        woodTexture = TextureAssets.Wood[5].Value;
-                        branchTexture = TextureAssets.TreeBranch[13].Value;
+                        topTexture = TextureAssets.TreeTop[13].ForceVanillaLoad();
+                        woodTexture = TextureAssets.Wood[5].ForceVanillaLoad();
+                        branchTexture = TextureAssets.TreeBranch[13].ForceVanillaLoad();
                         break;
                     }
-                    topTexture = TextureAssets.TreeTop[2].Value;
-                    woodTexture = TextureAssets.Wood[1].Value;
-                    branchTexture = TextureAssets.TreeBranch[2].Value;
+                    topTexture = TextureAssets.TreeTop[2].ForceVanillaLoad();
+                    woodTexture = TextureAssets.Wood[1].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[2].ForceVanillaLoad();
                     break;
                 case ItemID.Pearlwood:
-                    topTexture = TextureAssets.TreeTop[3].Value;
-                    woodTexture = TextureAssets.Wood[2].Value;
-                    branchTexture = TextureAssets.TreeBranch[3].Value;
+                    topTexture = TextureAssets.TreeTop[3].ForceVanillaLoad();
+                    woodTexture = TextureAssets.Wood[2].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[3].ForceVanillaLoad();
                     break;
                 case ItemID.BorealWood:
-                    topTexture = TextureAssets.TreeTop[12].Value;
-                    woodTexture = TextureAssets.Wood[3].Value;
-                    branchTexture = TextureAssets.TreeBranch[12].Value;
+                    topTexture = TextureAssets.TreeTop[12].ForceVanillaLoad();
+                    woodTexture = TextureAssets.Wood[3].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[12].ForceVanillaLoad();
                     break;
                 case ItemID.Shadewood:
-                    topTexture = TextureAssets.TreeTop[5].Value;
-                    woodTexture = TextureAssets.Wood[4].Value;
-                    branchTexture = TextureAssets.TreeBranch[5].Value;
+                    topTexture = TextureAssets.TreeTop[5].ForceVanillaLoad();
+                    woodTexture = TextureAssets.Wood[4].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[5].ForceVanillaLoad();
                     return;
                 case ItemID.GlowingMushroom:
-                    topTexture = TextureAssets.TreeTop[14].Value;
-                    woodTexture = TextureAssets.Wood[6].Value;
-                    branchTexture = TextureAssets.TreeBranch[14].Value;
+                    topTexture = TextureAssets.TreeTop[14].ForceVanillaLoad();
+                    woodTexture = TextureAssets.Wood[6].ForceVanillaLoad();
+                    branchTexture = TextureAssets.TreeBranch[14].ForceVanillaLoad();
                     break;
                 case ItemID.Wood:
-                    topTexture = TextureAssets.TreeTop[0].Value;
+                    topTexture = TextureAssets.TreeTop[0].ForceVanillaLoad();
                     woodTexture = ImageUtil.GetTileTexture(TileID.Trees);
-                    branchTexture = TextureAssets.TreeBranch[0].Value;
+                    branchTexture = TextureAssets.TreeBranch[0].ForceVanillaLoad();
                     break;
             }
         }

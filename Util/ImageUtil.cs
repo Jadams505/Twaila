@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using ReLogic.Content;
 
 namespace Twaila.Util
 {
@@ -36,25 +37,6 @@ namespace Twaila.Util
             return null;
         }
 
-        public static Texture2D GetWallImageFromTile(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.WallType > 0)
-            {
-                int size = 32;
-                int startX = 324, startY = 108;
-                Texture2D texture = GetWallTexture(tile);
-
-                if (texture != null)
-                {
-                    TextureBuilder builder = new TextureBuilder();
-                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
-                    builder.AddComponent(copyRectangle, texture, new Point(0, 0));
-                    return builder.Build(spriteBatch.GraphicsDevice);
-                }
-            }
-            return null;
-        }
-
         public static TwailaRender GetWallRenderFromTile(Tile tile)
         {
             if (tile.WallType > 0)
@@ -74,37 +56,6 @@ namespace Twaila.Util
 			return new TwailaRender();
 		}
 
-        public static Texture2D GetLiquidImageFromTile(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.LiquidAmount > 0)
-            {
-                int size = 16;
-                int startX = 0, startY = 0;
-                Texture2D texture = null;
-                switch (tile.LiquidType)
-                {
-                    case LiquidID.Lava:
-                        texture = TextureAssets.Liquid[WaterStyleID.Lava].Value;
-                        break;
-                    case LiquidID.Honey:
-                        texture = TextureAssets.Liquid[WaterStyleID.Honey].Value;
-                        break;
-                    case LiquidID.Water:
-                        texture = TextureAssets.Liquid[Main.waterStyle].Value;
-                        break;
-                }
-
-                if(texture != null)
-                {
-                    TextureBuilder builder = new TextureBuilder();
-                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
-                    builder.AddComponent(copyRectangle, texture, new Point(0, 0));
-                    return builder.Build(spriteBatch.GraphicsDevice);
-                }
-            }
-            return null;
-        }
-
         public static TwailaRender GetLiquidRenderFromTile(Tile tile)
         {
             if (tile.LiquidAmount > 0)
@@ -115,13 +66,13 @@ namespace Twaila.Util
                 switch (tile.LiquidType)
                 {
                     case LiquidID.Lava:
-                        texture = TextureAssets.Liquid[WaterStyleID.Lava].Value;
+                        texture = TextureAssets.Liquid[WaterStyleID.Lava].ForceVanillaLoad();
                         break;
                     case LiquidID.Honey:
-                        texture = TextureAssets.Liquid[WaterStyleID.Honey].Value;
+                        texture = TextureAssets.Liquid[WaterStyleID.Honey].ForceVanillaLoad();
                         break;
                     case LiquidID.Water:
-                        texture = TextureAssets.Liquid[Main.waterStyle].Value;
+                        texture = TextureAssets.Liquid[Main.waterStyle].ForceVanillaLoad();
                         break;
                 }
 
@@ -276,7 +227,7 @@ namespace Twaila.Util
             if(tile.TileType == TileID.MasterTrophyBase)
             {
                 Texture2D baseTexture = GetTileTexture(tile.TileType);
-                Texture2D relicTexture = TextureAssets.Extra[198].Value;
+                Texture2D relicTexture = TextureAssets.Extra[198].ForceVanillaLoad();
                 int size = 48;
                 int padding = 2;
                 int frameY = tile.TileFrameX / 54 * (size + padding);
@@ -300,7 +251,7 @@ namespace Twaila.Util
             if(tile.TileType == TileID.TeleportationPylon)
             {
                 Texture2D baseTexture = GetTileTexture(tile.TileType);
-                Texture2D pylonTexture = TextureAssets.Extra[181].Value;
+                Texture2D pylonTexture = TextureAssets.Extra[181].ForceVanillaLoad();
                 int pylonWidth = 28, pylonHeight = 44;
                 int padding = 2;
                 int frameX = 90 + (tile.TileFrameX / 54 * (pylonWidth + padding));
@@ -598,6 +549,19 @@ namespace Twaila.Util
 			}
             return null;
         }
+
+		public static Texture2D ForceVanillaLoad(this Asset<Texture2D> asset)
+		{
+			if(asset == null)
+			{
+				return null;
+			}
+			if (asset.State == AssetState.NotLoaded)
+			{
+				return Main.Assets.Request<Texture2D>(asset.Name, AssetRequestMode.ImmediateLoad).Value;
+			}
+			return asset.Value;
+		}
 
 		public static TwailaRender ToRender(this Texture2D texture)
         {
