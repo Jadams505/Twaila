@@ -134,6 +134,7 @@
         HoverOpacity: "HoverOpacity"
         ContextMode: "ContextMode"
         ShowBackground: "ShowBackground"
+		ShowInFullscreenMap: "ShowInFullscreenMap"
         UIDisplay: "UIDisplay"
         Color: "Color"
         TextShadow: "TextShadow"

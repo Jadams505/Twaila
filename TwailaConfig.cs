@@ -125,6 +125,10 @@ namespace Twaila
         [Label("$Mods.Twaila.ShowBackground")]
         public bool ShowBackground;
 
+		[DefaultValue(true)]
+		[Label("$Mods.Twaila.ShowInFullscreenMap")]
+		public bool ShowInFullscreenMap;
+
         [SeparatePage]
         [Label("$Mods.Twaila.UIDisplaySettings")]
         public DisplaySettings UIDisplaySettings = new DisplaySettings();
