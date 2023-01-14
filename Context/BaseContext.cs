@@ -2,15 +2,16 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Twaila.Graphics;
+using Twaila.Systems;
 using Twaila.UI;
 
 namespace Twaila.Context
 {
     public abstract class BaseContext
     {
-        public Point Pos { get; set; }
+        public TwailaPoint Pos { get; set; }
 
-        public BaseContext(Point pos)
+        public BaseContext(TwailaPoint pos)
         {
             Pos = pos;
         }
@@ -21,7 +22,7 @@ namespace Twaila.Context
 
         protected abstract string GetName();
 
-        protected abstract TwailaTexture GetImage(SpriteBatch spriteBatch);
+        protected abstract TwailaRender GetImage(SpriteBatch spriteBatch);
 
         protected abstract List<UITwailaElement> InfoElements();
 

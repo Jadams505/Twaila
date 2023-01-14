@@ -13,7 +13,7 @@ namespace Twaila.Util
         Tile, Wall, Liquid, Empty
     }
 
-    internal class ItemUtil
+    public class ItemUtil
     {
         private class TileStylePair
         {
@@ -77,62 +77,21 @@ namespace Twaila.Util
 
         public static int GetPickId(int pickPower, int startIndex, out int foundIndex)
         {
-            for(int i = startIndex; i < _pickaxes.Count; ++i)
+            if (startIndex < 0 || startIndex >= _pickaxes.Count)
+            {
+                startIndex = 0;
+            }
+            for (int i = startIndex; i < _pickaxes.Count; ++i)
             {
                 (int power, int id) pick = _pickaxes[i];
-                if (pick.power > pickPower)
+                if (pick.power >= pickPower)
                 {
                     foundIndex = i;
                     return pick.id;
                 }
             }
-            foundIndex = _pickaxes.Count - 1;
-            return _pickaxes[foundIndex].id;
-        }
-
-        public static int GetPickaxeId(int pickPower, int startIndex, out int foundIndex)
-        {
-            if (startIndex < 0 || startIndex >= _pickaxes.Count)
-            {
-                startIndex = 0;
-            }
-            if (_pickaxes[startIndex].power < pickPower)
-            {
-                int index = _pickaxes.BinarySearch(startIndex, _pickaxes.Count - startIndex, (pickPower, -1), new PickPowerSorter());
-                if (index >= 0)
-                {
-                    if(index - 1 > 0 && _pickaxes[index - 1].power >= pickPower)
-                    {
-                        foundIndex = index - 1;
-                    }
-                    else
-                    {
-                        foundIndex = index;
-                    }
-                }
-                else if (~index < _pickaxes.Count)
-                {
-                    foundIndex = ~index;
-                }
-                else if(~index == _pickaxes.Count)
-                {
-                    foundIndex = _pickaxes.Count - 1;
-                }
-                else
-                {
-                    foundIndex = _pickaxes.BinarySearch(0, startIndex, (pickPower, -1), new PickPowerSorter());
-                }
-                if(foundIndex < 0 || foundIndex >= _pickaxes.Count)
-                {
-                    foundIndex = 0;
-                }
-                return _pickaxes[foundIndex].id;
-            }
-            else
-            {
-                foundIndex = startIndex;
-                return _pickaxes[startIndex].id;
-            }
+            foundIndex = -1;
+            return -1;
         }
 
         private class PickPowerSorter : IComparer<(int power, int id)>
@@ -467,6 +426,10 @@ namespace Twaila.Util
                 case TileID.HallowedPlants:
                     if (tile.TileFrameX == 144) return ItemID.Mushroom;
                     break;
+                case TileID.Crystals:
+                    if (tile.TileFrameX >= 324)
+                        return ItemID.QueenSlimeCrystal;
+                    break;
                 case TileID.HolidayLights:
                     if (tile.TileFrameX == 0 || tile.TileFrameX == 54)
                     {
@@ -535,6 +498,14 @@ namespace Twaila.Util
                     return ItemID.Grate;
                 case TileID.AmberStoneBlock:
                     return ItemID.Amber;
+				case TileID.GlowTulip:
+					return ItemID.GlowTulip;
+				case TileID.CorruptJungleGrass:
+					return ItemID.CorruptSeeds;
+				case TileID.CrimsonJungleGrass:
+					return ItemID.CrimsonSeeds;
+				case TileID.DirtiestBlock:
+					return ItemID.DirtiestBlock;
             }
             if (tile.HasActuator && !tile.HasTile)
             {
@@ -555,12 +526,6 @@ namespace Twaila.Util
                     return ItemID.DirtWall;
                 case WallID.EbonstoneUnsafe:
                     return ItemID.EbonstoneEcho;
-                case WallID.BlueDungeonUnsafe:
-                    return ItemID.BlueBrickWall;
-                case WallID.GreenDungeonUnsafe:
-                    return ItemID.GreenBrickWall;
-                case WallID.PinkDungeonUnsafe:
-                    return ItemID.PinkBrickWall;
                 case WallID.HellstoneBrickUnsafe:
                     return ItemID.HellstoneBrickWall;
                 case WallID.ObsidianBrickUnsafe:
@@ -599,8 +564,6 @@ namespace Twaila.Util
                     return ItemID.LivingLeafWall;
                 case WallID.Cave7Unsafe:
                     return ItemID.Cave7Echo;
-                case WallID.SpiderUnsafe:
-                    return ItemID.SpiderEcho;
                 case WallID.GrassUnsafe:
                     return ItemID.GrassWall;
                 case WallID.JungleUnsafe:
@@ -623,20 +586,6 @@ namespace Twaila.Util
                     return ItemID.CrimstoneEcho;
                 case WallID.HiveUnsafe:
                     return ItemID.HiveWall;
-                case WallID.LihzahrdBrickUnsafe:
-                    return ItemID.LihzahrdBrickWall;
-                case WallID.BlueDungeonSlabUnsafe:
-                    return ItemID.BlueSlabWall;
-                case WallID.BlueDungeonTileUnsafe:
-                    return ItemID.BlueTiledWall;
-                case WallID.PinkDungeonSlabUnsafe:
-                    return ItemID.PinkSlabWall;
-                case WallID.PinkDungeonTileUnsafe:
-                    return ItemID.PinkTiledWall;
-                case WallID.GreenDungeonSlabUnsafe:
-                    return ItemID.GreenSlabWall;
-                case WallID.GreenDungeonTileUnsafe:
-                    return ItemID.GreenTiledWall;
                 case WallID.CaveWall:
                     return ItemID.CaveWall1Echo;
                 case WallID.CaveWall2:
@@ -647,8 +596,6 @@ namespace Twaila.Util
                     return ItemID.GraniteWall;
                 case WallID.Cave8Unsafe:
                     return ItemID.Cave8Echo;
-                case WallID.Sandstone:
-                    return ItemID.SandstoneWall;
                 case WallID.CorruptionUnsafe1:
                     return ItemID.Corruption1Echo;
                 case WallID.CorruptionUnsafe2:
@@ -705,8 +652,6 @@ namespace Twaila.Util
                     return ItemID.Rocks3Echo;
                 case WallID.RocksUnsafe4:
                     return ItemID.Rocks4Echo;
-                case WallID.HardenedSand:
-                    return ItemID.HardenedSandWall;
                 case WallID.CorruptHardenedSand:
                     return ItemID.CorruptHardenedSandWall;
                 case WallID.CrimsonHardenedSand:
@@ -735,6 +680,8 @@ namespace Twaila.Util
                     return ItemID.HoneyBucket;
                 case LiquidID.Lava:
                     return ItemID.LavaBucket;
+				case LiquidID.Shimmer:
+					return ItemID.BottomlessShimmerBucket;
             }
             return -1;
         }

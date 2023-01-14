@@ -9,7 +9,7 @@ using Twaila.ObjectData;
 
 namespace Twaila.Util
 {
-    internal class TileUtil
+    public class TileUtil
     {
         public static TileObjectData GetTileObjectData(Tile tile)
         {
@@ -56,21 +56,35 @@ namespace Twaila.Util
 
         public static bool IsTileBlockedByAntiCheat(Tile tile, Point pos)
         {
-            if (TwailaConfig.Get().AntiCheat)
+            if (TwailaConfig.Get().AntiCheat.HideUnrevealedTiles)
             {
                 Player player = Main.player[Main.myPlayer];
-                if(tile.TileType == TileID.EchoBlock)
+                if(TwailaConfig.Get().AntiCheat.HideEchoTiles && (tile.TileType == TileID.EchoBlock || (tile.TileType == TileID.Platforms && tile.TileFrameY == 864)))
                 {
-                    return !player.CanSeeInvisibleBlocks;
+                    return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
                 }
                 return !IsTileRevealedToPlayer(player, tile, pos);
             }
             return false;
         }
 
+		public static bool IsWallBlockedByAntiCheat(Tile tile, Point pos)
+		{
+			if (TwailaConfig.Get().AntiCheat.HideUnrevealedTiles)
+			{
+				Player player = Main.LocalPlayer;
+				if (TwailaConfig.Get().AntiCheat.HideEchoTiles && tile.WallType == WallID.EchoWall)
+				{
+					return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
+				}
+				return !IsTileRevealedToPlayer(player, tile, pos);
+			}
+			return false;
+		}
+
         public static bool IsBlockedByAntiCheat(Tile tile, Point pos)
         {
-            if (TwailaConfig.Get().AntiCheat)
+            if (TwailaConfig.Get().AntiCheat.HideUnrevealedTiles)
             {
                 Player player = Main.player[Main.myPlayer];
                 return !IsTileRevealedToPlayer(player, tile, pos);
@@ -89,6 +103,15 @@ namespace Twaila.Util
                 return true;
             }
             return Main.Map.IsRevealed(tilePos.X, tilePos.Y);
+        }
+
+        public static Point TileEntityCoordinates(int tileCoordX, int tileCoordY, int size = 18, int width = 1, int height = 1)
+        {
+            Tile tile = Framing.GetTileSafely(tileCoordX, tileCoordY);
+            int posXAdjusted = tileCoordX - tile.TileFrameX / size % width;
+            int posYAdjusted = tileCoordY - tile.TileFrameY / size % height;
+
+             return new Point(posXAdjusted, posYAdjusted);
         }
     }
 }

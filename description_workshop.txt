@@ -39,3 +39,7 @@ Visit the Forum page for more details on config options
 [*]Previous Context: Cycles the UI contents backwards
 [*]Cycle Context Mode: Cycles between Automatic and Manual context modes
 [/list]
+
+[h1]Credits[/h1]
+Jadams - Developer
+SweelLong - Chinese Translations

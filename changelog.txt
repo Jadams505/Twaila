@@ -1,3 +1,3 @@
 ﻿
-- Fixed an issue with HideUIForAir and the Lock Context
-- Renamed Lock Context to Cycle Context Mode
+- Adjusted to the new keybind localization
+- Fixed a bug where you could move the panel in the full screen map

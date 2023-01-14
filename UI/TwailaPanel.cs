@@ -58,7 +58,7 @@ namespace Twaila.UI
 
             BackgroundColor = config.PanelColor.Color;
             BorderColor = Color.Black;
-            if (IsMouseHovering && !IsDragging())
+            if (ContainsPoint(Main.mouseX, Main.mouseY) && !IsDragging())
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
@@ -96,7 +96,7 @@ namespace Twaila.UI
             Layout.SetInitialSizes();
             float imageHeight = GetDimension(Layout.Image, Layout.Image.Height.Pixels);
             float textHeight = Layout.TextColumnSize().Y;
-            float imageWidth = GetDimension(Layout.Image, Layout.Image.image.Width);
+            float imageWidth = GetDimension(Layout.Image, Layout.Image.Width.Pixels);
             float textWidth = Layout.TextColumnSize().X;
 
             if (Layout.InfoBox.IsEmpty() && !HasChild(Layout.Name) && !HasChild(Layout.Mod))
@@ -120,8 +120,8 @@ namespace Twaila.UI
 
                 Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y);
 
-                imageWidth = GetDimension(Layout.Image, Layout.Image.image.Width) * ImageScale(remainingSpace);
-                imageHeight = GetDimension(Layout.Image, Layout.Image.image.Height) * ImageScale(remainingSpace);
+                imageWidth = GetDimension(Layout.Image, Layout.Image.Render.Width) * ImageScale(remainingSpace);
+                imageHeight = GetDimension(Layout.Image, Layout.Image.Render.Height) * ImageScale(remainingSpace);
             }
             else
             {
@@ -176,8 +176,8 @@ namespace Twaila.UI
 
                 Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y);
 
-                imageWidth = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.image.Width), 0, remainingSpace.X);
-                imageHeight = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.image.Height), 0, remainingSpace.Y);
+                imageWidth = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.Render.Width), 0, remainingSpace.X);
+                imageHeight = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.Render.Height), 0, remainingSpace.Y);
             }
 
             float calculatedHeight = imageHeight > textHeight ? imageHeight : textHeight;
@@ -203,14 +203,14 @@ namespace Twaila.UI
         public float ImageScale(Vector2 maxSize)
         {
             float scaleX = 1;
-            if (GetDimension(Layout.Image, Layout.Image.image.Width) > maxSize.X)
+            if (GetDimension(Layout.Image, Layout.Image.Render.Width) > maxSize.X)
             {
-                scaleX = maxSize.X / GetDimension(Layout.Image, Layout.Image.image.Width);
+                scaleX = maxSize.X / GetDimension(Layout.Image, Layout.Image.Render.Width);
             }
             float scaleY = 1;
-            if (GetDimension(Layout.Image, Layout.Image.image.Height) > maxSize.Y)
+            if (GetDimension(Layout.Image, Layout.Image.Render.Height) > maxSize.Y)
             {
-                scaleY = maxSize.Y / GetDimension(Layout.Image, Layout.Image.image.Height);
+                scaleY = maxSize.Y / GetDimension(Layout.Image, Layout.Image.Render.Height);
             }
             return Math.Min(scaleX, scaleY);
         }
@@ -284,30 +284,30 @@ namespace Twaila.UI
         private void UpdatePanelContents(SpriteBatch spriteBatch)
         {
             tick++;
-            Point mousePos = TwailaUI.GetMousePos();
+            TwailaPoint mouseInfo = TwailaUI.GetCursorInfo();
             Player player = Main.player[Main.myPlayer];
 
-            if (!TwailaUI.InBounds(mousePos.X, mousePos.Y))
+            if (!TwailaUI.InBounds(mouseInfo.BestPos().X, mouseInfo.BestPos().Y))
             {
                 tick = 0;
                 return;
             }
 
-            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mousePos);
+            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mouseInfo);
 
             if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
             {
-                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
 
                 if (player.itemAnimation > 0)
                 {
                     if (player.HeldItem.pick > 0) // swinging a pickaxe
                     {
-                        context = ContextSystem.Instance.TileEntry.Context(mousePos);
+                        context = ContextSystem.Instance.TileEntry.Context(mouseInfo);
                     }
                     if (player.HeldItem.hammer > 0) // swinging a hammer
                     {
-                        context = ContextSystem.Instance.WallEntry.Context(mousePos);
+                        context = ContextSystem.Instance.WallEntry.Context(mouseInfo);
                     }
                 }
             }
@@ -315,7 +315,6 @@ namespace Twaila.UI
             if (context == null)
             {
                 tick = 0;
-                CurrentContext = null;
                 return;
             }
 
@@ -323,7 +322,7 @@ namespace Twaila.UI
             {
                 if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
                 {
-                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mousePos);
+                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
                 }
                 tick = 0;
                 pickIndex++;
@@ -349,7 +348,7 @@ namespace Twaila.UI
             CurrentContext = context;
         }
 
-        public override void MouseDown(UIMouseEvent evt)
+        public override void LeftMouseDown(UIMouseEvent evt)
         {   
             _lastMouse = new Point(Main.mouseX, Main.mouseY);
             if (!TwailaConfig.Get().LockPosition)
@@ -360,14 +359,14 @@ namespace Twaila.UI
             }
         }
 
-        public override void MouseUp(UIMouseEvent evt)
+        public override void LeftMouseUp(UIMouseEvent evt)
         {
             _dragging = false;
         }
 
         public bool IsDragging()
         {
-            return _dragging && !Main.ingameOptionsWindow && !Main.hideUI;
+            return _dragging && !Main.ingameOptionsWindow && !Main.hideUI && !Main.mapFullscreen;
         }
 
         public void Drag()

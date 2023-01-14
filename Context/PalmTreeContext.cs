@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Twaila.Util;
 using Twaila.Graphics;
+using Twaila.Systems;
 
 namespace Twaila.Context
 {
@@ -12,12 +12,24 @@ namespace Twaila.Context
     {
         protected int SandId { get; set; }
 
-        public PalmTreeContext(Point pos) : base(pos)
+        public PalmTreeContext(TwailaPoint pos) : base(pos)
         {
             SandId = GetPalmTreeSand();
         }
 
-        public override void Update()
+		public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
+		{
+			Tile tile = Framing.GetTileSafely(pos.BestPos());
+
+			if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+			{
+				return new PalmTreeContext(pos);
+			}
+
+			return null;
+		}
+
+		public override void Update()
         {
             base.Update();
             SandId = GetPalmTreeSand();
@@ -33,23 +45,18 @@ namespace Twaila.Context
             return true;
         }
 
-        protected override TwailaTexture TileImage(SpriteBatch spriteBatch)
+        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             if (TileLoader.CanGrowModPalmTree(SandId))
             {
-                return new TwailaTexture(TreeUtil.GetImageForModdedPalmTree(spriteBatch, SandId), 0.5f);
+                return new TwailaRender(TreeUtil.GetImageForModdedPalmTree(spriteBatch, SandId), 0.5f);
             }
             int palmTreeWood = TreeUtil.GetTreeWood(SandId);
             if (palmTreeWood != -1)
             {
-                return new TwailaTexture(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
+                return new TwailaRender(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
             }
-            return null;
-        }
-
-        protected override TwailaTexture ItemImage(SpriteBatch spriteBatch)
-        {
-            return null;
+            return new TwailaRender();
         }
 
         protected override string GetName()
@@ -75,17 +82,18 @@ namespace Twaila.Context
 
         private int GetPalmTreeSand()
         {
-            int y = Pos.Y;
+			int x = Pos.BestPos().X;
+			int y = Pos.BestPos().Y;
             do
             {
                 y += 1;
-            } while (Main.tile[Pos.X, y].TileType == TileID.PalmTree && Main.tile[Pos.X, y].HasTile);
+            } while (Main.tile[x, y].TileType == TileID.PalmTree && Main.tile[x, y].HasTile);
 
-            if (!Main.tile[Pos.X, y].HasTile)
+            if (!Main.tile[x, y].HasTile)
             {
                 return -1;
             }
-            return Main.tile[Pos.X, y].TileType;
+            return Main.tile[x, y].TileType;
         }
     }
 }

@@ -20,10 +20,10 @@ namespace Twaila.Systems
 
         public override void Load()
         {
-            ToggleUI = KeybindLoader.RegisterKeybind(Mod, "Cycle UI Display Mode", "Mouse3");
-            NextContext = KeybindLoader.RegisterKeybind(Mod, "Next Context", Keys.Right);
-            PrevContext = KeybindLoader.RegisterKeybind(Mod, "Previous Context", Keys.Left);
-            CycleContextMode = KeybindLoader.RegisterKeybind(Mod, "Cycle Context Mode", Keys.Up);
+            ToggleUI = KeybindLoader.RegisterKeybind(Mod, "CycleUIDisplayMode", "Mouse3");
+            NextContext = KeybindLoader.RegisterKeybind(Mod, "NextContext", Keys.Right);
+            PrevContext = KeybindLoader.RegisterKeybind(Mod, "PreviousContext", Keys.Left);
+            CycleContextMode = KeybindLoader.RegisterKeybind(Mod, "CycleContextMode", Keys.Up);
         }
 
         public override void Unload()

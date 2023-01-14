@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
 
 namespace Twaila.ObjectData
 {
-    internal class ExtraObjectData
+    public class ExtraObjectData
     {
         private static Dictionary<int, TileObjectData> _data;
 
@@ -18,6 +19,7 @@ namespace Twaila.ObjectData
             Add2x3();
             Add3x2();
             Add3x3();
+            Add4x2();
         }
 
         public static void Unload()
@@ -66,6 +68,7 @@ namespace Twaila.ObjectData
             AddEntry(TileID.MushroomPlants, data4);
             AddEntry(TileID.HallowedPlants, data4);
             AddEntry(TileID.CrimsonPlants, data4); //FleshWeeds
+			AddEntry(TileID.AshPlants, data4);
 
             TileObjectData data5 = new TileObjectData(TileObjectData.Style1x1);
             data5.CoordinateHeights = new int[] { 32 };
@@ -82,6 +85,11 @@ namespace Twaila.ObjectData
             data6.StyleMultiplier = 27;
             data6.StyleWrapLimit = 27;
             AddEntry(TileID.Platforms, data6); // the stone platform is messed up in the original TileObjectData and I dont know why
+
+			TileObjectData data7 = new TileObjectData(TileObjectData.Style1x1);
+			data7.CoordinateHeights = new int[] { 34 };
+			data7.CoordinateWidth = 24;
+			AddEntry(TileID.GlowTulip, data7);
         }
 
         private static void Add2x1()
@@ -137,6 +145,15 @@ namespace Twaila.ObjectData
             data2.CoordinateHeights = new int[] { 16, 16, 16 };
             data2.StyleHorizontal = true;
             AddEntry(TileID.GemLocks, data2);
+        }
+
+        private static void Add4x2()
+        {
+            TileObjectData data = new TileObjectData();
+            data.CopyFrom(TileObjectData.Style4x2);
+            data.CoordinateHeights = new int[] { 16, 18 };
+            data.CoordinatePaddingFix = new Point16(0, -2);
+            AddEntry(TileID.Beds, data);
         }
 
         private static void AddEntry(int tileId, TileObjectData copyFrom)

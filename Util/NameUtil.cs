@@ -8,7 +8,7 @@ using Twaila.Context;
 
 namespace Twaila.Util
 {
-    internal class NameUtil
+    public class NameUtil
     {
         public static string GetNameFromItem(int itemId)
         {
@@ -63,6 +63,10 @@ namespace Twaila.Util
                     return "Corrupt Plant";
                 case TileID.Sunflower:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Sunflower, 0));
+                case TileID.ClosedDoor:
+                    if (tile.TileFrameY >= 594 && tile.TileFrameY <= 630 && tile.TileFrameX <= 36)
+                        return "Locked " + GetNameFromItem(ItemID.LihzahrdDoor);
+                    break;
                 case TileID.Vines:
                     return GetNameFromItem(ItemID.Vine);
                 case TileID.JungleGrass:
@@ -233,7 +237,35 @@ namespace Twaila.Util
                     return GetNameFromItem(ItemID.BambooBlock);
                 case TileID.Seaweed:
                     return GetNameFromItem(ItemID.Seaweed);
-            }
+				case TileID.VioletMoss:
+					return GetNameFromItem(ItemID.VioletMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+				case TileID.VioletMossBrick:
+					return GetNameFromItem(ItemID.VioletMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+				case TileID.RainbowMoss:
+					return GetNameFromItem(ItemID.RainbowMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+				case TileID.RainbowMossBrick:
+					return GetNameFromItem(ItemID.RainbowMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+				case TileID.AshGrass:
+					return GetNameFromItem(ItemID.AshGrassSeeds).Replace("Seeds", "Block");
+				case TileID.TreeAsh:
+					return GetNameFromItem(ItemID.AshWood).Replace("Wood", "Tree");
+				case TileID.CorruptVines:
+					return "Corrupt " + GetNameFromItem(ItemID.Vine);
+				case TileID.AshPlants:
+					return "Ash Plant";
+				case TileID.AshVines:
+					return "Ash " + GetNameFromItem(ItemID.Vine);
+				case TileID.PlanteraThorns:
+					return "Plantera " + Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.CorruptThorns, 0));
+				case TileID.CorruptJungleGrass:
+					return "Corrupt " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
+				case TileID.CrimsonJungleGrass:
+					return "Crimson " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
+				case TileID.LifeCrystalBoulder:
+					return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
+				case TileID.DirtiestBlock:
+					return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.DirtBlock) : GetNameFromItem(ItemID.DirtiestBlock);
+			}
             return null;
         }
 
@@ -249,6 +281,10 @@ namespace Twaila.Util
                 {
                     return "Honey";
                 }
+				if(tile.LiquidType == LiquidID.Shimmer)
+				{
+					return "Shimmer";
+				}
                 if(tile.LiquidType == LiquidID.Water)
                 {
                     const string water = "Water";
@@ -280,8 +316,10 @@ namespace Twaila.Util
                             return "Honey";
                         case WaterStyleID.UndergroundDesert:
                             return "Desert " + water;
+						case 13:
+							return "Ocean " + water;
                     }
-                    if(Main.waterStyle >= WaterStyleID.Count)
+                    if(Main.waterStyle >= Main.maxLiquidTypes)
                     {
                         return SplitCamelCase(GetInternalLiquidName(Main.waterStyle, false));
                     }
@@ -432,16 +470,19 @@ namespace Twaila.Util
         public static string SplitCamelCase(string word)
         {
             StringBuilder builder = new StringBuilder();
-
-            foreach(char letter in word)
-            {
-                if (char.IsUpper(letter) && builder.Length != 0)
-                {
-                    builder.Append(' ');
-                }
-                builder.Append(letter);
-            }
-            return builder.ToString();
+			if(word != null)
+			{
+				foreach (char letter in word)
+				{
+					if (char.IsUpper(letter) && builder.Length != 0)
+					{
+						builder.Append(' ');
+					}
+					builder.Append(letter);
+				}
+				return builder.ToString();
+			}
+			return word;
         }
 
         public static string GetName(TwailaConfig.NameType nameType, string displayName, string internalName, string fullName)
