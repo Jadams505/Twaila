@@ -60,13 +60,21 @@ namespace Twaila.UI
         {
             Vector2 drawPos = new Vector2((int)GetDimensions().X, (int)GetDimensions().Y);
 
-            int width = (int)Math.Min(ICON_WIDTH + PADDING_BETWEEN + StatText.GetContentSize().X + PADDING_RIGHT, Icon.Width);
+            float contentSize = ICON_WIDTH + PADDING_BETWEEN + StatText.GetContentSize().X + PADDING_RIGHT;
+            int width = (int)Math.Min(contentSize, Icon.Width);
 
             float scale = GetScale(new Vector2(Width.Pixels, Height.Pixels));
 
             StatText.Left.Set(ICON_WIDTH * scale, 0);
 
             spriteBatch.Draw(Icon, drawPos, new Rectangle(0, 0, width, Icon.Height), Color.White * Opacity, 0, Vector2.Zero, scale * BACKGROUND_BASE_SCALE, 0, 0);
+
+            if(contentSize > Icon.Width)
+            {
+                float remainingWidth = contentSize - Icon.Width + 10;
+                drawPos.X += width * BACKGROUND_BASE_SCALE;
+                spriteBatch.Draw(Icon, drawPos, new Rectangle(ICON_WIDTH, 0, (int)remainingWidth, Icon.Height), Color.White * Opacity, 0, Vector2.Zero, scale * BACKGROUND_BASE_SCALE, 0, 0);
+            }
 
             if (!HasChild(StatText))
             {
