@@ -6,7 +6,9 @@ using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Graphics;
+using Twaila.Systems;
 using Twaila.UI;
+using Twaila.Util;
 
 namespace Twaila.Context
 {
@@ -20,17 +22,35 @@ namespace Twaila.Context
         protected string Damage { get; set; }
         protected string KnockbackTaken { get; set; }
 
-        public NpcContext(Point pos) : base(pos)
+        public NpcContext(TwailaPoint pos) : base(pos)
         {
-            Update();
+			Npc = null;
+			Id = "";
+			Hp = "";
+			Defense = "";
+			Damage = "";
+			KnockbackTaken = "";
         }
 
-        public override bool ContextChanged(BaseContext other)
+		public static NpcContext CreateNpcContext(TwailaPoint pos)
+		{
+			if (IntersectsNPC(pos.BestPos(), out _))
+			{
+				return new NpcContext(pos);
+			}
+
+			return null;
+		}
+
+		public override bool ContextChanged(BaseContext other)
         {
             if (other?.GetType() == typeof(NpcContext))
             {
                 NpcContext otherContext = (NpcContext)other;
-                return Npc?.type != otherContext.Npc?.type;
+				if(Npc?.type == otherContext.Npc.type)
+				{
+					return Npc?.netID != otherContext.Npc?.netID;
+				}
             }
             return true;
         }
@@ -39,7 +59,7 @@ namespace Twaila.Context
         {
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
 
-            IntersectsNPC(new Point(Pos.X, Pos.Y), out NPC foundNPC);
+            IntersectsNPC(Pos.BestPos(), out NPC foundNPC);
 
             Npc = foundNPC;
 
@@ -81,12 +101,7 @@ namespace Twaila.Context
 
             if (ContextChanged(prevContext))
             {
-                Color color = Color.White;
-                if (Npc?.color != new Color(0, 0, 0, 0))
-                {
-                    color = Npc.color;
-                }
-                layout.Image.SetImage(GetImage(Main.spriteBatch), color);
+                layout.Image.SetImage(GetImage(Main.spriteBatch));
             }
 
             InfoElements().ForEach(element => layout.InfoBox.AddAndEnable(element));
@@ -94,19 +109,24 @@ namespace Twaila.Context
             layout.Mod.SetText(GetMod());
         }
 
-        protected override TwailaTexture GetImage(SpriteBatch spriteBatch)
+        protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            TextureBuilder builer = new TextureBuilder();
+            RenderBuilder builer = new RenderBuilder();
 
             if(Npc != null)
             {
                 Rectangle drawFrame = new Rectangle(0, 0, Npc.frame.Width, Npc.frame.Height);
 
-                builer.AddComponent(drawFrame, TextureAssets.Npc[Npc.type].Value, Point.Zero);
+				Color drawColor = Npc.color;
 
-                Texture2D texture = builer.Build(spriteBatch.GraphicsDevice);
+				if(drawColor.A == 0)
+				{
+					drawColor = Color.White;
+				}
 
-                return new TwailaTexture(texture);
+				builer.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, Npc.scale);
+
+				return builer.Build();
             }
 
             return null;

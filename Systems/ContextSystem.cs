@@ -47,7 +47,7 @@ namespace Twaila.Systems
             WireEntry = new ContextEntry(WireContext.CreateWireContext, "Wire");
             ContextEntries.Add(WireEntry);
 
-            NpcEntry = new ContextEntry(CreateNpcContext, nameof(NpcEntry));
+            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, "Npc");
             ContextEntries.Add(NpcEntry);
         }
 

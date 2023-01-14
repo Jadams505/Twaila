@@ -550,6 +550,16 @@ namespace Twaila.Util
             return null;
         }
 
+		public static Texture2D GetNPCTexture(int npcId)
+		{
+			if (npcId >= 0 && npcId < TextureAssets.Npc.Length)
+			{
+				Main.instance.LoadNPC(npcId);
+				return TextureAssets.Npc[npcId].Value;
+			}
+			return null;
+		}
+
 		public static Texture2D ForceVanillaLoad(this Asset<Texture2D> asset)
 		{
 			if(asset == null)
