@@ -21,7 +21,7 @@ namespace Twaila.Util
             {
                 return Lang.GetItemNameValue(itemId);
             }
-            string name = item.DisplayName.GetDefault();
+            string name = item.DisplayName.Value;
             if (name == null || name.Equals(""))
             {
                 return null;
@@ -418,7 +418,7 @@ namespace Twaila.Util
                     {
                         int dropId = mTile.ItemDrop;
                         ModItem mItem = ItemLoader.GetItem(dropId);
-                        return mItem == null ? mTile.Name : mItem.DisplayName.GetDefault() + " " + cactus;
+                        return mItem == null ? mTile.Name : mItem.DisplayName.Value + " " + cactus;
                     }
                 }
                 else

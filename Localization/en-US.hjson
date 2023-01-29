@@ -1,142 +1,147 @@
-﻿Mods:
-{
-    Twaila:
-    {
-		Keybind:
-		{
-			CycleUIDisplayMode: "Cycle UI Display Mode"
-			NextContext: "Next Context"
-			PreviousContext: "Previous Context"
-			CycleContextMode: "Cycle Context Mode"
+
+Mods: {
+	Twaila: {
+		enum: {
+			Left: Left
+			Center: Center
+			Right: Right
+			Bottom: Bottom
+			Top: Top
+			Name: Name
+			Icon: Icon
+			Both: Both
+			On: On
+			Off: Off
+			DisplayName: Display Name
+			InternalName: Internal Name
+			FullName: Full Name
+			Shrink: Shrink
+			Trim: Trim
+			Overflow: Overflow
+			Automatic: Automatic
+			Manual: Manual
 		}
-        enum:
-        {
-            Left: "Left"
-            Center: "Center"
-            Right: "Right"
-            Bottom: "Bottom"
-            Top: "Top"
-            Name: "Name"
-            Icon: "Icon"
-            Both: "Both"
-            On: "On"
-            Off: "Off"
-            DisplayName: "DisplayName"
-            InternalName: "InternalName"
-            FullName: "FullName"
-            Shrink: "Shrink"
-            Trim: "Trim"
-            Overflow: "Overflow"
-            Automatic: "Automatic"
-            Manual: "Manual"
-        }
-        Content:
-        {
-            ShowImage: "ShowImage"
-            ShowName: "ShowName"
-            ShowMod: "ShowMod"
-            ShowId: "ShowId"
-            ShowPickaxePower: "ShowPickaxePower"
-            ShowPickaxe: "ShowPickaxe"
-            ShowWire: "ShowWire"
-            ShowActuator: "ShowActuator"
-            ShowPaint: "ShowPaint"
-		    ShowCoating: "ShowCoating"
-            ShowContainedItems: "ShowContainedItems"
-        }
-        ModConfig: "ModConfig"
-        Features: "Features"
-        AntiCheatSettings: 
-        {
-            Label: "Anti Cheat Settings"
-            Tooltip: "Various settings to prevent cheating"
-        }
-		HideUnrevealedTiles:
-		{
-			Label: "Hide Unrevealed Tiles"
-            Tooltip: "Hides tiles that are not revealed on the player's map"
+
+		Content: {
+			ShowImage: Show Image
+			ShowName: Show Name
+			ShowMod: Show Mod
+			ShowId: Show Id
+			ShowPickaxePower: Show Pickaxe Power
+			ShowPickaxe: Show Pickaxe
+			ShowWire: Show Wire
+			ShowActuator: Show Actuator
+			ShowPaint: Show Paint
+			ShowCoating: Show Coating
+			ShowContainedItems: Show Contained Items
 		}
-		HideWires:
-		{
-			Label: "Hide Wires"
-            Tooltip: "Hides wires that the player cannot see"
+
+		ModConfig: ModConfig
+		Features: Features
+
+		AntiCheatSettings: {
+			Label: Anti Cheat Settings
+			Tooltip: Various settings to prevent cheating
 		}
-		HideEchoTiles:
-		{
-			Label: "Hide Echo Tiles"
-            Tooltip: "Hides echo tiles that the player cannot see"
+
+		HideUnrevealedTiles: {
+			Label: Hide Unrevealed Tiles
+			Tooltip: Hides tiles that are not revealed on the player's map
 		}
-		HideSuspiciousTiles:
-		{
-			Label: "Hide Suspicious Tiles"
-            Tooltip: "Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)"
+
+		HideWires: {
+			Label: Hide Wires
+			Tooltip: Hides wires that the player cannot see
 		}
-        DisplayContent: "Content Toggles"
-        UIPosition: "UI Position"
-        UseDefaultPosition:
-        {
-            Label: "UseDefaultPosition"
-            Tooltip: "Dragging the panel automatically disables this"
-        }
-        LockPosition:
-        {
-            Label: "LockPosition"
-            Tooltip: "When this is OFF you can use the mouse to move the panel"
-        }
-        UIPanel: "UI Panel"
-        MaxWidth:
-        {
-            Label: "MaxWidth (%)"
-            Tooltip: "Maximum % of the screen's width the panel can be"
-        }
-        MaxHeight:
-        {
-            Label: "MaxHeight (%)"
-            Tooltip: "Maximum % of the screen's height the panel can be"
-        }
-        CycleDelay:
-        {
-            Label: "CycleDelay"
-            Tooltip: "The amount of time in ticks before the panel will cycle to the next type"
-        }
-        UIDisplaySettings: "UI Display"
-        PanelColor: "Panel Color"
-        UIText: "UI Text"
-        OverrideColor:
-        {
-            Label: "OverrideColor"
-            Tooltip: "Turn this on to override any pre-existing text color"
-        }
-        TextColor: "Text Color"
-        UIImage: "UI Image"
-        UseItemTextures:
-        {
-            Label: "UseItemTextures"
-            Tooltip: "ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world"
-        }
-        ReservedImageWidth:
-        {
-            Label: "ReservedImageWidth (%)"
-            Tooltip: "The % of the panel's width that is allocated for the image when the text is too long"
-        }
-        AutomaticOptions: "Automatic Options"
-        HideUIForAir: 
-        {
-            Label: "HideUIForAir"
-            Tooltip: "ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile"
-        }
-        AnchorX: "AnchorX"
-        AnchorY: "AnchorY"
-        AnchorPosX: "AnchorPosX"
-        AnchorPosY: "AnchorPosY"
-        PanelPadding: "PanelPadding"
-        ContentSetting: "ContentSetting"
-        HoverOpacity: "HoverOpacity"
-        ContextMode: "ContextMode"
-        ShowBackground: "ShowBackground"
-		ShowInFullscreenMap: "ShowInFullscreenMap"
-        UIDisplay: "UIDisplay"
-        Color: "Color"
-        TextShadow: "TextShadow"
-    }
+
+		HideEchoTiles: {
+			Label: Hide Echo Tiles
+			Tooltip: Hides echo tiles that the player cannot see
+		}
+
+		HideSuspiciousTiles: {
+			Label: Hide Suspicious Tiles
+			Tooltip: Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)
+		}
+
+		DisplayContent: Content Toggles
+		UIPosition: UI Position
+
+		UseDefaultPosition: {
+			Label: Use Default Position
+			Tooltip: Dragging the panel automatically disables this
+		}
+
+		LockPosition: {
+			Label: Lock Position
+			Tooltip: When this is OFF you can use the mouse to move the panel
+		}
+
+		UIPanel: UI Panel
+
+		MaxWidth: {
+			Label: Max Width (%)
+			Tooltip: Maximum % of the screen's width the panel can be
+		}
+
+		MaxHeight: {
+			Label: Max Height (%)
+			Tooltip: Maximum % of the screen's height the panel can be
+		}
+
+		CycleDelay: {
+			Label: Cycle Delay
+			Tooltip: The amount of time in ticks before the panel will cycle to the next type
+		}
+
+		UIDisplaySettings: UI Display
+		PanelColor: Panel Color
+		UIText: UI Text
+
+		OverrideColor: {
+			Label: Override Color
+			Tooltip: Turn this on to override any pre-existing text color
+		}
+
+		TextColor: Text Color
+		UIImage: UI Image
+
+		UseItemTextures: {
+			Label: Use Item Textures
+			Tooltip: ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world
+		}
+
+		ReservedImageWidth: {
+			Label: Reserved Image Width (%)
+			Tooltip: The % of the panel's width that is allocated for the image when the text is too long
+		}
+
+		AutomaticOptions: Automatic Options
+
+		HideUIForAir: {
+			Label: Hide UI For Air
+			Tooltip: ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile
+		}
+
+		AnchorX: Anchor X
+		AnchorY: Anchor Y
+		AnchorPosX: Anchor Pos X
+		AnchorPosY: Anchor Pos Y
+		PanelPadding: Panel Padding
+		ContentSetting: Content Setting
+		HoverOpacity: Hover Opacity
+		ContextMode: Context Mode
+		ShowBackground: Show Background
+		ShowInFullscreenMap: Show In Fullscreen Map
+		UIDisplay: UI Display
+		Color: Color
+		TextShadow: Text Shadow
+
+		Keybinds: {
+			CycleUIDisplayMode.DisplayName: Cycle UI Display Mode
+			NextContext.DisplayName: Next Context
+			PreviousContext.DisplayName: Previous Context
+			CycleContextMode.DisplayName: Cycle Context Mode
+		}
+	}
 }
