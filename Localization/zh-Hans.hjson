@@ -32,8 +32,8 @@ Mods: {
 			ShowWire: 显示电线
 			ShowActuator: 显示致动器
 			ShowPaint: 显示油漆
-			// ShowCoating: ShowCoating
-			// ShowContainedItems: ShowContainedItems
+			// ShowCoating: Show Coating
+			// ShowContainedItems: Show Contained Items
 		}
 
 		ModConfig: 模组配置
@@ -140,7 +140,7 @@ Mods: {
 		HoverOpacity: 悬停不透明度
 		ContextMode: 内容模式
 		ShowBackground: 显示背景
-		// ShowInFullscreenMap: ShowInFullscreenMap
+		// ShowInFullscreenMap: Show In Fullscreen Map
 		UIDisplay: UI显示
 		Color: 颜色
 		TextShadow: 文本阴影
@@ -150,6 +150,133 @@ Mods: {
 			NextContext.DisplayName: 下一个内容
 			PreviousContext.DisplayName: 上一个内容
 			CycleContextMode.DisplayName: 循环内容模式
+		}
+
+		Tiles: {
+			// Grass: Grass Block
+			// Plants: Plant
+			// CorruptGrass: Corrupt Grass
+			// CorruptPlants: Corrupt Plant
+			// ClosedDoor.Lihzahrd: Locked Lihzahrd Door
+			// JungleGrass: Jungle Grass Block
+			// JunglePlants: Jungle Plant
+			// JungleVines: Jungle Vine
+			// MushroomGrass: Mushroom Grass Block
+			// Plants2: Tall Plant
+			// JunglePlants2: Tall Jungle Plant
+			// HallowedGrass: Hallowed Grass Block
+			// HallowedPlants: Hallowed Plant
+			// HallowedPlants2: Tall Hallowed Plant
+			// HallowedVines: Hallowed Vine
+			// MagicalIceBlock: Magic Ice Block
+			// BreakableIce: Thin Ice Block
+			// Stalactite: Stalactite
+			// GreenMoss: Green Moss Stone Block
+			// BrownMoss: Brown Moss Stone Block
+			// RedMoss: Red Moss Stone Block
+			// BlueMoss: Blue Moss Stone Block
+			// PurpleMoss: Purple Moss Stone Block
+			// LavaMoss: Lava Moss Stone Block
+			// KryptonMoss: Krypton Moss Stone Block
+			// XenonMoss: Xenon Moss Stone Block
+			// ArgonMoss: Argon Moss Stone Block
+
+			SmallPiles: {
+				// Default: Small Debris
+				// Copper: Small Copper Coin Stash
+				// Silver: Small Silver Coin Stash
+				// Gold: Small Gold Coin Stash
+				// Amethyst: Amethyst Stash
+				// Topaz: Topaz Stash
+				// Sapphire: Sapphire Stash
+				// Emerald: Emerald Stash
+				// Ruby: Ruby Stash
+				// Diamond: Diamond Stash
+			}
+
+			LargePiles: {
+				// Default: Large Debris
+				// Copper: Large Copper Coin Stash
+				// Silver: Large Silver Coin Stash
+				// Gold: Large Gold Coin Stash
+			}
+
+			LargePiles2: {
+				// Default: Large Debris
+				// EnchantedSword: Enchanted Sword Shrine
+			}
+
+			// LivingWood: Living Wood Block
+			// LeafBlock: Leaf Block
+			// CrimsonGrass: Crimson Grass Block
+			// CrimsonPlants: Crimson Plant
+			// CrimsonVines: Crimson Vine
+			// PlantDetritus: Jungle Foliage
+			// VineFlowers: Flower Vine
+			// LivingMahogany: Living Mahogany Block
+			// LivingMahoganyLeaves: Living Mahogany Leaf Block
+			// GolfGrass: Mowed Grass
+			// GolfGrassHallowed: Mowed Grass
+			// MysticSnakeRope: Snake Rope
+			// GreenMossBrick: Green Moss Gray Brick
+			// BrownMossBrick: Brown Moss Gray Brick
+			// RedMossBrick: Red Moss Gray Brick
+			// BlueMossBrick: Blue Moss Gray Brick
+			// PurpleMossBrick: Purple Moss Gray Brick
+			// LavaMossBrick: Lava Moss Gray Brick
+			// KryptonMossBrick: Krypton Moss Gray Brick
+			// XenonMossBrick: Xenon Moss Gray Brick
+			// ArgonMossBrick: Argon Moss Gray Brick
+			// LilyPad: Lily Pad
+			// Cattail: Cattail
+			// MushroomVines: Hanging Mushroom
+			// SeaOats: Sea Oats
+			// OasisPlants: Oasis Foliage
+			// Sandcastles: Sandcastle
+			// Grate: Open Grate
+			// GrateClosed: Closed Grate
+			// VanityTreeSakura: Sakura Tree
+			// VanityTreeYellowWillow: Yellow Willow Tree
+			// TreeTopaz: Topaz Tree
+			// TreeAmethyst: Amethyst Tree
+			// TreeSapphire: Sapphire Tree
+			// TreeEmerald: Emerald Tree
+			// TreeRuby: Ruby Tree
+			// TreeDiamond: Diamond Tree
+			// TreeAmber: Amber Tree
+			// VoiletMoss: Violet Moss Stone Block
+			// VoiletMossBrick: Violet Moss Gray Brick
+			// RainbowMoss: Rainbow Moss Stone Block
+			// RainbowMossBrick: Rainbow Moss Gray Brick
+			// AshGrass: Ash Grass
+			// TreeAsh: Ash Tree
+			// CorruptVines: Corrupt Vine
+			// AshPlants: Ash Plant
+			// AshVines: Ash Vine
+			// PlanteraThorns: Plantera Thorn
+			// CorruptJungleGrass: Corrupt Jungle Grass
+			// CrimsonJungleGrass: Crimson Jungle Grass
+		}
+
+		Liquids: {
+			Water: {
+				// Purity: Water
+				// Corrupt: Corrupt Water
+				// Jungle: Jungle Water
+				// Hallowed: Hallowed Water
+				// Tundra: Tundra Water
+				// Desert: Oasis Water
+				// Underground: Underground Water
+				// Cavern: Cavern Water
+				// Bloodmoon: Blood Moon Water
+				// Crimson: Crimson Water
+				// UndergroundDesert: Desert Water
+				// Ocean: Ocean Water
+			}
+
+			// Lava: Lava
+			// Honey: Honey
+			// Shimmer: Shimmer
 		}
 	}
 }
