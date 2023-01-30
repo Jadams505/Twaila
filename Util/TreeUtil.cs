@@ -443,6 +443,8 @@ namespace Twaila.Util
                     return ItemID.Wood;
                 case TileID.Sand:
                     return ItemID.PalmWood;
+				case TileID.AshGrass:
+					return ItemID.AshWood;
             }
             int wood = -1;
             TileLoader.DropTreeWood(treeDirt, ref wood);

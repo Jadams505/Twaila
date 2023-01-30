@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Terraria;
+using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Map;
@@ -240,29 +241,29 @@ namespace Twaila.Util
                 case TileID.Seaweed:
                     return GetNameFromItem(ItemID.Seaweed);
 				case TileID.VioletMoss:
-					return GetNameFromItem(ItemID.VioletMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+					return Language.GetTextValue("Mods.Twaila.Tiles.VioletMoss");
 				case TileID.VioletMossBrick:
-					return GetNameFromItem(ItemID.VioletMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+					return Language.GetTextValue("Mods.Twaila.Tiles.VioletMossBrick");
 				case TileID.RainbowMoss:
-					return GetNameFromItem(ItemID.RainbowMoss) + " " + GetNameFromItem(ItemID.StoneBlock);
+					return Language.GetTextValue("Mods.Twaila.Tiles.RainbowMoss");
 				case TileID.RainbowMossBrick:
-					return GetNameFromItem(ItemID.RainbowMoss) + " " + GetNameFromItem(ItemID.GrayBrick);
+					return Language.GetTextValue("Mods.Twaila.Tiles.RainbowMossBrick");
 				case TileID.AshGrass:
-					return GetNameFromItem(ItemID.AshGrassSeeds).Replace("Seeds", "Block");
+					return Language.GetTextValue("Mods.Twaila.Tiles.AshGrass");
 				case TileID.TreeAsh:
-					return GetNameFromItem(ItemID.AshWood).Replace("Wood", "Tree");
+					return Language.GetTextValue("Mods.Twaila.Tiles.TreeAsh");
 				case TileID.CorruptVines:
-					return "Corrupt " + GetNameFromItem(ItemID.Vine);
+					return Language.GetTextValue("Mods.Twaila.Tiles.CorruptVines");
 				case TileID.AshPlants:
-					return "Ash Plant";
+					return Language.GetTextValue("Mods.Twaila.Tiles.AshPlants");
 				case TileID.AshVines:
-					return "Ash " + GetNameFromItem(ItemID.Vine);
+					return Language.GetTextValue("Mods.Twaila.Tiles.AshVines");
 				case TileID.PlanteraThorns:
-					return "Plantera " + Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.CorruptThorns, 0));
+					return Language.GetTextValue("Mods.Twaila.Tiles.PlanteraThorns");
 				case TileID.CorruptJungleGrass:
-					return "Corrupt " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
+					return Language.GetTextValue("Mods.Twaila.Tiles.CorruptJungleGrass");
 				case TileID.CrimsonJungleGrass:
-					return "Crimson " + GetNameFromItem(ItemID.JungleGrassSeeds).Replace("Seeds", "Block");
+					return Language.GetTextValue("Mods.Twaila.Tiles.CrimsonJungleGrass");
 				case TileID.LifeCrystalBoulder:
 					return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
 				case TileID.DirtiestBlock:
@@ -329,123 +330,130 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetNameForTree(int treeId, int dirtId)
-        {
-            string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
-            string toAppend = "";
-            if (treeId == TileID.Trees)
-            {
-                toAppend = " " + tree;
-                if (dirtId == TileID.Grass || dirtId == TileID.GolfGrass)
-                {
-                    return tree;
-                }
-            }
-            int itemId = TreeUtil.GetTreeWood(dirtId);
-            if (itemId != -1)
-            {
-                return Lang.GetItemNameValue(itemId) + toAppend;
-            }
-            return null;
-        }
+		public static string GetNameForTree(int dirtId)
+		{
+			switch (WorldGen.GetTreeType(dirtId))
+			{
+				case TreeTypes.Forest:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Forest");
+				case TreeTypes.Corrupt:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Corrupt");
+				case TreeTypes.Mushroom:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Mushroom");
+				case TreeTypes.Crimson:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Crimson");
+				case TreeTypes.Jungle:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Jungle");
+				case TreeTypes.Snow:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Snow");
+				case TreeTypes.Hallowed:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Hallowed");
+			}
+			int itemId = TreeUtil.GetTreeWood(dirtId);
+			if (itemId != -1)
+			{
+				return Lang.GetItemNameValue(itemId) + " " + Language.GetTextValue("MapObject.Tree");
+			}
+			return null;
+		}
 
-        public static string GetNameForPalmTree(int treeId, int sandId)
-        {
-            string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
-            string toAppend = "";
-            if (treeId == TileID.PalmTree)
-            {
-                toAppend = " " + palmTree;
-                if (sandId == TileID.Sand)
-                {
-                    return palmTree;
-                }
-            }
-            int itemId = TreeUtil.GetTreeWood(sandId);
-            if (itemId != -1)
-            {
-                return Lang.GetItemNameValue(itemId) + toAppend;
-            }
-            return null;
-        }
+		public static string GetNameForPalmTree(int sandId)
+		{
+			switch (WorldGen.GetTreeType(sandId))
+			{
+				case TreeTypes.Palm:
+					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.Default");
+				case TreeTypes.PalmCrimson:
+					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.PalmCrimson");
+				case TreeTypes.PalmCorrupt:
+					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.PalmCorrupt");
+				case TreeTypes.PalmHallowed:
+					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.PalmHallowed");
+			}
+			int itemId = TreeUtil.GetTreeWood(sandId);
+			if (itemId != -1)
+			{
+				return Lang.GetItemNameValue(itemId) + " " + Language.GetTextValue("MapObject.PalmTree");
+			}
+			return null;
+		}
 
-        public static string GetNameForSapling(int saplingId, int dirtId)
-        {
-            string tree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Trees, 0));
-            string sapling = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Saplings, 0));
-            string palmTree = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.PalmTree, 0));
-            string toAppend = "";
-            if (TileID.Sets.TreeSapling[saplingId])
-            {
-                if (TileLoader.CanGrowModPalmTree(dirtId) || dirtId == TileID.Crimsand ||
-                    dirtId == TileID.Ebonsand || dirtId == TileID.Pearlsand)
-                {
-                    toAppend = " " + palmTree + " " + sapling;
-                }
-                else
-                {
-                    toAppend = " " + tree + " " + sapling;
-                }
-                if (dirtId == TileID.Grass)
-                {
-                    return tree + " " + sapling;
-                }
-                if (dirtId == TileID.Sand)
-                {
-                    return palmTree + " " + sapling;
-                }
-            }
-            int itemId = TreeUtil.GetTreeWood(dirtId);
-            if (itemId != -1)
-            {
-                return Lang.GetItemNameValue(itemId) + toAppend;
-            }
-            return null;
-        }
+		public static string GetNameForSapling(int tileId, int dirtId)
+		{
+			if (TileID.Sets.TreeSapling[tileId])
+			{
+				switch (WorldGen.GetTreeType(dirtId))
+				{
+					case TreeTypes.Forest:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Forest");
+					case TreeTypes.Corrupt:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Corrupt");
+					case TreeTypes.Crimson:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Crimson");
+					case TreeTypes.Jungle:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Jungle");
+					case TreeTypes.Snow:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Snow");
+					case TreeTypes.Hallowed:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Hallowed");
+					case TreeTypes.Palm:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Palm");
+					case TreeTypes.PalmCrimson:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.PalmCrimson");
+					case TreeTypes.PalmCorrupt:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.PalmCorrupt");
+					case TreeTypes.PalmHallowed:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.PalmHallowed");
+					case TreeTypes.Ash:
+						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Ash");
+				}
+				int itemId = TreeUtil.GetTreeWood(dirtId);
+				if (itemId != -1)
+				{
+					string itemName = Lang.GetItemNameValue(itemId);
+					string tree = Language.GetTextValue("MapObject.Tree");
+					string palmTree = Language.GetTextValue("MapObject.PalmTree");
+					string sapling = Language.GetTextValue("MapObject.Sapling");
+					if (TileLoader.CanGrowModTree(dirtId))
+					{
+						return $"{itemName} {tree} {sapling}";
+					}
+					if (TileLoader.CanGrowModPalmTree(dirtId))
+					{
+						return $"{itemName} {palmTree} {sapling}";
+					}
+				}
+			}
+			return null;
+		}
 
-        public static string GetNameForCactus(int cactusId, int sandId)
-        {
-            string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
-            if (cactusId == TileID.Cactus)
-            {
-                if (sandId == -1)
-                {
-                    return null;
-                }
-                if (TileLoader.CanGrowModCactus(sandId))
-                {
-                    ModTile mTile = TileLoader.GetTile(sandId);
-                    if (mTile != null)
-                    {
-                        int dropId = mTile.ItemDrop;
-                        ModItem mItem = ItemLoader.GetItem(dropId);
-                        return mItem == null ? mTile.Name : mItem.DisplayName.Value + " " + cactus;
-                    }
-                }
-                else
-                {
-                    int itemId = -1;
-                    switch (sandId)
-                    {
-                        case TileID.Crimsand:
-                            itemId = ItemID.CrimsandBlock;
-                            break;
-                        case TileID.Ebonsand:
-                            itemId = ItemID.EbonsandBlock;
-                            break;
-                        case TileID.Pearlsand:
-                            itemId = ItemID.PearlsandBlock;
-                            break;
-                    }
-                    if (itemId != -1)
-                    {
-                        return Lang.GetItemNameValue(itemId) + " " + cactus;
-                    }
-                }
-                return cactus;
-            }
-            return null;
-        }
+		public static string GetNameForCactus(int sandId)
+		{
+			switch (sandId)
+			{
+				case TileID.Sand:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Default");
+				case TileID.Ebonsand:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Corrupt");
+				case TileID.Crimsand:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Crimson");
+				case TileID.Pearlsand:
+					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Hallowed");
+			}
+			if (TileLoader.CanGrowModCactus(sandId))
+			{
+				ModTile mTile = TileLoader.GetTile(sandId);
+				if (mTile != null)
+				{
+					string type = GetNameFromItem(mTile.ItemDrop);
+					if (type != null)
+					{
+						return type + " " + Language.GetTextValue("MapObject.Cactus");
+					}
+				}
+			}
+			return null;
+		}
 
         public static string GetNameForChest(Tile tile)
         {

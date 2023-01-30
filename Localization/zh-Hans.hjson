@@ -256,6 +256,44 @@ Mods: {
 			// PlanteraThorns: Plantera Thorn
 			// CorruptJungleGrass: Corrupt Jungle Grass
 			// CrimsonJungleGrass: Crimson Jungle Grass
+
+			Trees: {
+				// Forest: Tree
+				// Corrupt: Ebonwood Tree
+				// Mushroom: Glowing Mushroom Tree
+				// Crimson: Shadewood Tree
+				// Jungle: Rich Mahogany Tree
+				// Snow: Boreal Tree
+				// Hallowed: Pearlwood Tree
+			}
+
+			PalmTree: {
+				// Default: Palm Tree
+				// PalmCrimson: Shadewood Palm Tree
+				// PalmCorrupt: Ebonwood Palm Tree
+				// PalmHallowed: Pearlwood Palm Tree
+			}
+
+			Saplings: {
+				// Forest: Tree Sapling
+				// Corrupt: Ebonwood Tree Sapling
+				// Crimson: Shadewood Tree Sapling
+				// Jungle: Rich Mahogany Tree Sapling
+				// Snow: Boreal Tree Sapling
+				// Hallowed: Pearlwood Tree Sapling
+				// Palm: Palm Tree Sapling
+				// PalmCrimson: Shadewood Palm Tree Sapling
+				// PalmCorrupt: Ebonwood Palm Tree Sapling
+				// PalmHallowed: Pearlwood Palm Tree Sapling
+				// Ash: Ash Tree Sapling
+			}
+
+			Cactus: {
+				// Default: Cactus
+				// Corrupt: Ebonsand Cactus
+				// Crimson: Crimsand Cactus
+				// Hallowed: Pearlsand Cactus
+			}
 		}
 
 		Liquids: {
