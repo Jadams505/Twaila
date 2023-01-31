@@ -59,7 +59,7 @@ namespace Twaila.UI
             AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
             AppendOrRemove(Layout.Name, config.DisplayContent.ShowName != TwailaConfig.NameType.Off);
 
-            Layout.UpdateFromConfig();
+            Layout.ApplyConfigSettings(config);
 
             BackgroundColor = config.PanelColor.Color;
             BorderColor = Color.Black;
@@ -67,10 +67,8 @@ namespace Twaila.UI
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
-                Layout.Image.Opacity = config.HoverOpacity;
-                Layout.InfoBox.ApplyToAll(HoverSettings);
-                HoverSettings(Layout.Name);
-                HoverSettings(Layout.Mod);
+
+				Layout.ApplyHoverSettings(config);
             }
         }
 
@@ -86,16 +84,6 @@ namespace Twaila.UI
             else if (HasChild(element))
             {
                 RemoveChild(element);
-            }
-        }
-
-        private void HoverSettings(UITwailaElement element)
-        {
-            TwailaConfig config = TwailaConfig.Get();
-            element.Opacity = config.HoverOpacity;
-            if (element is TwailaText text)
-            {
-                text.OverrideTextColor = true;
             }
         }
 

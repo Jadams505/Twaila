@@ -38,29 +38,22 @@ namespace Twaila.UI
             element.Append(Name);
         }
 
-        public void UpdateFromConfig()
+        public void ApplyConfigSettings(TwailaConfig config)
         {
-            TwailaConfig config = TwailaConfig.Get();
-
             Image.DrawMode = config.ContentSetting;
             Image.Opacity = 1;
-            InfoBox.ApplyToAll(ApplyConfig);
-            ApplyConfig(Name);
-            ApplyConfig(Mod);
+            InfoBox.ApplyToAll(element => element.ApplyConfigSettings(config));
+			Name.ApplyConfigSettings(config);
+			Mod.ApplyConfigSettings(config);
         }
 
-        private void ApplyConfig(UITwailaElement element)
-        {
-            TwailaConfig config = TwailaConfig.Get();
-            element.DrawMode = config.ContentSetting;
-            element.Opacity = 1;
-            if (element is TwailaText text)
-            {
-                text.OverrideTextColor = config.OverrideColor;
-                text.Color = config.TextColor.Color;
-                text.TextShadow = config.TextShadow;
-            }
-        }
+		public void ApplyHoverSettings(TwailaConfig config)
+		{
+			Image.ApplyHoverSettings(config);
+			InfoBox.ApplyToAll(element => element.ApplyHoverSettings(config));
+			Name.ApplyHoverSettings(config);
+			Mod.ApplyHoverSettings(config);
+		}
 
         public void SetInitialSizes()
         {

@@ -49,7 +49,13 @@ namespace Twaila.UI
             TextShadow = config.TextShadow;
         }
 
-        public override Vector2 GetContentSize()
+		public override void ApplyHoverSettings(TwailaConfig config)
+		{
+			base.ApplyHoverSettings(config);
+			OverrideTextColor = true;
+		}
+
+		public override Vector2 GetContentSize()
         {
             return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
         }
