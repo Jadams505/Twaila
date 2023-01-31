@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
@@ -58,7 +59,7 @@ namespace Twaila.Context
 
             if (content.ShowId)
             {
-                Id = $"Wall Id: {WallId}";
+				Id = Language.GetText("Mods.Twaila.WallId").WithFormatArgs(WallId).Value;
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out int paintIcon))
@@ -165,7 +166,7 @@ namespace Twaila.Context
 
             TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
 
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Name";
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? Language.GetTextValue("Mods.Twaila.Defaults.Name");
         }
 
         protected override string GetMod()

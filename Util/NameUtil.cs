@@ -1,10 +1,14 @@
-﻿using System.Text;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using Terraria;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 using Terraria.ObjectData;
 using Twaila.Context;
 
@@ -52,116 +56,116 @@ namespace Twaila.Util
             switch (tile.TileType)
             {
                 case TileID.Grass:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Grass");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Grass");
                 case TileID.Plants:
                     if (tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.Mushroom);
-                    return Language.GetTextValue("Mods.Twaila.Tiles.Plants");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Plants");
 				case TileID.CorruptGrass:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.CorruptGrass");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CorruptGrass");
 				case TileID.CorruptPlants:
                     if (tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.VileMushroom);
-                    return Language.GetTextValue("Mods.Twaila.Tiles.CorruptPlants");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CorruptPlants");
 				case TileID.Sunflower:
 					return GetNameFromItem(ItemID.Sunflower);
                 case TileID.ClosedDoor:
                     if (tile.TileFrameY >= 594 && tile.TileFrameY <= 630 && tile.TileFrameX <= 36)
-                        return Language.GetTextValue("Mods.Twaila.Tiles.ClosedDoor.Lihzahrd");
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.ClosedDoor.Lihzahrd");
 					break;
                 case TileID.Vines:
                     return GetNameFromItem(ItemID.Vine);
                 case TileID.JungleGrass:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.JungleGrass");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.JungleGrass");
 				case TileID.CrimsonThorns:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.CorruptThorns, 0));
                 case TileID.JunglePlants:
                     if(tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.JungleSpores);
-					return Language.GetTextValue("Mods.Twaila.Tiles.JunglePlants");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.JunglePlants");
 				case TileID.JungleVines:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.JungleVines");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.JungleVines");
 				case TileID.MushroomGrass:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.MushroomGrass");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.MushroomGrass");
 				case TileID.Plants2:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Plants2");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Plants2");
 				case TileID.JunglePlants2:
-					return Language.GetTextValue("Mods.Twaila.Tiles.JunglePlants2");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.JunglePlants2");
 				case TileID.HallowedGrass:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.HallowedGrass");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.HallowedGrass");
 				case TileID.HallowedPlants:
                     if (tile.TileFrameX == 144)
                         return GetNameFromItem(ItemID.Mushroom);
-                    return Language.GetTextValue("Mods.Twaila.Tiles.HallowedPlants");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.HallowedPlants");
 				case TileID.HallowedPlants2:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.HallowedPlants2");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.HallowedPlants2");
 				case TileID.HallowedVines:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.HallowedVines");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.HallowedVines");
 				case TileID.DiscoBall:
                     return GetNameFromItem(ItemID.DiscoBall);
                 case TileID.MagicalIceBlock:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.MagicalIceBlock");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.MagicalIceBlock");
 				case TileID.BreakableIce:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.BreakableIce");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.BreakableIce");
                 case TileID.Stalactite:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.Stalactite");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Stalactite");
 				case TileID.GreenMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.GreenMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.GreenMoss");
 				case TileID.BrownMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.BrownMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.BrownMoss");
                 case TileID.RedMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.RedMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.RedMoss");
                 case TileID.BlueMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.BlueMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.BlueMoss");
                 case TileID.PurpleMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.PurpleMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PurpleMoss");
                 case TileID.LavaMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LavaMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LavaMoss");
                 case TileID.KryptonMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.KryptonMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.KryptonMoss");
                 case TileID.XenonMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.XenonMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.XenonMoss");
                 case TileID.ArgonMoss:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.ArgonMoss");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.ArgonMoss");
                 case TileID.SmallPiles:
                     if(tile.TileFrameY == 18)
                     {
-                        if(tile.TileFrameX >= 576 && tile.TileFrameX < 612) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Copper");
-						if (tile.TileFrameX >= 612 && tile.TileFrameX < 648) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Silver");
-						if (tile.TileFrameX >= 648 && tile.TileFrameX < 684) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Gold");
-                        if (tile.TileFrameX >= 684 && tile.TileFrameX < 720) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Amethyst");
-						if (tile.TileFrameX >= 720 && tile.TileFrameX < 756) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Topaz");
-                        if (tile.TileFrameX >= 756 && tile.TileFrameX < 792) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Sapphire");
-                        if (tile.TileFrameX >= 792 && tile.TileFrameX < 828) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Emerald");
-                        if (tile.TileFrameX >= 828 && tile.TileFrameX < 864) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Ruby");
-                        if (tile.TileFrameX >= 864 && tile.TileFrameX < 900) return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Diamond");
+                        if(tile.TileFrameX >= 576 && tile.TileFrameX < 612) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Copper");
+						if (tile.TileFrameX >= 612 && tile.TileFrameX < 648) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Silver");
+						if (tile.TileFrameX >= 648 && tile.TileFrameX < 684) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Gold");
+                        if (tile.TileFrameX >= 684 && tile.TileFrameX < 720) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Amethyst");
+						if (tile.TileFrameX >= 720 && tile.TileFrameX < 756) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Topaz");
+                        if (tile.TileFrameX >= 756 && tile.TileFrameX < 792) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Sapphire");
+                        if (tile.TileFrameX >= 792 && tile.TileFrameX < 828) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Emerald");
+                        if (tile.TileFrameX >= 828 && tile.TileFrameX < 864) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Ruby");
+                        if (tile.TileFrameX >= 864 && tile.TileFrameX < 900) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Diamond");
                     }
-                    return Language.GetTextValue("Mods.Twaila.Tiles.SmallPiles.Default");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Default");
 				case TileID.LargePiles:
-                    if (tile.TileFrameX >= 868 && tile.TileFrameX < 972) return Language.GetTextValue("Mods.Twaila.Tiles.LargePiles.Copper");
-                    if (tile.TileFrameX >= 972 && tile.TileFrameX < 1080) return Language.GetTextValue("Mods.Twaila.Tiles.LargePiles.Silver");
-                    if (tile.TileFrameX >= 1080 && tile.TileFrameX < 1188) return Language.GetTextValue("Mods.Twaila.Tiles.LargePiles.Gold");
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LargePiles.Default");
+                    if (tile.TileFrameX >= 868 && tile.TileFrameX < 972) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Copper");
+                    if (tile.TileFrameX >= 972 && tile.TileFrameX < 1080) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Silver");
+                    if (tile.TileFrameX >= 1080 && tile.TileFrameX < 1188) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Gold");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Default");
 				case TileID.LargePiles2:
                     if (tile.TileFrameY >= 0 && tile.TileFrameY < 36 && tile.TileFrameX >= 918 && tile.TileFrameX < 972)
-						return Language.GetTextValue("Mods.Twaila.Tiles.LargePiles2.EnchantedSword");
-					return Language.GetTextValue("Mods.Twaila.Tiles.LargePiles2.Default");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles2.EnchantedSword");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles2.Default");
 				case TileID.LivingWood:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LivingWood");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LivingWood");
 				case TileID.LeafBlock:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LeafBlock");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LeafBlock");
 				case TileID.CrimsonGrass:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.CrimsonGrass");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CrimsonGrass");
 				case TileID.CrimsonPlants:
                     if (tile.TileFrameX == 270)
                         return GetNameFromItem(ItemID.ViciousMushroom);
-                    return Language.GetTextValue("Mods.Twaila.Tiles.CrimsonPlants");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CrimsonPlants");
 				case TileID.CrimsonVines:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.CrimsonVines");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CrimsonVines");
 				case TileID.Hive:
                     return GetNameFromItem(ItemID.Hive);
                 case TileID.PlantDetritus:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.PlantDetritus");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PlantDetritus");
 				case TileID.WaterDrip:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.WaterDrip, 0));
                 case TileID.LavaDrip:
@@ -169,101 +173,101 @@ namespace Twaila.Util
                 case TileID.HoneyDrip:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.HoneyDrip, 0));
                 case TileID.VineFlowers:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.VineFlowers");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.VineFlowers");
                 case TileID.LivingMahogany:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LivingMahogany");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LivingMahogany");
                 case TileID.LivingMahoganyLeaves:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LivingMahoganyLeaves");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LivingMahoganyLeaves");
                 case TileID.SandDrip:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.SandDrip, 0));
                 case TileID.Pumpkins:
                     return GetNameFromItem(ItemID.Pumpkin);
                 case TileID.GolfGrass:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.GolfGrass");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.GolfGrass");
 				case TileID.GolfGrassHallowed:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.GolfGrassHallowed");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.GolfGrassHallowed");
 				case TileID.MysticSnakeRope:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.MysticSnakeRope");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.MysticSnakeRope");
 				case TileID.GreenMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.GreenMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.GreenMossBrick");
 				case TileID.BrownMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.BrownMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.BrownMossBrick");
 				case TileID.RedMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.RedMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.RedMossBrick");
                 case TileID.BlueMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.BlueMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.BlueMossBrick");
                 case TileID.PurpleMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.PurpleMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PurpleMossBrick");
                 case TileID.LavaMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LavaMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LavaMossBrick");
                 case TileID.KryptonMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.KryptonMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.KryptonMossBrick");
                 case TileID.XenonMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.XenonMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.XenonMossBrick");
                 case TileID.ArgonMossBrick:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.ArgonMossBrick");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.ArgonMossBrick");
                 case TileID.LilyPad:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.LilyPad");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LilyPad");
 				case TileID.Cattail:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.Cattail");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Cattail");
 				case TileID.MushroomVines:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.MushroomVines");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.MushroomVines");
 				case TileID.SeaOats:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.SeaOats");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SeaOats");
 				case TileID.OasisPlants:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.OasisPlants");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.OasisPlants");
 				case TileID.Sandcastles:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.Sandcastles");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Sandcastles");
 				case TileID.Grate:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.Grate");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Grate");
 				case TileID.GrateClosed:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.GrateClosed");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.GrateClosed");
 				case TileID.VanityTreeSakura:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.VanityTreeSakura");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.VanityTreeSakura");
 				case TileID.VanityTreeYellowWillow:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.VanityTreeYellowWillow");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.VanityTreeYellowWillow");
 				case TileID.TreeTopaz:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeTopaz");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeTopaz");
 				case TileID.TreeAmethyst:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeAmethyst");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeAmethyst");
 				case TileID.TreeSapphire:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeSapphire");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeSapphire");
                 case TileID.TreeEmerald:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeEmerald");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeEmerald");
                 case TileID.TreeRuby:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeRuby");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeRuby");
                 case TileID.TreeDiamond:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeDiamond");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeDiamond");
                 case TileID.TreeAmber:
-                    return Language.GetTextValue("Mods.Twaila.Tiles.TreeAmber");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeAmber");
                 case TileID.Bamboo:
                     return GetNameFromItem(ItemID.BambooBlock);
                 case TileID.Seaweed:
                     return GetNameFromItem(ItemID.Seaweed);
 				case TileID.VioletMoss:
-					return Language.GetTextValue("Mods.Twaila.Tiles.VioletMoss");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.VioletMoss");
 				case TileID.VioletMossBrick:
-					return Language.GetTextValue("Mods.Twaila.Tiles.VioletMossBrick");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.VioletMossBrick");
 				case TileID.RainbowMoss:
-					return Language.GetTextValue("Mods.Twaila.Tiles.RainbowMoss");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.RainbowMoss");
 				case TileID.RainbowMossBrick:
-					return Language.GetTextValue("Mods.Twaila.Tiles.RainbowMossBrick");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.RainbowMossBrick");
 				case TileID.AshGrass:
-					return Language.GetTextValue("Mods.Twaila.Tiles.AshGrass");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.AshGrass");
 				case TileID.TreeAsh:
-					return Language.GetTextValue("Mods.Twaila.Tiles.TreeAsh");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.TreeAsh");
 				case TileID.CorruptVines:
-					return Language.GetTextValue("Mods.Twaila.Tiles.CorruptVines");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CorruptVines");
 				case TileID.AshPlants:
-					return Language.GetTextValue("Mods.Twaila.Tiles.AshPlants");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.AshPlants");
 				case TileID.AshVines:
-					return Language.GetTextValue("Mods.Twaila.Tiles.AshVines");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.AshVines");
 				case TileID.PlanteraThorns:
-					return Language.GetTextValue("Mods.Twaila.Tiles.PlanteraThorns");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PlanteraThorns");
 				case TileID.CorruptJungleGrass:
-					return Language.GetTextValue("Mods.Twaila.Tiles.CorruptJungleGrass");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CorruptJungleGrass");
 				case TileID.CrimsonJungleGrass:
-					return Language.GetTextValue("Mods.Twaila.Tiles.CrimsonJungleGrass");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CrimsonJungleGrass");
 				case TileID.LifeCrystalBoulder:
 					return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
 				case TileID.DirtiestBlock:
@@ -278,48 +282,48 @@ namespace Twaila.Util
             {
                 if(tile.LiquidType == LiquidID.Lava)
                 {
-                    return Language.GetTextValue("Mods.Twaila.Liquids.Lava");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Lava");
 				}
                 if(tile.LiquidType == LiquidID.Honey)
                 {
-                    return Language.GetTextValue("Mods.Twaila.Liquids.Honey");
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Honey");
 				}
 				if(tile.LiquidType == LiquidID.Shimmer)
 				{
-					return Language.GetTextValue("Mods.Twaila.Liquids.Shimmer");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Shimmer");
 				}
                 if(tile.LiquidType == LiquidID.Water)
                 {
                     switch (Main.waterStyle)
                     {
                         case WaterStyleID.Purity:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Purity");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Purity");
                         case WaterStyleID.Lava:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Lava");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Lava");
 						case WaterStyleID.Corrupt: 
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Corrupt");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Corrupt");
 						case WaterStyleID.Jungle:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Jungle");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Jungle");
 						case WaterStyleID.Hallow:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Hallow");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Hallow");
 						case WaterStyleID.Snow:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Snow");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Snow");
 						case WaterStyleID.Desert:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Desert");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Desert");
 						case WaterStyleID.Underground:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Underground");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Underground");
 						case WaterStyleID.Cavern:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Cavern");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Cavern");
 						case WaterStyleID.Bloodmoon:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Bloodmoon");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Bloodmoon");
 						case WaterStyleID.Crimson:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.Crimson");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Crimson");
 						case WaterStyleID.Honey:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Honey");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Honey");
 						case WaterStyleID.UndergroundDesert:
-                            return Language.GetTextValue("Mods.Twaila.Liquids.Water.UndergroundDesert");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.UndergroundDesert");
 						case 13:
-							return Language.GetTextValue("Mods.Twaila.Liquids.Water.Ocean");
+							return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Ocean");
 					}
                     if(Main.waterStyle >= Main.maxLiquidTypes)
                     {
@@ -335,19 +339,19 @@ namespace Twaila.Util
 			switch (WorldGen.GetTreeType(dirtId))
 			{
 				case TreeTypes.Forest:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Forest");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Forest");
 				case TreeTypes.Corrupt:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Corrupt");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Corrupt");
 				case TreeTypes.Mushroom:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Mushroom");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Mushroom");
 				case TreeTypes.Crimson:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Crimson");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Crimson");
 				case TreeTypes.Jungle:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Jungle");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Jungle");
 				case TreeTypes.Snow:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Snow");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Snow");
 				case TreeTypes.Hallowed:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Trees.Hallowed");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Hallowed");
 			}
 			int itemId = TreeUtil.GetTreeWood(dirtId);
 			if (itemId != -1)
@@ -362,13 +366,13 @@ namespace Twaila.Util
 			switch (WorldGen.GetTreeType(sandId))
 			{
 				case TreeTypes.Palm:
-					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.Default");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.Default");
 				case TreeTypes.PalmCrimson:
-					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.PalmCrimson");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmCrimson");
 				case TreeTypes.PalmCorrupt:
-					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.PalmCorrupt");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmCorrupt");
 				case TreeTypes.PalmHallowed:
-					return Language.GetTextValue("Mods.Twaila.Tiles.PalmTree.PalmHallowed");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmHallowed");
 			}
 			int itemId = TreeUtil.GetTreeWood(sandId);
 			if (itemId != -1)
@@ -385,27 +389,27 @@ namespace Twaila.Util
 				switch (WorldGen.GetTreeType(dirtId))
 				{
 					case TreeTypes.Forest:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Forest");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Forest");
 					case TreeTypes.Corrupt:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Corrupt");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Corrupt");
 					case TreeTypes.Crimson:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Crimson");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Crimson");
 					case TreeTypes.Jungle:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Jungle");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Jungle");
 					case TreeTypes.Snow:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Snow");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Snow");
 					case TreeTypes.Hallowed:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Hallowed");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Hallowed");
 					case TreeTypes.Palm:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Palm");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Palm");
 					case TreeTypes.PalmCrimson:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.PalmCrimson");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.PalmCrimson");
 					case TreeTypes.PalmCorrupt:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.PalmCorrupt");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.PalmCorrupt");
 					case TreeTypes.PalmHallowed:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.PalmHallowed");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.PalmHallowed");
 					case TreeTypes.Ash:
-						return Language.GetTextValue("Mods.Twaila.Tiles.Saplings.Ash");
+						return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Saplings.Ash");
 				}
 				int itemId = TreeUtil.GetTreeWood(dirtId);
 				if (itemId != -1)
@@ -432,13 +436,13 @@ namespace Twaila.Util
 			switch (sandId)
 			{
 				case TileID.Sand:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Default");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Cactus.Default");
 				case TileID.Ebonsand:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Corrupt");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Cactus.Corrupt");
 				case TileID.Crimsand:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Crimson");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Cactus.Crimson");
 				case TileID.Pearlsand:
-					return Language.GetTextValue("Mods.Twaila.Tiles.Cactus.Hallowed");
+					return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Cactus.Hallowed");
 			}
 			if (TileLoader.CanGrowModCactus(sandId))
 			{
@@ -525,5 +529,13 @@ namespace Twaila.Util
             ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(waterStyle);
             return fullName ? mWater?.GetType().FullName : mWater?.Name;
         }
+
+		public static string ToLocalizedString(this Enum value)
+		{
+			var info = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+			string name = ((LabelAttribute)Attribute.GetCustomAttribute(info, typeof(LabelAttribute)))?.Label ?? value.ToString();
+
+			return name;
+		}
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Twaila.Graphics;
@@ -60,7 +61,7 @@ namespace Twaila.Context
 
             if (content.ShowId)
             {
-                Id = $"Tile Id: {TileId}";
+                Id = Language.GetText("Mods.Twaila.TileId").WithFormatArgs(TileId).Value;
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Tile, out string paintText, out int paintIcon))
@@ -109,7 +110,8 @@ namespace Twaila.Context
                     }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-                        RecommendedPickaxe = $"{NameUtil.GetNameFromItem(pickId)} {InfoUtil.GetPickPowerForItem(pickId)}%";
+						RecommendedPickaxe = Language.GetText("Mods.Twaila.RecommendedPick")
+							.WithFormatArgs(Lang.GetItemNameValue(pickId), InfoUtil.GetPickPowerForItem(pickId)).Value;
                     }
                 }
 
@@ -229,7 +231,7 @@ namespace Twaila.Context
 
             TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
 
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Name";
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? Language.GetTextValue("Mods.Twaila.Defaults.Name");
         }
 
         protected override string GetMod()

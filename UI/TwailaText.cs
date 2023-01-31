@@ -4,6 +4,7 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.UI.Chat;
 
 namespace Twaila.UI
@@ -27,13 +28,13 @@ namespace Twaila.UI
 
         public TwailaText(string text) : this(text, FontAssets.ItemStack.Value, Color.White, 1f) { }
 
-        public TwailaText() : this("Default Text") { }
+        public TwailaText() : this(Language.GetTextValue("Mods.Twaila.Defaults.Text")) { }
 
         public void SetText(string text)
         {
-            if(text == null || text.Length == 0)
+            if(string.IsNullOrEmpty(text))
             {
-                text = "Default Text";
+                text = Language.GetTextValue("Mods.Twaila.Defaults.Text");
             }
             Text = text;
             Width.Set(GetContentSize().X, 0);

@@ -45,9 +45,9 @@ namespace Twaila
         public HorizontalAnchor AnchorX = HorizontalAnchor.Center;
         public enum HorizontalAnchor
         {
-            [Label("$Mods.Twaila.enum.Left")]Left,
-            [Label("$Mods.Twaila.enum.Center")]Center,
-            [Label("$Mods.Twaila.enum.Right")]Right
+            [Label("$Mods.Twaila.Enums.Left")]Left,
+            [Label("$Mods.Twaila.Enums.Center")]Center,
+            [Label("$Mods.Twaila.Enums.Right")]Right
         };
 
         [DrawTicks]
@@ -56,9 +56,9 @@ namespace Twaila
         public VerticalAnchor AnchorY = VerticalAnchor.Top;
         public enum VerticalAnchor
         {
-            [Label("$Mods.Twaila.enum.Bottom")] Bottom,
-            [Label("$Mods.Twaila.enum.Center")] Center,
-            [Label("$Mods.Twaila.enum.Top")] Top
+            [Label("$Mods.Twaila.Enums.Bottom")] Bottom,
+            [Label("$Mods.Twaila.Enums.Center")] Center,
+            [Label("$Mods.Twaila.Enums.Top")] Top
         };
 
         [DefaultValue(0)]
@@ -105,15 +105,15 @@ namespace Twaila
 
         public enum DisplayMode
         {
-            [Label("$Mods.Twaila.enum.On")] On,
-            [Label("$Mods.Twaila.enum.Off")] Off,
-            [Label("$Mods.Twaila.enum.Automatic")] Automatic
+            [Label("$Mods.Twaila.Enums.On")] On,
+            [Label("$Mods.Twaila.Enums.Off")] Off,
+            [Label("$Mods.Twaila.Enums.Automatic")] Automatic
         }
 
         public enum ContextUpdateMode
         {
-            [Label("$Mods.Twaila.enum.Manual")] Manual,
-            [Label("$Mods.Twaila.enum.Automatic")] Automatic
+            [Label("$Mods.Twaila.Enums.Manual")] Manual,
+            [Label("$Mods.Twaila.Enums.Automatic")] Automatic
         }
 
         [DefaultValue(ContextUpdateMode.Automatic)]
@@ -168,18 +168,18 @@ namespace Twaila
 
         public enum DisplayType
         {
-            [Label("$Mods.Twaila.enum.Name")] Name,
-            [Label("$Mods.Twaila.enum.Icon")] Icon,
-            [Label("$Mods.Twaila.enum.Both")] Both,
-            [Label("$Mods.Twaila.enum.Off")] Off
+            [Label("$Mods.Twaila.Enums.Name")] Name,
+            [Label("$Mods.Twaila.Enums.Icon")] Icon,
+            [Label("$Mods.Twaila.Enums.Both")] Both,
+            [Label("$Mods.Twaila.Enums.Off")] Off
         }
 
         public enum NameType
         {
-            [Label("$Mods.Twaila.enum.DisplayName")] DisplayName,
-            [Label("$Mods.Twaila.enum.InternalName")] InternalName,
-            [Label("$Mods.Twaila.enum.FullName")] FullName,
-            [Label("$Mods.Twaila.enum.Off")] Off
+            [Label("$Mods.Twaila.Enums.DisplayName")] DisplayName,
+            [Label("$Mods.Twaila.Enums.InternalName")] InternalName,
+            [Label("$Mods.Twaila.Enums.FullName")] FullName,
+            [Label("$Mods.Twaila.Enums.Off")] Off
         }
 
         public class Content

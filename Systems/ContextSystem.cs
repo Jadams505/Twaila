@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.GameContent.UI;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Context;
 using Twaila.Util;
@@ -25,7 +26,7 @@ namespace Twaila.Systems
         {
             ContextEntries = new List<ContextEntry>();
 
-            TileEntry = new ContextEntry(TileContext.CreateTileContext, "Tile");
+            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"));
             TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
             TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
@@ -37,13 +38,14 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(WallContext.CreateWallContext, "Wall");
-            ContextEntries.Add(WallEntry);
+            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"));
 
-            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, "Liquid");
+			ContextEntries.Add(WallEntry);
+
+            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"));
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(WireContext.CreateWireContext, "Wire");
+            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"));
             ContextEntries.Add(WireEntry);
         }
 
@@ -161,9 +163,9 @@ namespace Twaila.Systems
 
         public ContextFetcher DefaultContext { get; set; }
 
-        public string Name { get; set; }
+        public LocalizedText Name { get; set; }
 
-        public ContextEntry(ContextFetcher defaultContext, string name)
+        public ContextEntry(ContextFetcher defaultContext, LocalizedText name)
         {
             DefaultContext = defaultContext;
             ApplicableContexts = new List<ContextFetcher>();

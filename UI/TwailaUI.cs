@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.Map;
 using Terraria.UI;
 using Twaila.Context;
@@ -99,28 +100,28 @@ namespace Twaila.UI
         public static void NextContext()
         {
             _panel.currIndex = ContextSystem.Instance.NextContextIndex(_panel.currIndex);
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
-            _panel.tick = 0;
+			Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
+			_panel.tick = 0;
         }
 
         public static void PrevContext()
         {
             _panel.currIndex = ContextSystem.Instance.PrevContextIndex(_panel.currIndex);
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
-            _panel.tick = 0;
+			Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
+			_panel.tick = 0;
         }
 
         public static void NextNonNullContext()
         {
             ContextSystem.Instance.NextNonNullContext(ref _panel.currIndex, GetCursorInfo());
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
             _panel.tick = 0;
         }
 
         public static void PrevNonNullContext()
         {
             ContextSystem.Instance.PrevNonNullContext(ref _panel.currIndex, GetCursorInfo());
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
             _panel.tick = 0;
         }
 

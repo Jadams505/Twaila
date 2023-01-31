@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
@@ -57,11 +58,11 @@ namespace Twaila.Context
             {
                 if (LiquidId == LiquidID.Water)
                 {
-                    Id = $"Water Style: {WaterStyle}";
+                    Id = Language.GetText("Mods.Twaila.WaterStyle").WithFormatArgs(WaterStyle).Value;
                 }
                 else
                 {
-                    Id = $"Liquid Id: {LiquidId}";
+                    Id = Language.GetText("Mods.Twaila.LiquidId").WithFormatArgs(LiquidId).Value;
                 }
             }
         }
@@ -75,7 +76,7 @@ namespace Twaila.Context
 
             TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
 
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Liquid";
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? Language.GetTextValue("Mods.Twaila.Defaults.Liquid");
         }
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.UI;
 using Twaila.Graphics;
 
@@ -23,7 +24,8 @@ namespace Twaila.UI
         public Layout()
         {
             Image = new UITwailaImage();
-            Name = new TwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
+			//string localized = Language.GetTextValue("Mods.Twaila.Defaults.Name"); fix later
+			Name = new TwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
             InfoBox = new UIInfoBox();
             Mod = new TwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
         }
