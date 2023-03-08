@@ -96,44 +96,45 @@ namespace Twaila.UI
         {
             SetPadding(TwailaConfig.Get().PanelPadding);
             Layout.SetInitialSizes();
-            float imageHeight = GetDimension(Layout.Image, Layout.Image.Height.Pixels);
-            float textHeight = Layout.TextColumnSize().Y;
-            float imageWidth = GetDimension(Layout.Image, Layout.Image.Width.Pixels);
-            float textWidth = Layout.TextColumnSize().X;
-
             if (Layout.InfoBox.IsEmpty() && !HasChild(Layout.Name) && !HasChild(Layout.Mod))
             {
                 Layout.Image.MarginRight = 0;
             }
+
+            Vector2 imageDimension = Layout.Image.GetSizeIfAppended();
+            Vector2 textDimension = Layout.TextColumnSize();
+
+            float imageMarginX = Layout.Image.GetSizeIfAppended(Layout.Image.MarginRight);
+
             DrawMode drawMode = TwailaConfig.Get().ContentSetting;
             if (drawMode == DrawMode.Shrink)
             {
-                imageWidth *= ImageScale(new Vector2(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
+                float reservedImageWidth = imageDimension.X * ImageScale(new Vector2(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
+                
+                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - reservedImageWidth - imageMarginX, MaxPanelInnerDimension.Y / (Layout.InfoBox.NumberOfAppendedElements() + 2));
 
-                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - imageWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y / (Layout.InfoBox.NumberOfAppendedElements() + 2));
-
-                ScaleElement(Layout.Name, maxSize);
-                Layout.InfoBox.ApplyToAll(element => ScaleElement(element, maxSize));
+                Layout.Name.ScaleElement(maxSize);
+                Layout.InfoBox.ApplyToAll(element => element.ScaleElement(maxSize));
                 Layout.InfoBox.UpdateDimensionsUI();
-                ScaleElement(Layout.Mod, maxSize);
+                Layout.Mod.ScaleElement(maxSize);
 
-                textWidth = Layout.TextColumnSize().X;
-                textHeight = Layout.TextColumnSize().Y;
+                textDimension.X = Layout.TextColumnSize().X;
+                textDimension.Y = Layout.TextColumnSize().Y;
 
-                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y);
+                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textDimension.X - imageMarginX, MaxPanelInnerDimension.Y);
 
-                imageWidth = GetDimension(Layout.Image, Layout.Image.Render.Width) * ImageScale(remainingSpace);
-                imageHeight = GetDimension(Layout.Image, Layout.Image.Render.Height) * ImageScale(remainingSpace);
+                imageDimension.X *= ImageScale(remainingSpace);
+                imageDimension.Y *= ImageScale(remainingSpace);
             }
             else
             {
                 if (drawMode == DrawMode.Trim)
                 {
                     float height = 0;
-                    if (TwailaConfig.Get().DisplayContent.ShowName != TwailaConfig.NameType.Off && 
-                        Layout.Name.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    Vector2 nameSize = Layout.Name.GetSizeIfAppended();
+                    if (nameSize.Y + height < MaxPanelInnerDimension.Y)
                     {
-                        height += Layout.Name.GetContentSize().Y;
+                        height += nameSize.Y;
                     }
                     else
                     {
@@ -144,9 +145,10 @@ namespace Twaila.UI
                         if (Layout.InfoBox.Enabled[i])
                         {
                             UITwailaElement element = Layout.InfoBox.InfoLines[i];
-                            if (element.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                            Vector2 elementSize = element.GetSizeIfAppended();
+                            if (elementSize.Y + height < MaxPanelInnerDimension.Y)
                             {
-                                height += element.GetContentSize().Y;
+                                height += elementSize.Y;
                             }
                             else
                             {
@@ -155,51 +157,41 @@ namespace Twaila.UI
                             }
                         }
                     }
-                    if (TwailaConfig.Get().DisplayContent.ShowMod && Layout.Mod.GetContentSize().Y + height < MaxPanelInnerDimension.Y)
+                    Vector2 modSize = Layout.Mod.GetSizeIfAppended();
+                    if (modSize.Y + height < MaxPanelInnerDimension.Y)
                     {
-                        height += Layout.Mod.GetContentSize().Y;
+                        height += modSize.Y;
                     }
                     else
                     {
                         RemoveChild(Layout.Mod);
                     }
-                    textHeight = height;
+                    textDimension.Y = height;
                 }
-                imageHeight = Math.Min(MaxPanelInnerDimension.Y, imageHeight);
-                textHeight = Math.Min(MaxPanelInnerDimension.Y, textHeight);
-                imageWidth = Math.Min(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, imageWidth);
-                textWidth = Math.Min(MaxPanelInnerDimension.X - imageWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), textWidth);
+                imageDimension.Y = Math.Min(MaxPanelInnerDimension.Y, imageDimension.Y);
+                textDimension.Y = Math.Min(MaxPanelInnerDimension.Y, textDimension.Y);
+                imageDimension.X = Math.Min(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, imageDimension.X);
+                textDimension.X = Math.Min(MaxPanelInnerDimension.X - imageDimension.X - imageMarginX, textDimension.X);
 
-                Layout.Name.Width.Set(textWidth, 0);
-                Layout.InfoBox.ApplyToAll(element => element.Width.Set(textWidth, 0));
+                Layout.Name.Width.Set(textDimension.X, 0);
+                Layout.InfoBox.ApplyToAll(element => element.Width.Set(textDimension.X, 0));
                 Layout.InfoBox.UpdateDimensionsUI();
-                Layout.Mod.Width.Set(textWidth, 0);
+                Layout.Mod.Width.Set(textDimension.X, 0);
 
-
-                Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textWidth - GetDimension(Layout.Image, Layout.Image.MarginRight), MaxPanelInnerDimension.Y);
-
-                imageWidth = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.Render.Width), 0, remainingSpace.X);
-                imageHeight = MathHelper.Clamp(GetDimension(Layout.Image, Layout.Image.Render.Height), 0, remainingSpace.Y);
+                if(imageDimension.X == 0 || imageDimension.Y == 0)
+                {
+                    imageDimension.X = 0;
+                    imageDimension.Y = 0;
+                }
             }
 
-            float calculatedHeight = imageHeight > textHeight ? imageHeight : textHeight;
+            float calculatedHeight = Math.Max(imageDimension.Y, textDimension.Y);
             Height.Set(calculatedHeight + PaddingTop + PaddingBottom, 0);
-            Layout.Image.Height.Set(Math.Max(imageHeight, textHeight), 0);
+            Layout.Image.Height.Set(calculatedHeight, 0);
             
-            float calculatedWidth = textWidth + imageWidth + GetDimension(Layout.Image, Layout.Image.MarginRight) + PaddingLeft + PaddingRight;
+            float calculatedWidth = textDimension.X + imageDimension.X + imageMarginX + PaddingLeft + PaddingRight;
             Width.Set(calculatedWidth, 0);
-            Layout.Image.Width.Set(imageWidth, 0);
-        }
-
-        private void ScaleElement(UITwailaElement element, Vector2 maxSize)
-        {
-            float scale = element.GetScale(maxSize);
-            float width = element.GetContentSize().X * scale;
-            float height = element.GetContentSize().Y * scale;
-
-            element.Width.Set(width, 0);
-            element.Height.Set(height, 0);
-            element.Recalculate();
+            Layout.Image.Width.Set(imageDimension.X, 0);
         }
 
         public float ImageScale(Vector2 maxSize)

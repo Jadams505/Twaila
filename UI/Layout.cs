@@ -8,6 +8,7 @@ using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI;
 using Twaila.Graphics;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -57,27 +58,33 @@ namespace Twaila.UI
 
         public void SetInitialSizes()
         {
-            Name.Width.Set(Name.GetContentSize().X, 0);
-            Name.Height.Set(Name.GetContentSize().Y, 0);
+            var contentSize = Name.GetContentSize();
+            Name.Width.Set(contentSize.X, 0);
+            Name.Height.Set(contentSize.Y, 0);
+
             InfoBox.ApplyToAll((element) =>
             {
-                element.Width.Set(element.GetContentSize().X, 0);
-                element.Height.Set(element.GetContentSize().Y, 0);
+                var elementSize = element.GetContentSize();
+                element.Width.Set(elementSize.X, 0);
+                element.Height.Set(elementSize.Y, 0);
             });
-            Mod.Width.Set(Mod.GetContentSize().X, 0);
-            Mod.Height.Set(Mod.GetContentSize().Y, 0);
-
             InfoBox.UpdateDimensions();
-            Image.Width.Set(Image.Render.Width, 0);
-            Image.Height.Set(Image.Render.Height, 0);
+
+            contentSize = Mod.GetContentSize();
+            Mod.Width.Set(contentSize.X, 0);
+            Mod.Height.Set(contentSize.Y, 0);
+
+            contentSize = Image.GetContentSize();
+            Image.Width.Set(contentSize.X, 0);
+            Image.Height.Set(contentSize.Y, 0);
             Image.MarginRight = 10;
         }
 
         public Vector2 TextColumnSize()
         {
-            Vector2 nameDim = GetDimension(Name);
-            Vector2 infoDim = GetDimension(InfoBox);
-            Vector2 modDim = GetDimension(Mod);
+            Vector2 nameDim = Name.GetSizeIfAppended();
+            Vector2 infoDim = InfoBox.GetSizeIfAppended();
+            Vector2 modDim = Mod.GetSizeIfAppended();
 
             float width = Math.Max(nameDim.X, Math.Max(infoDim.X, modDim.X));
             return new Vector2(width, nameDim.Y + infoDim.Y + modDim.Y);
@@ -87,17 +94,11 @@ namespace Twaila.UI
         {
             Name.Top.Set(0, 0);
             InfoBox.UpdateVertically();
-            InfoBox.Top.Set(GetDimension(Name).Y, 0);
-            Mod.Top.Set(InfoBox.Height.Pixels + GetDimension(Name).Y, 0);
-        }
 
-        private Vector2 GetDimension(UIElement element)
-        {
-            if (element.Parent != null && element.Parent.HasChild(element))
-            {
-                return new Vector2(element.Width.Pixels, element.Height.Pixels);
-            }
-            return Vector2.Zero;
+            var infoHeight = InfoBox.GetSizeIfAppended().Y;
+            var nameHeight = Name.GetSizeIfAppended().Y;
+            InfoBox.Top.Set(nameHeight, 0);
+            Mod.Top.Set(infoHeight + nameHeight, 0);
         }
     }
 }
