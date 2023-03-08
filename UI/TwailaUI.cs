@@ -45,7 +45,7 @@ namespace Twaila.UI
                     {
                         if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 ||
                             (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
-                            && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
+                            && !_panel.ContainsPoint(Main.MouseScreen) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
                             break;

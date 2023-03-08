@@ -2,14 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
-using Terraria.GameContent.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Context;
-using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.Util;
 
@@ -55,41 +51,21 @@ namespace Twaila.UI
         {
             TwailaConfig config = TwailaConfig.Get();
 
-            AppendOrRemove(Layout.Image, config.DisplayContent.ShowImage);
-            AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
-            AppendOrRemove(Layout.Name, config.DisplayContent.ShowName != TwailaConfig.NameType.Off);
+            this.AppendOrRemove(Layout.Image, config.DisplayContent.ShowImage);
+            this.AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
+            this.AppendOrRemove(Layout.Name, config.DisplayContent.ShowName != TwailaConfig.NameType.Off);
 
             Layout.ApplyConfigSettings(config);
 
             BackgroundColor = config.PanelColor.Color;
             BorderColor = Color.Black;
-            if (ContainsPoint(Main.mouseX, Main.mouseY) && !IsDragging())
+            if (ContainsPoint(Main.MouseScreen) && !IsDragging())
             {
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
 
 				Layout.ApplyHoverSettings(config);
             }
-        }
-
-        private void AppendOrRemove(UIElement element, bool append)
-        {
-            if (append)
-            {
-                if (!HasChild(element))
-                {
-                    Append(element);
-                }
-            }
-            else if (HasChild(element))
-            {
-                RemoveChild(element);
-            }
-        }
-
-        private float GetDimension(UIElement childElement, float dimension)
-        {
-            return HasChild(childElement) ? dimension : 0;
         }
 
         private void UpdateSize()
@@ -197,14 +173,16 @@ namespace Twaila.UI
         public float ImageScale(Vector2 maxSize)
         {
             float scaleX = 1;
-            if (GetDimension(Layout.Image, Layout.Image.Render.Width) > maxSize.X)
+            float width = Layout.Image.GetSizeIfAppended(Layout.Image.Render.Width);
+            if (width > 0 && width > maxSize.X)
             {
-                scaleX = maxSize.X / GetDimension(Layout.Image, Layout.Image.Render.Width);
+                scaleX = maxSize.X / width;
             }
             float scaleY = 1;
-            if (GetDimension(Layout.Image, Layout.Image.Render.Height) > maxSize.Y)
+            float height = Layout.Image.GetSizeIfAppended(Layout.Image.Render.Height);
+            if (height > 0 && height > maxSize.Y)
             {
-                scaleY = maxSize.Y / GetDimension(Layout.Image, Layout.Image.Render.Height);
+                scaleY = maxSize.Y / height;
             }
             return Math.Min(scaleX, scaleY);
         }
@@ -218,7 +196,7 @@ namespace Twaila.UI
             }
             UpdatePos();
             Layout.Image.Top.Set(0, 0);
-            float textColX = GetDimension(Layout.Image, Layout.Image.Width.Pixels + Layout.Image.MarginRight);
+            float textColX = Layout.Image.GetSizeIfAppended(Layout.Image.Width.Pixels + Layout.Image.MarginRight);
             Layout.Name.Left.Set(textColX, 0);
             Layout.InfoBox.Left.Set(textColX, 0);
             Layout.Mod.Left.Set(textColX, 0);
@@ -271,11 +249,11 @@ namespace Twaila.UI
             base.DrawChildren(spriteBatch);
             if (!IsDragging() && !Main.gamePaused)
             {
-                UpdatePanelContents(spriteBatch);
+                UpdatePanelContents();
             }    
         }
 
-        private void UpdatePanelContents(SpriteBatch spriteBatch)
+        private void UpdatePanelContents()
         {
             tick++;
             TwailaPoint mouseInfo = TwailaUI.GetCursorInfo();
@@ -375,11 +353,6 @@ namespace Twaila.UI
                 _lastMouse.X = Main.mouseX;
                 _lastMouse.Y = Main.mouseY;
             }
-        }
-
-        public bool ContainsPoint(int x, int y)
-        {
-            return GetDimensions().ToRectangle().Intersects(new Rectangle(x, y, 0, 0));
         }
     }
 }
