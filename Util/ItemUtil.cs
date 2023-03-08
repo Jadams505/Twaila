@@ -255,16 +255,15 @@ namespace Twaila.Util
         private static int GetPlaceStyleForDoor(Tile tile)
         {
             TileObjectData data = TileUtil.GetTileObjectData(tile);
-            ModTile mTile = TileLoader.GetTile(tile.TileType);
 
-            if ((mTile != null && mTile.OpenDoorID != -1) || tile.TileType == TileID.ClosedDoor)
+            if (TileLoader.IsClosedDoor(tile))
             {
                 int row = tile.TileFrameY / data.CoordinateFullHeight;
                 int col = tile.TileFrameX / (data.CoordinateFullWidth * 3);
 
                 return row + col * data.StyleWrapLimit;
             }
-            else if((mTile != null && mTile.CloseDoorID != -1) || tile.TileType == TileID.OpenDoor)
+            else if(TileLoader.CloseDoorID(tile) != -1)
             {
                 int row = tile.TileFrameY / data.CoordinateFullHeight;
                 int col = tile.TileFrameX / (data.CoordinateFullWidth * 2);
@@ -355,10 +354,10 @@ namespace Twaila.Util
             ModItem mItem = ItemLoader.GetItem(doorItemId);
             if(mItem != null)
             {
-                ModTile mTile = TileLoader.GetTile(mItem.Item.createTile);
-                if(mTile != null && mTile.OpenDoorID != -1)
+                int openDoorId = TileID.Sets.OpenDoorID[mItem.Item.createTile];
+                if (openDoorId != -1)
                 {
-                    AddEntry(mTile.OpenDoorID, mItem.Item.placeStyle, TileType.Tile, doorItemId);
+                    AddEntry(openDoorId, mItem.Item.placeStyle, TileType.Tile, doorItemId);
                 }
             }
             else
