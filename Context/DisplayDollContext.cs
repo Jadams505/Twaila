@@ -97,7 +97,7 @@ namespace Twaila.Context
 			{
 				if (!string.IsNullOrEmpty(name))
 				{
-					elements.Insert(0, new TwailaText(name));
+					elements.Insert(0, new UITwailaText(name));
 				}
 			}
 			if (DisplayContentIcons.IconImages.Count > 0)

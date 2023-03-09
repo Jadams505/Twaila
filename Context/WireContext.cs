@@ -154,11 +154,11 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(WireText))
             {
-                elements.Add(new TwailaText(WireText));
+                elements.Add(new UITwailaText(WireText));
             }
             if (!string.IsNullOrEmpty(ActuatorText))
             {
-                elements.Add(new TwailaText(ActuatorText));
+                elements.Add(new UITwailaText(ActuatorText));
             }
             if(Icons.IconImages.Count > 0)
             {

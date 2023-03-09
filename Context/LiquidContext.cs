@@ -117,7 +117,7 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(Id))
             {
-                elements.Insert(0, new TwailaText(Id));
+                elements.Insert(0, new UITwailaText(Id));
             }
 
             return elements;

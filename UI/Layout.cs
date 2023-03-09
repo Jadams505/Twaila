@@ -16,19 +16,19 @@ namespace Twaila.UI
     {
         public UITwailaImage Image { get; private set; }
 
-        public TwailaText Name { get; private set; }
+        public UITwailaText Name { get; private set; }
 
         public UIInfoBox InfoBox { get; private set; }
 
-        public TwailaText Mod { get; private set; }
+        public UITwailaText Mod { get; private set; }
 
         public Layout()
         {
             Image = new UITwailaImage();
 			//string localized = Language.GetTextValue("Mods.Twaila.Defaults.Name"); fix later
-			Name = new TwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
+			Name = new UITwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
             InfoBox = new UIInfoBox();
-            Mod = new TwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
+            Mod = new UITwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
         }
 
         public void Apply(UIElement element)

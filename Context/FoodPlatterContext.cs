@@ -79,7 +79,7 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(ItemText))
             {
-                elements.Insert(0, new TwailaText(ItemText));
+                elements.Insert(0, new UITwailaText(ItemText));
             }
             return elements;
         }

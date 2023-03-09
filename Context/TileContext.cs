@@ -193,27 +193,27 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(PaintText))
             {
-                elements.Insert(0, new TwailaText(PaintText));
+                elements.Insert(0, new UITwailaText(PaintText));
             }
 			if (!string.IsNullOrEmpty(IlluminantText))
 			{
-				elements.Insert(0, new TwailaText(IlluminantText));
+				elements.Insert(0, new UITwailaText(IlluminantText));
 			}
 			if (!string.IsNullOrEmpty(EchoText))
 			{
-				elements.Insert(0, new TwailaText(EchoText));
+				elements.Insert(0, new UITwailaText(EchoText));
 			}
 			if (!string.IsNullOrEmpty(RecommendedPickaxe))
             {
-                elements.Insert(0, new TwailaText(RecommendedPickaxe));
+                elements.Insert(0, new UITwailaText(RecommendedPickaxe));
             }
             if (!string.IsNullOrEmpty(PickPower))
             {
-                elements.Insert(0, new TwailaText(PickPower));
+                elements.Insert(0, new UITwailaText(PickPower));
             }
             if (!string.IsNullOrEmpty(Id))
             {
-                elements.Insert(0, new TwailaText(Id));
+                elements.Insert(0, new UITwailaText(Id));
             }
 
             return elements;
