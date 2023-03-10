@@ -20,11 +20,11 @@ namespace Twaila.Context
         protected string WireText { get; set; }
         protected string ActuatorText { get; set; }
 
-        protected TwailaIconLine Icons { get; set; }
+        protected UITwailaIconLine Icons { get; set; }
 
         public WireContext(TwailaPoint point) : base(point)
         {
-			Icons = new TwailaIconLine();
+			Icons = new UITwailaIconLine();
             WireText = "";
             ActuatorText = "";
 		}

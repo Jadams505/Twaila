@@ -17,13 +17,13 @@ namespace Twaila.Context
 		protected int[] ItemIds { get; set; }
 		protected string[] ItemTexts { get; set; }
 
-		protected TwailaIconLine DisplayContentIcons { get; set; }
+		protected UITwailaIconLine DisplayContentIcons { get; set; }
 
 		public DisplayDollContext(TwailaPoint point) : base(point)
 		{
 			ItemIds = new int[MAX_ITEM_COUNT];
 			ItemTexts = new string[MAX_ITEM_COUNT];
-			DisplayContentIcons = new TwailaIconLine();
+			DisplayContentIcons = new UITwailaIconLine();
 		}
 
 		public static DisplayDollContext CreateDisplayDollContext(TwailaPoint pos)

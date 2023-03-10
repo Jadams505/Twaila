@@ -107,10 +107,12 @@ namespace Twaila.UI
                 if (drawMode == DrawMode.Trim)
                 {
                     float height = 0;
+                    float width = 0;
                     Vector2 nameSize = Layout.Name.GetSizeIfAppended();
                     if (nameSize.Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += nameSize.Y;
+                        width = Math.Max(width, nameSize.X);
                     }
                     else
                     {
@@ -125,6 +127,7 @@ namespace Twaila.UI
                             if (elementSize.Y + height < MaxPanelInnerDimension.Y)
                             {
                                 height += elementSize.Y;
+                                width = Math.Max(width, elementSize.X);
                             }
                             else
                             {
@@ -137,12 +140,14 @@ namespace Twaila.UI
                     if (modSize.Y + height < MaxPanelInnerDimension.Y)
                     {
                         height += modSize.Y;
+                        width = Math.Max(width, modSize.X);
                     }
                     else
                     {
                         RemoveChild(Layout.Mod);
                     }
                     textDimension.Y = height;
+                    textDimension.X = width;
                 }
                 imageDimension.Y = Math.Min(MaxPanelInnerDimension.Y, imageDimension.Y);
                 textDimension.Y = Math.Min(MaxPanelInnerDimension.Y, textDimension.Y);
