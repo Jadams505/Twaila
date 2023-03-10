@@ -23,19 +23,19 @@ namespace Twaila.Context
             Id = "";
         }
 
-		public static LiquidContext CreateLiquidContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static LiquidContext CreateLiquidContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (tile.LiquidAmount > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new LiquidContext(pos);
-			}
+            if (tile.LiquidAmount > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new LiquidContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(LiquidContext))
             {
@@ -125,8 +125,8 @@ namespace Twaila.Context
 
         protected override string GetMod()
         {
-			ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
-			if (mWater != null)
+            ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
+            if (mWater != null)
             {
                 return mWater.Mod.DisplayName;
             }

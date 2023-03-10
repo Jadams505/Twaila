@@ -17,19 +17,19 @@ namespace Twaila.Context
             SandId = GetPalmTreeSand();
         }
 
-		public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new PalmTreeContext(pos);
-			}
+            if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new PalmTreeContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
             SandId = GetPalmTreeSand();
@@ -82,8 +82,8 @@ namespace Twaila.Context
 
         private int GetPalmTreeSand()
         {
-			int x = Pos.BestPos().X;
-			int y = Pos.BestPos().Y;
+            int x = Pos.BestPos().X;
+            int y = Pos.BestPos().Y;
             do
             {
                 y += 1;

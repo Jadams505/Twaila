@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 
 namespace Twaila.Graphics
@@ -62,12 +58,12 @@ namespace Twaila.Graphics
 
                 Width = texture.Width * scale;
                 Height = texture.Height * scale;
-			}
-		}
+            }
+        }
 
         public TwailaRender()
         {
-			Info = new List<DrawInfo>();
+            Info = new List<DrawInfo>();
         }
 
         public bool CanDraw()
@@ -112,7 +108,7 @@ namespace Twaila.Graphics
                 if (draw.Position.Y + draw.Size().Y > bounds.Height)
                 {
                     int sizeY = (int)((bounds.Height - draw.Position.Y) / draw.Scale);
-					source.Height = sizeY;
+                    source.Height = sizeY;
                 }
 
                 if(source.Width > 0 && source.Height > 0)
@@ -122,7 +118,7 @@ namespace Twaila.Graphics
             }
         }
 
-		private void Shift(int xOffset, int yOffset)
+        private void Shift(int xOffset, int yOffset)
         {
             foreach (DrawInfo draw in Info)
             {

@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -52,8 +47,8 @@ namespace Twaila.Systems
                         TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.On;
                         break;
                 }
-				Main.NewText(Language.GetText("Mods.Twaila.DisplayModeMessage").WithFormatArgs(TwailaConfig.Get().UIDisplaySettings.UIDisplay.ToLocalizedString()));
-			}
+                Main.NewText(Language.GetText("Mods.Twaila.DisplayModeMessage").WithFormatArgs(TwailaConfig.Get().UIDisplaySettings.UIDisplay.ToLocalizedString()));
+            }
 
             if (CycleContextMode.JustPressed)
             {
@@ -65,7 +60,7 @@ namespace Twaila.Systems
                 {
                     TwailaConfig.Get().ContextMode = TwailaConfig.ContextUpdateMode.Manual;
                 }
-				Main.NewText(Language.GetText("Mods.Twaila.ContextModeMessage").WithFormatArgs(TwailaConfig.Get().ContextMode.ToLocalizedString()));
+                Main.NewText(Language.GetText("Mods.Twaila.ContextModeMessage").WithFormatArgs(TwailaConfig.Get().ContextMode.ToLocalizedString()));
             }
 
             if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual)

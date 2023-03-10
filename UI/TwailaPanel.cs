@@ -64,7 +64,7 @@ namespace Twaila.UI
                 BackgroundColor *= config.HoverOpacity;
                 BorderColor *= config.HoverOpacity;
 
-				Layout.ApplyHoverSettings(config);
+                Layout.ApplyHoverSettings(config);
             }
         }
 

@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using Twaila.Context;
 
 namespace Twaila.Util
 {
@@ -497,14 +496,14 @@ namespace Twaila.Util
                     return ItemID.Grate;
                 case TileID.AmberStoneBlock:
                     return ItemID.Amber;
-				case TileID.GlowTulip:
-					return ItemID.GlowTulip;
-				case TileID.CorruptJungleGrass:
-					return ItemID.CorruptSeeds;
-				case TileID.CrimsonJungleGrass:
-					return ItemID.CrimsonSeeds;
-				case TileID.DirtiestBlock:
-					return ItemID.DirtiestBlock;
+                case TileID.GlowTulip:
+                    return ItemID.GlowTulip;
+                case TileID.CorruptJungleGrass:
+                    return ItemID.CorruptSeeds;
+                case TileID.CrimsonJungleGrass:
+                    return ItemID.CrimsonSeeds;
+                case TileID.DirtiestBlock:
+                    return ItemID.DirtiestBlock;
             }
             if (tile.HasActuator && !tile.HasTile)
             {
@@ -679,8 +678,8 @@ namespace Twaila.Util
                     return ItemID.HoneyBucket;
                 case LiquidID.Lava:
                     return ItemID.LavaBucket;
-				case LiquidID.Shimmer:
-					return ItemID.BottomlessShimmerBucket;
+                case LiquidID.Shimmer:
+                    return ItemID.BottomlessShimmerBucket;
             }
             return -1;
         }

@@ -99,31 +99,31 @@ namespace Twaila.Util
                 bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
         }
 
-		public static Texture2D GetImageForAshTree(SpriteBatch spriteBatch, int tileId)
-		{
-			if(tileId == TileID.TreeAsh)
-			{
-				int size = 20;
-				Texture2D topTexture = TextureAssets.TreeTop[31].ForceVanillaLoad();
-				Texture2D woodTexture = ImageUtil.GetTileTexture(tileId);
-				Texture2D branchTexture = TextureAssets.TreeBranch[31].ForceVanillaLoad();
-				Rectangle top = new Rectangle(120, 0, 114, 96);
-				Rectangle trunk1 = new Rectangle(44, 108, size, size);
-				Rectangle trunk2 = new Rectangle(88, 42, size, size);
-				Rectangle trunk3 = new Rectangle(66, 66, size, size);
-				Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
-				Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
-				Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
-				Rectangle bottomLeft = new Rectangle(44, 176, size, size);
-				Rectangle bottomRight = new Rectangle(22, 154, size, size);
-				int topOffsetX = 46;
-				int topOffsetY = 94;
+        public static Texture2D GetImageForAshTree(SpriteBatch spriteBatch, int tileId)
+        {
+            if(tileId == TileID.TreeAsh)
+            {
+                int size = 20;
+                Texture2D topTexture = TextureAssets.TreeTop[31].ForceVanillaLoad();
+                Texture2D woodTexture = ImageUtil.GetTileTexture(tileId);
+                Texture2D branchTexture = TextureAssets.TreeBranch[31].ForceVanillaLoad();
+                Rectangle top = new Rectangle(120, 0, 114, 96);
+                Rectangle trunk1 = new Rectangle(44, 108, size, size);
+                Rectangle trunk2 = new Rectangle(88, 42, size, size);
+                Rectangle trunk3 = new Rectangle(66, 66, size, size);
+                Rectangle leftBranch = new Rectangle(0, 42, size * 2, size * 2);
+                Rectangle rightBranch = new Rectangle(42, 42, size * 2, size * 2);
+                Rectangle bottomMiddle = new Rectangle(88, 154, size, size);
+                Rectangle bottomLeft = new Rectangle(44, 176, size, size);
+                Rectangle bottomRight = new Rectangle(22, 154, size, size);
+                int topOffsetX = 46;
+                int topOffsetY = 94;
 
-				return BuildImageForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-					bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
-			}
-			return null;
-		}
+                return BuildImageForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
+                    bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+            }
+            return null;
+        }
 
         public static Texture2D GetImageForGemTree(SpriteBatch spriteBatch, int tileId)
         {
@@ -248,7 +248,7 @@ namespace Twaila.Util
                     break;
             }
             Texture2D woodTexture = ImageUtil.GetTileTexture(TileID.PalmTree);
-			Texture2D topTexture = TextureAssets.TreeTop[15].ForceVanillaLoad();
+            Texture2D topTexture = TextureAssets.TreeTop[15].ForceVanillaLoad();
 
             Rectangle top = new Rectangle(82, palmTreeType * 82, size * 4, size * 4);
             Rectangle trunk1 = new Rectangle(0, palmTreeType * 22, size, size);
@@ -418,12 +418,12 @@ namespace Twaila.Util
 
         public static int GetTreeWood(int treeDirt)
         {
-			switch (treeDirt)
+            switch (treeDirt)
             {
                 case TileID.CorruptGrass:
                 case TileID.Ebonsand:
-				case TileID.CorruptJungleGrass:
-					return ItemID.Ebonwood;
+                case TileID.CorruptJungleGrass:
+                    return ItemID.Ebonwood;
                 case TileID.JungleGrass:
                     return ItemID.RichMahogany;
                 case TileID.HallowedGrass:
@@ -434,7 +434,7 @@ namespace Twaila.Util
                     return ItemID.BorealWood;
                 case TileID.CrimsonGrass:
                 case TileID.Crimsand:
-				case TileID.CrimsonJungleGrass:
+                case TileID.CrimsonJungleGrass:
                     return ItemID.Shadewood;
                 case TileID.MushroomGrass:
                     return ItemID.GlowingMushroom;
@@ -443,8 +443,8 @@ namespace Twaila.Util
                     return ItemID.Wood;
                 case TileID.Sand:
                     return ItemID.PalmWood;
-				case TileID.AshGrass:
-					return ItemID.AshWood;
+                case TileID.AshGrass:
+                    return ItemID.AshWood;
             }
             int wood = -1;
             TileLoader.DropTreeWood(treeDirt, ref wood);

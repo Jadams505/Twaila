@@ -68,7 +68,7 @@ namespace Twaila.ObjectData
             AddEntry(TileID.MushroomPlants, data4);
             AddEntry(TileID.HallowedPlants, data4);
             AddEntry(TileID.CrimsonPlants, data4); //FleshWeeds
-			AddEntry(TileID.AshPlants, data4);
+            AddEntry(TileID.AshPlants, data4);
 
             TileObjectData data5 = new TileObjectData(TileObjectData.Style1x1);
             data5.CoordinateHeights = new int[] { 32 };
@@ -86,10 +86,10 @@ namespace Twaila.ObjectData
             data6.StyleWrapLimit = 27;
             AddEntry(TileID.Platforms, data6); // the stone platform is messed up in the original TileObjectData and I dont know why
 
-			TileObjectData data7 = new TileObjectData(TileObjectData.Style1x1);
-			data7.CoordinateHeights = new int[] { 34 };
-			data7.CoordinateWidth = 24;
-			AddEntry(TileID.GlowTulip, data7);
+            TileObjectData data7 = new TileObjectData(TileObjectData.Style1x1);
+            data7.CoordinateHeights = new int[] { 34 };
+            data7.CoordinateWidth = 24;
+            AddEntry(TileID.GlowTulip, data7);
         }
 
         private static void Add2x1()

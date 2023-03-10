@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -50,13 +49,13 @@ namespace Twaila.UI
             TextShadow = config.TextShadow;
         }
 
-		public override void ApplyHoverSettings(TwailaConfig config)
-		{
-			base.ApplyHoverSettings(config);
-			OverrideTextColor = true;
-		}
+        public override void ApplyHoverSettings(TwailaConfig config)
+        {
+            base.ApplyHoverSettings(config);
+            OverrideTextColor = true;
+        }
 
-		public override Vector2 GetContentSize()
+        public override Vector2 GetContentSize()
         {
             return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
         }

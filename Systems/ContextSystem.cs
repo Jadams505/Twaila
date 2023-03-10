@@ -1,13 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent.Tile_Entities;
-using Terraria.GameContent.UI;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Context;
-using Twaila.Util;
 
 namespace Twaila.Systems
 {
@@ -40,7 +36,7 @@ namespace Twaila.Systems
 
             WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"));
 
-			ContextEntries.Add(WallEntry);
+            ContextEntries.Add(WallEntry);
 
             LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"));
             ContextEntries.Add(LiquidEntry);
@@ -109,52 +105,52 @@ namespace Twaila.Systems
         public int ContextEntryCountAt(TwailaPoint pos)
         {
             int count = 0;
-			foreach(var entry in ContextEntries)
-			{
-				if (entry.Context(pos) != null)
-				{
-					count++;
-				}
-			}
+            foreach(var entry in ContextEntries)
+            {
+                if (entry.Context(pos) != null)
+                {
+                    count++;
+                }
+            }
             return count;
         }
-	}
+    }
 
-	public struct TwailaPoint
-	{
-		public Point MousePos;
+    public struct TwailaPoint
+    {
+        public Point MousePos;
 
-		public Point TilePos;
+        public Point TilePos;
 
-		public Point SmartCursorPos;
+        public Point SmartCursorPos;
 
-		public Point MapPos;
+        public Point MapPos;
 
-		public TwailaPoint(Point mouse, Point tile, Point smart, Point map)
-		{
-			MousePos = mouse;
-			TilePos = tile;
-			SmartCursorPos = smart;
-			MapPos = map;
-		}
+        public TwailaPoint(Point mouse, Point tile, Point smart, Point map)
+        {
+            MousePos = mouse;
+            TilePos = tile;
+            SmartCursorPos = smart;
+            MapPos = map;
+        }
 
-		public Point BestPos()
-		{
-			if (Main.SmartCursorShowing)
-			{
-				return SmartCursorPos;
-			}
-			
-			if (Main.mapFullscreen)
-			{
-				return MapPos;
-			}
-			
-			return TilePos;
-		}
-	}
+        public Point BestPos()
+        {
+            if (Main.SmartCursorShowing)
+            {
+                return SmartCursorPos;
+            }
+            
+            if (Main.mapFullscreen)
+            {
+                return MapPos;
+            }
+            
+            return TilePos;
+        }
+    }
 
-	public delegate BaseContext ContextFetcher(TwailaPoint pos);
+    public delegate BaseContext ContextFetcher(TwailaPoint pos);
 
     public class ContextEntry
     {
@@ -175,15 +171,15 @@ namespace Twaila.Systems
         public BaseContext Context(TwailaPoint pos)
         {
             BaseContext foundContext = null;
-			foreach(var entry in ApplicableContexts)
-			{
-				BaseContext context = entry.Invoke(pos);
-				if (context != null)
-				{
-					foundContext = context;
-					break;
-				}
-			}
+            foreach(var entry in ApplicableContexts)
+            {
+                BaseContext context = entry.Invoke(pos);
+                if (context != null)
+                {
+                    foundContext = context;
+                    break;
+                }
+            }
             return foundContext ?? DefaultContext.Invoke(pos);
         }
     }

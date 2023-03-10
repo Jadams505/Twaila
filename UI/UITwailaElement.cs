@@ -43,13 +43,13 @@ namespace Twaila.UI
         public virtual void ApplyConfigSettings(TwailaConfig config)
         {
             DrawMode = config.ContentSetting;
-			Opacity = 1;
+            Opacity = 1;
         }
 
-		public virtual void ApplyHoverSettings(TwailaConfig config)
-		{
-			Opacity = config.HoverOpacity;
-		}
+        public virtual void ApplyHoverSettings(TwailaConfig config)
+        {
+            Opacity = config.HoverOpacity;
+        }
 
         // Gets the uniform scale it would take to shrink the content to maxSize
         public float GetScale(Vector2 maxSize)

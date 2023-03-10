@@ -23,22 +23,22 @@ namespace Twaila.Context
             ItemText = "";
         }
 
-		public static ItemFrameContext CreateItemFrameContext(TwailaPoint pos)
-		{
-			Point bestPos = pos.BestPos();
-			Tile tile = Framing.GetTileSafely(bestPos);
-			if (tile.TileType == TileID.ItemFrame)
-			{
-				Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 2, height: 2);
-				if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
-				{
-					return new ItemFrameContext(pos);
-				}
-			}
-			return null;
-		}
+        public static ItemFrameContext CreateItemFrameContext(TwailaPoint pos)
+        {
+            Point bestPos = pos.BestPos();
+            Tile tile = Framing.GetTileSafely(bestPos);
+            if (tile.TileType == TileID.ItemFrame)
+            {
+                Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 2, height: 2);
+                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+                {
+                    return new ItemFrameContext(pos);
+                }
+            }
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;

@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using rail;
-using System;
 using System.Collections.Generic;
-using Terraria;
 
 namespace Twaila.Graphics
 {
@@ -18,10 +15,10 @@ namespace Twaila.Graphics
 
         public void AddImage(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
         {
-			if(texture != null)
-			{
-				_drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
-			}
+            if(texture != null)
+            {
+                _drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
+            }
         }
 
         public void AddImage(Texture2D texture, Point position, Rectangle source, float scale = 1)

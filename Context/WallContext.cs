@@ -16,30 +16,30 @@ namespace Twaila.Context
 
         protected string Id { get; set; }
         protected string PaintText { get; set; }
-		protected string IlluminantText { get; set; }
-		protected string EchoText { get; set; }
+        protected string IlluminantText { get; set; }
+        protected string EchoText { get; set; }
 
-		public WallContext(TwailaPoint pos) : base(pos)
+        public WallContext(TwailaPoint pos) : base(pos)
         {
             Id = "";
             PaintText = "";
-			IlluminantText = "";
-			EchoText = "";
-		}
+            IlluminantText = "";
+            EchoText = "";
+        }
 
-		public static WallContext CreateWallContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static WallContext CreateWallContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (Framing.GetTileSafely(pos.BestPos()).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new WallContext(pos);
-			}
+            if (Framing.GetTileSafely(pos.BestPos()).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new WallContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(WallContext))
             {
@@ -59,7 +59,7 @@ namespace Twaila.Context
 
             if (content.ShowId)
             {
-				Id = Language.GetText("Mods.Twaila.WallId").WithFormatArgs(WallId).Value;
+                Id = Language.GetText("Mods.Twaila.WallId").WithFormatArgs(WallId).Value;
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out int paintIcon))
@@ -77,27 +77,27 @@ namespace Twaila.Context
                 }
             }
 
-			if (InfoUtil.GetCoatingInfo(tile, TileType.Wall, out string illuminantText, out string echoText,
-				out int illuminantIcon, out int echoIcon))
-			{
-				if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
-				{
-					if (illuminantIcon > 0)
-					{
-						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
-					}
-					if (echoIcon > 0)
-					{
-						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
-					}
-				}
-				if (content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
-				{
-					IlluminantText = illuminantText;
-					EchoText = echoText;
-				}
-			}
-		}
+            if (InfoUtil.GetCoatingInfo(tile, TileType.Wall, out string illuminantText, out string echoText,
+                out int illuminantIcon, out int echoIcon))
+            {
+                if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
+                {
+                    if (illuminantIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+                    }
+                    if (echoIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+                    }
+                }
+                if (content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
+                {
+                    IlluminantText = illuminantText;
+                    EchoText = echoText;
+                }
+            }
+        }
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
@@ -139,15 +139,15 @@ namespace Twaila.Context
             {
                 elements.Insert(0, new UITwailaText(PaintText));
             }
-			if (!string.IsNullOrEmpty(IlluminantText))
-			{
-				elements.Insert(0, new UITwailaText(IlluminantText));
-			}
-			if (!string.IsNullOrEmpty(EchoText))
-			{
-				elements.Insert(0, new UITwailaText(EchoText));
-			}
-			if (!string.IsNullOrEmpty(Id))
+            if (!string.IsNullOrEmpty(IlluminantText))
+            {
+                elements.Insert(0, new UITwailaText(IlluminantText));
+            }
+            if (!string.IsNullOrEmpty(EchoText))
+            {
+                elements.Insert(0, new UITwailaText(EchoText));
+            }
+            if (!string.IsNullOrEmpty(Id))
             {
                 elements.Insert(0, new UITwailaText(Id));
             }

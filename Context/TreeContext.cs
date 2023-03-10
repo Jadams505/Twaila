@@ -18,19 +18,19 @@ namespace Twaila.Context
             DirtId = GetTreeDirt();
         }
 
-		public static TreeContext CreateTreeContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static TreeContext CreateTreeContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new TreeContext(pos);
-			}
+            if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new TreeContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
             DirtId = GetTreeDirt();

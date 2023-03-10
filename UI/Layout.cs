@@ -1,13 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
-using Terraria.Localization;
 using Terraria.UI;
-using Twaila.Graphics;
 using Twaila.Util;
 
 namespace Twaila.UI
@@ -25,8 +19,8 @@ namespace Twaila.UI
         public Layout()
         {
             Image = new UITwailaImage();
-			//string localized = Language.GetTextValue("Mods.Twaila.Defaults.Name"); fix later
-			Name = new UITwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
+            //string localized = Language.GetTextValue("Mods.Twaila.Defaults.Name"); fix later
+            Name = new UITwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
             InfoBox = new UIInfoBox();
             Mod = new UITwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
         }
@@ -44,17 +38,17 @@ namespace Twaila.UI
             Image.DrawMode = config.ContentSetting;
             Image.Opacity = 1;
             InfoBox.ApplyToAll(element => element.ApplyConfigSettings(config));
-			Name.ApplyConfigSettings(config);
-			Mod.ApplyConfigSettings(config);
+            Name.ApplyConfigSettings(config);
+            Mod.ApplyConfigSettings(config);
         }
 
-		public void ApplyHoverSettings(TwailaConfig config)
-		{
-			Image.ApplyHoverSettings(config);
-			InfoBox.ApplyToAll(element => element.ApplyHoverSettings(config));
-			Name.ApplyHoverSettings(config);
-			Mod.ApplyHoverSettings(config);
-		}
+        public void ApplyHoverSettings(TwailaConfig config)
+        {
+            Image.ApplyHoverSettings(config);
+            InfoBox.ApplyToAll(element => element.ApplyHoverSettings(config));
+            Name.ApplyHoverSettings(config);
+            Mod.ApplyHoverSettings(config);
+        }
 
         public void SetInitialSizes()
         {

@@ -24,38 +24,38 @@ namespace Twaila.Context
 
         public WireContext(TwailaPoint point) : base(point)
         {
-			Icons = new UITwailaIconLine();
+            Icons = new UITwailaIconLine();
             WireText = "";
             ActuatorText = "";
-		}
+        }
 
-		public static WireContext CreateWireContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static WireContext CreateWireContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
+            bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
 
-			bool hasWire = tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
+            bool hasWire = tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
 
-			bool canSeeWire = WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires;
+            bool canSeeWire = WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires;
 
-			bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
+            bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
 
-			if (noTile)
-			{
-				if (hasWire && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeWire))
-				{
-					return new WireContext(pos);
-				}
-				if (tile.HasActuator && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeActuator))
-				{
-					return new WireContext(pos);
-				}
-			}
-			return null;
-		}
+            if (noTile)
+            {
+                if (hasWire && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeWire))
+                {
+                    return new WireContext(pos);
+                }
+                if (tile.HasActuator && (!TwailaConfig.Get().AntiCheat.HideWires || canSeeActuator))
+                {
+                    return new WireContext(pos);
+                }
+            }
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(WireContext))
             {

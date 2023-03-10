@@ -18,19 +18,19 @@ namespace Twaila.Context
             DirtId = GetSaplingTile();
         }
 
-		public static SaplingContext CreateSaplingContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static SaplingContext CreateSaplingContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new SaplingContext(pos);
-			}
+            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new SaplingContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(SaplingContext))
             {
@@ -82,7 +82,7 @@ namespace Twaila.Context
 
         private int GetSaplingTile()
         {
-			Point bestPos = Pos.BestPos();
+            Point bestPos = Pos.BestPos();
             int y = bestPos.Y;
             do
             {

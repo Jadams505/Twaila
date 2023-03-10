@@ -23,8 +23,8 @@ namespace Twaila.Context
         protected string PickPower { get; set; }
         protected string RecommendedPickaxe { get; set; }
         protected string PaintText { get; set; }
-		protected string IlluminantText { get; set; }
-		protected string EchoText { get; set; }
+        protected string IlluminantText { get; set; }
+        protected string EchoText { get; set; }
 
 
         public TileContext(TwailaPoint point) : base(point)
@@ -33,23 +33,23 @@ namespace Twaila.Context
             PickPower = "";
             RecommendedPickaxe = "";
             PaintText = "";
-			IlluminantText = "";
-			EchoText = "";
+            IlluminantText = "";
+            EchoText = "";
         }
 
-		public static TileContext CreateTileContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static TileContext CreateTileContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (tile.HasTile && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new TileContext(pos);
-			}
+            if (tile.HasTile && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new TileContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
@@ -79,26 +79,26 @@ namespace Twaila.Context
                 }
             }
 
-			if (InfoUtil.GetCoatingInfo(tile, TileType.Tile, out string illuminantText, out string echoText,
-				out int illuminantIcon, out int echoIcon))
-			{
-				if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
-				{
-					if(illuminantIcon > 0)
-					{
-						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
-					}
-					if(echoIcon > 0)
-					{
-						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
-					}
-				}
-				if(content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
-				{
-					IlluminantText = illuminantText;
-					EchoText = echoText;
-				}
-			}
+            if (InfoUtil.GetCoatingInfo(tile, TileType.Tile, out string illuminantText, out string echoText,
+                out int illuminantIcon, out int echoIcon))
+            {
+                if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
+                {
+                    if(illuminantIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+                    }
+                    if(echoIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+                    }
+                }
+                if(content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
+                {
+                    IlluminantText = illuminantText;
+                    EchoText = echoText;
+                }
+            }
 
             if (InfoUtil.GetPickInfo(tile, ref pickIndex, out string pickText, out int pickId))
             {
@@ -110,8 +110,8 @@ namespace Twaila.Context
                     }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-						RecommendedPickaxe = Language.GetText("Mods.Twaila.RecommendedPick")
-							.WithFormatArgs(Lang.GetItemNameValue(pickId), InfoUtil.GetPickPowerForItem(pickId)).Value;
+                        RecommendedPickaxe = Language.GetText("Mods.Twaila.RecommendedPick")
+                            .WithFormatArgs(Lang.GetItemNameValue(pickId), InfoUtil.GetPickPowerForItem(pickId)).Value;
                     }
                 }
 
@@ -195,15 +195,15 @@ namespace Twaila.Context
             {
                 elements.Insert(0, new UITwailaText(PaintText));
             }
-			if (!string.IsNullOrEmpty(IlluminantText))
-			{
-				elements.Insert(0, new UITwailaText(IlluminantText));
-			}
-			if (!string.IsNullOrEmpty(EchoText))
-			{
-				elements.Insert(0, new UITwailaText(EchoText));
-			}
-			if (!string.IsNullOrEmpty(RecommendedPickaxe))
+            if (!string.IsNullOrEmpty(IlluminantText))
+            {
+                elements.Insert(0, new UITwailaText(IlluminantText));
+            }
+            if (!string.IsNullOrEmpty(EchoText))
+            {
+                elements.Insert(0, new UITwailaText(EchoText));
+            }
+            if (!string.IsNullOrEmpty(RecommendedPickaxe))
             {
                 elements.Insert(0, new UITwailaText(RecommendedPickaxe));
             }

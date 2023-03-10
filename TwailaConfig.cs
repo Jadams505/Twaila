@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
@@ -17,7 +16,7 @@ namespace Twaila
 
         [Header("$Mods.Twaila.Features")]
 
-		[SeparatePage]
+        [SeparatePage]
         [Tooltip("$Mods.Twaila.AntiCheatSettings.Tooltip")]
         [Label("$Mods.Twaila.AntiCheatSettings.Label")]
         public AntiCheatSettings AntiCheat = new AntiCheatSettings();
@@ -125,9 +124,9 @@ namespace Twaila
         [Label("$Mods.Twaila.ShowBackground")]
         public bool ShowBackground;
 
-		[DefaultValue(true)]
-		[Label("$Mods.Twaila.ShowInFullscreenMap")]
-		public bool ShowInFullscreenMap;
+        [DefaultValue(true)]
+        [Label("$Mods.Twaila.ShowInFullscreenMap")]
+        public bool ShowInFullscreenMap;
 
         [SeparatePage]
         [Label("$Mods.Twaila.UIDisplaySettings")]
@@ -220,9 +219,9 @@ namespace Twaila
             [Label("$Mods.Twaila.Content.ShowPaint")]
             public DisplayType ShowPaint;
 
-			[DrawTicks]
-			[Label("$Mods.Twaila.Content.ShowCoating")]
-			public DisplayType ShowCoating = DisplayType.Off;
+            [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowCoating")]
+            public DisplayType ShowCoating = DisplayType.Off;
 
             [DrawTicks]
             [Label("$Mods.Twaila.Content.ShowContainedItems")]
@@ -238,8 +237,8 @@ namespace Twaila
                 ShowWire = DisplayType.Icon;
                 ShowActuator = DisplayType.Icon;
                 ShowPaint = DisplayType.Icon;
-				ShowCoating = DisplayType.Icon;
-				ShowContainedItems = DisplayType.Icon;
+                ShowCoating = DisplayType.Icon;
+                ShowContainedItems = DisplayType.Icon;
                 ShowName = NameType.DisplayName;
             }
 
@@ -322,58 +321,58 @@ namespace Twaila
             public override int GetHashCode()
             {
                 return new { UIDisplay, HideUIForAir }.GetHashCode();
-			}
-		}
+            }
+        }
 
-		public class AntiCheatSettings
-		{
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideUnrevealedTiles.Tooltip")]
-			[Label("$Mods.Twaila.HideUnrevealedTiles.Label")]
-			public bool HideUnrevealedTiles;
+        public class AntiCheatSettings
+        {
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideUnrevealedTiles.Tooltip")]
+            [Label("$Mods.Twaila.HideUnrevealedTiles.Label")]
+            public bool HideUnrevealedTiles;
 
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideWires.Tooltip")]
-			[Label("$Mods.Twaila.HideWires.Label")]
-			public bool HideWires;
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideWires.Tooltip")]
+            [Label("$Mods.Twaila.HideWires.Label")]
+            public bool HideWires;
 
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideEchoTiles.Tooltip")]
-			[Label("$Mods.Twaila.HideEchoTiles.Label")]
-			public bool HideEchoTiles;
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideEchoTiles.Tooltip")]
+            [Label("$Mods.Twaila.HideEchoTiles.Label")]
+            public bool HideEchoTiles;
 
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideSuspiciousTiles.Tooltip")]
-			[Label("$Mods.Twaila.HideSuspiciousTiles.Label")]
-			public bool HideSuspiciousTiles;
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideSuspiciousTiles.Tooltip")]
+            [Label("$Mods.Twaila.HideSuspiciousTiles.Label")]
+            public bool HideSuspiciousTiles;
 
-			public AntiCheatSettings()
-			{
-				HideUnrevealedTiles = true;
-				HideWires = true;
-				HideEchoTiles = true;
-				HideSuspiciousTiles = true;
-			}
+            public AntiCheatSettings()
+            {
+                HideUnrevealedTiles = true;
+                HideWires = true;
+                HideEchoTiles = true;
+                HideSuspiciousTiles = true;
+            }
 
-			public override bool Equals(object obj)
-			{
-				if (obj is AntiCheatSettings other)
-				{
-					return HideUnrevealedTiles == other.HideUnrevealedTiles 
-						&& HideWires == other.HideWires
-						&& HideEchoTiles == other.HideEchoTiles
-						&& HideSuspiciousTiles == other.HideSuspiciousTiles;
-				}
-				return base.Equals(obj);
-			}
+            public override bool Equals(object obj)
+            {
+                if (obj is AntiCheatSettings other)
+                {
+                    return HideUnrevealedTiles == other.HideUnrevealedTiles 
+                        && HideWires == other.HideWires
+                        && HideEchoTiles == other.HideEchoTiles
+                        && HideSuspiciousTiles == other.HideSuspiciousTiles;
+                }
+                return base.Equals(obj);
+            }
 
-			public override int GetHashCode()
-			{
-				return HashCode.Combine(HideUnrevealedTiles, HideWires, HideEchoTiles, HideSuspiciousTiles);
-			}
-		}
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(HideUnrevealedTiles, HideWires, HideEchoTiles, HideSuspiciousTiles);
+            }
+        }
 
-		public void Save()
+        public void Save()
         {
             Directory.CreateDirectory(ConfigManager.ModConfigPath);
             string filename = Mod.Name + "_" + Name + ".json";

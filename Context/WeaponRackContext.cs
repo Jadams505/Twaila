@@ -23,22 +23,22 @@ namespace Twaila.Context
             ItemText = "";
         }
 
-		public static WeaponRackContext CreateWeaponRackContext(TwailaPoint pos)
-		{
-			Point bestPos = pos.BestPos();
-			Tile tile = Framing.GetTileSafely(bestPos);
-			if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
-			{
-				Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 3, height: 3);
-				if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
-				{
-					return new WeaponRackContext(pos);
-				}
-			}
-			return null;
-		}
+        public static WeaponRackContext CreateWeaponRackContext(TwailaPoint pos)
+        {
+            Point bestPos = pos.BestPos();
+            Tile tile = Framing.GetTileSafely(bestPos);
+            if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
+            {
+                Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 3, height: 3);
+                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+                {
+                    return new WeaponRackContext(pos);
+                }
+            }
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
             TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
