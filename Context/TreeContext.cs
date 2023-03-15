@@ -18,19 +18,19 @@ namespace Twaila.Context
             DirtId = GetTreeDirt();
         }
 
-		public static TreeContext CreateTreeContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static TreeContext CreateTreeContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new TreeContext(pos);
-			}
+            if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new TreeContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
             DirtId = GetTreeDirt();
@@ -71,11 +71,11 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            string displayName = NameUtil.GetNameForTree(TileId, DirtId);
+            string displayName = NameUtil.GetNameForTree(DirtId);
             string internalName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().Name;
             string fullName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().FullName;
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }

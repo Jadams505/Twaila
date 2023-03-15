@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.UI.Chat;
 
 namespace Twaila.UI
 {
-    public class TwailaText : UITwailaElement
+    public class UITwailaText : UITwailaElement
     {
         public string Text { get; private set; }
         public Color Color { get; set; }
@@ -17,7 +18,7 @@ namespace Twaila.UI
         public DynamicSpriteFont Font { get; set; }
         public bool TextShadow { get; set; }
 
-        public TwailaText(string text, DynamicSpriteFont font, Color color, float scale)
+        public UITwailaText(string text, DynamicSpriteFont font, Color color, float scale)
         {
             Font = font;
             Color = color;
@@ -25,15 +26,15 @@ namespace Twaila.UI
             SetText(text);
         }
 
-        public TwailaText(string text) : this(text, FontAssets.ItemStack.Value, Color.White, 1f) { }
+        public UITwailaText(string text) : this(text, FontAssets.ItemStack.Value, Color.White, 1f) { }
 
-        public TwailaText() : this("Default Text") { }
+        public UITwailaText() : this(Language.GetTextValue("Mods.Twaila.Defaults.Text")) { }
 
         public void SetText(string text)
         {
-            if(text == null || text.Length == 0)
+            if(string.IsNullOrEmpty(text))
             {
-                text = "Default Text";
+                text = Language.GetTextValue("Mods.Twaila.Defaults.Text");
             }
             Text = text;
             Width.Set(GetContentSize().X, 0);
@@ -61,36 +62,36 @@ namespace Twaila.UI
 
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
         {
-            if(ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale)).Y <= Height.Pixels)
+            Vector2 textSize = GetContentSize();
+            if(textSize.Y <= Height.Pixels)
             {
                 List<TextSnippet> snippets = ChatManager.ParseMessage(Text, Color);
                 if(snippets.Count == 0)
                 {
                     return;
                 }
-                TextSnippet trimSnippet = GetSnippetToTrim(snippets, out int index, out float trimWidth);
-
+                TextSnippet trimSnippet = GetSnippetToTrim(snippets, out int snippetIndex, out float trimWidth);
                 if(trimWidth > 0)
                 {
                     if(trimSnippet.GetType() == typeof(TextSnippet))
                     {
                         string trimmed = trimSnippet.Text;
-                        int i = trimmed.Length - 1;
+                        int charIndex = trimmed.Length - 1;
                         float len = ChatManager.GetStringSize(Font, trimSnippet.Text, new Vector2(Scale, Scale)).X;
-                        while (len > trimWidth && i >= 0)
+                        while (len > trimWidth && charIndex >= 0)
                         {
-                            len -= Font.GetCharacterMetrics(trimSnippet.Text[i]).KernedWidth;
-                            i--;
+                            len -= Font.GetCharacterMetrics(trimSnippet.Text[charIndex]).KernedWidth;
+                            charIndex--;
                         }
-                        snippets[index].Text = snippets[index].Text.Substring(0, i + 1);
+                        snippets[snippetIndex].Text = snippets[snippetIndex].Text.Substring(0, charIndex + 1);
                     }
                     else
                     {
-                        index--; // Non text snippets cannot be trimmed so the whole snippet must be removed
+                        snippetIndex--; // Non text snippets cannot be trimmed so the whole snippet must be removed
                     }    
                 }
-                TextSnippet[] remainingSnippets = new TextSnippet[index + 1];
-                snippets.CopyTo(0, remainingSnippets, 0, index + 1);
+                TextSnippet[] remainingSnippets = new TextSnippet[snippetIndex + 1];
+                snippets.CopyTo(0, remainingSnippets, 0, snippetIndex + 1);
 
                 DrawText(spriteBatch, remainingSnippets, new Vector2(Scale, Scale));
             }
@@ -101,13 +102,14 @@ namespace Twaila.UI
             float len = 0;
             for(int i = 0; i < snippets.Count; ++i)
             {
-                if (len + snippets[i].GetStringLength(Font) > Width.Pixels)
+                float snippetLength = snippets[i].GetStringLength(Font);
+                if (len + snippetLength > Width.Pixels)
                 {
                     index = i;
                     trimWidth = Width.Pixels - len;
                     return snippets[i];
                 }
-                len += snippets[i].GetStringLength(Font);
+                len += snippetLength;
             }
             index = snippets.Count - 1;
             trimWidth = snippets[index].GetStringLength(Font) - Width.Pixels;
@@ -116,7 +118,7 @@ namespace Twaila.UI
 
         protected override void DrawShrunk(SpriteBatch spriteBatch)
         {
-            float scale = GetScale(new Vector2(GetDimensions().Width, GetDimensions().Height)) * Scale;
+            float scale = GetDrawScale() * Scale;
             TextSnippet[] snippets = ChatManager.ParseMessage(Text, Color).ToArray();
             
             foreach(TextSnippet snippet in snippets)
@@ -140,11 +142,12 @@ namespace Twaila.UI
         private void DrawText(SpriteBatch spriteBatch, TextSnippet[] snippets, Vector2 scale)
         {
             ChatManager.ConvertNormalSnippets(snippets);
+            Vector2 drawPos = new Vector2(GetDimensions().X, GetDimensions().Y).Floor();
             if (TextShadow)
             {
-                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color.Black * Opacity, 0, Vector2.Zero, scale);
+                ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, drawPos, Color.Black * Opacity, 0, Vector2.Zero, scale);
             }
-            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, new Vector2((int)GetDimensions().X, (int)GetDimensions().Y), Color * Opacity, 0, Vector2.Zero, scale, out _, -1, OverrideTextColor);
+            ChatManager.DrawColorCodedString(spriteBatch, Font, snippets, drawPos, Color * Opacity, 0, Vector2.Zero, scale, out int unimplemented, -1, OverrideTextColor);
         }
     }
 }

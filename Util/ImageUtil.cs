@@ -3,10 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ObjectData;
-using Twaila.ObjectData;
 using Twaila.Graphics;
 using Terraria.GameContent;
-using Terraria.GameContent.Drawing;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using ReLogic.Content;
@@ -53,8 +51,8 @@ namespace Twaila.Util
                     return builder.Build();
                 }
             }
-			return new TwailaRender();
-		}
+            return new TwailaRender();
+        }
 
         public static TwailaRender GetLiquidRenderFromTile(Tile tile)
         {
@@ -103,7 +101,7 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
         {
-            if (tile.TileType == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
+            if (tile.TileType == TileID.Campfire && !TwailaConfig.Instance.UseItemTextures)
             {
                 TileObjectData data = TileObjectData.GetTileData(tile);
                 int mutableFrameY = tile.TileFrameY;
@@ -412,7 +410,7 @@ namespace Twaila.Util
 
             builer.AddImage(source: rackBox, texture: rackTexture, position: drawPos.ToPoint());
 
-			drawPos.X += rackBox.Width / 2;
+            drawPos.X += rackBox.Width / 2;
             drawPos.Y += rackBox.Height / 2;
             drawPos.X -= itemBox.Width / 2 * scale;
             drawPos.Y -= itemBox.Height / 2 * scale;
@@ -541,12 +539,12 @@ namespace Twaila.Util
                     Main.instance.LoadArmorHead(item.headSlot);
                     return TextureAssets.ArmorHead[item.headSlot].Value;
                 case EquipType.Body:
-					Main.instance.LoadArmorBody(item.bodySlot);
-					return TextureAssets.ArmorBody[item.bodySlot].Value;
+                    Main.instance.LoadArmorBody(item.bodySlot);
+                    return TextureAssets.ArmorBody[item.bodySlot].Value;
                 case EquipType.Legs:
-					Main.instance.LoadArmorLegs(item.legSlot);
-					return TextureAssets.ArmorLeg[item.legSlot].Value;
-			}
+                    Main.instance.LoadArmorLegs(item.legSlot);
+                    return TextureAssets.ArmorLeg[item.legSlot].Value;
+            }
             return null;
         }
 
@@ -573,7 +571,7 @@ namespace Twaila.Util
 			return asset.Value;
 		}
 
-		public static TwailaRender ToRender(this Texture2D texture)
+        public static TwailaRender ToRender(this Texture2D texture)
         {
             return new TwailaRender(texture);
         }

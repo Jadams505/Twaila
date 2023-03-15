@@ -2,6 +2,7 @@
 using System;
 using Terraria.GameContent;
 using Terraria.UI;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -9,18 +10,19 @@ namespace Twaila.UI
     {
         public UITwailaImage Image { get; private set; }
 
-        public TwailaText Name { get; private set; }
+        public UITwailaText Name { get; private set; }
 
         public UIInfoBox InfoBox { get; private set; }
 
-        public TwailaText Mod { get; private set; }
+        public UITwailaText Mod { get; private set; }
 
         public Layout()
         {
             Image = new UITwailaImage();
-            Name = new TwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
+            //string localized = Language.GetTextValue("Mods.Twaila.Defaults.Name"); fix later
+            Name = new UITwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
             InfoBox = new UIInfoBox();
-            Mod = new TwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
+            Mod = new UITwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
         }
 
         public void Apply(UIElement element)
@@ -31,46 +33,52 @@ namespace Twaila.UI
             element.Append(Name);
         }
 
-        public void UpdateFromConfig()
+        public void ApplyConfigSettings(TwailaConfig config)
         {
-            TwailaConfig config = TwailaConfig.Get();
-
             Image.DrawMode = config.ContentSetting;
             Image.Opacity = 1;
-            InfoBox.ApplyToAll(ApplyConfig);
-            ApplyConfig(Name);
-            ApplyConfig(Mod);
+            InfoBox.ApplyToAll(element => element.ApplyConfigSettings(config));
+            Name.ApplyConfigSettings(config);
+            Mod.ApplyConfigSettings(config);
         }
 
-        private void ApplyConfig(UITwailaElement element)
+        public void ApplyHoverSettings(TwailaConfig config)
         {
-            TwailaConfig config = TwailaConfig.Get();
-            element.ApplyConfigSettings(config);
+            Image.ApplyHoverSettings(config);
+            InfoBox.ApplyToAll(element => element.ApplyHoverSettings(config));
+            Name.ApplyHoverSettings(config);
+            Mod.ApplyHoverSettings(config);
         }
 
         public void SetInitialSizes()
         {
-            Name.Width.Set(Name.GetContentSize().X, 0);
-            Name.Height.Set(Name.GetContentSize().Y, 0);
+            var contentSize = Name.GetContentSize();
+            Name.Width.Set(contentSize.X, 0);
+            Name.Height.Set(contentSize.Y, 0);
+
             InfoBox.ApplyToAll((element) =>
             {
-                element.Width.Set(element.GetContentSize().X, 0);
-                element.Height.Set(element.GetContentSize().Y, 0);
+                var elementSize = element.GetContentSize();
+                element.Width.Set(elementSize.X, 0);
+                element.Height.Set(elementSize.Y, 0);
             });
-            Mod.Width.Set(Mod.GetContentSize().X, 0);
-            Mod.Height.Set(Mod.GetContentSize().Y, 0);
-
             InfoBox.UpdateDimensions();
-            Image.Width.Set(Image.Render.Width, 0);
-            Image.Height.Set(Image.Render.Height, 0);
+
+            contentSize = Mod.GetContentSize();
+            Mod.Width.Set(contentSize.X, 0);
+            Mod.Height.Set(contentSize.Y, 0);
+
+            contentSize = Image.GetContentSize();
+            Image.Width.Set(contentSize.X, 0);
+            Image.Height.Set(contentSize.Y, 0);
             Image.MarginRight = 10;
         }
 
         public Vector2 TextColumnSize()
         {
-            Vector2 nameDim = GetDimension(Name);
-            Vector2 infoDim = GetDimension(InfoBox);
-            Vector2 modDim = GetDimension(Mod);
+            Vector2 nameDim = Name.GetSizeIfAppended();
+            Vector2 infoDim = InfoBox.GetSizeIfAppended();
+            Vector2 modDim = Mod.GetSizeIfAppended();
 
             float width = Math.Max(nameDim.X, Math.Max(infoDim.X, modDim.X));
             return new Vector2(width, nameDim.Y + infoDim.Y + modDim.Y);
@@ -80,17 +88,11 @@ namespace Twaila.UI
         {
             Name.Top.Set(0, 0);
             InfoBox.UpdateVertically();
-            InfoBox.Top.Set(GetDimension(Name).Y, 0);
-            Mod.Top.Set(InfoBox.Height.Pixels + GetDimension(Name).Y, 0);
-        }
 
-        private Vector2 GetDimension(UIElement element)
-        {
-            if (element.Parent != null && element.Parent.HasChild(element))
-            {
-                return new Vector2(element.Width.Pixels, element.Height.Pixels);
-            }
-            return Vector2.Zero;
+            var infoHeight = InfoBox.GetSizeIfAppended().Y;
+            var nameHeight = Name.GetSizeIfAppended().Y;
+            InfoBox.Top.Set(nameHeight, 0);
+            Mod.Top.Set(infoHeight + nameHeight, 0);
         }
     }
 }

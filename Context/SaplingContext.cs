@@ -18,19 +18,19 @@ namespace Twaila.Context
             DirtId = GetSaplingTile();
         }
 
-		public static SaplingContext CreateSaplingContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static SaplingContext CreateSaplingContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new SaplingContext(pos);
-			}
+            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new SaplingContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(SaplingContext))
             {
@@ -54,7 +54,7 @@ namespace Twaila.Context
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
+            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
             Texture2D texture = ImageUtil.GetItemTexture(itemId);
             return texture.ToRender();
         }
@@ -65,7 +65,7 @@ namespace Twaila.Context
             string internalName = NameUtil.GetInternalTileName(TileId, false);
             string fullName = NameUtil.GetInternalTileName(TileId, true);
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }
@@ -82,7 +82,7 @@ namespace Twaila.Context
 
         private int GetSaplingTile()
         {
-			Point bestPos = Pos.BestPos();
+            Point bestPos = Pos.BestPos();
             int y = bestPos.Y;
             do
             {

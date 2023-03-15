@@ -8,9 +8,9 @@ namespace Twaila.UI
 {
     public enum DrawMode
     {
-        [Label("$Mods.Twaila.enum.Shrink")] Shrink,
-        [Label("$Mods.Twaila.enum.Trim")] Trim,
-        [Label("$Mods.Twaila.enum.Overflow")] Overflow
+        [Label("$Mods.Twaila.Enums.Shrink")] Shrink,
+        [Label("$Mods.Twaila.Enums.Trim")] Trim,
+        [Label("$Mods.Twaila.Enums.Overflow")] Overflow
     }
 
     public abstract class UITwailaElement : UIElement
@@ -51,6 +51,7 @@ namespace Twaila.UI
             Opacity = config.HoverOpacity;
         }
 
+        // Gets the uniform scale it would take to shrink the content to maxSize
         public float GetScale(Vector2 maxSize)
         {
             float scaleX = 1;
@@ -65,6 +66,9 @@ namespace Twaila.UI
             }
             return Math.Min(scaleX, scaleY);
         }
+
+        // Gets the uniform scale it would take to shrink the content to this element's dimensions
+        public float GetDrawScale() => GetScale(new Vector2(Width.Pixels, Height.Pixels));
 
         public abstract Vector2 GetContentSize();
 

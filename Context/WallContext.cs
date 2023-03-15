@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
@@ -15,30 +16,30 @@ namespace Twaila.Context
 
         protected string Id { get; set; }
         protected string PaintText { get; set; }
-		protected string IlluminantText { get; set; }
-		protected string EchoText { get; set; }
+        protected string IlluminantText { get; set; }
+        protected string EchoText { get; set; }
 
-		public WallContext(TwailaPoint pos) : base(pos)
+        public WallContext(TwailaPoint pos) : base(pos)
         {
             Id = "";
             PaintText = "";
-			IlluminantText = "";
-			EchoText = "";
-		}
+            IlluminantText = "";
+            EchoText = "";
+        }
 
-		public static WallContext CreateWallContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static WallContext CreateWallContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (Framing.GetTileSafely(pos.BestPos()).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new WallContext(pos);
-			}
+            if (Framing.GetTileSafely(pos.BestPos()).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new WallContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(WallContext))
             {
@@ -52,13 +53,13 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
             WallId = tile.WallType;
 
             if (content.ShowId)
             {
-                Id = $"Wall Id: {WallId}";
+                Id = Language.GetText("Mods.Twaila.WallId").WithFormatArgs(WallId).Value;
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out int paintIcon))
@@ -76,31 +77,31 @@ namespace Twaila.Context
                 }
             }
 
-			if (InfoUtil.GetCoatingInfo(tile, TileType.Wall, out string illuminantText, out string echoText,
-				out int illuminantIcon, out int echoIcon))
-			{
-				if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
-				{
-					if (illuminantIcon > 0)
-					{
-						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
-					}
-					if (echoIcon > 0)
-					{
-						Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
-					}
-				}
-				if (content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
-				{
-					IlluminantText = illuminantText;
-					EchoText = echoText;
-				}
-			}
-		}
+            if (InfoUtil.GetCoatingInfo(tile, TileType.Wall, out string illuminantText, out string echoText,
+                out int illuminantIcon, out int echoIcon))
+            {
+                if (content.ShowCoating == TwailaConfig.DisplayType.Icon || content.ShowCoating == TwailaConfig.DisplayType.Both)
+                {
+                    if (illuminantIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+                    }
+                    if (echoIcon > 0)
+                    {
+                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+                    }
+                }
+                if (content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
+                {
+                    IlluminantText = illuminantText;
+                    EchoText = echoText;
+                }
+            }
+        }
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            if (TwailaConfig.Get().UseItemTextures)
+            if (TwailaConfig.Instance.UseItemTextures)
             {
                 TwailaRender itemTexture = ItemImage(spriteBatch);
                 if (itemTexture != null && itemTexture.CanDraw())
@@ -120,7 +121,7 @@ namespace Twaila.Context
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            int itemId = ItemUtil.GetItemId(tile, TileType.Wall);
+            int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Wall);
             return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 
@@ -136,19 +137,19 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(PaintText))
             {
-                elements.Insert(0, new TwailaText(PaintText));
+                elements.Insert(0, new UITwailaText(PaintText));
             }
-			if (!string.IsNullOrEmpty(IlluminantText))
-			{
-				elements.Insert(0, new TwailaText(IlluminantText));
-			}
-			if (!string.IsNullOrEmpty(EchoText))
-			{
-				elements.Insert(0, new TwailaText(EchoText));
-			}
-			if (!string.IsNullOrEmpty(Id))
+            if (!string.IsNullOrEmpty(IlluminantText))
             {
-                elements.Insert(0, new TwailaText(Id));
+                elements.Insert(0, new UITwailaText(IlluminantText));
+            }
+            if (!string.IsNullOrEmpty(EchoText))
+            {
+                elements.Insert(0, new UITwailaText(EchoText));
+            }
+            if (!string.IsNullOrEmpty(Id))
+            {
+                elements.Insert(0, new UITwailaText(Id));
             }
             
 
@@ -159,13 +160,13 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
 
-            string displayName = NameUtil.GetNameFromItem(ItemUtil.GetItemId(tile, TileType.Wall));
+            string displayName = NameUtil.GetNameFromItem(ItemTilePairSystem.GetItemId(tile, TileType.Wall));
             string internalName = NameUtil.GetInternalWallName(WallId, false);
             string fullName = NameUtil.GetInternalWallName(WallId, true);
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Name";
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? Language.GetTextValue("Mods.Twaila.Defaults.Name");
         }
 
         protected override string GetMod()

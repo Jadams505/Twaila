@@ -22,22 +22,22 @@ namespace Twaila.Context
             ItemText = "";
         }
 
-		public static FoodPlatterContext CreateFoodPlatterContext(TwailaPoint pos)
-		{
-			Point tilePos = pos.BestPos();
-			Tile tile = Framing.GetTileSafely(tilePos);
-			if (TEFoodPlatter.Find(tilePos.X, tilePos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-			{
-				return new FoodPlatterContext(pos);
-			}
+        public static FoodPlatterContext CreateFoodPlatterContext(TwailaPoint pos)
+        {
+            Point tilePos = pos.BestPos();
+            Tile tile = Framing.GetTileSafely(tilePos);
+            if (TEFoodPlatter.Find(tilePos.X, tilePos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
+            {
+                return new FoodPlatterContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override void Update()
+        public override void Update()
         {
             base.Update();
-            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
             FoodItemId = GetFoodItemId();
 
@@ -79,7 +79,7 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(ItemText))
             {
-                elements.Insert(0, new TwailaText(ItemText));
+                elements.Insert(0, new UITwailaText(ItemText));
             }
             return elements;
         }

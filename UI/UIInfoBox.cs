@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.GameContent;
 using Terraria.UI;
 
 namespace Twaila.UI
@@ -102,19 +98,14 @@ namespace Twaila.UI
             Height.Set(height, 0);
         }
 
-        private UITwailaElement Get(int index)
-        {
-            return InfoLines[index];
-        }
-
         public void UpdateVertically()
         {
             float height = 0;
             for (int i = 0; i < InfoLines.Count; ++i)
             {
-                UITwailaElement curr = Get(i);
                 if (Enabled[i])
                 {
+                    UITwailaElement curr = InfoLines[i];
                     curr.Top.Set(height, 0);
                     height += curr.Height.Pixels;
                 }

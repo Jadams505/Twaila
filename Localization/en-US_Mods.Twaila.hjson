@@ -1,0 +1,180 @@
+
+Enums: {
+	Left: Left
+	Center: Center
+	Right: Right
+	Bottom: Bottom
+	Top: Top
+	Name: Name
+	Icon: Icon
+	Both: Both
+	On: On
+	Off: Off
+	DisplayName: Display Name
+	InternalName: Internal Name
+	FullName: Full Name
+	Shrink: Shrink
+	Trim: Trim
+	Overflow: Overflow
+	Automatic: Automatic
+	Manual: Manual
+}
+
+Content: {
+	ShowImage: Show Image
+	ShowName: Show Name
+	ShowMod: Show Mod
+	ShowId: Show Id
+	ShowPickaxePower: Show Pickaxe Power
+	ShowPickaxe: Show Pickaxe
+	ShowWire: Show Wire
+	ShowActuator: Show Actuator
+	ShowPaint: Show Paint
+	ShowCoating: Show Coating
+	ShowContainedItems: Show Contained Items
+}
+
+ModConfig: ModConfig
+Features: Features
+
+AntiCheatSettings: {
+	Label: Anti Cheat Settings
+	Tooltip: Various settings to prevent cheating
+}
+
+HideUnrevealedTiles: {
+	Label: Hide Unrevealed Tiles
+	Tooltip: Hides tiles that are not revealed on the player's map
+}
+
+HideWires: {
+	Label: Hide Wires
+	Tooltip: Hides wires that the player cannot see
+}
+
+HideEchoTiles: {
+	Label: Hide Echo Tiles
+	Tooltip: Hides echo tiles that the player cannot see
+}
+
+HideSuspiciousTiles: {
+	Label: Hide Suspicious Tiles
+	Tooltip: Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)
+}
+
+DisplayContent: Content Toggles
+UIPosition: UI Position
+
+UseDefaultPosition: {
+	Label: Use Default Position
+	Tooltip: Dragging the panel automatically disables this
+}
+
+LockPosition: {
+	Label: Lock Position
+	Tooltip: When this is OFF you can use the mouse to move the panel
+}
+
+UIPanel: UI Panel
+
+MaxWidth: {
+	Label: Max Width (%)
+	Tooltip: Maximum % of the screen's width the panel can be
+}
+
+MaxHeight: {
+	Label: Max Height (%)
+	Tooltip: Maximum % of the screen's height the panel can be
+}
+
+CycleDelay: {
+	Label: Cycle Delay
+	Tooltip: The amount of time in ticks before the panel will cycle to the next type
+}
+
+UIDisplaySettings: UI Display
+PanelColor: Panel Color
+UIText: UI Text
+
+OverrideColor: {
+	Label: Override Color
+	Tooltip: Turn this on to override any pre-existing text color
+}
+
+TextColor: Text Color
+UIImage: UI Image
+
+UseItemTextures: {
+	Label: Use Item Textures
+	Tooltip: ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world
+}
+
+ReservedImageWidth: {
+	Label: Reserved Image Width (%)
+	Tooltip: The % of the panel's width that is allocated for the image when the text is too long
+}
+
+AutomaticOptions: Automatic Options
+
+HideUIForAir: {
+	Label: Hide UI For Air
+	Tooltip: ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile
+}
+
+AnchorX: Anchor X
+AnchorY: Anchor Y
+AnchorPosX: Anchor Pos X
+AnchorPosY: Anchor Pos Y
+PanelPadding: Panel Padding
+ContentSetting: Content Setting
+HoverOpacity: Hover Opacity
+ContextMode: Context Mode
+ShowBackground: Show Background
+ShowInFullscreenMap: Show In Fullscreen Map
+UIDisplay: UI Display
+Color: Color
+TextShadow: Text Shadow
+
+Keybinds: {
+	CycleUIDisplayMode.DisplayName: Cycle UI Display Mode
+	NextContext.DisplayName: Next Context
+	PreviousContext.DisplayName: Previous Context
+	CycleContextMode.DisplayName: Cycle Context Mode
+}
+
+Contexts: {
+	Tile: Tile
+	Wall: Wall
+	Liquid: Liquid
+	Wire: Wire
+}
+
+WallId: Wall Id: {0}
+TileId: Tile Id: {0}
+LiquidId: Liquid Id: {0}
+WaterStyle: Water Style: {0}
+CurrentContext: Current Context: {0}
+ContextModeMessage: "{$ContextMode}: {0}"
+DisplayModeMessage: "{$UIDisplay}: {0}"
+PercentPickPower: % Pick Power
+GreenCheck: "[c/00FF00:✓]"
+RedX: "[c/FF0000:✗]"
+GoodPickPower: "{$GreenCheck} {0}{$PercentPickPower}"
+BadPickPower: "{$RedX} {0}{$PercentPickPower}"
+
+WireColor: {
+	Red: Red
+	Blue: Blue
+	Green: Green
+	Yellow: Yellow
+}
+
+WireText: "{$ItemName.Wire}: {0}"
+
+Defaults: {
+	Name: Default Name
+	Text: Default Text
+	Liquid: Default Liquid
+}
+
+RecommendedPick: "{0} {1}%"

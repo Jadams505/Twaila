@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent.Drawing;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ObjectData;
-using Twaila.Context;
 using Twaila.ObjectData;
 
 namespace Twaila.Util
@@ -56,10 +54,10 @@ namespace Twaila.Util
 
         public static bool IsTileBlockedByAntiCheat(Tile tile, Point pos)
         {
-            if (TwailaConfig.Get().AntiCheat.HideUnrevealedTiles)
+            if (TwailaConfig.Instance.AntiCheat.HideUnrevealedTiles)
             {
                 Player player = Main.player[Main.myPlayer];
-                if(TwailaConfig.Get().AntiCheat.HideEchoTiles && (tile.TileType == TileID.EchoBlock || (tile.TileType == TileID.Platforms && tile.TileFrameY == 864)))
+                if(TwailaConfig.Instance.AntiCheat.HideEchoTiles && (tile.TileType == TileID.EchoBlock || (tile.TileType == TileID.Platforms && tile.TileFrameY == 864)))
                 {
                     return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
                 }
@@ -68,23 +66,23 @@ namespace Twaila.Util
             return false;
         }
 
-		public static bool IsWallBlockedByAntiCheat(Tile tile, Point pos)
-		{
-			if (TwailaConfig.Get().AntiCheat.HideUnrevealedTiles)
-			{
-				Player player = Main.LocalPlayer;
-				if (TwailaConfig.Get().AntiCheat.HideEchoTiles && tile.WallType == WallID.EchoWall)
-				{
-					return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
-				}
-				return !IsTileRevealedToPlayer(player, tile, pos);
-			}
-			return false;
-		}
+        public static bool IsWallBlockedByAntiCheat(Tile tile, Point pos)
+        {
+            if (TwailaConfig.Instance.AntiCheat.HideUnrevealedTiles)
+            {
+                Player player = Main.LocalPlayer;
+                if (TwailaConfig.Instance.AntiCheat.HideEchoTiles && tile.WallType == WallID.EchoWall)
+                {
+                    return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
+                }
+                return !IsTileRevealedToPlayer(player, tile, pos);
+            }
+            return false;
+        }
 
         public static bool IsBlockedByAntiCheat(Tile tile, Point pos)
         {
-            if (TwailaConfig.Get().AntiCheat.HideUnrevealedTiles)
+            if (TwailaConfig.Instance.AntiCheat.HideUnrevealedTiles)
             {
                 Player player = Main.player[Main.myPlayer];
                 return !IsTileRevealedToPlayer(player, tile, pos);

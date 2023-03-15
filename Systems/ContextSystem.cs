@@ -1,12 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent.Tile_Entities;
-using Terraria.GameContent.UI;
-using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Context;
-using Twaila.Util;
 
 namespace Twaila.Systems
 {
@@ -26,7 +23,7 @@ namespace Twaila.Systems
         {
             ContextEntries = new List<ContextEntry>();
 
-            TileEntry = new ContextEntry(TileContext.CreateTileContext, "Tile");
+            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"));
             TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
             TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
@@ -38,13 +35,14 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(WallContext.CreateWallContext, "Wall");
+            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"));
+
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, "Liquid");
+            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"));
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(WireContext.CreateWireContext, "Wire");
+            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"));
             ContextEntries.Add(WireEntry);
 
             NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, "Npc");
@@ -111,52 +109,52 @@ namespace Twaila.Systems
         public int ContextEntryCountAt(TwailaPoint pos)
         {
             int count = 0;
-			foreach(var entry in ContextEntries)
-			{
-				if (entry.Context(pos) != null)
-				{
-					count++;
-				}
-			}
+            foreach(var entry in ContextEntries)
+            {
+                if (entry.Context(pos) != null)
+                {
+                    count++;
+                }
+            }
             return count;
         }
-	}
+    }
 
-	public struct TwailaPoint
-	{
-		public Point MousePos;
+    public struct TwailaPoint
+    {
+        public Point MousePos;
 
-		public Point TilePos;
+        public Point TilePos;
 
-		public Point SmartCursorPos;
+        public Point SmartCursorPos;
 
-		public Point MapPos;
+        public Point MapPos;
 
-		public TwailaPoint(Point mouse, Point tile, Point smart, Point map)
-		{
-			MousePos = mouse;
-			TilePos = tile;
-			SmartCursorPos = smart;
-			MapPos = map;
-		}
+        public TwailaPoint(Point mouse, Point tile, Point smart, Point map)
+        {
+            MousePos = mouse;
+            TilePos = tile;
+            SmartCursorPos = smart;
+            MapPos = map;
+        }
 
-		public Point BestPos()
-		{
-			if (Main.SmartCursorShowing)
-			{
-				return SmartCursorPos;
-			}
-			
-			if (Main.mapFullscreen)
-			{
-				return MapPos;
-			}
-			
-			return TilePos;
-		}
-	}
+        public Point BestPos()
+        {
+            if (Main.SmartCursorShowing)
+            {
+                return SmartCursorPos;
+            }
+            
+            if (Main.mapFullscreen)
+            {
+                return MapPos;
+            }
+            
+            return TilePos;
+        }
+    }
 
-	public delegate BaseContext ContextFetcher(TwailaPoint pos);
+    public delegate BaseContext ContextFetcher(TwailaPoint pos);
 
     public class ContextEntry
     {
@@ -165,9 +163,9 @@ namespace Twaila.Systems
 
         public ContextFetcher DefaultContext { get; set; }
 
-        public string Name { get; set; }
+        public LocalizedText Name { get; set; }
 
-        public ContextEntry(ContextFetcher defaultContext, string name)
+        public ContextEntry(ContextFetcher defaultContext, LocalizedText name)
         {
             DefaultContext = defaultContext;
             ApplicableContexts = new List<ContextFetcher>();
@@ -177,15 +175,15 @@ namespace Twaila.Systems
         public BaseContext Context(TwailaPoint pos)
         {
             BaseContext foundContext = null;
-			foreach(var entry in ApplicableContexts)
-			{
-				BaseContext context = entry.Invoke(pos);
-				if (context != null)
-				{
-					foundContext = context;
-					break;
-				}
-			}
+            foreach(var entry in ApplicableContexts)
+            {
+                BaseContext context = entry.Invoke(pos);
+                if (context != null)
+                {
+                    foundContext = context;
+                    break;
+                }
+            }
             return foundContext ?? DefaultContext.Invoke(pos);
         }
     }

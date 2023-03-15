@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
@@ -22,19 +23,19 @@ namespace Twaila.Context
             Id = "";
         }
 
-		public static LiquidContext CreateLiquidContext(TwailaPoint pos)
-		{
-			Tile tile = Framing.GetTileSafely(pos.BestPos());
+        public static LiquidContext CreateLiquidContext(TwailaPoint pos)
+        {
+            Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-			if (tile.LiquidAmount > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos.BestPos()))
-			{
-				return new LiquidContext(pos);
-			}
+            if (tile.LiquidAmount > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos.BestPos()))
+            {
+                return new LiquidContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if(other?.GetType() == typeof(LiquidContext))
             {
@@ -48,7 +49,7 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
             LiquidId = tile.LiquidType;
             WaterStyle = Main.waterStyle;
@@ -57,11 +58,11 @@ namespace Twaila.Context
             {
                 if (LiquidId == LiquidID.Water)
                 {
-                    Id = $"Water Style: {WaterStyle}";
+                    Id = Language.GetText("Mods.Twaila.WaterStyle").WithFormatArgs(WaterStyle).Value;
                 }
                 else
                 {
-                    Id = $"Liquid Id: {LiquidId}";
+                    Id = Language.GetText("Mods.Twaila.LiquidId").WithFormatArgs(LiquidId).Value;
                 }
             }
         }
@@ -73,14 +74,14 @@ namespace Twaila.Context
             string internalName = NameUtil.GetInternalLiquidName(WaterStyle, false);
             string fullName = NameUtil.GetInternalLiquidName(WaterStyle, true);
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? "Default Liquid";
+            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? Language.GetTextValue("Mods.Twaila.Defaults.Liquid");
         }
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            if (TwailaConfig.Get().UseItemTextures)
+            if (TwailaConfig.Instance.UseItemTextures)
             {
                 TwailaRender itemTexture = ItemImage(spriteBatch);
                 if (itemTexture != null && itemTexture.CanDraw())
@@ -100,7 +101,7 @@ namespace Twaila.Context
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            int itemId = ItemUtil.GetItemId(tile, TileType.Liquid);
+            int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Liquid);
             return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 
@@ -116,7 +117,7 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(Id))
             {
-                elements.Insert(0, new TwailaText(Id));
+                elements.Insert(0, new UITwailaText(Id));
             }
 
             return elements;
@@ -124,8 +125,8 @@ namespace Twaila.Context
 
         protected override string GetMod()
         {
-			ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
-			if (mWater != null)
+            ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
+            if (mWater != null)
             {
                 return mWater.Mod.DisplayName;
             }

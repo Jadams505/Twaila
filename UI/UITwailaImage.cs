@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
+using System;
 using Terraria.GameContent;
 using Terraria.ID;
-using Twaila.Context;
 using Twaila.Graphics;
 using Twaila.Util;
 
@@ -46,56 +45,35 @@ namespace Twaila.UI
         protected override void DrawShrunk(SpriteBatch spriteBatch)
         {
             Rectangle drawDim = DrawDimensions();
-            float scale = CalculatedScale();
+            float scale = GetDrawScale();
             Render.Draw(spriteBatch, drawDim, Color.White * Opacity, scale);
         }
 
         public Rectangle DrawDimensions()
         {
-            Rectangle rec = new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, (int)Render.Width, (int)Render.Height);
+            Rectangle dimensions = GetInnerDimensions().ToRectangle();
+            Rectangle rec = new Rectangle(dimensions.X, dimensions.Y, (int)Render.Width, (int)Render.Height);
+            float drawHeight = 0;
             switch (DrawMode)
             {
                 case DrawMode.Trim:
-                    if (Render.Height < GetInnerDimensions().Height)
-                    {
-                        rec.Y += (int)(GetInnerDimensions().Height - Render.Height) / 2;
-                    }
-                    rec.Width = (int)MathHelper.Min(GetInnerDimensions().Width, Render.Width);
-                    rec.Height = (int)MathHelper.Min(GetInnerDimensions().Height, Render.Height);
-                    return rec;
+                    rec.Width = (int)MathHelper.Min(dimensions.Width, Render.Width);
+                    rec.Height = (int)MathHelper.Min(dimensions.Height, Render.Height);
+                    drawHeight = rec.Height;
+                    break;
                 case DrawMode.Shrink:
-                    if (Render.Height * CalculatedScale() < GetInnerDimensions().Height)
-                    {
-                        rec.Y += (int)(GetInnerDimensions().Height - Render.Height * CalculatedScale()) / 2;
-                    }
                     rec.Width = (int)Render.Width;
                     rec.Height = (int)Render.Height;
-                    return rec;
+                    drawHeight = Render.Height * GetDrawScale();
+                    break;
                 case DrawMode.Overflow:
-                    if (Render.Height < GetInnerDimensions().Height)
-                    {
-                        rec.Y += (int)(GetInnerDimensions().Height - Render.Height) / 2;
-                    }
                     rec.Width = (int)Render.Width;
                     rec.Height = (int)Render.Height;
-                    return rec;
+                    drawHeight = rec.Height;
+                    break;
             }
+            rec.Y += Math.Max(0, (int)(dimensions.Height - drawHeight) / 2); // center the image vertically
             return rec;
-        }
-
-        public float CalculatedScale()
-        {
-            float scaleX = 1;
-            if(Render.Width > GetInnerDimensions().Width)
-            {
-                scaleX = GetInnerDimensions().Width / Render.Width;
-            }
-            float scaleY = 1;
-            if(Render.Height > GetInnerDimensions().Height)
-            {
-                scaleY = GetInnerDimensions().Height / Render.Height;
-            }
-            return System.Math.Min(scaleX, scaleY);
         }
 
         public void SetImage(TwailaRender render)

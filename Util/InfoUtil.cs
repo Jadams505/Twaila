@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
-using Twaila.Context;
+using Twaila.Systems;
 
 namespace Twaila.Util
 {
@@ -17,17 +16,14 @@ namespace Twaila.Util
             if(power > 0)
             {
                 bool canMine = Main.player[Main.myPlayer].HeldItem.pick >= power;
-                string greenCheck = "[c/00FF00:\u2713]";
-                string redX = "[c/FF0000:\u2717]";
-                text = power + "% Pick Power";
                 if (canMine)
                 {
-                    text = text.Insert(0, greenCheck + " ");
+                    text = Language.GetText("Mods.Twaila.GoodPickPower").WithFormatArgs(power).Value;
                 }
                 else
                 {
-                    pickId = ItemUtil.GetPickId(power, lastIndex, out lastIndex);
-                    text = text.Insert(0, redX + " ");
+                    pickId = ItemTilePairSystem.GetPickId(power, lastIndex, out lastIndex);
+                    text = Language.GetText("Mods.Twaila.BadPickPower").WithFormatArgs(power).Value;
                 }
                 return true;
             }
@@ -181,77 +177,78 @@ namespace Twaila.Util
             return -1;
         }
 
-		public static bool GetCoatingInfo(Tile tile, TileType type, out string illuminantText, out string echoText,
-			out int illuminantIcon, out int echoIcon)
-		{
-			illuminantText = "";
-			echoText = "";
-			illuminantIcon = 0;
-			echoIcon = 0;
-			if(GetCoatingState(tile, type, out bool ill, out bool echo))
-			{
-				if (ill)
-				{
-					illuminantIcon = ItemID.GlowPaint;
-					illuminantText = NameUtil.GetNameFromItem(illuminantIcon);
-				}
-				if (echo)
-				{
-					echoIcon = ItemID.EchoCoating;
-					echoText = NameUtil.GetNameFromItem(echoIcon);
-				}
-				return true;
-			}
-			return false;
-		}
-
-		public static bool GetCoatingState(Tile tile, TileType type, out bool illuminant, out bool echo)
-		{
-			illuminant = false;
-			echo = false;
-			if (type == TileType.Tile)
-			{
-				illuminant = tile.IsTileFullbright;
-				echo = tile.IsTileInvisible;
-			}
-			else if (type == TileType.Wall)
-			{
-				illuminant = tile.IsWallFullbright;
-				echo = tile.IsWallInvisible;
-			}
-			return illuminant || echo;
-		}
-
-		public static bool GetWireInfo(Tile tile, out string text, out int[] icons)
+        public static bool GetCoatingInfo(Tile tile, TileType type, out string illuminantText, out string echoText,
+            out int illuminantIcon, out int echoIcon)
         {
-            string[] colors = new string[4];
+            illuminantText = "";
+            echoText = "";
+            illuminantIcon = 0;
+            echoIcon = 0;
+            if(GetCoatingState(tile, type, out bool ill, out bool echo))
+            {
+                if (ill)
+                {
+                    illuminantIcon = ItemID.GlowPaint;
+                    illuminantText = NameUtil.GetNameFromItem(illuminantIcon);
+                }
+                if (echo)
+                {
+                    echoIcon = ItemID.EchoCoating;
+                    echoText = NameUtil.GetNameFromItem(echoIcon);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public static bool GetCoatingState(Tile tile, TileType type, out bool illuminant, out bool echo)
+        {
+            illuminant = false;
+            echo = false;
+            if (type == TileType.Tile)
+            {
+                illuminant = tile.IsTileFullbright;
+                echo = tile.IsTileInvisible;
+            }
+            else if (type == TileType.Wall)
+            {
+                illuminant = tile.IsWallFullbright;
+                echo = tile.IsWallInvisible;
+            }
+            return illuminant || echo;
+        }
+
+        public static bool GetWireInfo(Tile tile, out string text, out int[] icons)
+        {
+            //string[] colors = new string[4];
+            string colorStr = "";
             icons = new int[4];
             bool hasWire = false;
             if (tile.RedWire)
             {
-                colors[0] = "Red";
+                colorStr += Language.GetTextValue("Mods.Twaila.WireColor.Red") + " ";
                 icons[0] = ItemID.Wrench;
                 hasWire = true;
             }
             if (tile.BlueWire)
             {
-                colors[1] = "Blue";
+                colorStr += Language.GetTextValue("Mods.Twaila.WireColor.Blue") + " ";
                 icons[1] = ItemID.BlueWrench;
                 hasWire = true;
             }
             if (tile.GreenWire)
             {
-                colors[2] = "Green";
+                colorStr += Language.GetTextValue("Mods.Twaila.WireColor.Green") + " ";
                 icons[2] = ItemID.GreenWrench;
                 hasWire = true;
             }
             if (tile.YellowWire)
             {
-                colors[3] = "Yellow";
+                colorStr += Language.GetTextValue("Mods.Twaila.WireColor.Yellow");
                 icons[3] = ItemID.YellowWrench;
                 hasWire = true;
             }
-            text = "Wire: " + string.Join(" ", Array.FindAll(colors, (match) => !string.IsNullOrEmpty(match)));
+            text = Language.GetText("Mods.Twaila.WireText").WithFormatArgs(colorStr).Value;
             return hasWire;
         }
 

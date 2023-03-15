@@ -1,13 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.GameInput;
-using Terraria.ID;
-using Terraria.Map;
+using Terraria.Localization;
 using Terraria.UI;
-using Twaila.Context;
 using Twaila.Systems;
-using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -31,7 +27,7 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
-            switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
+            switch (TwailaConfig.Instance.UIDisplaySettings.UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
                     Enabled = true;
@@ -40,11 +36,11 @@ namespace Twaila.UI
                     Enabled = false;
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
-                    if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
+                    if (TwailaConfig.Instance.UIDisplaySettings.HideUIForAir)
                     {
                         if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 ||
-                            (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
-                            && !_panel.ContainsPoint(Main.mouseX, Main.mouseY) && !Main.SmartCursorShowing && !_panel.IsDragging())
+                            (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
+                            && !_panel.ContainsPoint(Main.MouseScreen) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
                             break;
@@ -58,25 +54,25 @@ namespace Twaila.UI
 
         public static TwailaPoint GetCursorInfo()
         {
-			Point mouse = new Point(Main.mouseX, Main.mouseY);
-			Point tile = new Point(Player.tileTargetX, Player.tileTargetY);
-			Point smart = new Point(Main.SmartCursorX, Main.SmartCursorY);
+            Point mouse = new Point(Main.mouseX, Main.mouseY);
+            Point tile = new Point(Player.tileTargetX, Player.tileTargetY);
+            Point smart = new Point(Main.SmartCursorX, Main.SmartCursorY);
 
-			float mapSpaceX = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.X) + (Main.screenWidth / 2.0f);
-			float mapSpaceY = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.Y) + (Main.screenHeight / 2.0f);
-			float x = (Main.mouseX - mapSpaceX) / Main.mapFullscreenScale + 10;
-			float y = (Main.mouseY - mapSpaceY) / Main.mapFullscreenScale + 10;
-			Point map = new Point((int)x, (int)y);
+            float mapSpaceX = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.X) + (Main.screenWidth / 2.0f);
+            float mapSpaceY = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.Y) + (Main.screenHeight / 2.0f);
+            float x = (Main.mouseX - mapSpaceX) / Main.mapFullscreenScale + 10;
+            float y = (Main.mouseY - mapSpaceY) / Main.mapFullscreenScale + 10;
+            Point map = new Point((int)x, (int)y);
 
-			return new TwailaPoint(mouse, tile, smart, map);
+            return new TwailaPoint(mouse, tile, smart, map);
         }
 
         public static bool InBounds(int targetX, int targetY)
         {
-			if (Main.mapFullscreen)
-			{
-				return targetX >= 0 && targetX < Main.maxTilesX && targetY >= 0 && targetY < Main.maxTilesY;
-			}
+            if (Main.mapFullscreen)
+            {
+                return targetX >= 0 && targetX < Main.maxTilesX && targetY >= 0 && targetY < Main.maxTilesY;
+            }
             if (targetX < (Main.screenPosition.X - 16) / 16) // left
             {
                 return false;
@@ -99,32 +95,30 @@ namespace Twaila.UI
         public static void NextContext()
         {
             _panel.currIndex = ContextSystem.Instance.NextContextIndex(_panel.currIndex);
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
             _panel.tick = 0;
         }
 
         public static void PrevContext()
         {
             _panel.currIndex = ContextSystem.Instance.PrevContextIndex(_panel.currIndex);
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
             _panel.tick = 0;
         }
 
         public static void NextNonNullContext()
         {
             ContextSystem.Instance.NextNonNullContext(ref _panel.currIndex, GetCursorInfo());
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
             _panel.tick = 0;
         }
 
         public static void PrevNonNullContext()
         {
             ContextSystem.Instance.PrevNonNullContext(ref _panel.currIndex, GetCursorInfo());
-            Main.NewText("Current Context: " + ContextSystem.Instance.ContextEntries[_panel.currIndex].Name);
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
             _panel.tick = 0;
         }
-
-        
 
         public static void Load()
         {

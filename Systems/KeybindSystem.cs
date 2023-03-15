@@ -1,12 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.UI;
+using Twaila.Util;
 
 namespace Twaila.Systems
 {
@@ -38,35 +35,35 @@ namespace Twaila.Systems
         {
             if (ToggleUI.JustPressed)
             {
-                switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
+                switch (TwailaConfig.Instance.UIDisplaySettings.UIDisplay)
                 {
                     case TwailaConfig.DisplayMode.On:
-                        TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.Off;
+                        TwailaConfig.Instance.UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.Off;
                         break;
                     case TwailaConfig.DisplayMode.Off:
-                        TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.Automatic;
+                        TwailaConfig.Instance.UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.Automatic;
                         break;
                     case TwailaConfig.DisplayMode.Automatic:
-                        TwailaConfig.Get().UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.On;
+                        TwailaConfig.Instance.UIDisplaySettings.UIDisplay = TwailaConfig.DisplayMode.On;
                         break;
                 }
-                Main.NewText("Display Mode: " + TwailaConfig.Get().UIDisplaySettings.UIDisplay);
+                Main.NewText(Language.GetText("Mods.Twaila.DisplayModeMessage").WithFormatArgs(TwailaConfig.Instance.UIDisplaySettings.UIDisplay.ToLocalizedString()));
             }
 
             if (CycleContextMode.JustPressed)
             {
-                if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual)
+                if (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual)
                 {
-                    TwailaConfig.Get().ContextMode = TwailaConfig.ContextUpdateMode.Automatic;
+                    TwailaConfig.Instance.ContextMode = TwailaConfig.ContextUpdateMode.Automatic;
                 }
-                else if(TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+                else if(TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
                 {
-                    TwailaConfig.Get().ContextMode = TwailaConfig.ContextUpdateMode.Manual;
+                    TwailaConfig.Instance.ContextMode = TwailaConfig.ContextUpdateMode.Manual;
                 }
-                Main.NewText($"Context Mode: {TwailaConfig.Get().ContextMode}");
+                Main.NewText(Language.GetText("Mods.Twaila.ContextModeMessage").WithFormatArgs(TwailaConfig.Instance.ContextMode.ToLocalizedString()));
             }
 
-            if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual)
+            if (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual)
             {
                 if (NextContext.JustPressed)
                 {
@@ -78,7 +75,7 @@ namespace Twaila.Systems
                     TwailaUI.PrevContext();
                 }
             }
-            else if(TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+            else if(TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
             {
                 if (NextContext.JustPressed)
                 {

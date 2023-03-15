@@ -61,11 +61,11 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            string displayName = NameUtil.GetNameForCactus(TileId, SandTileId);
+            string displayName = NameUtil.GetNameForCactus(SandTileId);
             string internalName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().Name;
             string fullName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().FullName;
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }

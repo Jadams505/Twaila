@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System;
+using System.Reflection;
 using System.ComponentModel;
 using System.IO;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
@@ -13,11 +13,13 @@ namespace Twaila
     [Label("$Mods.Twaila.ModConfig")]
     public class TwailaConfig : ModConfig
     {
+        public static TwailaConfig Instance => ModContent.GetInstance<TwailaConfig>();
+
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
         [Header("$Mods.Twaila.Features")]
 
-		[SeparatePage]
+        [SeparatePage]
         [Tooltip("$Mods.Twaila.AntiCheatSettings.Tooltip")]
         [Label("$Mods.Twaila.AntiCheatSettings.Label")]
         public AntiCheatSettings AntiCheat = new AntiCheatSettings();
@@ -45,9 +47,9 @@ namespace Twaila
         public HorizontalAnchor AnchorX = HorizontalAnchor.Center;
         public enum HorizontalAnchor
         {
-            [Label("$Mods.Twaila.enum.Left")]Left,
-            [Label("$Mods.Twaila.enum.Center")]Center,
-            [Label("$Mods.Twaila.enum.Right")]Right
+            [Label("$Mods.Twaila.Enums.Left")]Left,
+            [Label("$Mods.Twaila.Enums.Center")]Center,
+            [Label("$Mods.Twaila.Enums.Right")]Right
         };
 
         [DrawTicks]
@@ -56,9 +58,9 @@ namespace Twaila
         public VerticalAnchor AnchorY = VerticalAnchor.Top;
         public enum VerticalAnchor
         {
-            [Label("$Mods.Twaila.enum.Bottom")] Bottom,
-            [Label("$Mods.Twaila.enum.Center")] Center,
-            [Label("$Mods.Twaila.enum.Top")] Top
+            [Label("$Mods.Twaila.Enums.Bottom")] Bottom,
+            [Label("$Mods.Twaila.Enums.Center")] Center,
+            [Label("$Mods.Twaila.Enums.Top")] Top
         };
 
         [DefaultValue(0)]
@@ -105,15 +107,15 @@ namespace Twaila
 
         public enum DisplayMode
         {
-            [Label("$Mods.Twaila.enum.On")] On,
-            [Label("$Mods.Twaila.enum.Off")] Off,
-            [Label("$Mods.Twaila.enum.Automatic")] Automatic
+            [Label("$Mods.Twaila.Enums.On")] On,
+            [Label("$Mods.Twaila.Enums.Off")] Off,
+            [Label("$Mods.Twaila.Enums.Automatic")] Automatic
         }
 
         public enum ContextUpdateMode
         {
-            [Label("$Mods.Twaila.enum.Manual")] Manual,
-            [Label("$Mods.Twaila.enum.Automatic")] Automatic
+            [Label("$Mods.Twaila.Enums.Manual")] Manual,
+            [Label("$Mods.Twaila.Enums.Automatic")] Automatic
         }
 
         [DefaultValue(ContextUpdateMode.Automatic)]
@@ -125,9 +127,9 @@ namespace Twaila
         [Label("$Mods.Twaila.ShowBackground")]
         public bool ShowBackground;
 
-		[DefaultValue(true)]
-		[Label("$Mods.Twaila.ShowInFullscreenMap")]
-		public bool ShowInFullscreenMap;
+        [DefaultValue(true)]
+        [Label("$Mods.Twaila.ShowInFullscreenMap")]
+        public bool ShowInFullscreenMap;
 
         [SeparatePage]
         [Label("$Mods.Twaila.UIDisplaySettings")]
@@ -168,18 +170,18 @@ namespace Twaila
 
         public enum DisplayType
         {
-            [Label("$Mods.Twaila.enum.Name")] Name,
-            [Label("$Mods.Twaila.enum.Icon")] Icon,
-            [Label("$Mods.Twaila.enum.Both")] Both,
-            [Label("$Mods.Twaila.enum.Off")] Off
+            [Label("$Mods.Twaila.Enums.Name")] Name,
+            [Label("$Mods.Twaila.Enums.Icon")] Icon,
+            [Label("$Mods.Twaila.Enums.Both")] Both,
+            [Label("$Mods.Twaila.Enums.Off")] Off
         }
 
         public enum NameType
         {
-            [Label("$Mods.Twaila.enum.DisplayName")] DisplayName,
-            [Label("$Mods.Twaila.enum.InternalName")] InternalName,
-            [Label("$Mods.Twaila.enum.FullName")] FullName,
-            [Label("$Mods.Twaila.enum.Off")] Off
+            [Label("$Mods.Twaila.Enums.DisplayName")] DisplayName,
+            [Label("$Mods.Twaila.Enums.InternalName")] InternalName,
+            [Label("$Mods.Twaila.Enums.FullName")] FullName,
+            [Label("$Mods.Twaila.Enums.Off")] Off
         }
 
         public class Content
@@ -220,9 +222,9 @@ namespace Twaila
             [Label("$Mods.Twaila.Content.ShowPaint")]
             public DisplayType ShowPaint;
 
-			[DrawTicks]
-			[Label("$Mods.Twaila.Content.ShowCoating")]
-			public DisplayType ShowCoating = DisplayType.Off;
+            [DrawTicks]
+            [Label("$Mods.Twaila.Content.ShowCoating")]
+            public DisplayType ShowCoating = DisplayType.Off;
 
             [DrawTicks]
             [Label("$Mods.Twaila.Content.ShowContainedItems")]
@@ -238,8 +240,8 @@ namespace Twaila
                 ShowWire = DisplayType.Icon;
                 ShowActuator = DisplayType.Icon;
                 ShowPaint = DisplayType.Icon;
-				ShowCoating = DisplayType.Icon;
-				ShowContainedItems = DisplayType.Icon;
+                ShowCoating = DisplayType.Icon;
+                ShowContainedItems = DisplayType.Icon;
                 ShowName = NameType.DisplayName;
             }
 
@@ -322,69 +324,66 @@ namespace Twaila
             public override int GetHashCode()
             {
                 return new { UIDisplay, HideUIForAir }.GetHashCode();
-			}
-		}
-
-		public class AntiCheatSettings
-		{
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideUnrevealedTiles.Tooltip")]
-			[Label("$Mods.Twaila.HideUnrevealedTiles.Label")]
-			public bool HideUnrevealedTiles;
-
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideWires.Tooltip")]
-			[Label("$Mods.Twaila.HideWires.Label")]
-			public bool HideWires;
-
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideEchoTiles.Tooltip")]
-			[Label("$Mods.Twaila.HideEchoTiles.Label")]
-			public bool HideEchoTiles;
-
-			[DefaultValue(true)]
-			[Tooltip("$Mods.Twaila.HideSuspiciousTiles.Tooltip")]
-			[Label("$Mods.Twaila.HideSuspiciousTiles.Label")]
-			public bool HideSuspiciousTiles;
-
-			public AntiCheatSettings()
-			{
-				HideUnrevealedTiles = true;
-				HideWires = true;
-				HideEchoTiles = true;
-				HideSuspiciousTiles = true;
-			}
-
-			public override bool Equals(object obj)
-			{
-				if (obj is AntiCheatSettings other)
-				{
-					return HideUnrevealedTiles == other.HideUnrevealedTiles 
-						&& HideWires == other.HideWires
-						&& HideEchoTiles == other.HideEchoTiles
-						&& HideSuspiciousTiles == other.HideSuspiciousTiles;
-				}
-				return base.Equals(obj);
-			}
-
-			public override int GetHashCode()
-			{
-				return HashCode.Combine(HideUnrevealedTiles, HideWires, HideEchoTiles, HideSuspiciousTiles);
-			}
-		}
-
-		public void Save()
-        {
-            Directory.CreateDirectory(ConfigManager.ModConfigPath);
-            string filename = Mod.Name + "_" + Name + ".json";
-            string path = Path.Combine(ConfigManager.ModConfigPath, filename);
-            string json = JsonConvert.SerializeObject((object)this, ConfigManager.serializerSettings);
-            File.WriteAllText(path, json);
+            }
         }
 
-        public static TwailaConfig Get()
+        public class AntiCheatSettings
         {
-            return ModContent.GetInstance<TwailaConfig>();
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideUnrevealedTiles.Tooltip")]
+            [Label("$Mods.Twaila.HideUnrevealedTiles.Label")]
+            public bool HideUnrevealedTiles;
+
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideWires.Tooltip")]
+            [Label("$Mods.Twaila.HideWires.Label")]
+            public bool HideWires;
+
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideEchoTiles.Tooltip")]
+            [Label("$Mods.Twaila.HideEchoTiles.Label")]
+            public bool HideEchoTiles;
+
+            [DefaultValue(true)]
+            [Tooltip("$Mods.Twaila.HideSuspiciousTiles.Tooltip")]
+            [Label("$Mods.Twaila.HideSuspiciousTiles.Label")]
+            public bool HideSuspiciousTiles;
+
+            public AntiCheatSettings()
+            {
+                HideUnrevealedTiles = true;
+                HideWires = true;
+                HideEchoTiles = true;
+                HideSuspiciousTiles = true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is AntiCheatSettings other)
+                {
+                    return HideUnrevealedTiles == other.HideUnrevealedTiles 
+                        && HideWires == other.HideWires
+                        && HideEchoTiles == other.HideEchoTiles
+                        && HideSuspiciousTiles == other.HideSuspiciousTiles;
+                }
+                return base.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(HideUnrevealedTiles, HideWires, HideEchoTiles, HideSuspiciousTiles);
+            }
+        }
+
+        public void Save()
+        {
+            try
+            {
+                typeof(ConfigManager)
+                    ?.GetMethod("Save", BindingFlags.Static | BindingFlags.NonPublic)
+                    ?.Invoke(null, new object[] { this });
+            }
+            catch { }
         }
     }
 }
