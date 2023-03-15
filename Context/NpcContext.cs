@@ -112,19 +112,19 @@ namespace Twaila.Context
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
             RenderBuilder builer = new RenderBuilder();
-
             if(Npc != null)
             {
                 Rectangle drawFrame = new Rectangle(0, 0, Npc.frame.Width, Npc.frame.Height);
 
 				Color drawColor = Npc.color;
-
 				if(drawColor.A == 0)
 				{
 					drawColor = Color.White;
 				}
 
-				builer.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, Npc.scale);
+				float scale = MathHelper.Clamp(Npc.scale, 0, 1);
+
+				builer.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, scale);
 
 				return builer.Build();
             }
@@ -163,27 +163,31 @@ namespace Twaila.Context
                 elements.Add(new TwailaText(Id));
             }
 
-            if (!string.IsNullOrEmpty(Hp))
+			List<UIStatElement> stats = new List<UIStatElement>();
+
+			if (!string.IsNullOrEmpty(Hp))
             {
-                elements.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_HP").Value, Hp.ToString()));
+				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_HP").Value, Hp.ToString()));
             }
 
             if (!string.IsNullOrEmpty(Defense))
             {
-                elements.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Defense").Value, Defense.ToString()));
+				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Defense").Value, Defense.ToString()));
             }
 
             if (!string.IsNullOrEmpty(Damage))
             {
-                elements.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Attack").Value,
+				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Attack").Value,
                     Damage.ToString()));
             }
 
             if (!string.IsNullOrEmpty(KnockbackTaken))
             {
-                elements.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Knockback").Value,
+				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Knockback").Value,
                     KnockbackTaken));
             }
+
+			elements.Add(new UIStatGrid(stats, 2));
             
             return elements;
         }

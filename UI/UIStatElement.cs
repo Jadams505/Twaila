@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
 
 namespace Twaila.UI
 {
@@ -25,9 +26,10 @@ namespace Twaila.UI
             Height.Set(GetContentSize().Y, 0);
         }
 
-        public override Vector2 GetContentSize()
+		public override Vector2 GetContentSize()
         {
             return new Vector2(Icon.Width * BACKGROUND_BASE_SCALE, Icon.Height * BACKGROUND_BASE_SCALE);
+			//return new Vector2((ICON_WIDTH + StatText.GetContentSize().X) * BACKGROUND_BASE_SCALE, ICON_WIDTH);
         }
 
         public override void ApplyConfigSettings(TwailaConfig config)
@@ -59,15 +61,15 @@ namespace Twaila.UI
         protected override void DrawShrunk(SpriteBatch spriteBatch)
         {
             Vector2 drawPos = new Vector2((int)GetDimensions().X, (int)GetDimensions().Y);
-
-            float contentSize = ICON_WIDTH + PADDING_BETWEEN + StatText.GetContentSize().X + PADDING_RIGHT;
+            float contentSize = ICON_WIDTH + StatText.GetContentSize().X;
             int width = (int)Math.Min(contentSize, Icon.Width);
 
-            float scale = GetScale(new Vector2(Width.Pixels, Height.Pixels));
+            float scale = GetScale(new Vector2(Width.Pixels, Height.Pixels)) * BACKGROUND_BASE_SCALE;
 
             StatText.Left.Set(ICON_WIDTH * scale, 0);
+			//StatText.Width.Set()
 
-            spriteBatch.Draw(Icon, drawPos, new Rectangle(0, 0, width, Icon.Height), Color.White * Opacity, 0, Vector2.Zero, scale * BACKGROUND_BASE_SCALE, 0, 0);
+            spriteBatch.Draw(Icon, drawPos, new Rectangle(0, 0, (int)Width.Pixels, (int)Height.Pixels), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
 
             if(contentSize > Icon.Width)
             {

@@ -13,8 +13,6 @@ namespace Twaila.UI
     {
         public TwailaRender Render { get; private set; }
 
-        public Color ColorFilter { get; set; }
-
         public UITwailaImage()
         {
             Render = new TwailaRender(TextureAssets.Buff[BuffID.Confused].ForceVanillaLoad());
