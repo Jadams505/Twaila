@@ -65,7 +65,7 @@ namespace Twaila.Context
             string internalName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().Name;
             string fullName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().FullName;
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }

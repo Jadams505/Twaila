@@ -267,9 +267,9 @@ namespace Twaila.Util
                 case TileID.CrimsonJungleGrass:
                     return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.CrimsonJungleGrass");
                 case TileID.LifeCrystalBoulder:
-                    return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
+                    return TwailaConfig.Instance.AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.LifeCrystal) : GetNameFromItem(ItemID.LifeCrystalBoulder);
                 case TileID.DirtiestBlock:
-                    return TwailaConfig.Get().AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.DirtBlock) : GetNameFromItem(ItemID.DirtiestBlock);
+                    return TwailaConfig.Instance.AntiCheat.HideSuspiciousTiles ? GetNameFromItem(ItemID.DirtBlock) : GetNameFromItem(ItemID.DirtiestBlock);
             }
             return null;
         }

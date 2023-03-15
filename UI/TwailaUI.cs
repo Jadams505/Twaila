@@ -27,7 +27,7 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
-            switch (TwailaConfig.Get().UIDisplaySettings.UIDisplay)
+            switch (TwailaConfig.Instance.UIDisplaySettings.UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
                     Enabled = true;
@@ -36,10 +36,10 @@ namespace Twaila.UI
                     Enabled = false;
                     break;
                 case TwailaConfig.DisplayMode.Automatic:
-                    if (TwailaConfig.Get().UIDisplaySettings.HideUIForAir)
+                    if (TwailaConfig.Instance.UIDisplaySettings.HideUIForAir)
                     {
                         if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 ||
-                            (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
+                            (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
                             && !_panel.ContainsPoint(Main.MouseScreen) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;

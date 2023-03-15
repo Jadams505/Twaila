@@ -101,7 +101,7 @@ namespace Twaila.Util
         */
         public static Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
         {
-            if (tile.TileType == TileID.Campfire && !TwailaConfig.Get().UseItemTextures)
+            if (tile.TileType == TileID.Campfire && !TwailaConfig.Instance.UseItemTextures)
             {
                 TileObjectData data = TileObjectData.GetTileData(tile);
                 int mutableFrameY = tile.TileFrameY;

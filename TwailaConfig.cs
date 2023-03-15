@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System;
+using System.Reflection;
 using System.ComponentModel;
 using System.IO;
 using Terraria.ModLoader;
@@ -12,6 +13,8 @@ namespace Twaila
     [Label("$Mods.Twaila.ModConfig")]
     public class TwailaConfig : ModConfig
     {
+        public static TwailaConfig Instance => ModContent.GetInstance<TwailaConfig>();
+
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
         [Header("$Mods.Twaila.Features")]
@@ -374,16 +377,13 @@ namespace Twaila
 
         public void Save()
         {
-            Directory.CreateDirectory(ConfigManager.ModConfigPath);
-            string filename = Mod.Name + "_" + Name + ".json";
-            string path = Path.Combine(ConfigManager.ModConfigPath, filename);
-            string json = JsonConvert.SerializeObject((object)this, ConfigManager.serializerSettings);
-            File.WriteAllText(path, json);
-        }
-
-        public static TwailaConfig Get()
-        {
-            return ModContent.GetInstance<TwailaConfig>();
+            try
+            {
+                typeof(ConfigManager)
+                    ?.GetMethod("Save", BindingFlags.Static | BindingFlags.NonPublic)
+                    ?.Invoke(null, new object[] { this });
+            }
+            catch { }
         }
     }
 }

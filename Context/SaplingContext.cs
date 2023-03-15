@@ -65,7 +65,7 @@ namespace Twaila.Context
             string internalName = NameUtil.GetInternalTileName(TileId, false);
             string fullName = NameUtil.GetInternalTileName(TileId, true);
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
         }

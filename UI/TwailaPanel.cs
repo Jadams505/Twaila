@@ -23,7 +23,7 @@ namespace Twaila.UI
         private Point _lastMouse;
         
 
-        private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Get().MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Get().MaxHeight / 100.0f * Parent.GetDimensions().Height);
+        private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Instance.MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Instance.MaxHeight / 100.0f * Parent.GetDimensions().Height);
         private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
 
         public TwailaPanel()
@@ -49,7 +49,7 @@ namespace Twaila.UI
 
         private void UpdateFromConfig()
         {
-            TwailaConfig config = TwailaConfig.Get();
+            TwailaConfig config = TwailaConfig.Instance;
 
             this.AppendOrRemove(Layout.Image, config.DisplayContent.ShowImage);
             this.AppendOrRemove(Layout.Mod, config.DisplayContent.ShowMod);
@@ -70,7 +70,7 @@ namespace Twaila.UI
 
         private void UpdateSize()
         {
-            SetPadding(TwailaConfig.Get().PanelPadding);
+            SetPadding(TwailaConfig.Instance.PanelPadding);
             Layout.SetInitialSizes();
             if (Layout.InfoBox.IsEmpty() && !HasChild(Layout.Name) && !HasChild(Layout.Mod))
             {
@@ -82,10 +82,10 @@ namespace Twaila.UI
 
             float imageMarginX = Layout.Image.GetSizeIfAppended(Layout.Image.MarginRight);
 
-            DrawMode drawMode = TwailaConfig.Get().ContentSetting;
+            DrawMode drawMode = TwailaConfig.Instance.ContentSetting;
             if (drawMode == DrawMode.Shrink)
             {
-                float reservedImageWidth = imageDimension.X * ImageScale(new Vector2(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
+                float reservedImageWidth = imageDimension.X * ImageScale(new Vector2(TwailaConfig.Instance.ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
                 
                 Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - reservedImageWidth - imageMarginX, MaxPanelInnerDimension.Y / (Layout.InfoBox.NumberOfAppendedElements() + 2));
 
@@ -151,7 +151,7 @@ namespace Twaila.UI
                 }
                 imageDimension.Y = Math.Min(MaxPanelInnerDimension.Y, imageDimension.Y);
                 textDimension.Y = Math.Min(MaxPanelInnerDimension.Y, textDimension.Y);
-                imageDimension.X = Math.Min(TwailaConfig.Get().ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, imageDimension.X);
+                imageDimension.X = Math.Min(TwailaConfig.Instance.ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, imageDimension.X);
                 textDimension.X = Math.Min(MaxPanelInnerDimension.X - imageDimension.X - imageMarginX, textDimension.X);
 
                 Layout.Name.Width.Set(textDimension.X, 0);
@@ -194,10 +194,10 @@ namespace Twaila.UI
 
         private void UpdateAlignment()
         {
-            if (TwailaConfig.Get().UseDefaultPosition)
+            if (TwailaConfig.Instance.UseDefaultPosition)
             {
-                TwailaConfig.Get().AnchorPosX = (int)Parent.GetDimensions().Width / 2;
-                TwailaConfig.Get().AnchorPosY = 0;
+                TwailaConfig.Instance.AnchorPosX = (int)Parent.GetDimensions().Width / 2;
+                TwailaConfig.Instance.AnchorPosY = 0;
             }
             UpdatePos();
             Layout.Image.Top.Set(0, 0);
@@ -213,29 +213,29 @@ namespace Twaila.UI
         private void UpdatePos()
         {
             float left = 0;
-            switch (TwailaConfig.Get().AnchorX)
+            switch (TwailaConfig.Instance.AnchorX)
             {
                 case TwailaConfig.HorizontalAnchor.Left:
-                    left = TwailaConfig.Get().AnchorPosX;
+                    left = TwailaConfig.Instance.AnchorPosX;
                     break;
                 case TwailaConfig.HorizontalAnchor.Center:
-                    left = TwailaConfig.Get().AnchorPosX - Width.Pixels / 2;
+                    left = TwailaConfig.Instance.AnchorPosX - Width.Pixels / 2;
                     break;
                 case TwailaConfig.HorizontalAnchor.Right:
-                    left = TwailaConfig.Get().AnchorPosX - Width.Pixels;
+                    left = TwailaConfig.Instance.AnchorPosX - Width.Pixels;
                     break;
             }
             float top = 0;
-            switch (TwailaConfig.Get().AnchorY)
+            switch (TwailaConfig.Instance.AnchorY)
             {
                 case TwailaConfig.VerticalAnchor.Top:
-                    top = TwailaConfig.Get().AnchorPosY;
+                    top = TwailaConfig.Instance.AnchorPosY;
                     break;
                 case TwailaConfig.VerticalAnchor.Center:
-                    top = TwailaConfig.Get().AnchorPosY - Height.Pixels / 2;
+                    top = TwailaConfig.Instance.AnchorPosY - Height.Pixels / 2;
                     break;
                 case TwailaConfig.VerticalAnchor.Bottom:
-                    top = TwailaConfig.Get().AnchorPosY - Height.Pixels;
+                    top = TwailaConfig.Instance.AnchorPosY - Height.Pixels;
                     break;
             }
             Left.Set(MathHelper.Clamp(left, 0, Parent.GetDimensions().Width - Width.Pixels), 0);
@@ -244,7 +244,7 @@ namespace Twaila.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (TwailaConfig.Get().ShowBackground)
+            if (TwailaConfig.Instance.ShowBackground)
             {
                 base.DrawSelf(spriteBatch);
             }
@@ -272,7 +272,7 @@ namespace Twaila.UI
 
             BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mouseInfo);
 
-            if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+            if (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
             {
                 context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
 
@@ -295,9 +295,9 @@ namespace Twaila.UI
                 return;
             }
 
-            if (tick >= TwailaConfig.Get().CycleDelay)
+            if (tick >= TwailaConfig.Instance.CycleDelay)
             {
-                if (TwailaConfig.Get().ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+                if (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
                 {
                     context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
                 }
@@ -328,10 +328,10 @@ namespace Twaila.UI
         public override void LeftMouseDown(UIMouseEvent evt)
         {   
             _lastMouse = new Point(Main.mouseX, Main.mouseY);
-            if (!TwailaConfig.Get().LockPosition)
+            if (!TwailaConfig.Instance.LockPosition)
             {
                 Main.LocalPlayer.mouseInterface = true;
-                TwailaConfig.Get().UseDefaultPosition = false;
+                TwailaConfig.Instance.UseDefaultPosition = false;
                 _dragging = true;
             }
         }
@@ -351,10 +351,10 @@ namespace Twaila.UI
             if (IsDragging())
             {
                 int deltaX = Main.mouseX - _lastMouse.X, deltaY = Main.mouseY - _lastMouse.Y;
-                TwailaConfig.Get().AnchorPosX += deltaX;
-                TwailaConfig.Get().AnchorPosY += deltaY;
-                TwailaConfig.Get().AnchorPosX = (int)MathHelper.Clamp(TwailaConfig.Get().AnchorPosX, 0, Parent.GetDimensions().Width);
-                TwailaConfig.Get().AnchorPosY = (int)MathHelper.Clamp(TwailaConfig.Get().AnchorPosY, 0, Parent.GetDimensions().Height);
+                TwailaConfig.Instance.AnchorPosX += deltaX;
+                TwailaConfig.Instance.AnchorPosY += deltaY;
+                TwailaConfig.Instance.AnchorPosX = (int)MathHelper.Clamp(TwailaConfig.Instance.AnchorPosX, 0, Parent.GetDimensions().Width);
+                TwailaConfig.Instance.AnchorPosY = (int)MathHelper.Clamp(TwailaConfig.Instance.AnchorPosY, 0, Parent.GetDimensions().Height);
                 _lastMouse.X = Main.mouseX;
                 _lastMouse.Y = Main.mouseY;
             }

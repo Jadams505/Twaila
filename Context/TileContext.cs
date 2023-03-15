@@ -53,7 +53,7 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
             TileId = tile.TileType;
             FrameX = tile.TileFrameX;
@@ -150,7 +150,7 @@ namespace Twaila.Context
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            if (TwailaConfig.Get().UseItemTextures)
+            if (TwailaConfig.Instance.UseItemTextures)
             {
                 TwailaRender itemTexture = ItemImage(spriteBatch);
                 if(itemTexture != null && itemTexture.CanDraw())
@@ -229,7 +229,7 @@ namespace Twaila.Context
             string internalName = NameUtil.GetInternalTileName(TileId, false);
             string fullName = NameUtil.GetInternalTileName(TileId, true);
 
-            TwailaConfig.NameType nameType = TwailaConfig.Get().DisplayContent.ShowName;
+            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
             return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? Language.GetTextValue("Mods.Twaila.Defaults.Name");
         }

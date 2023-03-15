@@ -61,7 +61,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
             PopulateItems();
 

@@ -13,7 +13,7 @@ namespace Twaila
 
         public override void PreSavePlayer()
         {
-            TwailaConfig.Get().Save();
+            TwailaConfig.Instance.Save();
         }
     }
 }
