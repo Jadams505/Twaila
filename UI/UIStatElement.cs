@@ -8,7 +8,7 @@ namespace Twaila.UI
     public class UIStatElement : UITwailaElement
     {
         public Texture2D Icon { get; set; }
-        public TwailaText StatText { get; set; }
+        public UITwailaText StatText { get; set; }
 
         public const float BACKGROUND_BASE_SCALE = 0.75f;
         public const int ICON_WIDTH = 32;
@@ -18,7 +18,7 @@ namespace Twaila.UI
         public UIStatElement(Texture2D icon, string text) : base()
         {
             Icon = icon;
-            StatText = new TwailaText(text);
+            StatText = new UITwailaText(text);
 
             StatText.Left.Set(ICON_WIDTH, 0);
             StatText.Top.Set(2, 0);

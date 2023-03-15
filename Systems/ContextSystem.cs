@@ -45,7 +45,8 @@ namespace Twaila.Systems
             WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"));
             ContextEntries.Add(WireEntry);
 
-            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, "Npc");
+            // Localize this
+            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"));
             ContextEntries.Add(NpcEntry);
         }
 

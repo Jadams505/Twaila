@@ -57,7 +57,7 @@ namespace Twaila.Context
 
         public override void Update()
         {
-            TwailaConfig.Content content = TwailaConfig.Get().DisplayContent;
+            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
             IntersectsNPC(Pos.BestPos(), out NPC foundNPC);
 
@@ -160,7 +160,7 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(Id))
             {
-                elements.Add(new TwailaText(Id));
+                elements.Add(new UITwailaText(Id));
             }
 
 			List<UIStatElement> stats = new List<UIStatElement>();
