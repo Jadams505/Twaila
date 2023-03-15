@@ -134,7 +134,7 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            int itemId = ItemUtil.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
+            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
             return NameUtil.GetNameFromItem(itemId);
         }
 

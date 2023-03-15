@@ -101,7 +101,7 @@ namespace Twaila.Context
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            int itemId = ItemUtil.GetItemId(tile, TileType.Liquid);
+            int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Liquid);
             return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 

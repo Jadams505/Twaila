@@ -121,7 +121,7 @@ namespace Twaila.Context
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            int itemId = ItemUtil.GetItemId(tile, TileType.Wall);
+            int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Wall);
             return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 
@@ -160,7 +160,7 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
 
-            string displayName = NameUtil.GetNameFromItem(ItemUtil.GetItemId(tile, TileType.Wall));
+            string displayName = NameUtil.GetNameFromItem(ItemTilePairSystem.GetItemId(tile, TileType.Wall));
             string internalName = NameUtil.GetInternalWallName(WallId, false);
             string fullName = NameUtil.GetInternalWallName(WallId, true);
 

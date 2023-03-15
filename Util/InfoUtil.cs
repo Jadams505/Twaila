@@ -2,6 +2,7 @@
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Twaila.Systems;
 
 namespace Twaila.Util
 {
@@ -21,7 +22,7 @@ namespace Twaila.Util
                 }
                 else
                 {
-                    pickId = ItemUtil.GetPickId(power, lastIndex, out lastIndex);
+                    pickId = ItemTilePairSystem.GetPickId(power, lastIndex, out lastIndex);
                     text = Language.GetText("Mods.Twaila.BadPickPower").WithFormatArgs(power).Value;
                 }
                 return true;
