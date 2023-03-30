@@ -167,27 +167,27 @@ namespace Twaila.Context
 
 			if (!string.IsNullOrEmpty(Hp))
             {
-				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_HP").Value, Hp.ToString()));
+                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Health), Hp.ToString()));
             }
 
             if (!string.IsNullOrEmpty(Defense))
             {
-				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Defense").Value, Defense.ToString()));
+				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense.ToString()));
             }
 
             if (!string.IsNullOrEmpty(Damage))
             {
-				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Attack").Value,
+				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Attack),
                     Damage.ToString()));
             }
 
             if (!string.IsNullOrEmpty(KnockbackTaken))
             {
-				stats.Add(new UIStatElement(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Knockback").Value,
+				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Crit),
                     KnockbackTaken));
             }
 
-			elements.Add(new UIStatGrid(stats, 2));
+            elements.Add(new UIStatGrid(stats, width: 2));
             
             return elements;
         }

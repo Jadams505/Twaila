@@ -1,46 +1,26 @@
-﻿using Humanizer;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 
 namespace Twaila.UI
 {
 	public class UIStatGrid : UITwailaElement
 	{
+		public const int PADDING = 4;
+
 		public List<UIStatElement> GridElements { get; set; }
 
 		public int GridWidth { get; set; }
 
-		public int GridHeight => (int)Math.Ceiling((double)GridElements.Count / GridWidth);
+		public int GridHeight => (int)Math.Ceiling((float)GridElements.Count / GridWidth);
 
 		public UIStatGrid(List<UIStatElement> elements, int width) : base()
 		{
 			GridElements = elements;
 			GridWidth = width;
-			float top = 0;
-			float left = 0;
-			float rowTop = 0;
 			for (int i = 0; i < GridElements.Count; ++i)
 			{
-				UIStatElement curr = GridElements[i];
-				Vector2 size = curr.GetContentSize();
-
-				if(i % GridWidth == 0)
-				{
-					left = 0;
-					top += rowTop;
-				}
-
-				curr.Left.Set(left, 0);
-				curr.Top.Set(top, 0);
-				left += size.X;
-				rowTop = MathHelper.Max(rowTop, size.Y);
-				Append(curr);
+				Append(GridElements[i]);
 			}
 
 			Width.Set(GetContentSize().X, 0);
@@ -51,36 +31,56 @@ namespace Twaila.UI
 		{
 			float width = 0;
 			float height = 0;
-			float rowWidth = 0;
-			float rowHeight = 0;
-			for(int i = 0; i < GridElements.Count; ++i)
+
+			for (int row = 0; row < GridHeight; ++row)
 			{
-				Vector2 size = GridElements[i].GetContentSize();
-
-				if (i % GridWidth == 0)
+                int rowStartIndex = row * GridWidth;
+                int elementsInRow = Math.Min(rowStartIndex + GridWidth, GridElements.Count) - rowStartIndex;
+				float biggestWidthInRow = 0;
+				float biggestHeightInRow = 0;
+                for (int col = 0, i = 0; col < elementsInRow && i < GridElements.Count; ++col)
 				{
-					height += rowHeight;
-					rowHeight = 0;
-					rowWidth = 0;
+					i = row * GridWidth + col;
+					Vector2 size = GridElements[i].GetContentSize();
+					biggestWidthInRow = Math.Max(biggestWidthInRow, size.X);
+					biggestHeightInRow = Math.Max(biggestHeightInRow, size.Y);
 				}
-
-				rowWidth += size.X;
-
-				width = Math.Max(rowWidth, width);
-				rowHeight = Math.Max(rowHeight, size.Y);
+				width = Math.Max(width, biggestWidthInRow * elementsInRow + PADDING * Math.Max(elementsInRow - 1, 0));
+				height += biggestHeightInRow;
 			}
-			width = Math.Max(rowWidth, width);
-			height += rowHeight;
-			return new Vector2(width, height);
+            return new Vector2(width, height);
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			// set sizes of grid elements based on Width and Height of this element
+			Vector2 size = GetContentSize();
 			for(int i = 0; i < GridElements.Count; ++i)
 			{
+				int row = i / GridWidth;
+				int col = i % GridWidth;
 
+				int rowStartIndex = row * GridWidth;
+                int elementsInRow = Math.Min(rowStartIndex + GridWidth, GridElements.Count) - rowStartIndex;
+				int numberOfRows = GridHeight;
+
+                float width = Width.Pixels / elementsInRow;
+                float height = Height.Pixels / numberOfRows;
+                int padding = col == 0 ? 0 : PADDING;
+
+                if (DrawMode == DrawMode.Overflow)
+				{
+					width = size.X / elementsInRow;
+					height = size.Y / numberOfRows;
+				}
+
+                UIStatElement element = GridElements[i];
+                element.Left.Set(col * width + padding, 0);
+				element.Top.Set(row * height, 0);
+				element.Width.Set(width, 0);
+				element.Height.Set(height, 0);
 			}
+
+            base.Update(gameTime);
 		}
 
 		public override void ApplyConfigSettings(TwailaConfig config)
@@ -99,21 +99,6 @@ namespace Twaila.UI
 			{
 				element.ApplyHoverSettings(config);
 			}
-		}
-
-		protected override void DrawOverflow(SpriteBatch spriteBatch)
-		{
-			
-		}
-
-		protected override void DrawShrunk(SpriteBatch spriteBatch)
-		{
-			
-		}
-
-		protected override void DrawTrimmed(SpriteBatch spriteBatch)
-		{
-			
 		}
 	}
 }

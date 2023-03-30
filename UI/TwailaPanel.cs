@@ -40,11 +40,17 @@ namespace Twaila.UI
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            if (!IsDragging() && !Main.gamePaused)
+            {
+                UpdatePanelContents();
+            }
+            
             UpdateFromConfig();
             UpdateSize();
             Drag();
             UpdateAlignment();
+
+            base.Update(gameTime);
         }
 
         private void UpdateFromConfig()
@@ -93,6 +99,13 @@ namespace Twaila.UI
                 Layout.InfoBox.ApplyToAll(element => element.ScaleElement(maxSize));
                 Layout.InfoBox.UpdateDimensionsUI();
                 Layout.Mod.ScaleElement(maxSize);
+
+                float contentWidth = Utils.Max(Layout.Name.Width.Pixels, Layout.InfoBox.Width.Pixels, Layout.Mod.Width.Pixels);
+
+                Layout.Name.Width.Set(contentWidth, 0);
+                Layout.InfoBox.ApplyToAll(element => element.Width.Set(contentWidth, 0));
+                Layout.InfoBox.UpdateDimensionsUI();
+                Layout.Mod.Width.Set(contentWidth, 0);
 
                 textDimension.X = Layout.TextColumnSize().X;
                 textDimension.Y = Layout.TextColumnSize().Y;
@@ -248,14 +261,6 @@ namespace Twaila.UI
             {
                 base.DrawSelf(spriteBatch);
             }
-        }
-        protected override void DrawChildren(SpriteBatch spriteBatch)
-        {
-            base.DrawChildren(spriteBatch);
-            if (!IsDragging() && !Main.gamePaused)
-            {
-                UpdatePanelContents();
-            }    
         }
 
         private void UpdatePanelContents()

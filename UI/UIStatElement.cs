@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria;
+using Twaila.Graphics;
 
 namespace Twaila.UI
 {
     public class UIStatElement : UITwailaElement
     {
-        public Texture2D Icon { get; set; }
+        public UITwailaImage Icon { get; set; }
         public UITwailaText StatText { get; set; }
 
         public const float BACKGROUND_BASE_SCALE = 0.75f;
@@ -15,92 +14,56 @@ namespace Twaila.UI
         public const float PADDING_BETWEEN = 20f;
         public const float PADDING_RIGHT = 4f;
 
-        public UIStatElement(Texture2D icon, string text) : base()
+        public UIStatElement(TwailaRender icon, string text) : base()
         {
-            Icon = icon;
-            StatText = new UITwailaText(text);
+            Icon = new UITwailaImage();
+            Icon.SetImage(icon);
+            Append(Icon);
 
-            StatText.Left.Set(ICON_WIDTH, 0);
-            StatText.Top.Set(2, 0);
+            StatText = new UITwailaText(text);
+            Append(StatText);
+
             Width.Set(GetContentSize().X, 0);
             Height.Set(GetContentSize().Y, 0);
         }
 
-		public override Vector2 GetContentSize()
+        public override void Update(GameTime gameTime)
         {
-            return new Vector2(Icon.Width * BACKGROUND_BASE_SCALE, Icon.Height * BACKGROUND_BASE_SCALE);
-			//return new Vector2((ICON_WIDTH + StatText.GetContentSize().X) * BACKGROUND_BASE_SCALE, ICON_WIDTH);
+            float scale = GetDrawScale();
+
+            Icon.Left.Set(0, 0);
+            Icon.Top.Set(0, 0);
+            Icon.Width.Set((int)(Icon.Render.Width * scale), 0);
+            Icon.Height.Set(Height.Pixels, 0);
+
+            StatText.Top.Set(0, 0);
+            StatText.Left.Set(Icon.Width.Pixels + PADDING_RIGHT, 0);
+            StatText.Width.Set(Width.Pixels - Icon.Width.Pixels - PADDING_RIGHT, 0);
+            StatText.Height.Set(Height.Pixels, 0);
+        }
+
+        public override Vector2 GetContentSize()
+        {
+            Vector2 size = Vector2.Zero;
+
+            size.X = Icon.Render.Width + StatText.GetContentSize().X + PADDING_RIGHT;
+            size.Y = Math.Max(Icon.Render.Height, StatText.GetContentSize().Y);
+
+            return size;
         }
 
         public override void ApplyConfigSettings(TwailaConfig config)
         {
             base.ApplyConfigSettings(config);
             StatText.ApplyConfigSettings(config);
+            Icon.ApplyConfigSettings(config);
         }
 
         public override void ApplyHoverSettings(TwailaConfig config)
         {
             base.ApplyHoverSettings(config);
             StatText.ApplyHoverSettings(config);
+            Icon.ApplyHoverSettings(config);
         }
-
-        protected override void DrawOverflow(SpriteBatch spriteBatch)
-        {
-            Vector2 drawPos = new Vector2((int)GetDimensions().X, (int)GetDimensions().Y);
-
-            float width = ICON_WIDTH + PADDING_BETWEEN + StatText.GetContentSize().X + PADDING_RIGHT;
-
-            spriteBatch.Draw(Icon, drawPos, new Rectangle(0, 0, (int)width, Icon.Height), Color.White * Opacity, 0, Vector2.Zero, BACKGROUND_BASE_SCALE, 0, 0);
-
-            if (!HasChild(StatText))
-            {
-                Append(StatText);
-            }
-        }
-
-        protected override void DrawShrunk(SpriteBatch spriteBatch)
-        {
-            Vector2 drawPos = new Vector2((int)GetDimensions().X, (int)GetDimensions().Y);
-            float contentSize = ICON_WIDTH + StatText.GetContentSize().X;
-            int width = (int)Math.Min(contentSize, Icon.Width);
-
-            float scale = GetScale(new Vector2(Width.Pixels, Height.Pixels)) * BACKGROUND_BASE_SCALE;
-
-            StatText.Left.Set(ICON_WIDTH * scale, 0);
-			//StatText.Width.Set()
-
-            spriteBatch.Draw(Icon, drawPos, new Rectangle(0, 0, (int)Width.Pixels, (int)Height.Pixels), Color.White * Opacity, 0, Vector2.Zero, scale, 0, 0);
-
-            if(contentSize > Icon.Width)
-            {
-                float remainingWidth = contentSize - Icon.Width + 10;
-                drawPos.X += width * BACKGROUND_BASE_SCALE;
-                spriteBatch.Draw(Icon, drawPos, new Rectangle(ICON_WIDTH, 0, (int)remainingWidth, Icon.Height), Color.White * Opacity, 0, Vector2.Zero, scale * BACKGROUND_BASE_SCALE, 0, 0);
-            }
-
-            if (!HasChild(StatText))
-            {
-                Append(StatText);
-            }
-        }
-
-        protected override void DrawTrimmed(SpriteBatch spriteBatch)
-        {
-            Vector2 drawPos = new Vector2((int)GetDimensions().X, (int)GetDimensions().Y);
-
-            int width = (int)Math.Min(ICON_WIDTH + PADDING_BETWEEN + StatText.GetContentSize().X + PADDING_RIGHT, Width.Pixels * (1 / BACKGROUND_BASE_SCALE));
-
-            spriteBatch.Draw(Icon, drawPos, new Rectangle(0, 0, width, Icon.Height), Color.White * Opacity, 0, Vector2.Zero, BACKGROUND_BASE_SCALE, 0, 0);
-
-            if(ICON_WIDTH + StatText.GetContentSize().X > width)
-            {
-                RemoveChild(StatText);
-            }
-            else if (!HasChild(StatText))
-            {
-                Append(StatText);
-            }
-        }
-
     }
 }

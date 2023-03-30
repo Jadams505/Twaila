@@ -72,10 +72,19 @@ namespace Twaila.UI
 
         public abstract Vector2 GetContentSize();
 
-        protected abstract void DrawShrunk(SpriteBatch spriteBatch);
+        protected virtual void DrawShrunk(SpriteBatch spriteBatch)
+        {
 
-        protected abstract void DrawTrimmed(SpriteBatch spriteBatch);
+        }
 
-        protected abstract void DrawOverflow(SpriteBatch spriteBatch);
+        protected virtual void DrawTrimmed(SpriteBatch spriteBatch)
+        {
+
+        }
+
+        protected virtual void DrawOverflow(SpriteBatch spriteBatch)
+        {
+
+        }
     }
 }

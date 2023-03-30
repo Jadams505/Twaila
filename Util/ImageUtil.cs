@@ -501,6 +501,31 @@ namespace Twaila.Util
             return GetImageFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
         }
 
+        public enum NpcStat
+        {
+            Health,
+            Attack,
+            Defense,
+            Crit
+        }
+
+        public static TwailaRender GetRenderForNpcStat(NpcStat stat)
+        {
+            Texture2D texture = stat switch
+            {
+                NpcStat.Health => ModContent.Request<Texture2D>("Twaila/Assets/Health")?.Value,
+                NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
+                NpcStat.Defense => ModContent.Request<Texture2D>("Twaila/Assets/Defense")?.Value,
+                NpcStat.Crit => ModContent.Request<Texture2D>("Twaila/Assets/Crit")?.Value,
+                _ => null
+            };
+
+            RenderBuilder builder = new RenderBuilder();
+            builder.AddImage(texture, Point.Zero, texture.Frame(), 0.75f);
+
+            return builder.Build();
+        }
+
         public static Texture2D GetTileTexture(int tileId)
         {
             if(tileId >= 0 && tileId < TextureAssets.Tile.Length)

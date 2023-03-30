@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -142,7 +143,11 @@ namespace Twaila.UI
         private void DrawText(SpriteBatch spriteBatch, TextSnippet[] snippets, Vector2 scale)
         {
             ChatManager.ConvertNormalSnippets(snippets);
+
             Vector2 drawPos = new Vector2(GetDimensions().X, GetDimensions().Y).Floor();
+            Vector2 drawSize = ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale)) * scale;
+            drawPos.Y += Math.Max(0, (int)(Height.Pixels - drawSize.Y) / 2); // center the text vertically
+
             if (TextShadow)
             {
                 ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, drawPos, Color.Black * Opacity, 0, Vector2.Zero, scale);
