@@ -32,6 +32,15 @@ Content: {
 	ShowPaint: Show Paint
 	ShowCoating: Show Coating
 	ShowContainedItems: Show Contained Items
+	NpcContent: Npc Content Toggles
+}
+
+NpcContent: {
+	ShowHp: Show Hp
+	ShowDefense: Show Defense
+	ShowAttack: ShowAttack
+	ShowKnockback: Show Knockback
+	ShowKills: Show Kills
 }
 
 ModConfig: ModConfig

@@ -506,7 +506,8 @@ namespace Twaila.Util
             Health,
             Attack,
             Defense,
-            Crit
+            Crit,
+            Kill
         }
 
         public static TwailaRender GetRenderForNpcStat(NpcStat stat)
@@ -517,6 +518,7 @@ namespace Twaila.Util
                 NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
                 NpcStat.Defense => ModContent.Request<Texture2D>("Twaila/Assets/Defense")?.Value,
                 NpcStat.Crit => ModContent.Request<Texture2D>("Twaila/Assets/Crit")?.Value,
+                NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
                 _ => null
             };
 

@@ -32,6 +32,15 @@ Content: {
 	ShowPaint: 显示油漆
 	// ShowCoating: Show Coating
 	// ShowContainedItems: Show Contained Items
+	// NpcContent: Npc Content Toggles
+}
+
+NpcContent: {
+	// ShowHp: Show Hp
+	// ShowDefense: Show Defense
+	// ShowAttack: ShowAttack
+	// ShowKnockback: Show Knockback
+	// ShowKills: Show Kills
 }
 
 ModConfig: 模组配置

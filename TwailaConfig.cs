@@ -7,6 +7,7 @@ using System.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
+using ReLogic.Utilities;
 
 namespace Twaila
 {
@@ -230,6 +231,10 @@ namespace Twaila
             [Label("$Mods.Twaila.Content.ShowContainedItems")]
             public DisplayType ShowContainedItems;
 
+            [SeparatePage]
+            [Label("$Mods.Twaila.Content.NpcContent")]
+            public NpcContent NpcContent = new NpcContent();
+
             public Content()
             {
                 ShowImage = true;
@@ -243,6 +248,7 @@ namespace Twaila
                 ShowCoating = DisplayType.Icon;
                 ShowContainedItems = DisplayType.Icon;
                 ShowName = NameType.DisplayName;
+                NpcContent = new NpcContent();
             }
 
             public override bool Equals(object obj)
@@ -252,14 +258,62 @@ namespace Twaila
                     return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName
                         && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire && 
                         ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint && ShowPickaxe == other.ShowPickaxe
-                        && ShowId == other.ShowId && ShowContainedItems == other.ShowContainedItems && ShowCoating == other.ShowCoating;
+                        && ShowId == other.ShowId && ShowContainedItems == other.ShowContainedItems && ShowCoating == other.ShowCoating
+                        && NpcContent == other.NpcContent;
                 }
                 return base.Equals(obj);
             }
 
             public override int GetHashCode()
             {
-                return new { ShowImage, ShowMod, ShowName, ShowPickaxePower, ShowWire, ShowActuator, ShowPaint }.GetHashCode();
+                return new { ShowImage, ShowMod, ShowName, ShowPickaxePower, ShowWire, ShowActuator, ShowPaint, NpcContent}.GetHashCode();
+            }
+        }
+
+        public class NpcContent
+        {
+            [DefaultValue(true)]
+            [Label("$Mods.Twaila.NpcContent.ShowHp")]
+            public bool ShowHp;
+
+            [DefaultValue(true)]
+            [Label("$Mods.Twaila.NpcContent.ShowDefense")]
+            public bool ShowDefense;
+
+            [DefaultValue(true)]
+            [Label("$Mods.Twaila.NpcContent.ShowAttack")]
+            public bool ShowAttack;
+
+            [DefaultValue(true)]
+            [Label("$Mods.Twaila.NpcContent.ShowKnockback")]
+            public bool ShowKnockback;
+
+            [DefaultValue(true)]
+            [Label("$Mods.Twaila.NpcContent.ShowKills")]
+            public bool ShowKills;
+
+            public NpcContent()
+            {
+                ShowHp = true;
+                ShowDefense = true;
+                ShowAttack = true;
+                ShowKnockback = true;
+                ShowKills = true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is NpcContent other)
+                {
+                    return ShowHp == other.ShowHp && ShowDefense == other.ShowDefense && ShowAttack == other.ShowAttack
+                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills;
+                }
+                return base.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills);
             }
         }
 

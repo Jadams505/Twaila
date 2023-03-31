@@ -21,6 +21,7 @@ namespace Twaila.Context
         protected string Defense { get; set; }
         protected string Damage { get; set; }
         protected string KnockbackTaken { get; set; }
+        protected string Kills { get; set; }
 
         public NpcContext(TwailaPoint pos) : base(pos)
         {
@@ -30,6 +31,7 @@ namespace Twaila.Context
 			Defense = "";
 			Damage = "";
 			KnockbackTaken = "";
+            Kills = "";
         }
 
 		public static NpcContext CreateNpcContext(TwailaPoint pos)
@@ -68,29 +70,45 @@ namespace Twaila.Context
                 Id = $"Npc Id: {Npc.type}";
             }
 
-            Hp = MathHelper.Clamp(Npc.life, 0, Npc.life).ToString();
-
-            Defense = Npc.defense.ToString();
-
-            Damage = Npc.damage.ToString();
-
-            if(Npc.knockBackResist > 0.8f)
+            if (content.NpcContent.ShowHp)
             {
-                KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackHigh").Value;
-            }
-            else if(Npc.knockBackResist > 0.4f)
-            {
-                KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackMedium").Value;
-            }
-            else if(Npc.knockBackResist > 0f)
-            {
-                KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackLow").Value;
-            }
-            else
-            {
-                KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackNone").Value;
+                Hp = MathHelper.Clamp(Npc.life, 0, Npc.life).ToString();
             }
 
+            if (content.NpcContent.ShowDefense)
+            {
+                Defense = Npc.defense.ToString();
+            }
+
+            if (content.NpcContent.ShowAttack)
+            {
+                Damage = Npc.damage.ToString();
+            }
+
+            if (content.NpcContent.ShowKnockback)
+            {
+                if (Npc.knockBackResist > 0.8f)
+                {
+                    KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackHigh").Value;
+                }
+                else if (Npc.knockBackResist > 0.4f)
+                {
+                    KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackMedium").Value;
+                }
+                else if (Npc.knockBackResist > 0f)
+                {
+                    KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackLow").Value;
+                }
+                else
+                {
+                    KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackNone").Value;
+                }
+            }
+
+            if (content.NpcContent.ShowKills)
+            {
+                Kills = Main.BestiaryTracker.Kills.GetKillCount(Npc).ToString();
+            }
         }
 
         public override void UpdateOnChange(BaseContext prevContext, Layout layout)
@@ -167,27 +185,36 @@ namespace Twaila.Context
 
 			if (!string.IsNullOrEmpty(Hp))
             {
-                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Health), Hp.ToString()));
-            }
-
-            if (!string.IsNullOrEmpty(Defense))
-            {
-				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense.ToString()));
-            }
-
-            if (!string.IsNullOrEmpty(Damage))
-            {
-				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Attack),
-                    Damage.ToString()));
+                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Health), Hp));
             }
 
             if (!string.IsNullOrEmpty(KnockbackTaken))
             {
-				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Crit),
+                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Crit),
                     KnockbackTaken));
             }
 
-            elements.Add(new UIStatGrid(stats, width: 2));
+            if (!string.IsNullOrEmpty(Damage))
+            {
+                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Attack),
+                    Damage));
+            }
+
+            if (!string.IsNullOrEmpty(Defense))
+            {
+				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense));
+            }
+
+            if (!string.IsNullOrEmpty(Kills))
+            {
+                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Kill), Kills));
+            }
+
+            int statsPerRow = 3;
+            if(stats.Count > 0)
+            {
+                elements.Add(new UIStatGrid(stats, statsPerRow));
+            }
             
             return elements;
         }
@@ -196,6 +223,11 @@ namespace Twaila.Context
         {
             foreach(NPC npc in Main.npc)
             {
+                if (!npc.active)
+                {
+                    continue;
+                } 
+
                 Rectangle npcHitbox = new Rectangle((int)npc.TopLeft.X - 16, (int)npc.TopLeft.Y - 16, npc.frame.Width, npc.frame.Height);
                 Rectangle mouseHitbox = new Rectangle(pos.X * 16, pos.Y * 16, 0, 0);
 				mouseHitbox.Intersects(ref npcHitbox, out bool mouseOver);
