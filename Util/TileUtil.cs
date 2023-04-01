@@ -57,7 +57,7 @@ namespace Twaila.Util
             if (TwailaConfig.Instance.AntiCheat.HideUnrevealedTiles)
             {
                 Player player = Main.player[Main.myPlayer];
-                if(TwailaConfig.Instance.AntiCheat.HideEchoTiles && (tile.TileType == TileID.EchoBlock || (tile.TileType == TileID.Platforms && tile.TileFrameY == 864)))
+                if(TwailaConfig.Instance.AntiCheat.HideEchoTiles && (tile.TileType == TileID.EchoBlock || (tile.TileType == TileID.Platforms && tile.TileFrameY == 864) || tile.IsTileInvisible))
                 {
                     return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
                 }
@@ -71,7 +71,7 @@ namespace Twaila.Util
             if (TwailaConfig.Instance.AntiCheat.HideUnrevealedTiles)
             {
                 Player player = Main.LocalPlayer;
-                if (TwailaConfig.Instance.AntiCheat.HideEchoTiles && tile.WallType == WallID.EchoWall)
+                if (TwailaConfig.Instance.AntiCheat.HideEchoTiles && (tile.WallType == WallID.EchoWall || tile.IsWallInvisible))
                 {
                     return !player.CanSeeInvisibleBlocks && !Main.SceneMetrics.EchoMonolith;
                 }
