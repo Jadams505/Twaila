@@ -9,9 +9,6 @@ namespace Twaila.UI
         public UITwailaImage Icon { get; set; }
         public UITwailaText StatText { get; set; }
 
-        public const float BACKGROUND_BASE_SCALE = 0.75f;
-        public const int ICON_WIDTH = 32;
-        public const float PADDING_BETWEEN = 20f;
         public const float PADDING_RIGHT = 4f;
 
         public UIStatElement(TwailaRender icon, string text) : base()

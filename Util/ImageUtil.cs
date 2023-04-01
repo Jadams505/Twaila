@@ -8,6 +8,7 @@ using Terraria.GameContent;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using ReLogic.Content;
+using System;
 
 namespace Twaila.Util
 {
@@ -520,10 +521,11 @@ namespace Twaila.Util
                 NpcStat.Crit => ModContent.Request<Texture2D>("Twaila/Assets/Crit")?.Value,
                 NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
                 _ => null
-            };
+            }; 
 
             RenderBuilder builder = new RenderBuilder();
-            builder.AddImage(texture, Point.Zero, texture.Frame(), 0.75f);
+            float scale = 16.5f / Math.Max(texture.Width, texture.Height);
+            builder.AddImage(texture, Point.Zero, texture.Frame(), scale);
 
             return builder.Build();
         }

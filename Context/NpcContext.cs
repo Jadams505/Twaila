@@ -181,7 +181,7 @@ namespace Twaila.Context
                 elements.Add(new UITwailaText(Id));
             }
 
-			List<UIStatElement> stats = new List<UIStatElement>();
+			List<UITwailaElement> stats = new List<UITwailaElement>();
 
 			if (!string.IsNullOrEmpty(Hp))
             {
@@ -213,7 +213,7 @@ namespace Twaila.Context
             int statsPerRow = 3;
             if(stats.Count > 0)
             {
-                elements.Add(new UIStatGrid(stats, statsPerRow));
+                elements.Add(new UITwailaGrid(stats, statsPerRow));
             }
             
             return elements;

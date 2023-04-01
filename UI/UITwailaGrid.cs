@@ -4,20 +4,21 @@ using System.Collections.Generic;
 
 namespace Twaila.UI
 {
-	public class UIStatGrid : UITwailaElement
+	public class UITwailaGrid : UITwailaElement
 	{
-		public const int PADDING = 4;
+		public int RowPadding { get; set; } = 10;
 
-		public List<UIStatElement> GridElements { get; set; }
+		public List<UITwailaElement> GridElements { get; set; }
 
 		public int GridWidth { get; set; }
 
 		public int GridHeight => (int)Math.Ceiling((float)GridElements.Count / GridWidth);
 
-		public UIStatGrid(List<UIStatElement> elements, int width) : base()
+		public UITwailaGrid(List<UITwailaElement> elements, int width) : base()
 		{
 			GridElements = elements;
 			GridWidth = width;
+
 			for (int i = 0; i < GridElements.Count; ++i)
 			{
 				Append(GridElements[i]);
@@ -45,8 +46,8 @@ namespace Twaila.UI
 					biggestWidthInRow = Math.Max(biggestWidthInRow, size.X);
 					biggestHeightInRow = Math.Max(biggestHeightInRow, size.Y);
 				}
-				width = Math.Max(width, biggestWidthInRow * elementsInRow + PADDING * Math.Max(elementsInRow - 1, 0));
-				height += biggestHeightInRow;
+				width = Math.Max(width, biggestWidthInRow * elementsInRow + RowPadding * Math.Max(elementsInRow - 1, 0));
+				height = Math.Max(height, biggestHeightInRow * GridHeight);
 			}
             return new Vector2(width, height);
 		}
@@ -63,9 +64,13 @@ namespace Twaila.UI
                 int elementsInRow = Math.Min(rowStartIndex + GridWidth, GridElements.Count) - rowStartIndex;
 				int numberOfRows = GridHeight;
 
-                float width = Width.Pixels / elementsInRow;
+				float div = GridWidth;
+
+				if(GridElements.Count < div)
+					div = GridElements.Count;
+
+                float width = (Width.Pixels - RowPadding * Math.Max(elementsInRow - 1, 0)) / div;
                 float height = Height.Pixels / numberOfRows;
-                int padding = col == 0 ? 0 : PADDING;
 
                 if (DrawMode == DrawMode.Overflow)
 				{
@@ -73,8 +78,8 @@ namespace Twaila.UI
 					height = size.Y / numberOfRows;
 				}
 
-                UIStatElement element = GridElements[i];
-                element.Left.Set(col * width + padding, 0);
+                UITwailaElement element = GridElements[i];
+                element.Left.Set(col * (width + RowPadding), 0);
 				element.Top.Set(row * height, 0);
 				element.Width.Set(width, 0);
 				element.Height.Set(height, 0);
