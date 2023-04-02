@@ -1,3 +1,4 @@
 ﻿
-- Adjusted to the new keybind localization
-- Fixed a bug where you could move the panel in the full screen map
+- Updated to 1.4.4
+- Added an option for the UI appear in the full screen map
+- Added Anti Cheat settings to the config

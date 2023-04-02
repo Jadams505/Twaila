@@ -7,7 +7,7 @@ Suggestions and Feedback are welcome
 [Config Options]
 - Visit the Forum page for more details on config options
 
-- [c/FFFF00:AntiCheat]: Only updates the UI if the tile has been revealed on the map
+- [c/FFFF00:Anti Cheat Settings]: Settings to prevent cheating
 - [c/FFFF00:Content Toggles]: Toggles the various UI features on and off 
 - [c/FFFF00:UseDefaultPosition]: Centers the panel on the top of the screen
 - [c/FFFF00:LockPosition]: Stops the mouse from being able to move the panel
@@ -40,6 +40,10 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.4.0.0 (4/1/2022)
+- Updated to 1.4.4
+- Added an option for the UI appear in the full screen map
+- Added Anti Cheat settings to the config
 v0.3.0.1 (10/22/2022)
 - Adjusted to the new keybind localization
 - Fixed a bug where you could move the panel in the full screen map
