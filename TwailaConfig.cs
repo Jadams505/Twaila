@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
 using System;
 using System.Reflection;
 using System.ComponentModel;
-using System.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Twaila.UI;
-using ReLogic.Utilities;
+using Twaila.Systems;
 
 namespace Twaila
 {
@@ -17,6 +15,11 @@ namespace Twaila
         public static TwailaConfig Instance => ModContent.GetInstance<TwailaConfig>();
 
         public override ConfigScope Mode => ConfigScope.ClientSide;
+
+        public override void OnChanged()
+        {
+            ContextSystem.Instance?.SortContexts();
+        }
 
         [Header("$Mods.Twaila.Features")]
 
@@ -168,6 +171,21 @@ namespace Twaila
         [Tooltip("$Mods.Twaila.ReservedImageWidth.Tooltip")]
         [Label("$Mods.Twaila.ReservedImageWidth.Label")]
         public int ReservedImageWidth;
+
+        [DefaultValue(0)]
+        public int NpcPriority;
+
+        [DefaultValue(1)]
+        public int WallPriority;
+
+        [DefaultValue(2)]
+        public int TilePrioity;
+
+        [DefaultValue(3)]
+        public int LiquidPriority;
+
+        [DefaultValue(4)]
+        public int WirePriority;
 
         public enum DisplayType
         {

@@ -60,9 +60,13 @@ namespace Twaila.UI
 				int row = i / GridWidth;
 				int col = i % GridWidth;
 
+				/*
 				int rowStartIndex = row * GridWidth;
                 int elementsInRow = Math.Min(rowStartIndex + GridWidth, GridElements.Count) - rowStartIndex;
-				int numberOfRows = GridHeight;
+				*/
+
+				int elementsInRow = GridWidth;
+                int numberOfRows = GridHeight;
 
 				float div = GridWidth;
 

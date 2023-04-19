@@ -15,6 +15,8 @@ namespace Twaila.UI
     {
         public Layout Layout { get; set; }
         public BaseContext CurrentContext { get; set; }
+        public BaseContext PriorityContext { get; set; }
+
         public int currIndex = 0;
         public int tick = 0;
 
@@ -265,9 +267,9 @@ namespace Twaila.UI
 
         private void UpdatePanelContents()
         {
-            tick++;
             TwailaPoint mouseInfo = TwailaUI.GetCursorInfo();
-            Player player = Main.player[Main.myPlayer];
+            BaseContext context = null;
+            BaseContext priorityContext = null;
 
             if (!TwailaUI.InBounds(mouseInfo.BestPos().X, mouseInfo.BestPos().Y))
             {
@@ -275,47 +277,96 @@ namespace Twaila.UI
                 return;
             }
 
-            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mouseInfo);
-
-            if (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+            if(TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual)
             {
-                context ??= ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
+                context = GetManualContext(ref mouseInfo);
+                priorityContext = PriorityContext;
+                tick = 0;
+            }
+            else if(TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+            {
+                priorityContext = GetPriorityContext(ref mouseInfo);
+                context = GetAutomaticContext(ref mouseInfo);
 
-                if (player.itemAnimation > 0)
+                if (tick >= TwailaConfig.Instance.CycleDelay)
                 {
-                    if (player.HeldItem.pick > 0) // swinging a pickaxe
-                    {
-                        context = ContextSystem.Instance.TileEntry.Context(mouseInfo);
-                    }
-                    if (player.HeldItem.hammer > 0) // swinging a hammer
-                    {
-                        context = ContextSystem.Instance.WallEntry.Context(mouseInfo);
-                    }
+                    context = CycleContext(ref mouseInfo);
                 }
             }
 
-            if (context == null)
+            if(context == null)
             {
                 tick = 0;
                 return;
             }
 
-            if (tick >= TwailaConfig.Instance.CycleDelay)
+            Layout.InfoBox.RemoveAll();
+            UpdateCurrentContext(context);
+
+            PriorityContext = priorityContext;
+            CurrentContext = context;
+        }
+
+        private BaseContext GetManualContext(ref TwailaPoint mouseInfo)
+        {
+            return ContextSystem.Instance.CurrentContext(currIndex, mouseInfo);
+        }
+
+        private BaseContext GetAutomaticContext(ref TwailaPoint mouseInfo)
+        {
+            Player player = Main.LocalPlayer;
+            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mouseInfo) ?? ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
+
+            if (player.itemAnimation > 0)
             {
-                if (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Automatic)
+                if (player.HeldItem.pick > 0) // swinging a pickaxe
                 {
-                    context = ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
+                    context = ContextSystem.Instance.TileEntry.Context(mouseInfo);
                 }
+                if (player.HeldItem.hammer > 0) // swinging a hammer
+                {
+                    context = ContextSystem.Instance.WallEntry.Context(mouseInfo);
+                }
+            }
+            return context;
+        }
+
+        private BaseContext GetPriorityContext(ref TwailaPoint mouseInfo)
+        {
+            int first = 0;
+            BaseContext priorityContext = ContextSystem.Instance.CurrentContext(0, mouseInfo) ?? ContextSystem.Instance.NextNonNullContext(ref first, mouseInfo);
+
+            if (PriorityContext?.GetType() == priorityContext?.GetType())
+            {
+                tick++;
+            }
+            else
+            {
+                if(priorityContext != null)
+                {
+                    currIndex = first;
+                }
+                
                 tick = 0;
-                pickIndex++;
             }
 
-            Layout.InfoBox.RemoveAll();
+            return priorityContext;
+        }
+
+        private BaseContext CycleContext(ref TwailaPoint mouseInfo)
+        {
+            tick = 0;
+            pickIndex++;
+            return ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
+        }
+
+        private void UpdateCurrentContext(BaseContext context)
+        {
             if (context is TileContext tileContext)
             {
                 if (context.ContextChanged(CurrentContext))
                 {
-                    pickIndex = 0;
+                    pickIndex = 0; // useless??
                 }
                 tileContext.pickIndex = pickIndex;
                 context = tileContext;
@@ -327,7 +378,6 @@ namespace Twaila.UI
                 pickIndex = 0;
                 context.UpdateOnChange(CurrentContext, Layout);
             }
-            CurrentContext = context;
         }
 
         public override void LeftMouseDown(UIMouseEvent evt)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
@@ -11,7 +12,7 @@ namespace Twaila.Systems
     {
         public static ContextSystem Instance => ModContent.GetInstance<ContextSystem>();
 
-        public List<ContextEntry> ContextEntries { get; private set; }
+        public List<ContextEntry> ContextEntries { get; private set; } = new List<ContextEntry>();
 
         public ContextEntry TileEntry { get; private set; }
         public ContextEntry WallEntry { get; private set; }
@@ -21,9 +22,7 @@ namespace Twaila.Systems
 
         public override void Load()
         {
-            ContextEntries = new List<ContextEntry>();
-
-            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"));
+            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), () => TwailaConfig.Instance.TilePrioity);
             TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
             TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
@@ -35,18 +34,17 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"));
+            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), () => TwailaConfig.Instance.WallPriority);
 
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"));
+            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), () => TwailaConfig.Instance.LiquidPriority);
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"));
+            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), () => TwailaConfig.Instance.WirePriority);
             ContextEntries.Add(WireEntry);
 
-            // Localize this
-            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"));
+            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), () => TwailaConfig.Instance.NpcPriority);
             ContextEntries.Add(NpcEntry);
         }
 
@@ -119,6 +117,11 @@ namespace Twaila.Systems
             }
             return count;
         }
+
+        public void SortContexts()
+        {
+            ContextEntries.Sort((first, second) => first.Priority().CompareTo(second.Priority()));
+        }
     }
 
     public struct TwailaPoint
@@ -166,11 +169,14 @@ namespace Twaila.Systems
 
         public LocalizedText Name { get; set; }
 
-        public ContextEntry(ContextFetcher defaultContext, LocalizedText name)
+        public Func<int> Priority { get; set; }
+
+        public ContextEntry(ContextFetcher defaultContext, LocalizedText name, Func<int> priority)
         {
             DefaultContext = defaultContext;
             ApplicableContexts = new List<ContextFetcher>();
             Name = name;
+            Priority = priority;
         }
 
         public BaseContext Context(TwailaPoint pos)
