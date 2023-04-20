@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -26,34 +24,34 @@ namespace Twaila.Context
 
         public NpcContext(TwailaPoint pos) : base(pos)
         {
-			Npc = null;
-			Id = "";
-			Hp = "";
-			Defense = "";
-			Damage = "";
-			KnockbackTaken = "";
+            Npc = null;
+            Id = "";
+            Hp = "";
+            Defense = "";
+            Damage = "";
+            KnockbackTaken = "";
             Kills = "";
         }
 
-		public static NpcContext CreateNpcContext(TwailaPoint pos)
-		{
-			if (IntersectsNPC(pos.BestPos(), out _))
-			{
-				return new NpcContext(pos);
-			}
+        public static NpcContext CreateNpcContext(TwailaPoint pos)
+        {
+            if (IntersectsNPC(pos.BestPos(), out _))
+            {
+                return new NpcContext(pos);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool ContextChanged(BaseContext other)
+        public override bool ContextChanged(BaseContext other)
         {
             if (other?.GetType() == typeof(NpcContext))
             {
                 NpcContext otherContext = (NpcContext)other;
-				if(Npc?.type == otherContext.Npc.type)
-				{
-					return Npc?.netID != otherContext.Npc?.netID;
-				}
+                if(Npc?.type == otherContext.Npc.type)
+                {
+                    return Npc?.netID != otherContext.Npc?.netID;
+                }
             }
             return true;
         }
@@ -135,17 +133,17 @@ namespace Twaila.Context
             {
                 Rectangle drawFrame = new Rectangle(0, 0, Npc.frame.Width, Npc.frame.Height);
 
-				Color drawColor = Npc.color;
-				if(drawColor.A == 0)
-				{
-					drawColor = Color.White;
-				}
+                Color drawColor = Npc.color;
+                if (drawColor.A == 0)
+                {
+                    drawColor = Color.White;
+                }
 
-				float scale = MathHelper.Clamp(Npc.scale, 0, 1);
+                float scale = MathHelper.Clamp(Npc.scale, 0, 1);
 
-				builer.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, scale);
+                builer.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, scale);
 
-				return builer.Build();
+                return builer.Build();
             }
 
             return null;
@@ -179,9 +177,9 @@ namespace Twaila.Context
                 elements.Add(new UITwailaText(Id));
             }
 
-			List<UITwailaElement> stats = new List<UITwailaElement>();
+            List<UITwailaElement> stats = new List<UITwailaElement>();
 
-			if (!string.IsNullOrEmpty(Hp))
+            if (!string.IsNullOrEmpty(Hp))
             {
                 stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Health), Hp));
             }
@@ -200,7 +198,7 @@ namespace Twaila.Context
 
             if (!string.IsNullOrEmpty(Defense))
             {
-				stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense));
+                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense));
             }
 
             if (!string.IsNullOrEmpty(Kills))
@@ -228,7 +226,7 @@ namespace Twaila.Context
 
                 Rectangle npcHitbox = new Rectangle((int)npc.TopLeft.X - 16, (int)npc.TopLeft.Y - 16, npc.frame.Width, npc.frame.Height);
                 Rectangle mouseHitbox = new Rectangle(pos.X * 16, pos.Y * 16, 0, 0);
-				mouseHitbox.Intersects(ref npcHitbox, out bool mouseOver);
+                mouseHitbox.Intersects(ref npcHitbox, out bool mouseOver);
                 if (mouseOver)
                 {
                     target = npc;

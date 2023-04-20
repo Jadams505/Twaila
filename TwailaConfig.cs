@@ -172,6 +172,11 @@ namespace Twaila
         [Label("$Mods.Twaila.ReservedImageWidth.Label")]
         public int ReservedImageWidth;
 
+        [DefaultValue(false)]
+        [Tooltip("$Mods.Twaila.UseTextHeightForImage.Tooltip")]
+        [Label("$Mods.Twaila.UseTextHeightForImage.Label")]
+        public bool UseTextHeightForImage;
+
         [DefaultValue(0)]
         public int NpcPriority;
 

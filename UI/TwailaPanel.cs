@@ -114,6 +114,11 @@ namespace Twaila.UI
 
                 Vector2 remainingSpace = new Vector2(MaxPanelInnerDimension.X - textDimension.X - imageMarginX, MaxPanelInnerDimension.Y);
 
+                if (TwailaConfig.Instance.UseTextHeightForImage)
+                {
+                    remainingSpace.Y = textDimension.Y;
+                }
+
                 imageDimension.X *= ImageScale(remainingSpace);
                 imageDimension.Y *= ImageScale(remainingSpace);
             }
@@ -155,6 +160,11 @@ namespace Twaila.UI
                     imageDimension.X = 0;
                     imageDimension.Y = 0;
                 }
+            }
+
+            if(TwailaConfig.Instance.UseTextHeightForImage && imageDimension.Y > textDimension.Y)
+            {
+                imageDimension.Y = textDimension.Y;
             }
 
             float calculatedHeight = Math.Max(imageDimension.Y, textDimension.Y);

@@ -128,6 +128,11 @@ ReservedImageWidth: {
 	Tooltip: 文本过长时为图像分配的面板宽度百分比
 }
 
+UseTextHeightForImage: {
+	// Label: Use Text Height For Image
+	// Tooltip: Shrinks the image height to be aligned with the text height
+}
+
 AutomaticOptions: 自动化选项
 
 HideUIForAir: {

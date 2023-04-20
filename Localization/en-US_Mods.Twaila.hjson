@@ -124,6 +124,11 @@ ReservedImageWidth: {
 	Tooltip: The % of the panel's width that is allocated for the image when the text is too long
 }
 
+UseTextHeightForImage: {
+	Label: Use Text Height For Image
+	Tooltip: Shrinks the image height to be aligned with the text height
+}
+
 AutomaticOptions: Automatic Options
 
 HideUIForAir: {
