@@ -22,7 +22,7 @@ namespace Twaila.Systems
 
         public override void Load()
         {
-            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), () => TwailaConfig.Instance.TilePrioity);
+            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.TilePrioity);
             TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
             TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
@@ -34,17 +34,16 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), () => TwailaConfig.Instance.WallPriority);
-
+            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WallPriority);
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), () => TwailaConfig.Instance.LiquidPriority);
+            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.LiquidPriority);
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), () => TwailaConfig.Instance.WirePriority);
+            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WirePriority);
             ContextEntries.Add(WireEntry);
 
-            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), () => TwailaConfig.Instance.NpcPriority);
+            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.NpcPriority);
             ContextEntries.Add(NpcEntry);
         }
 

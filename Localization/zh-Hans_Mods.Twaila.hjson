@@ -33,6 +33,7 @@ Content: {
 	// ShowCoating: Show Coating
 	// ShowContainedItems: Show Contained Items
 	// NpcContent: Npc Content Toggles
+	// ContentPriorities: Content Priorities
 }
 
 NpcContent: {
@@ -42,6 +43,14 @@ NpcContent: {
 	// ShowKnockback: Show Knockback
 	// ShowKills: Show Kills
 	// ElementsPerRow: Elements Per Row
+}
+
+Priorities: {
+	// WirePriority: Wire Priority
+	// NpcPriority: Npc Priority
+	// WallPriority: Wall Priority
+	// TilePrioity: Tile Priority
+	// LiquidPriority: Liquid Priority
 }
 
 ModConfig: 模组配置

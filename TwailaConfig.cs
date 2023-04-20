@@ -177,20 +177,7 @@ namespace Twaila
         [Label("$Mods.Twaila.UseTextHeightForImage.Label")]
         public bool UseTextHeightForImage;
 
-        [DefaultValue(0)]
-        public int NpcPriority;
-
-        [DefaultValue(1)]
-        public int WallPriority;
-
-        [DefaultValue(2)]
-        public int TilePrioity;
-
-        [DefaultValue(3)]
-        public int LiquidPriority;
-
-        [DefaultValue(4)]
-        public int WirePriority;
+        
 
         public enum DisplayType
         {
@@ -257,6 +244,10 @@ namespace Twaila
             [SeparatePage]
             [Label("$Mods.Twaila.Content.NpcContent")]
             public NpcContent NpcContent = new NpcContent();
+
+            [SeparatePage]
+            [Label("$Mods.Twaila.Content.ContentPriorities")]
+            public Priorities ContentPriorities = new Priorities();
 
             public Content()
             {
@@ -343,6 +334,53 @@ namespace Twaila
             public override int GetHashCode()
             {
                 return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills, ElementsPerRow);
+            }
+        }
+
+        public class Priorities
+        {
+            [DefaultValue(0)]
+            [Label("$Mods.Twaila.Priorities.WirePriority")]
+            public int WirePriority;
+
+            [DefaultValue(1)]
+            [Label("$Mods.Twaila.Priorities.NpcPriority")]
+            public int NpcPriority;
+
+            [DefaultValue(4)]
+            [Label("$Mods.Twaila.Priorities.WallPriority")]
+            public int WallPriority;
+
+            [DefaultValue(2)]
+            [Label("$Mods.Twaila.Priorities.TilePrioity")]
+            public int TilePrioity;
+
+            [DefaultValue(3)]
+            [Label("$Mods.Twaila.Priorities.LiquidPriority")]
+            public int LiquidPriority;
+
+            public Priorities()
+            {
+                NpcPriority = 0;
+                WallPriority = 1;
+                TilePrioity = 2;
+                LiquidPriority = 3;
+                WirePriority = 4;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Priorities priorities &&
+                       NpcPriority == priorities.NpcPriority &&
+                       WallPriority == priorities.WallPriority &&
+                       TilePrioity == priorities.TilePrioity &&
+                       LiquidPriority == priorities.LiquidPriority &&
+                       WirePriority == priorities.WirePriority;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(NpcPriority, WallPriority, TilePrioity, LiquidPriority, WirePriority);
             }
         }
 
