@@ -51,6 +51,23 @@ namespace Twaila.UI
             Opacity = config.HoverOpacity;
         }
 
+        public Vector2 GetScaleVector(Vector2 maxSize)
+        {
+            float scaleX = 1;
+            if (GetContentSize().X > maxSize.X)
+            {
+                scaleX = maxSize.X / GetContentSize().X;
+            }
+            float scaleY = 1;
+            if (GetContentSize().Y > maxSize.Y)
+            {
+                scaleY = maxSize.Y / GetContentSize().Y;
+            }
+            return new Vector2(scaleX, scaleY);
+        }
+
+        public Vector2 GetDrawScaleVector() => GetScaleVector(new Vector2(Width.Pixels, Height.Pixels));
+
         // Gets the uniform scale it would take to shrink the content to maxSize
         public float GetScale(Vector2 maxSize)
         {

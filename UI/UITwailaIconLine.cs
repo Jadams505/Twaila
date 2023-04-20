@@ -63,15 +63,17 @@ namespace Twaila.UI
             }
         }
 
+        public const int VerticalTrimBuffer = 10;
+
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
         {
+            if(Width.Pixels == 0 || Height.Pixels == 0 || GetContentSize().Y > Height.Pixels + VerticalTrimBuffer)
+            {
+                return;
+            }
+
             Vector2 drawPos = GetDimensions().Position();
             float width = 0;
-
-            if(GetContentSize().Y > Height.Pixels)
-            {
-               return;
-            }
 
             foreach(TwailaRender icon in IconImages)
             {

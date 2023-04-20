@@ -26,17 +26,21 @@ namespace Twaila.UI
 
         public override void Update(GameTime gameTime)
         {
-            float scale = GetDrawScale();
+            Vector2 scale = DrawMode == DrawMode.Shrink ? GetDrawScaleVector() : Vector2.One;
 
             Icon.Left.Set(0, 0);
             Icon.Top.Set(0, 0);
-            Icon.Width.Set((int)(Icon.Render.Width * scale), 0);
-            Icon.Height.Set(Height.Pixels, 0);
+            Icon.Width.Set((int)(Icon.Render.Width * scale.X), 0);
+            if(DrawMode == DrawMode.Trim && Icon.Width.Pixels > Width.Pixels)
+            {
+                Icon.Width.Set(Math.Max(Width.Pixels, 0), 0);
+            }
+            Icon.Height.Set(Height.Pixels * scale.Y, 0);
 
             StatText.Top.Set(0, 0);
             StatText.Left.Set(Icon.Width.Pixels + PADDING_RIGHT, 0);
-            StatText.Width.Set(Width.Pixels - Icon.Width.Pixels - PADDING_RIGHT, 0);
-            StatText.Height.Set(Height.Pixels, 0);
+            StatText.Width.Set(Math.Max(Width.Pixels - Icon.Width.Pixels - PADDING_RIGHT, 0), 0);
+            StatText.Height.Set(Height.Pixels * scale.Y, 0);
         }
 
         public override Vector2 GetContentSize()

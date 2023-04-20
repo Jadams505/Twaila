@@ -61,10 +61,16 @@ namespace Twaila.UI
             return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
         }
 
+        public const int VerticalTrimBuffer = 10;
+
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
         {
+            if(Width.Pixels == 0 || Height.Pixels == 0)
+            {
+                return;
+            }
             Vector2 textSize = GetContentSize();
-            if(textSize.Y <= Height.Pixels)
+            if(textSize.Y <= Height.Pixels + VerticalTrimBuffer)
             {
                 List<TextSnippet> snippets = ChatManager.ParseMessage(Text, Color);
                 if(snippets.Count == 0)

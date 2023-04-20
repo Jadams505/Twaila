@@ -123,44 +123,20 @@ namespace Twaila.UI
                 {
                     float height = 0;
                     float width = 0;
-                    Vector2 nameSize = Layout.Name.GetSizeIfAppended();
-                    if (nameSize.Y + height < MaxPanelInnerDimension.Y)
-                    {
-                        height += nameSize.Y;
-                        width = Math.Max(width, nameSize.X);
-                    }
-                    else
-                    {
-                        RemoveChild(Layout.Name);
-                    }
+
+                    TrimElementVertically(Layout.Name, ref width, ref height);
+
                     for (int i = 0; i < Layout.InfoBox.InfoLines.Count; ++i)
                     {
                         if (Layout.InfoBox.Enabled[i])
                         {
                             UITwailaElement element = Layout.InfoBox.InfoLines[i];
-                            Vector2 elementSize = element.GetSizeIfAppended();
-                            if (elementSize.Y + height < MaxPanelInnerDimension.Y)
-                            {
-                                height += elementSize.Y;
-                                width = Math.Max(width, elementSize.X);
-                            }
-                            else
-                            {
-                                Layout.InfoBox.RemoveElement(i);
-                                i--;
-                            }
+                            TrimElementVertically(element, ref width, ref height);
                         }
                     }
-                    Vector2 modSize = Layout.Mod.GetSizeIfAppended();
-                    if (modSize.Y + height < MaxPanelInnerDimension.Y)
-                    {
-                        height += modSize.Y;
-                        width = Math.Max(width, modSize.X);
-                    }
-                    else
-                    {
-                        RemoveChild(Layout.Mod);
-                    }
+
+                    TrimElementVertically(Layout.Mod, ref width, ref height);
+
                     textDimension.Y = height;
                     textDimension.X = width;
                 }
@@ -188,6 +164,26 @@ namespace Twaila.UI
             float calculatedWidth = textDimension.X + imageDimension.X + imageMarginX + PaddingLeft + PaddingRight;
             Width.Set(calculatedWidth, 0);
             Layout.Image.Width.Set(imageDimension.X, 0);
+        }
+
+        private void TrimElementVertically(UITwailaElement element, ref float currentWidth, ref float currentHeight)
+        {
+            Vector2 elementSize = element.GetSizeIfAppended();
+            if (elementSize.Y + currentHeight < MaxPanelInnerDimension.Y)
+            {
+                currentHeight += elementSize.Y;
+                currentWidth = Math.Max(currentWidth, elementSize.X);
+            }
+            else
+            {
+                float trimHeight = Math.Max(0, MaxPanelInnerDimension.Y - currentHeight);
+                element.Height.Set(trimHeight, 0);
+                if (trimHeight > 0)
+                {
+                    currentHeight += trimHeight;
+                    currentWidth = Math.Max(currentWidth, elementSize.X);
+                }
+            }
         }
 
         public float ImageScale(Vector2 maxSize)
