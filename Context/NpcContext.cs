@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -210,7 +211,7 @@ namespace Twaila.Context
                 stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Kill), Kills));
             }
 
-            int statsPerRow = 3;
+            int statsPerRow = Math.Clamp(TwailaConfig.Instance.DisplayContent.NpcContent.ElementsPerRow, 1, stats.Count);
             if(stats.Count > 0)
             {
                 elements.Add(new UITwailaGrid(stats, statsPerRow));

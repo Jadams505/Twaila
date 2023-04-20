@@ -41,6 +41,7 @@ NpcContent: {
 	// ShowAttack: Show Attack
 	// ShowKnockback: Show Knockback
 	// ShowKills: Show Kills
+	// ElementsPerRow: Elements Per Row
 }
 
 ModConfig: 模组配置

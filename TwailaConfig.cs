@@ -310,6 +310,11 @@ namespace Twaila
             [Label("$Mods.Twaila.NpcContent.ShowKills")]
             public bool ShowKills;
 
+            [Range(1, 5)]
+            [DefaultValue(3)]
+            [Label("$Mods.Twaila.NpcContent.ElementsPerRow")]
+            public int ElementsPerRow;
+
             public NpcContent()
             {
                 ShowHp = true;
@@ -317,6 +322,7 @@ namespace Twaila
                 ShowAttack = true;
                 ShowKnockback = true;
                 ShowKills = true;
+                ElementsPerRow = 3;
             }
 
             public override bool Equals(object obj)
@@ -324,14 +330,14 @@ namespace Twaila
                 if (obj is NpcContent other)
                 {
                     return ShowHp == other.ShowHp && ShowDefense == other.ShowDefense && ShowAttack == other.ShowAttack
-                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills;
+                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills && ElementsPerRow == other.ElementsPerRow;
                 }
                 return base.Equals(obj);
             }
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills);
+                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills, ElementsPerRow);
             }
         }
 
