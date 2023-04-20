@@ -83,11 +83,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(DirtId);
-            if (mTile != null)
-            {
-                return mTile.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mTile);
         }
 
         private int GetTreeDirt()

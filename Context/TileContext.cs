@@ -214,37 +214,6 @@ namespace Twaila.Context
             {
                 elements.Insert(0, new UITwailaText(Id));
             }
-            /*
-            List<UITwailaElement> entries = new List<UITwailaElement>();
-
-            if (!string.IsNullOrEmpty(PaintText))
-            {
-                entries.Add(new UITwailaText(PaintText));
-            }
-            if (!string.IsNullOrEmpty(IlluminantText))
-            {
-                entries.Add(new UITwailaText(IlluminantText));
-            }
-            if (!string.IsNullOrEmpty(EchoText))
-            {
-                entries.Add(new UITwailaText(EchoText));
-            }
-            if (!string.IsNullOrEmpty(RecommendedPickaxe))
-            {
-                entries.Add(new UITwailaText(RecommendedPickaxe));
-            }
-            if (!string.IsNullOrEmpty(PickPower))
-            {
-                entries.Add(new UITwailaText(PickPower));
-            }
-            if (!string.IsNullOrEmpty(Id))
-            {
-                entries.Add(new UITwailaText(Id));
-            }
-
-            int rowWidth = 1;
-            elements.Insert(0, new UITwailaGrid(entries, rowWidth));
-            */
             return elements;
         }
 
@@ -266,11 +235,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(TileId);
-            if (mTile != null)
-            {
-                return mTile.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mTile);
         }
     }
 }

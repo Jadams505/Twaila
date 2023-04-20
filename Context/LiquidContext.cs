@@ -126,11 +126,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
-            if (mWater != null)
-            {
-                return mWater.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mWater);
         }
 
     }

@@ -513,20 +513,27 @@ namespace Twaila.Util
         public static string GetInternalTileName(int tileId, bool fullName)
         {
             ModTile mTile = TileLoader.GetTile(tileId);
-            return fullName ? mTile?.GetType().FullName : mTile?.Name;
+            return GetInternalName(mTile, fullName);
         }
 
         public static string GetInternalWallName(int wallId, bool fullName)
         {
             ModWall mWall = WallLoader.GetWall(wallId);
-            return fullName ? mWall?.GetType().FullName : mWall?.Name;
+            return GetInternalName(mWall, fullName);
         }
 
         public static string GetInternalLiquidName(int waterStyle, bool fullName)
         {
             ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(waterStyle);
-            return fullName ? mWater?.GetType().FullName : mWater?.Name;
+            return GetInternalName(mWater, fullName);
         }
+
+        public static string GetInternalName(ModType type, bool fullName)
+        {
+            return fullName ? type?.GetType().FullName : type?.Name;
+        }
+
+        public static string GetMod(ModType type) => type == null ? "Terraria" : type.Mod.DisplayName;
 
         public static string ToLocalizedString(this Enum value)
         {

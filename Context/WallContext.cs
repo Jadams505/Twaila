@@ -172,11 +172,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModWall mWall = WallLoader.GetWall(WallId);
-            if (mWall != null)
-            {
-                return mWall.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mWall);
         }
     }
 }

@@ -153,22 +153,19 @@ namespace Twaila.Context
 
         protected override string GetMod()
         {
-            if(Npc != null)
-            {
-                ModNPC mNpc = NPCLoader.GetNPC(Npc.type);
-                if (mNpc != null)
-                {
-                    return mNpc.Mod.DisplayName;
-                }
-            }
-            return "Terraria";
+            return NameUtil.GetMod(Npc.ModNPC);
         }
 
         protected override string GetName()
         {
             if (Npc != null)
             {
-                return Npc.FullName; // remember to check for internal names
+                string displayName = Npc.FullName;
+                string internalName = NameUtil.GetInternalName(Npc.ModNPC, false);
+                string fullName = NameUtil.GetInternalName(Npc.ModNPC, true);
+
+                TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
+                return NameUtil.GetName(nameType, displayName, internalName, fullName);
             }
             return null;
         }
