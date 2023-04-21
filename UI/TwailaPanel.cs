@@ -370,13 +370,13 @@ namespace Twaila.UI
         {
             if (context is TileContext tileContext)
             {
-                if (context.ContextChanged(CurrentContext))
-                {
-                    pickIndex = 0; // useless??
-                }
                 tileContext.pickIndex = pickIndex;
                 context = tileContext;
                 context.UpdateOnChange(CurrentContext, Layout);
+                if (context.ContextChanged(CurrentContext))
+                {
+                    tileContext.pickIndex = 0;
+                }
                 pickIndex = tileContext.pickIndex;
             }
             else
