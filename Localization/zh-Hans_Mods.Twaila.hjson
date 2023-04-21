@@ -46,6 +46,7 @@ NpcContent: {
 }
 
 Priorities: {
+	// Header: Priorities (Lower values have higher priority)
 	// WirePriority: Wire Priority
 	// NpcPriority: Npc Priority
 	// WallPriority: Wall Priority

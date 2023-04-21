@@ -197,6 +197,14 @@ namespace Twaila
 
         public class Content
         {
+            [SeparatePage]
+            [Label("$Mods.Twaila.Content.ContentPriorities")]
+            public Priorities ContentPriorities = new Priorities();
+
+            [SeparatePage]
+            [Label("$Mods.Twaila.Content.NpcContent")]
+            public NpcContent NpcContent = new NpcContent();
+
             [DefaultValue(true)]
             [Label("$Mods.Twaila.Content.ShowImage")]
             public bool ShowImage;
@@ -240,14 +248,6 @@ namespace Twaila
             [DrawTicks]
             [Label("$Mods.Twaila.Content.ShowContainedItems")]
             public DisplayType ShowContainedItems;
-
-            [SeparatePage]
-            [Label("$Mods.Twaila.Content.NpcContent")]
-            public NpcContent NpcContent = new NpcContent();
-
-            [SeparatePage]
-            [Label("$Mods.Twaila.Content.ContentPriorities")]
-            public Priorities ContentPriorities = new Priorities();
 
             public Content()
             {
@@ -339,6 +339,8 @@ namespace Twaila
 
         public class Priorities
         {
+            [Header("$Mods.Twaila.Priorities.Header")]
+
             [DefaultValue(0)]
             [Label("$Mods.Twaila.Priorities.WirePriority")]
             public int WirePriority;
@@ -346,10 +348,6 @@ namespace Twaila
             [DefaultValue(1)]
             [Label("$Mods.Twaila.Priorities.NpcPriority")]
             public int NpcPriority;
-
-            [DefaultValue(4)]
-            [Label("$Mods.Twaila.Priorities.WallPriority")]
-            public int WallPriority;
 
             [DefaultValue(2)]
             [Label("$Mods.Twaila.Priorities.TilePrioity")]
@@ -359,13 +357,17 @@ namespace Twaila
             [Label("$Mods.Twaila.Priorities.LiquidPriority")]
             public int LiquidPriority;
 
+            [DefaultValue(4)]
+            [Label("$Mods.Twaila.Priorities.WallPriority")]
+            public int WallPriority;
+
             public Priorities()
             {
-                NpcPriority = 0;
-                WallPriority = 1;
+                WirePriority = 0;
+                NpcPriority = 1;
                 TilePrioity = 2;
                 LiquidPriority = 3;
-                WirePriority = 4;
+                WallPriority = 4;
             }
 
             public override bool Equals(object obj)
