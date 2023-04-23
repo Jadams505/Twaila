@@ -308,8 +308,22 @@ namespace Twaila
 
             [Range(1, 5)]
             [DefaultValue(3)]
-            [Label("$Mods.Twaila.NpcContent.ElementsPerRow")]
-            public int ElementsPerRow;
+            [Label("$Mods.Twaila.NpcContent.StatElementsPerRow")]
+            public int StatElementsPerRow;
+
+            [DrawTicks]
+            [Label("$Mods.Twaila.NpcContent.ShowBuffs")]
+            public DisplayType ShowBuffs;
+
+            [Range(1, 20)]
+            [DefaultValue(10)]
+            [Label("$Mods.Twaila.NpcContent.BuffIconsPerRow")]
+            public int BuffIconsPerRow;
+
+            [Range(1, 10)]
+            [DefaultValue(3)]
+            [Label("$Mods.Twaila.NpcContent.BuffTextsPerRow")]
+            public int BuffTextsPerRow;
 
             public NpcContent()
             {
@@ -318,7 +332,10 @@ namespace Twaila
                 ShowAttack = true;
                 ShowKnockback = true;
                 ShowKills = true;
-                ElementsPerRow = 3;
+                StatElementsPerRow = 3;
+                ShowBuffs = DisplayType.Icon;
+                BuffIconsPerRow = 10;
+                BuffTextsPerRow = 3;
             }
 
             public override bool Equals(object obj)
@@ -326,14 +343,15 @@ namespace Twaila
                 if (obj is NpcContent other)
                 {
                     return ShowHp == other.ShowHp && ShowDefense == other.ShowDefense && ShowAttack == other.ShowAttack
-                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills && ElementsPerRow == other.ElementsPerRow;
+                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills && StatElementsPerRow == other.StatElementsPerRow
+                        && ShowBuffs == other.ShowBuffs && BuffIconsPerRow == other.BuffIconsPerRow && BuffTextsPerRow == other.BuffTextsPerRow;
                 }
                 return base.Equals(obj);
             }
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills, ElementsPerRow);
+                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills, StatElementsPerRow, ShowBuffs);
             }
         }
 

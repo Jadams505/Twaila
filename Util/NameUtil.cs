@@ -478,6 +478,13 @@ namespace Twaila.Util
             return null;
         }
 
+        public static string GetNameForBuff(int buffType)
+        {
+            string name = Lang.GetBuffName(buffType);
+
+            return name.Replace("BuffName.", "");
+        }
+
         public static string SplitPascalCase(this string word)
         {
             StringBuilder builder = new StringBuilder();

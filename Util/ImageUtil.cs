@@ -530,6 +530,16 @@ namespace Twaila.Util
             return builder.Build();
         }
 
+        public static TwailaRender GetRenderForBuff(int type)
+        {
+            Texture2D texture = TextureAssets.Buff[type].ForceVanillaLoad();
+
+            RenderBuilder builder = new RenderBuilder();
+            builder.AddImage(texture, Point.Zero, texture.Bounds, 0.5f);
+
+            return builder.Build();
+        }
+
         public static Texture2D GetTileTexture(int tileId)
         {
             if(tileId >= 0 && tileId < TextureAssets.Tile.Length)

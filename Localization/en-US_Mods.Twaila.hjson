@@ -42,7 +42,10 @@ NpcContent: {
 	ShowAttack: Show Attack
 	ShowKnockback: Show Knockback
 	ShowKills: Show Kills
-	ElementsPerRow: Elements Per Row
+	StatElementsPerRow: Stat Elements Per Row
+	ShowBuffs: Show Buffs
+	BuffIconsPerRow: Buff Icons Per Row
+	BuffTextsPerRow: Buff Texts Per Row
 }
 
 Priorities: {

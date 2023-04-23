@@ -99,13 +99,13 @@ namespace Twaila.Graphics
                 Vector2 drawPos = new Vector2(bounds.X + draw.Position.X * scale, bounds.Y + draw.Position.Y * scale);
                 Rectangle source = draw.Source;
 
-                if (draw.Position.X + draw.Size().X > bounds.Width)
+                if (draw.Position.X + draw.Size().X * scale > bounds.Width)
                 {
                     int sizeX = (int)((bounds.Width - draw.Position.X) / draw.Scale);
                     source.Width = sizeX;
                 }
 
-                if (draw.Position.Y + draw.Size().Y > bounds.Height)
+                if (draw.Position.Y + draw.Size().Y * scale > bounds.Height)
                 {
                     int sizeY = (int)((bounds.Height - draw.Position.Y) / draw.Scale);
                     source.Height = sizeY;

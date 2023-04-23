@@ -152,7 +152,7 @@ namespace Twaila.UI
 
             Vector2 drawPos = new Vector2(GetDimensions().X, GetDimensions().Y).Floor();
             Vector2 drawSize = ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale)) * scale;
-            drawPos.Y += Math.Max(0, (int)(Height.Pixels - drawSize.Y) / 2); // center the text vertically
+            drawPos.Y += Math.Max(0, (int)(Height.Pixels - drawSize.Y) / 2f); // center the text vertically - this doesn't really work because GetStringSize is kind of bad (text is taller than it appears) 
 
             if (TextShadow)
             {
