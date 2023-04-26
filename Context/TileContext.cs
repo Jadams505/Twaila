@@ -70,7 +70,7 @@ namespace Twaila.Context
                 {
                     if (paintIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(paintIcon).ToRender());
                     }
                 }
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
@@ -86,11 +86,11 @@ namespace Twaila.Context
                 {
                     if(illuminantIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(illuminantIcon).ToRender());
                     }
                     if(echoIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(echoIcon).ToRender());
                     }
                 }
                 if(content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
@@ -106,7 +106,7 @@ namespace Twaila.Context
                 {
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(pickId).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(pickId).ToRender());
                     }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {

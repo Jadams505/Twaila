@@ -20,11 +20,14 @@ namespace Twaila.Context
         protected string WireText { get; set; }
         protected string ActuatorText { get; set; }
 
-        protected UITwailaIconLine Icons { get; set; }
+        protected UITwailaIconGrid IconGrid { get; set; }
 
         public WireContext(TwailaPoint point) : base(point)
         {
-            Icons = new UITwailaIconLine();
+            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow)
+            {
+                MaxSize = 20f,
+            };
             WireText = "";
             ActuatorText = "";
         }
@@ -87,7 +90,7 @@ namespace Twaila.Context
                         {
                             if(icon > 0)
                             {
-                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon).ToRender());
+                                IconGrid.AddIcon(ImageUtil.GetItemTexture(icon).ToRender());
                             }
                         }
                     }
@@ -105,7 +108,7 @@ namespace Twaila.Context
                     {
                         if (actIcon > 0)
                         {
-                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon).ToRender());
+                            IconGrid.AddIcon(ImageUtil.GetItemTexture(actIcon).ToRender());
                         }
                     }
                     if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
@@ -160,11 +163,16 @@ namespace Twaila.Context
             {
                 elements.Add(new UITwailaText(ActuatorText));
             }
+            if(IconGrid.GridElements.Count > 0)
+            {
+                elements.Add(IconGrid);
+            }
+            /*
             if(Icons.IconImages.Count > 0)
             {
                 elements.Add(Icons);
             }
-
+            */
             return elements;
         }
 

@@ -17,13 +17,10 @@ namespace Twaila.Context
         protected int[] ItemIds { get; set; }
         protected string[] ItemTexts { get; set; }
 
-        protected UITwailaIconLine DisplayContentIcons { get; set; }
-
         public DisplayDollContext(TwailaPoint point) : base(point)
         {
             ItemIds = new int[MAX_ITEM_COUNT];
             ItemTexts = new string[MAX_ITEM_COUNT];
-            DisplayContentIcons = new UITwailaIconLine();
         }
 
         public static DisplayDollContext CreateDisplayDollContext(TwailaPoint pos)
@@ -72,14 +69,7 @@ namespace Twaila.Context
                 {
                     if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
-                        if(Icons.IconImages.Count != 0 && Icons.IconImages.Count < 6)
-                        {
-                            Icons.IconImages.Add(ImageUtil.GetRenderForIconItem(id));
-                        }
-                        else
-                        {
-                            DisplayContentIcons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(id));
-                        }
+                        IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(id));
                     }
                     if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
@@ -99,10 +89,6 @@ namespace Twaila.Context
                 {
                     elements.Insert(0, new UITwailaText(name));
                 }
-            }
-            if (DisplayContentIcons.IconImages.Count > 0)
-            {
-                elements.Add(DisplayContentIcons);
             }
             return elements;
         }

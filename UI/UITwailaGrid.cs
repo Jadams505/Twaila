@@ -8,16 +8,21 @@ namespace Twaila.UI
     {
         public int RowPadding { get; set; } = 10;
 
-        public List<UITwailaElement> GridElements { get; set; }
+        public int ColumnPadding { get; set; } = 2;
+
+        public float MaxCellWidth { get; set; } = 1920;
+
+        public float MaxCellHeight { get; set; } = 1080;
+
+        public List<UITwailaElement> GridElements { get; set; } = new List<UITwailaElement>();
 
         public int GridWidth { get; set; }
 
         public int GridHeight => (int)Math.Ceiling((float)GridElements.Count / GridWidth);
 
-        public UITwailaGrid(List<UITwailaElement> elements, int width) : base()
+        public UITwailaGrid(List<UITwailaElement> elements, int width) : this(width)
         {
             GridElements = elements;
-            GridWidth = width;
 
             for (int i = 0; i < GridElements.Count; ++i)
             {
@@ -26,6 +31,17 @@ namespace Twaila.UI
 
             Width.Set(GetContentSize().X, 0);
             Height.Set(GetContentSize().Y, 0);
+        }
+
+        public UITwailaGrid(int width) : base()
+        {
+            GridWidth = width;
+        }
+
+        public void Add(UITwailaElement element)
+        {
+            GridElements.Add(element);
+            Append(element);
         }
 
         public override Vector2 GetContentSize()
@@ -42,7 +58,7 @@ namespace Twaila.UI
                 {
                     i = row * GridWidth + col;
                     Vector2 size = GridElements[i].GetContentSize();
-                    biggestHeightInRow = Math.Max(biggestHeightInRow, size.Y);
+                    biggestHeightInRow = Math.Clamp(Math.Max(biggestHeightInRow, size.Y), 0, MaxCellHeight);
                 }
                 height += biggestHeightInRow;
             }
@@ -55,11 +71,11 @@ namespace Twaila.UI
                 {
                     i = row * GridWidth + col;
                     Vector2 size = GridElements[i].GetContentSize();
-                    biggestWidthInCol = Math.Max(biggestWidthInCol, size.X);
+                    biggestWidthInCol = Math.Clamp(Math.Max(biggestWidthInCol, size.X), 0, MaxCellHeight);
                 }
                 width += biggestWidthInCol;
             }
-            return new Vector2(width + Math.Max(GridWidth - 1, 0) * RowPadding, height);
+            return new Vector2(width + Math.Max(GridWidth - 1, 0) * RowPadding, height + Math.Max(GridHeight - 1, 0) * ColumnPadding);
         }
 
         public override void Update(GameTime gameTime)
@@ -73,24 +89,26 @@ namespace Twaila.UI
                 int rowStartIndex = row * GridWidth;
                 int elementsInRow = Math.Min(rowStartIndex + GridWidth, GridElements.Count) - rowStartIndex;
                 float biggestHeightInRow = 0;
+                float padding = row * ColumnPadding;
                 for (int col = 0, i = 0; col < elementsInRow && i < GridElements.Count; ++col)
                 {
                     i = row * GridWidth + col;
                     Vector2 size = GridElements[i].GetContentSize();
-                    biggestHeightInRow = Math.Max(biggestHeightInRow, size.Y);
+                    biggestHeightInRow = Math.Clamp(Math.Max(biggestHeightInRow, size.Y), 0, MaxCellHeight);
                 }
 
                 biggestHeightInRow *= scale.Y;
+                padding *= scale.Y;
 
                 for (int col = 0, i = 0; col < elementsInRow && i < GridElements.Count; ++col)
                 {
                     i = row * GridWidth + col;
                     UITwailaElement element = GridElements[i];
-                    element.Top.Set(height, 0);
+                    element.Top.Set(height + padding, 0);
                     element.Height.Set(biggestHeightInRow, 0);
-                    if (DrawMode == DrawMode.Trim && height + biggestHeightInRow > Height.Pixels)
+                    if (DrawMode == DrawMode.Trim && height + padding + biggestHeightInRow > Height.Pixels)
                     {
-                        element.Height.Set(Math.Max(Height.Pixels - height, 0), 0);
+                        element.Height.Set(Math.Max(Height.Pixels - height - padding, 0), 0);
                     }
                 }
                 height += biggestHeightInRow;
@@ -105,7 +123,7 @@ namespace Twaila.UI
                 {
                     i = row * GridWidth + col;
                     Vector2 size = GridElements[i].GetContentSize();
-                    biggestWidthInCol = Math.Max(biggestWidthInCol, size.X);
+                    biggestWidthInCol = Math.Clamp(Math.Max(biggestWidthInCol, size.X), 0, MaxCellHeight);
                 }
 
                 biggestWidthInCol *= scale.X;

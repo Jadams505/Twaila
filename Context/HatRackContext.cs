@@ -69,7 +69,7 @@ namespace Twaila.Context
                 {
                     if(content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(id));
+                        IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(id));
                     }
                     if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {

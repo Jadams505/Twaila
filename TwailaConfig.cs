@@ -249,6 +249,11 @@ namespace Twaila
             [Label("$Mods.Twaila.Content.ShowContainedItems")]
             public DisplayType ShowContainedItems;
 
+            [Range(1, 20)]
+            [DefaultValue(8)]
+            [Label("$Mods.Twaila.Content.IconsPerRow")]
+            public int IconsPerRow;
+
             public Content()
             {
                 ShowImage = true;
@@ -263,6 +268,7 @@ namespace Twaila
                 ShowContainedItems = DisplayType.Icon;
                 ShowName = NameType.DisplayName;
                 NpcContent = new NpcContent();
+                IconsPerRow = 8;
             }
 
             public override bool Equals(object obj)
@@ -273,7 +279,7 @@ namespace Twaila
                         && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire && 
                         ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint && ShowPickaxe == other.ShowPickaxe
                         && ShowId == other.ShowId && ShowContainedItems == other.ShowContainedItems && ShowCoating == other.ShowCoating
-                        && NpcContent == other.NpcContent;
+                        && NpcContent == other.NpcContent && IconsPerRow == other.IconsPerRow;
                 }
                 return base.Equals(obj);
             }

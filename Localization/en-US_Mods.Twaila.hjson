@@ -34,6 +34,7 @@ Content: {
 	ShowContainedItems: Show Contained Items
 	NpcContent: Npc Content Toggles
 	ContentPriorities: Content Priorities
+	IconsPerRow: Icons Per Row
 }
 
 NpcContent: {
