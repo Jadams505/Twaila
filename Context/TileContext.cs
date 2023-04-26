@@ -62,6 +62,7 @@ namespace Twaila.Context
             if (content.ShowId)
             {
                 Id = Language.GetText("Mods.Twaila.TileId").WithFormatArgs(TileId).Value;
+                TextGrid.Add(new UITwailaText(Id));
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Tile, out string paintText, out int paintIcon))
@@ -76,6 +77,7 @@ namespace Twaila.Context
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
                     PaintText = paintText;
+                    TextGrid.Add(new UITwailaText(PaintText));
                 }
             }
 
@@ -97,6 +99,8 @@ namespace Twaila.Context
                 {
                     IlluminantText = illuminantText;
                     EchoText = echoText;
+                    TextGrid.Add(new UITwailaText(IlluminantText));
+                    TextGrid.Add(new UITwailaText(EchoText));
                 }
             }
 
@@ -112,12 +116,14 @@ namespace Twaila.Context
                     {
                         RecommendedPickaxe = Language.GetText("Mods.Twaila.RecommendedPick")
                             .WithFormatArgs(Lang.GetItemNameValue(pickId), InfoUtil.GetPickPowerForItem(pickId)).Value;
+                        TextGrid.Add(new UITwailaText(RecommendedPickaxe));
                     }
                 }
 
                 if (content.ShowPickaxePower)
                 {
                     PickPower = pickText;
+                    TextGrid.Add(new UITwailaText(PickPower));
                 }
             }
         }
@@ -185,36 +191,6 @@ namespace Twaila.Context
             }
             texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.BestPos().X, Pos.BestPos().Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return texture.ToRender();
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-            if (!string.IsNullOrEmpty(PaintText))
-            {
-                elements.Insert(0, new UITwailaText(PaintText));
-            }
-            if (!string.IsNullOrEmpty(IlluminantText))
-            {
-                elements.Insert(0, new UITwailaText(IlluminantText));
-            }
-            if (!string.IsNullOrEmpty(EchoText))
-            {
-                elements.Insert(0, new UITwailaText(EchoText));
-            }
-            if (!string.IsNullOrEmpty(RecommendedPickaxe))
-            {
-                elements.Insert(0, new UITwailaText(RecommendedPickaxe));
-            }
-            if (!string.IsNullOrEmpty(PickPower))
-            {
-                elements.Insert(0, new UITwailaText(PickPower));
-            }
-            if (!string.IsNullOrEmpty(Id))
-            {
-                elements.Insert(0, new UITwailaText(Id));
-            }
-            return elements;
         }
 
         protected override string GetName()

@@ -74,23 +74,10 @@ namespace Twaila.Context
                     if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
                         ItemTexts[i] = NameUtil.GetNameFromItem(id);
+                        TextGrid.Add(new UITwailaText(ItemTexts[i]));
                     }
                 }
             }		
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            foreach(string name in ItemTexts)
-            {
-                if (!string.IsNullOrEmpty(name))
-                {
-                    elements.Insert(0, new UITwailaText(name));
-                }
-            }
-            return elements;
         }
 
         private void PopulateItems()

@@ -64,6 +64,7 @@ namespace Twaila.Context
                 {
                     Id = Language.GetText("Mods.Twaila.LiquidId").WithFormatArgs(LiquidId).Value;
                 }
+                TextGrid.Add(new UITwailaText(Id));
             }
         }
 
@@ -109,18 +110,6 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
             return ImageUtil.GetLiquidRenderFromTile(tile);
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(Id))
-            {
-                elements.Insert(0, new UITwailaText(Id));
-            }
-
-            return elements;
         }
 
         protected override string GetMod()

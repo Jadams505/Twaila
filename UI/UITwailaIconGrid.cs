@@ -17,7 +17,11 @@ namespace Twaila.UI
 
         public void AddIcon(TwailaRender iconImage)
         {
-            Add(new UITwailaImage(iconImage));
+            foreach(var info in iconImage.Info)
+            {
+                info.Scale = IconScale(iconImage);
+            }
+            Add(new UITwailaImage(new TwailaRender(iconImage.Info)));
         }
 
         public float IconScale(TwailaRender iconImage)

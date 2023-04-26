@@ -54,6 +54,7 @@ namespace Twaila.Context
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
                     ItemText = Lang.GetItemNameValue(ItemId);
+                    TextGrid.Add(new UITwailaText(ItemText));
                 }
             }
         }
@@ -72,17 +73,6 @@ namespace Twaila.Context
                 return otherContext.ItemId != ItemId;
             }
             return true;
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(ItemText))
-            {
-                elements.Insert(0, new UITwailaText(ItemText));
-            }
-            return elements;
         }
 
         private int GetItemId()

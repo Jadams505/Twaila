@@ -22,12 +22,15 @@ namespace Twaila.Context
 
         protected UITwailaIconGrid IconGrid { get; set; }
 
+        protected UITwailaGrid TextGrid { get; set; }
+
         public WireContext(TwailaPoint point) : base(point)
         {
             IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow)
             {
                 MaxSize = 20f,
             };
+            TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow);
             WireText = "";
             ActuatorText = "";
         }
@@ -97,6 +100,7 @@ namespace Twaila.Context
                     if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
                     {
                         WireText = wireText;
+                        TextGrid.Add(new UITwailaText(WireText));
                     }
                 }
             }
@@ -114,6 +118,7 @@ namespace Twaila.Context
                     if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
                     {
                         ActuatorText = actText;
+                        TextGrid.Add(new UITwailaText(ActuatorText));
                     }
                 }
             }
@@ -155,24 +160,14 @@ namespace Twaila.Context
         {
             List<UITwailaElement> elements = new List<UITwailaElement>();
 
-            if (!string.IsNullOrEmpty(WireText))
+            if(TextGrid.GridElements.Count > 0)
             {
-                elements.Add(new UITwailaText(WireText));
-            }
-            if (!string.IsNullOrEmpty(ActuatorText))
-            {
-                elements.Add(new UITwailaText(ActuatorText));
+                elements.Add(TextGrid);
             }
             if(IconGrid.GridElements.Count > 0)
             {
                 elements.Add(IconGrid);
             }
-            /*
-            if(Icons.IconImages.Count > 0)
-            {
-                elements.Add(Icons);
-            }
-            */
             return elements;
         }
 

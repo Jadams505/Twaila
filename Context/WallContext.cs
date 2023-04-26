@@ -60,6 +60,7 @@ namespace Twaila.Context
             if (content.ShowId)
             {
                 Id = Language.GetText("Mods.Twaila.WallId").WithFormatArgs(WallId).Value;
+                TextGrid.Add(new UITwailaText(Id));
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out int paintIcon))
@@ -74,6 +75,7 @@ namespace Twaila.Context
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
                     PaintText = paintText;
+                    TextGrid.Add(new UITwailaText(PaintText));
                 }
             }
 
@@ -95,6 +97,8 @@ namespace Twaila.Context
                 {
                     IlluminantText = illuminantText;
                     EchoText = echoText;
+                    TextGrid.Add(new UITwailaText(IlluminantText));
+                    TextGrid.Add(new UITwailaText(EchoText));
                 }
             }
         }
@@ -129,31 +133,6 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
             return ImageUtil.GetWallRenderFromTile(tile);
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(PaintText))
-            {
-                elements.Insert(0, new UITwailaText(PaintText));
-            }
-            if (!string.IsNullOrEmpty(IlluminantText))
-            {
-                elements.Insert(0, new UITwailaText(IlluminantText));
-            }
-            if (!string.IsNullOrEmpty(EchoText))
-            {
-                elements.Insert(0, new UITwailaText(EchoText));
-            }
-            if (!string.IsNullOrEmpty(Id))
-            {
-                elements.Insert(0, new UITwailaText(Id));
-            }
-            
-
-            return elements;
         }
 
         protected override string GetName()

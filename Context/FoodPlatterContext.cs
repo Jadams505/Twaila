@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
@@ -50,6 +49,7 @@ namespace Twaila.Context
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
                     ItemText = Lang.GetItemNameValue(FoodItemId);
+                    TextGrid.Add(new UITwailaText(ItemText));
                 }
             }
         }
@@ -71,17 +71,6 @@ namespace Twaila.Context
                 return ImageUtil.GetRenderForPlate(FoodItemId);
             }
             return base.TileImage(spriteBatch);
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(ItemText))
-            {
-                elements.Insert(0, new UITwailaText(ItemText));
-            }
-            return elements;
         }
 
         private int GetFoodItemId()

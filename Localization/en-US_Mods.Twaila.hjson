@@ -35,6 +35,7 @@ Content: {
 	NpcContent: Npc Content Toggles
 	ContentPriorities: Content Priorities
 	IconsPerRow: Icons Per Row
+	TextsPerRow: Texts Per Row
 }
 
 NpcContent: {
