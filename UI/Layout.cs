@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 using Terraria.UI;
 using Twaila.Util;
 
@@ -12,17 +14,29 @@ namespace Twaila.UI
 
         public UITwailaText Name { get; private set; }
 
-        public UIInfoBox InfoBox { get; private set; }
+        public UITwailaGrid InfoBox { get; private set; }
 
         public UITwailaText Mod { get; private set; }
+
+        public List<UITwailaElement> TextElements { get; private set; }
 
         public Layout()
         {
             Image = new UITwailaImage();
             //string localized = Language.GetTextValue("Mods.Twaila.Defaults.Name"); fix later
             Name = new UITwailaText("Default Name", FontAssets.CombatText[0].Value, Color.White, 1f);
-            InfoBox = new UIInfoBox();
+            InfoBox = new UITwailaGrid(width: 1)
+            {
+                SmartRows = false,
+            };
             Mod = new UITwailaText("Terraria", FontAssets.ItemStack.Value, Color.White, 1f);
+
+            TextElements = new List<UITwailaElement>()
+            {
+                Mod,
+                Name,
+                InfoBox,
+            };
         }
 
         public void Apply(UIElement element)
@@ -35,9 +49,8 @@ namespace Twaila.UI
 
         public void ApplyConfigSettings(TwailaConfig config)
         {
-            Image.DrawMode = config.ContentSetting;
-            Image.Opacity = 1;
-            InfoBox.ApplyToAll(element => element.ApplyConfigSettings(config));
+            Image.ApplyConfigSettings(config);
+            InfoBox.ApplyConfigSettings(config);
             Name.ApplyConfigSettings(config);
             Mod.ApplyConfigSettings(config);
         }
@@ -45,7 +58,7 @@ namespace Twaila.UI
         public void ApplyHoverSettings(TwailaConfig config)
         {
             Image.ApplyHoverSettings(config);
-            InfoBox.ApplyToAll(element => element.ApplyHoverSettings(config));
+            InfoBox.ApplyHoverSettings(config);
             Name.ApplyHoverSettings(config);
             Mod.ApplyHoverSettings(config);
         }
@@ -56,13 +69,9 @@ namespace Twaila.UI
             Name.Width.Set(contentSize.X, 0);
             Name.Height.Set(contentSize.Y, 0);
 
-            InfoBox.ApplyToAll((element) =>
-            {
-                var elementSize = element.GetContentSize();
-                element.Width.Set(elementSize.X, 0);
-                element.Height.Set(elementSize.Y, 0);
-            });
-            InfoBox.UpdateDimensions();
+            contentSize = InfoBox.GetContentSize();
+            InfoBox.Width.Set(contentSize.X, 0);
+            InfoBox.Height.Set(contentSize.Y, 0);
 
             contentSize = Mod.GetContentSize();
             Mod.Width.Set(contentSize.X, 0);
@@ -87,7 +96,6 @@ namespace Twaila.UI
         public void UpdateTextColumnVertically()
         {
             Name.Top.Set(0, 0);
-            InfoBox.UpdateVertically();
 
             var infoHeight = InfoBox.GetSizeIfAppended().Y;
             var nameHeight = Name.GetSizeIfAppended().Y;

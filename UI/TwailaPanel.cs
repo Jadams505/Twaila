@@ -80,7 +80,7 @@ namespace Twaila.UI
         {
             SetPadding(TwailaConfig.Instance.PanelPadding);
             Layout.SetInitialSizes();
-            if (Layout.InfoBox.IsEmpty() && !HasChild(Layout.Name) && !HasChild(Layout.Mod))
+            if (!HasChild(Layout.InfoBox) && !HasChild(Layout.Name) && !HasChild(Layout.Mod))
             {
                 Layout.Image.MarginRight = 0;
             }
@@ -95,18 +95,25 @@ namespace Twaila.UI
             {
                 float reservedImageWidth = imageDimension.X * ImageScale(new Vector2(TwailaConfig.Instance.ReservedImageWidth / 100.0f * MaxPanelInnerDimension.X, MaxPanelInnerDimension.Y));
                 
-                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - reservedImageWidth - imageMarginX, MaxPanelInnerDimension.Y / (Layout.InfoBox.NumberOfAppendedElements() + 2));
+                Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - reservedImageWidth - imageMarginX, MaxPanelInnerDimension.Y);
 
-                Layout.Name.ScaleElement(maxSize);
-                Layout.InfoBox.ApplyToAll(element => element.ScaleElement(maxSize));
-                Layout.InfoBox.UpdateDimensionsUI();
-                Layout.Mod.ScaleElement(maxSize);
+                Layout.TextElements.Sort((a, b) => a.GetContentSize().X.CompareTo(b.GetContentSize().X));
+
+                Vector2 totalSpace = new Vector2(maxSize.X, maxSize.Y);
+                for (int i = 0; i < Layout.TextElements.Count; ++i)
+                {
+                    Vector2 elementSpace = new Vector2(maxSize.X, totalSpace.Y / (Layout.TextElements.Count - i));
+                    UITwailaElement element = Layout.TextElements[i];
+
+                    element.ScaleElement(elementSpace);
+                    Vector2 scaledSize = new Vector2(element.Width.Pixels, element.Height.Pixels);
+                    totalSpace.Y -= Math.Min(scaledSize.Y, elementSpace.Y);
+                }
 
                 float contentWidth = Utils.Max(Layout.Name.Width.Pixels, Layout.InfoBox.Width.Pixels, Layout.Mod.Width.Pixels);
 
                 Layout.Name.Width.Set(contentWidth, 0);
-                Layout.InfoBox.ApplyToAll(element => element.Width.Set(contentWidth, 0));
-                Layout.InfoBox.UpdateDimensionsUI();
+                Layout.InfoBox.Width.Set(contentWidth, 0);
                 Layout.Mod.Width.Set(contentWidth, 0);
 
                 textDimension.X = Layout.TextColumnSize().X;
@@ -130,16 +137,7 @@ namespace Twaila.UI
                     float width = 0;
 
                     TrimElementVertically(Layout.Name, ref width, ref height);
-
-                    for (int i = 0; i < Layout.InfoBox.InfoLines.Count; ++i)
-                    {
-                        if (Layout.InfoBox.Enabled[i])
-                        {
-                            UITwailaElement element = Layout.InfoBox.InfoLines[i];
-                            TrimElementVertically(element, ref width, ref height);
-                        }
-                    }
-
+                    TrimElementVertically(Layout.InfoBox, ref width, ref height);
                     TrimElementVertically(Layout.Mod, ref width, ref height);
 
                     textDimension.Y = height;
@@ -151,8 +149,7 @@ namespace Twaila.UI
                 textDimension.X = Math.Min(MaxPanelInnerDimension.X - imageDimension.X - imageMarginX, textDimension.X);
 
                 Layout.Name.Width.Set(textDimension.X, 0);
-                Layout.InfoBox.ApplyToAll(element => element.Width.Set(textDimension.X, 0));
-                Layout.InfoBox.UpdateDimensionsUI();
+                Layout.InfoBox.Width.Set(textDimension.X, 0);
                 Layout.Mod.Width.Set(textDimension.X, 0);
 
                 if(imageDimension.X == 0 || imageDimension.Y == 0)
@@ -306,7 +303,7 @@ namespace Twaila.UI
                 return;
             }
 
-            Layout.InfoBox.RemoveAll();
+            Layout.InfoBox.RemoveAllChildren();
             UpdateCurrentContext(context);
 
             PriorityContext = priorityContext;

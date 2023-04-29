@@ -30,7 +30,10 @@ namespace Twaila.Context
             {
                 MaxSize = 20f,
             };
-            TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow);
+            TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow)
+            {
+                SmartRows = true,
+            };
             WireText = "";
             ActuatorText = "";
         }
@@ -135,7 +138,7 @@ namespace Twaila.Context
                 layout.Image.SetImage(GetImage(Main.spriteBatch));
             }
 
-            InfoElements().ForEach(element => layout.InfoBox.AddAndEnable(element));
+            InfoElements().ForEach(element => layout.InfoBox.Add(element));
 
             layout.Mod.SetText(GetMod());
         }

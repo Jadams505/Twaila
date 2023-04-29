@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Twaila.Util;
 
 namespace Twaila.UI
 {
@@ -14,6 +15,8 @@ namespace Twaila.UI
 
         public float MaxCellHeight { get; set; } = 1080;
 
+        public bool SmartRows { get; set; } = true;
+
         public List<UITwailaElement> GridElements { get; set; } = new List<UITwailaElement>();
 
         public int GridWidth { get; set; }
@@ -22,7 +25,7 @@ namespace Twaila.UI
 
         public UITwailaGrid(List<UITwailaElement> elements, int width) : this(width)
         {
-            GridElements = elements;
+            SetGridElements(elements);
 
             for (int i = 0; i < GridElements.Count; ++i)
             {
@@ -42,6 +45,31 @@ namespace Twaila.UI
         {
             GridElements.Add(element);
             Append(element);
+
+            if (SmartRows)
+                SetGridElements(GridElements);
+        }
+
+        public new void RemoveAllChildren()
+        {
+            GridElements.Clear();
+            base.RemoveAllChildren();
+        }
+
+        private static readonly Comparison<UITwailaElement> _elementSorter = (a, b) => a.GetContentSize().X.CompareTo(b.GetContentSize().X);
+
+        public void SetGridElements(List<UITwailaElement> elements)
+        {
+            if (!SmartRows)
+            {
+                GridElements = elements;
+                return;
+            }
+
+            elements.Sort(_elementSorter);
+            List<UITwailaElement> sorted = GridUtil.MapVertically(elements, GridWidth);
+
+            GridElements = sorted;
         }
 
         public override Vector2 GetContentSize()

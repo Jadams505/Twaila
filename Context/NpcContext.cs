@@ -131,7 +131,7 @@ namespace Twaila.Context
                 layout.Image.SetImage(GetImage(Main.spriteBatch));
             }
 
-            InfoElements().ForEach(element => layout.InfoBox.AddAndEnable(element));
+            InfoElements().ForEach(element => layout.InfoBox.Add(element));
 
             layout.Mod.SetText(GetMod());
         }

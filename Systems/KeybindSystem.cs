@@ -79,6 +79,10 @@ namespace Twaila.Systems
             {
                 if (NextContext.JustPressed)
                 {
+                    if (TwailaConfig.Instance.ContentSetting == DrawMode.Shrink)
+                        TwailaConfig.Instance.ContentSetting = DrawMode.Trim;
+                    else
+                        TwailaConfig.Instance.ContentSetting = DrawMode.Shrink;
                     TwailaUI.NextNonNullContext();
                 }
 
