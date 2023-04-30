@@ -251,7 +251,7 @@ namespace Twaila
 
             [Range(1, 5)]
             [DefaultValue(1)]
-            [Label("Mods.Twaila.Content.TextsPerRow")]
+            [Label("$Mods.Twaila.Content.StatsPerRow")]
             public int TextsPerRow;
 
             [Range(1, 20)]
@@ -320,24 +320,19 @@ namespace Twaila
             [Label("$Mods.Twaila.NpcContent.ShowKills")]
             public bool ShowKills;
 
-            [Range(1, 5)]
-            [DefaultValue(3)]
-            [Label("$Mods.Twaila.NpcContent.StatElementsPerRow")]
-            public int StatElementsPerRow;
-
             [DrawTicks]
             [Label("$Mods.Twaila.NpcContent.ShowBuffs")]
             public DisplayType ShowBuffs;
 
+            [Range(1, 5)]
+            [DefaultValue(3)]
+            [Label("$Mods.Twaila.NpcContent.StatsPerRow")]
+            public int StatsPerRow;
+
             [Range(1, 20)]
             [DefaultValue(10)]
-            [Label("$Mods.Twaila.NpcContent.BuffIconsPerRow")]
-            public int BuffIconsPerRow;
-
-            [Range(1, 10)]
-            [DefaultValue(3)]
-            [Label("$Mods.Twaila.NpcContent.BuffTextsPerRow")]
-            public int BuffTextsPerRow;
+            [Label("$Mods.Twaila.NpcContent.IconsPerRow")]
+            public int IconsPerRow;
 
             public NpcContent()
             {
@@ -346,10 +341,9 @@ namespace Twaila
                 ShowAttack = true;
                 ShowKnockback = true;
                 ShowKills = true;
-                StatElementsPerRow = 3;
+                StatsPerRow = 3;
                 ShowBuffs = DisplayType.Icon;
-                BuffIconsPerRow = 10;
-                BuffTextsPerRow = 3;
+                IconsPerRow = 10;
             }
 
             public override bool Equals(object obj)
@@ -357,15 +351,15 @@ namespace Twaila
                 if (obj is NpcContent other)
                 {
                     return ShowHp == other.ShowHp && ShowDefense == other.ShowDefense && ShowAttack == other.ShowAttack
-                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills && StatElementsPerRow == other.StatElementsPerRow
-                        && ShowBuffs == other.ShowBuffs && BuffIconsPerRow == other.BuffIconsPerRow && BuffTextsPerRow == other.BuffTextsPerRow;
+                        && ShowKnockback == other.ShowKnockback && ShowKills == other.ShowKills
+                        && ShowBuffs == other.ShowBuffs && IconsPerRow == other.IconsPerRow && StatsPerRow == other.StatsPerRow;
                 }
                 return base.Equals(obj);
             }
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills, StatElementsPerRow, ShowBuffs);
+                return HashCode.Combine(ShowHp, ShowDefense, ShowAttack, ShowKnockback, ShowKills, StatsPerRow, ShowBuffs);
             }
         }
 

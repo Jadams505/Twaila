@@ -507,7 +507,7 @@ namespace Twaila.Util
             Health,
             Attack,
             Defense,
-            Crit,
+            Knockback,
             Kill
         }
 
@@ -518,7 +518,7 @@ namespace Twaila.Util
                 NpcStat.Health => ModContent.Request<Texture2D>("Twaila/Assets/Health")?.Value,
                 NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
                 NpcStat.Defense => ModContent.Request<Texture2D>("Twaila/Assets/Defense")?.Value,
-                NpcStat.Crit => ModContent.Request<Texture2D>("Twaila/Assets/Crit")?.Value,
+                NpcStat.Knockback => ModContent.Request<Texture2D>("Twaila/Assets/Knockback")?.Value,
                 NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
                 _ => null
             }; 
@@ -532,10 +532,10 @@ namespace Twaila.Util
 
         public static TwailaRender GetRenderForBuff(int type)
         {
-            Texture2D texture = TextureAssets.Buff[type].ForceVanillaLoad();
+            Texture2D texture = TextureAssets.Buff[type].Value;
 
             RenderBuilder builder = new RenderBuilder();
-            builder.AddImage(texture, Point.Zero, texture.Bounds, 0.5f);
+            builder.AddImage(texture, Point.Zero, texture.Bounds);
 
             return builder.Build();
         }

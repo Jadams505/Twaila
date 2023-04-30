@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
@@ -22,10 +21,13 @@ namespace Twaila.Context
         protected string KnockbackTaken { get; set; }
         protected string Kills { get; set; }
 
-        protected List<int> Buffs { get; set; } = new List<int>();
+        protected UITwailaGrid InfoGrid { get; private set; }
+        protected UITwailaIconGrid IconGrid { get; private set; }
 
         public NpcContext(TwailaPoint pos) : base(pos)
         {
+            InfoGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.NpcContent.StatsPerRow);
+            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.NpcContent.IconsPerRow);
             Npc = null;
             Id = "";
             Hp = "";
@@ -66,24 +68,31 @@ namespace Twaila.Context
 
             Npc = foundNPC;
 
+            if (Npc == null)
+                return;
+
             if (content.ShowId)
             {
                 Id = $"Npc Id: {Npc.type}";
+                InfoGrid.Add(new UITwailaText(Id));
             }
 
             if (content.NpcContent.ShowHp)
             {
                 Hp = MathHelper.Clamp(Npc.life, 0, Npc.life).ToString();
+                InfoGrid.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Health), Hp));
             }
 
             if (content.NpcContent.ShowDefense)
             {
                 Defense = Npc.defense.ToString();
+                InfoGrid.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense));
             }
 
             if (content.NpcContent.ShowAttack)
             {
                 Damage = Npc.damage.ToString();
+                InfoGrid.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Attack), Damage));
             }
 
             if (content.NpcContent.ShowKnockback)
@@ -104,18 +113,30 @@ namespace Twaila.Context
                 {
                     KnockbackTaken = Language.GetText("BestiaryInfo.KnockbackNone").Value;
                 }
+                InfoGrid.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Knockback), KnockbackTaken));
             }
 
             if (content.NpcContent.ShowKills)
             {
                 Kills = Main.BestiaryTracker.Kills.GetKillCount(Npc).ToString();
+                InfoGrid.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Kill), Kills));
             }
 
             for(int i = 0; i < Npc.buffType.Length; ++i)
             {
                 if (Npc.buffType[i] != 0 && Npc.buffTime[i] > 0)
                 {
-                    Buffs.Add(Npc.buffType[i]);
+                    var displayType = TwailaConfig.Instance.DisplayContent.NpcContent.ShowBuffs;
+                    int buffType = Npc.buffType[i];
+                    if (displayType == TwailaConfig.DisplayType.Icon || displayType == TwailaConfig.DisplayType.Both)
+                    {
+                        IconGrid.AddIcon(ImageUtil.GetRenderForBuff(buffType));
+                    }
+
+                    if (displayType == TwailaConfig.DisplayType.Name || displayType == TwailaConfig.DisplayType.Both)
+                    {
+                        InfoGrid.Add(new UITwailaText(NameUtil.GetNameForBuff(buffType)));
+                    }
                 }
             }
         }
@@ -161,7 +182,7 @@ namespace Twaila.Context
 
         protected override string GetMod()
         {
-            return NameUtil.GetMod(Npc.ModNPC);
+            return NameUtil.GetMod(Npc?.ModNPC);
         }
 
         protected override string GetName()
@@ -182,87 +203,13 @@ namespace Twaila.Context
         {
             List<UITwailaElement> elements = new List<UITwailaElement>();
 
-            if (!string.IsNullOrEmpty(Id))
+            if(InfoGrid.GridElements.Count > 0)
             {
-                elements.Add(new UITwailaText(Id));
+                elements.Add(InfoGrid);
             }
-
-            List<UITwailaElement> stats = new List<UITwailaElement>();
-
-            if (!string.IsNullOrEmpty(Hp))
+            if(IconGrid.GridElements.Count > 0)
             {
-                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Health), Hp));
-            }
-
-            if (!string.IsNullOrEmpty(KnockbackTaken))
-            {
-                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Crit),
-                    KnockbackTaken));
-            }
-
-            if (!string.IsNullOrEmpty(Damage))
-            {
-                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Attack),
-                    Damage));
-            }
-
-            if (!string.IsNullOrEmpty(Defense))
-            {
-                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Defense), Defense));
-            }
-
-            if (!string.IsNullOrEmpty(Kills))
-            {
-                stats.Add(new UIStatElement(ImageUtil.GetRenderForNpcStat(ImageUtil.NpcStat.Kill), Kills));
-            }
-
-            if(stats.Count > 0)
-            {
-                int statsPerRow = Math.Clamp(TwailaConfig.Instance.DisplayContent.NpcContent.StatElementsPerRow, 1, stats.Count);
-                elements.Add(new UITwailaGrid(stats, statsPerRow));
-            }
-
-            if(Buffs.Count > 0)
-            {
-                var displayType = TwailaConfig.Instance.DisplayContent.NpcContent.ShowBuffs;
-                if (displayType == TwailaConfig.DisplayType.Icon || displayType == TwailaConfig.DisplayType.Both)
-                {
-                    int statsPerRow = Math.Clamp(TwailaConfig.Instance.DisplayContent.NpcContent.BuffIconsPerRow, 1, Buffs.Count);
-                    List<UITwailaElement> images = new List<UITwailaElement>();
-
-                    for (int i = 0; i < Buffs.Count; ++i)
-                    {
-                        UITwailaImage image = new UITwailaImage();
-                        image.SetImage(ImageUtil.GetRenderForBuff(Buffs[i]));
-                        images.Add(image);
-                    }
-
-                    if (images.Count > 0)
-                    {
-                        elements.Add(new UITwailaGrid(images, statsPerRow)
-                        {
-                            RowPadding = 4,
-                        });
-                    }
-                }
-                
-                if(displayType == TwailaConfig.DisplayType.Name || displayType == TwailaConfig.DisplayType.Both)
-                {
-                    int statsPerRowText = Math.Clamp(TwailaConfig.Instance.DisplayContent.NpcContent.BuffTextsPerRow, 1, Buffs.Count);
-                    List<UITwailaElement> texts = new List<UITwailaElement>();
-
-                    for (int i = 0; i < Buffs.Count; ++i)
-                    {
-                        UITwailaText text = new UITwailaText();
-                        text.SetText(NameUtil.GetNameForBuff(Buffs[i]));
-                        texts.Add(text);
-                    }
-
-                    if (texts.Count > 0)
-                    {
-                        elements.Add(new UITwailaGrid(texts, statsPerRowText));
-                    }
-                }
+                elements.Add(IconGrid);
             }
             
             return elements;

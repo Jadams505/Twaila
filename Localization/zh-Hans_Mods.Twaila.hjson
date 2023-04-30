@@ -35,7 +35,7 @@ Content: {
 	// NpcContent: Npc Content Toggles
 	// ContentPriorities: Content Priorities
 	// IconsPerRow: Icons Per Row
-	// TextsPerRow: Texts Per Row
+	// StatsPerRow: Stats Per Row
 }
 
 NpcContent: {
@@ -46,8 +46,8 @@ NpcContent: {
 	// ShowKills: Show Kills
 	// StatElementsPerRow: Stat Elements Per Row
 	// ShowBuffs: Show Buffs
-	// BuffIconsPerRow: Buff Icons Per Row
-	// BuffTextsPerRow: Buff Texts Per Row
+	// IconsPerRow: "{$Mods.Twaila.Content.IconsPerRow}"
+	// StatsPerRow: "{$Mods.Twaila.Content.StatsPerRow}"
 }
 
 Priorities: {
