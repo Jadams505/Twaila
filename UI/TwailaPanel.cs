@@ -42,17 +42,31 @@ namespace Twaila.UI
 
         public override void Update(GameTime gameTime)
         {
+            // The order of these function calls is VERY important
+
+            // Adds elements to the panel
             if (!IsDragging() && !Main.gamePaused)
             {
                 UpdatePanelContents();
             }
-            
-            UpdateFromConfig();
-            UpdateSize();
-            Drag();
-            UpdateAlignment();
 
+            // Applies config settings to the new elements (text shadow, opacity, etc)
+            UpdateFromConfig();
+
+            // Sets the sizes of the panel and it's children based on their content sizes
+            UpdateSize();
+
+            // This calls Update on all the panel's children, important for wrapper elements like the grid element
+            // This has to be called after UpdateSize because children elements rely on the parent's dimensions
+            // This has to be called before UpdateAlignment because this moves elements around
             base.Update(gameTime);
+            
+            // Handles changing anchor pos when the panel is being dragged
+            Drag();
+
+            // Moves the children elements where they belong
+            // Updates the position of the panel to match it's anchor pos
+            UpdateAlignment();
         }
 
         private void UpdateFromConfig()
@@ -97,17 +111,29 @@ namespace Twaila.UI
                 
                 Vector2 maxSize = new Vector2(MaxPanelInnerDimension.X - reservedImageWidth - imageMarginX, MaxPanelInnerDimension.Y);
 
-                Layout.TextElements.Sort((a, b) => a.GetContentSize().X.CompareTo(b.GetContentSize().X));
+                Layout.TextElements.Sort((a, b) => (a.GetContentSize().Y / a.SizePriority().Y).CompareTo(b.GetContentSize().Y / b.SizePriority().Y));
 
+                Vector2 totalSizePriority = Vector2.Zero;
+                foreach (var element in Layout.TextElements)
+                {
+                    var priority = element.SizePriority();
+                    totalSizePriority.Y += priority.Y;
+                    totalSizePriority.X = Math.Max(priority.X, totalSizePriority.X);
+                }
+                
                 Vector2 totalSpace = new Vector2(maxSize.X, maxSize.Y);
                 for (int i = 0; i < Layout.TextElements.Count; ++i)
                 {
-                    Vector2 elementSpace = new Vector2(maxSize.X, totalSpace.Y / (Layout.TextElements.Count - i));
                     UITwailaElement element = Layout.TextElements[i];
+                    Vector2 priority = element.SizePriority();
+                    float priorityFactor = priority.Y / totalSizePriority.Y;
+                    Vector2 elementSpace = new Vector2(maxSize.X, totalSpace.Y * priorityFactor);
+                    
 
                     element.ScaleElement(elementSpace);
                     Vector2 scaledSize = new Vector2(element.Width.Pixels, element.Height.Pixels);
                     totalSpace.Y -= Math.Min(scaledSize.Y, elementSpace.Y);
+                    totalSizePriority -= element.SizePriority();
                 }
 
                 float contentWidth = Utils.Max(Layout.Name.Width.Pixels, Layout.InfoBox.Width.Pixels, Layout.Mod.Width.Pixels);

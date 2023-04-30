@@ -72,6 +72,30 @@ namespace Twaila.UI
             GridElements = sorted;
         }
 
+        public override Vector2 SizePriority()
+        {
+            float height = 0;
+            float width = 0;
+
+            for (int row = 0; row < GridHeight; ++row)
+            {
+                int rowStartIndex = row * GridWidth;
+                int elementsInRow = Math.Min(rowStartIndex + GridWidth, GridElements.Count) - rowStartIndex;
+                float biggestPriorityHeightInRow = 0;
+                float widthPriority = 0;
+                for (int col = 0, i = 0; col < elementsInRow && i < GridElements.Count; ++col)
+                {
+                    i = row * GridWidth + col;
+                    Vector2 priority = GridElements[i].SizePriority();
+                    biggestPriorityHeightInRow = Math.Max(biggestPriorityHeightInRow, priority.Y);
+                    widthPriority += priority.X;
+                }
+                height += biggestPriorityHeightInRow;
+                width = Math.Max(widthPriority, width);
+            }
+            return new Vector2(width, height);
+        }
+
         public override Vector2 GetContentSize()
         {
             float width = 0;

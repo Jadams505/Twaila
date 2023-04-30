@@ -15,6 +15,11 @@ namespace Twaila.UI
             MaxCellWidth = MaxSize;
         }
 
+        public override Vector2 SizePriority()
+        {
+            return new Vector2(Math.Max(GridWidth / 4f, 1), GridHeight);
+        }
+
         public void AddIcon(TwailaRender iconImage)
         {
             foreach(var info in iconImage.Info)

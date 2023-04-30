@@ -38,7 +38,7 @@ namespace Twaila.UI
                 case TwailaConfig.DisplayMode.Automatic:
                     if (TwailaConfig.Instance.UIDisplaySettings.HideUIForAir)
                     {
-                        if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 ||
+                        if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 || !_panel.Parent.ContainsPoint(Main.MouseScreen) ||
                             (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
                             && !_panel.ContainsPoint(Main.MouseScreen) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {

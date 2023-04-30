@@ -89,6 +89,8 @@ namespace Twaila.UI
 
         public abstract Vector2 GetContentSize();
 
+        public virtual Vector2 SizePriority() => Vector2.One;
+
         protected virtual void DrawShrunk(SpriteBatch spriteBatch)
         {
 
