@@ -330,7 +330,7 @@ namespace Twaila
             public int StatsPerRow;
 
             [Range(1, 20)]
-            [DefaultValue(10)]
+            [DefaultValue(8)]
             [Label("$Mods.Twaila.NpcContent.IconsPerRow")]
             public int IconsPerRow;
 
@@ -343,7 +343,7 @@ namespace Twaila
                 ShowKills = true;
                 StatsPerRow = 3;
                 ShowBuffs = DisplayType.Icon;
-                IconsPerRow = 10;
+                IconsPerRow = 8;
             }
 
             public override bool Equals(object obj)
