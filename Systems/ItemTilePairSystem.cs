@@ -125,19 +125,26 @@ namespace Twaila.Systems
             for (int i = TileID.Count; i < TileLoader.TileCount; ++i) // modded tiles
             {
                 ModTile mTile = TileLoader.GetTile(i);
-                if (mTile != null && mTile.ItemDrop != 0)
+                int drop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
+                if (mTile != null && drop != 0)
                 {
-                    AddEntry(i, 0, TileType.Tile, mTile.ItemDrop);
+                    AddEntry(i, 0, TileType.Tile, drop);
                 }
             }
-            for (int i = WallID.Count; i < WallLoader.WallCount; ++i) // modded walls
+
+            Dictionary<int, int> wallDropLookup = (Dictionary<int, int>)typeof(WallLoader)?.GetField("wallTypeToItemType", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.GetValue(null);
+            if(wallDropLookup != null)
             {
-                ModWall mWall = WallLoader.GetWall(i);
-                if (mWall != null && mWall.ItemDrop != 0)
+                for (int i = WallID.Count; i < WallLoader.WallCount; ++i) // modded walls
                 {
-                    AddEntry(i, 0, TileType.Wall, mWall.ItemDrop);
+                    ModWall mWall = WallLoader.GetWall(i);
+                    if (mWall != null && wallDropLookup.TryGetValue(mWall.Type, out int wallDrop) && wallDrop != 0)
+                    {
+                        AddEntry(i, 0, TileType.Wall, wallDrop);
+                    }
                 }
             }
+            
             for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i) // modded items
             {
                 ModItem mItem = ItemLoader.GetItem(i);

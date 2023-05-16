@@ -467,7 +467,8 @@ namespace Twaila.Util
                 ModTile mTile = TileLoader.GetTile(sandId);
                 if (mTile != null)
                 {
-                    string type = GetNameFromItem(mTile.ItemDrop);
+                    int tileDrop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
+                    string type = GetNameFromItem(tileDrop);
                     if (type != null)
                     {
                         return type + " " + Language.GetTextValue("MapObject.Cactus");

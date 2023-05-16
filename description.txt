@@ -40,6 +40,8 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.4.0.1 (5/16/2022)
+- Fixed tiles placed by the rubblemaker having incorrect names
 v0.4.0.0 (4/1/2022)
 - Updated to 1.4.4
 - Added an option for the UI appear in the full screen map
