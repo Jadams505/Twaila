@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Reflection;
 using System.Text;
 using Terraria;
 using Terraria.Enums;
@@ -8,6 +8,7 @@ using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
+using Terraria.ModLoader.Config.UI;
 using Terraria.ObjectData;
 
 namespace Twaila.Util
@@ -551,10 +552,12 @@ namespace Twaila.Util
 
         public static string ToLocalizedString(this Enum value)
         {
-            var info = value.GetType().GetMember(value.ToString()).FirstOrDefault();
-            string name = ((LabelAttribute)Attribute.GetCustomAttribute(info, typeof(LabelAttribute)))?.Label ?? value.ToString();
+            FieldInfo field = value.GetType().GetField(value.ToString());
+            MethodInfo labelMethod = typeof(ConfigManager).GetMethod("GetLocalizedLabel", BindingFlags.Static | BindingFlags.NonPublic);
+            PropertyFieldWrapper wrapper = new(field);
+            string key = labelMethod?.Invoke(null, new object[] { wrapper }) as string;
 
-            return name;
+            return Language.GetTextValue(key) ?? value.ToString();
         }
     }
 }
