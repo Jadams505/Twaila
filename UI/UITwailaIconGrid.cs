@@ -6,13 +6,16 @@ namespace Twaila.UI
 {
     public class UITwailaIconGrid : UITwailaGrid
     {
-        public float MaxSize { get; set; } = 20f;
+        public UITwailaIconGrid(int width) : this(width, 20f)
+        {
 
-        public UITwailaIconGrid(int width) : base(width)
+        }
+
+        public UITwailaIconGrid(int width, float maxSize) : base(width)
         {
             RowPadding = 4;
-            MaxCellHeight = MaxSize;
-            MaxCellWidth = MaxSize;
+            MaxCellHeight = maxSize;
+            MaxCellWidth = maxSize;
         }
 
         public override Vector2 SizePriority()
@@ -31,7 +34,7 @@ namespace Twaila.UI
 
         public float IconScale(TwailaRender iconImage)
         {
-            return Math.Clamp(MaxSize / Math.Max(iconImage.Width, iconImage.Height), 0, 1);
+            return Math.Clamp(Math.Min(MaxCellWidth, MaxCellHeight) / Math.Max(iconImage.Width, iconImage.Height), 0, 1);
         }
 
         public Vector2 IconSize(TwailaRender image)

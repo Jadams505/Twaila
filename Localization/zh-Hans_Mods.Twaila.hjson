@@ -18,6 +18,8 @@ Enums: {
 	Overflow: 溢出
 	Automatic: 自动
 	Manual: 指南
+	// Number: Number
+	// Text: Text
 }
 
 Content: {
@@ -46,8 +48,12 @@ NpcContent: {
 	// ShowKills: Show Kills
 	// StatElementsPerRow: Stat Elements Per Row
 	// ShowBuffs: Show Buffs
+	// ShowHappiness: Show Happiness
+	// ShowNpcPreferences: Show Npc Preferences
+	// ShowBiomePreferences: Show Biome Preferences
 	// IconsPerRow: "{$Mods.Twaila.Content.IconsPerRow}"
 	// StatsPerRow: "{$Mods.Twaila.Content.StatsPerRow}"
+	// HappinessColors: Happiness Colors
 }
 
 Priorities: {
@@ -89,6 +95,11 @@ HideSuspiciousTiles: {
 
 DisplayContent: 内容切换
 UIPosition: UI位置
+
+PanelPositionData: {
+	// Label: Panel Position Data
+	// Tooltip: Data about where to position the panel based on certain criteria like inventory open or closed
+}
 
 UseDefaultPosition: {
 	Label: 使用默认位置
@@ -172,6 +183,40 @@ ShowBackground: 显示背景
 UIDisplay: UI显示
 Color: 颜色
 TextShadow: 文本阴影
+// LoveColor: Love Color
+// LikeColor: Like Color
+// DislikeColor: Dislike Color
+// HateColor: Hate Color
+
+ShowUI: {
+	// Label: Show UI
+	// Tooltip: Whether or not to show the panel in this context
+}
+
+ClosedInventory: {
+	// Label: Closed Inventory
+	// Tooltip: Information about where to position the panel when your inventory is closed
+}
+
+OpenInventory: {
+	// Label: Open Inventory
+	// Tooltip: Information about where to position the panel when your inventory is open
+}
+
+InFullscreenMap: {
+	// Label: In Fullscreen Map
+	// Tooltip: Information about where to position the panel when in the fullscreen map
+}
+
+SyncPositionData: {
+	// Label: Sync Position Data
+	/* Tooltip:
+		'''
+		Syncs all the position data below with the Closed Inventory data
+		If ON editing data other than Closed Inventory will have no effect
+		If OFF you can set the position presets below to change the panel's position based on certain criteria
+		''' */
+}
 
 Keybinds: {
 	CycleUIDisplayMode.DisplayName: 循环UI显示模式
@@ -217,3 +262,4 @@ Defaults: {
 }
 
 // RecommendedPick: "{0} {1}%"
+// HappinessText: Happiness: {0}

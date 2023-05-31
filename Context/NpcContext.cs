@@ -27,7 +27,7 @@ namespace Twaila.Context
         public NpcContext(TwailaPoint pos) : base(pos)
         {
             InfoGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.NpcContent.StatsPerRow);
-            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.NpcContent.IconsPerRow);
+            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.NpcContent.IconsPerRow, 20f);
             Npc = null;
             Id = "";
             Hp = "";
@@ -159,7 +159,7 @@ namespace Twaila.Context
 
         protected override TwailaRender GetImage(SpriteBatch spriteBatch)
         {
-            RenderBuilder builer = new RenderBuilder();
+            RenderBuilder builder = new RenderBuilder();
             if(Npc != null)
             {
                 Rectangle drawFrame = new Rectangle(0, 0, Npc.frame.Width, Npc.frame.Height);
@@ -172,9 +172,9 @@ namespace Twaila.Context
 
                 float scale = MathHelper.Clamp(Npc.scale, 0, 1);
 
-                builer.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, scale);
+                builder.AddImage(ImageUtil.GetNPCTexture(Npc.type), Point.Zero, drawFrame, drawColor, scale);
 
-                return builer.Build();
+                return builder.Build();
             }
 
             return null;

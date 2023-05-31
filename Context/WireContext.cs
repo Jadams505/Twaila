@@ -26,10 +26,8 @@ namespace Twaila.Context
 
         public WireContext(TwailaPoint point) : base(point)
         {
-            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow)
-            {
-                MaxSize = 20f,
-            };
+            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow, 20f);
+
             TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow)
             {
                 SmartRows = true,

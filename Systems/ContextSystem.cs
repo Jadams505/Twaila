@@ -44,6 +44,7 @@ namespace Twaila.Systems
             ContextEntries.Add(WireEntry);
 
             NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.NpcPriority);
+            NpcEntry.ApplicableContexts.Add(TownNpcContext.CreateTownNpcContext);
             ContextEntries.Add(NpcEntry);
         }
 

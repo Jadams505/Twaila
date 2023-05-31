@@ -530,6 +530,26 @@ namespace Twaila.Util
             return builder.Build();
         }
 
+        public static TwailaRender GetRenderForNpc(NPC npc)
+        {
+            RenderBuilder builder = new RenderBuilder();
+            if (npc != null)
+            {
+                Rectangle drawFrame = new Rectangle(0, 0, npc.frame.Width, npc.frame.Height);
+
+                Color drawColor = npc.color;
+                if (drawColor.A == 0)
+                {
+                    drawColor = Color.White;
+                }
+
+                float scale = MathHelper.Clamp(npc.scale, 0, 1);
+
+                builder.AddImage(ImageUtil.GetNPCTexture(npc.type), Point.Zero, drawFrame, drawColor, scale);
+            }
+            return builder.Build();
+        } 
+
         public static TwailaRender GetRenderForBuff(int type)
         {
             Texture2D texture = TextureAssets.Buff[type].Value;

@@ -1,8 +1,10 @@
 ﻿using Terraria;
+using Terraria.GameContent.Personalities;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Systems;
+using Twaila.UI;
 
 namespace Twaila.Util
 {
@@ -263,6 +265,37 @@ namespace Twaila.Util
             text = "";
             icon = -1;
             return false;
+        }
+
+        public const float Love = 0.88f;
+        public const float Like = 0.94f;
+        public const float Dislike = 1.06f;
+        public const float Hate = 1.12f;
+
+        public static AffectionLevel MultiplierToAffection(double priceMultiplier)
+        {
+            return priceMultiplier switch
+            {
+                < Like => AffectionLevel.Love,
+                < Dislike => AffectionLevel.Like,
+                < Hate => AffectionLevel.Dislike,
+                >= Hate => AffectionLevel.Hate,
+                _ => AffectionLevel.Like
+            };
+        }
+
+        public static double GetNpcHappiness(NPC npc, out string asNumber, out string asText)
+        {
+            var settings = Main.ShopHelper.GetShoppingSettings(Main.LocalPlayer, npc); // this might have side effects
+
+            double price = settings.PriceAdjustment;
+
+            var localizedText = Language.GetText("Mods.Twaila.HappinessText");
+
+            asNumber = localizedText.Format($"{price:0.00}");
+            asText = localizedText.Format($"{MultiplierToAffection(price)}");
+
+            return price;
         }
 
         public static bool GetId(Tile tile, TileType type, out int id)
