@@ -1,215 +1,3 @@
-
-Enums: {
-	Left: Left
-	Center: Center
-	Right: Right
-	Bottom: Bottom
-	Top: Top
-	Name: Name
-	Icon: Icon
-	Both: Both
-	On: On
-	Off: Off
-	DisplayName: Display Name
-	InternalName: Internal Name
-	FullName: Full Name
-	Shrink: Shrink
-	Trim: Trim
-	Overflow: Overflow
-	Automatic: Automatic
-	Manual: Manual
-	Number: Number
-	Text: Text
-}
-
-Content: {
-	ShowImage: Show Image
-	ShowName: Show Name
-	ShowMod: Show Mod
-	ShowId: Show Id
-	ShowPickaxePower: Show Pickaxe Power
-	ShowPickaxe: Show Pickaxe
-	ShowWire: Show Wire
-	ShowActuator: Show Actuator
-	ShowPaint: Show Paint
-	ShowCoating: Show Coating
-	ShowContainedItems: Show Contained Items
-	NpcContent: Npc Content Toggles
-	ContentPriorities: Content Priorities
-	IconsPerRow: Icons Per Row
-	StatsPerRow: Stats Per Row
-}
-
-NpcContent: {
-	ShowHp: Show Hp
-	ShowDefense: Show Defense
-	ShowAttack: Show Attack
-	ShowKnockback: Show Knockback
-	ShowKills: Show Kills
-	StatElementsPerRow: Stat Elements Per Row
-	ShowBuffs: Show Buffs
-	ShowHappiness: Show Happiness
-	ShowNpcPreferences: Show Npc Preferences
-	ShowBiomePreferences: Show Biome Preferences
-	IconsPerRow: "{$Mods.Twaila.Content.IconsPerRow}"
-	StatsPerRow: "{$Mods.Twaila.Content.StatsPerRow}"
-	HappinessColors: Happiness Colors
-}
-
-Priorities: {
-	Header: Priorities (Lower values have higher priority)
-	WirePriority: Wire Priority
-	NpcPriority: Npc Priority
-	WallPriority: Wall Priority
-	TilePrioity: Tile Priority
-	LiquidPriority: Liquid Priority
-}
-
-ModConfig: ModConfig
-Features: Features
-
-AntiCheatSettings: {
-	Label: Anti Cheat Settings
-	Tooltip: Various settings to prevent cheating
-}
-
-HideUnrevealedTiles: {
-	Label: Hide Unrevealed Tiles
-	Tooltip: Hides tiles that are not revealed on the player's map
-}
-
-HideWires: {
-	Label: Hide Wires
-	Tooltip: Hides wires that the player cannot see
-}
-
-HideEchoTiles: {
-	Label: Hide Echo Tiles
-	Tooltip: Hides echo tiles that the player cannot see
-}
-
-HideSuspiciousTiles: {
-	Label: Hide Suspicious Tiles
-	Tooltip: Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)
-}
-
-DisplayContent: Content Toggles
-UIPosition: UI Position
-
-PanelPositionData: {
-	Label: Panel Position Data
-	Tooltip: Data about where to position the panel based on certain criteria like inventory open or closed
-}
-
-UseDefaultPosition: {
-	Label: Use Default Position
-	Tooltip: Dragging the panel automatically disables this
-}
-
-LockPosition: {
-	Label: Lock Position
-	Tooltip: When this is OFF you can use the mouse to move the panel
-}
-
-UIPanel: UI Panel
-
-MaxWidth: {
-	Label: Max Width (%)
-	Tooltip: Maximum % of the screen's width the panel can be
-}
-
-MaxHeight: {
-	Label: Max Height (%)
-	Tooltip: Maximum % of the screen's height the panel can be
-}
-
-CycleDelay: {
-	Label: Cycle Delay
-	Tooltip: The amount of time in ticks before the panel will cycle to the next type
-}
-
-UIDisplaySettings: UI Display
-PanelColor: Panel Color
-UIText: UI Text
-
-OverrideColor: {
-	Label: Override Color
-	Tooltip: Turn this on to override any pre-existing text color
-}
-
-TextColor: Text Color
-UIImage: UI Image
-
-UseItemTextures: {
-	Label: Use Item Textures
-	Tooltip: ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world
-}
-
-ReservedImageWidth: {
-	Label: Reserved Image Width (%)
-	Tooltip: The % of the panel's width that is allocated for the image when the text is too long
-}
-
-UseTextHeightForImage: {
-	Label: Use Text Height For Image
-	Tooltip: Shrinks the image height to be aligned with the text height
-}
-
-AutomaticOptions: Automatic Options
-
-HideUIForAir: {
-	Label: Hide UI For Air
-	Tooltip: ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile
-}
-
-AnchorX: Anchor X
-AnchorY: Anchor Y
-AnchorPosX: Anchor Pos X
-AnchorPosY: Anchor Pos Y
-PanelPadding: Panel Padding
-ContentSetting: Content Setting
-HoverOpacity: Hover Opacity
-ContextMode: Context Mode
-ShowBackground: Show Background
-ShowInFullscreenMap: Show In Fullscreen Map
-UIDisplay: UI Display
-Color: Color
-TextShadow: Text Shadow
-LoveColor: Love Color
-LikeColor: Like Color
-DislikeColor: Dislike Color
-HateColor: Hate Color
-
-ShowUI: {
-	Label: Show UI
-	Tooltip: Whether or not to show the panel in this context
-}
-
-ClosedInventory: {
-	Label: Closed Inventory
-	Tooltip: Information about where to position the panel when your inventory is closed
-}
-
-OpenInventory: {
-	Label: Open Inventory
-	Tooltip: Information about where to position the panel when your inventory is open
-}
-
-InFullscreenMap: {
-	Label: In Fullscreen Map
-	Tooltip: Information about where to position the panel when in the fullscreen map
-}
-
-SyncPositionData: {
-	Label: Sync Position Data
-	Tooltip:
-		'''
-		Syncs all the position data below with the Closed Inventory data
-		If ON editing data other than Closed Inventory will have no effect
-		If OFF you can set the position presets below to change the panel's position based on certain criteria
-		'''
-}
-
 Keybinds: {
 	CycleUIDisplayMode.DisplayName: Cycle UI Display Mode
 	NextContext.DisplayName: Next Context
@@ -222,7 +10,6 @@ Contexts: {
 	Wall: Wall
 	Liquid: Liquid
 	Wire: Wire
-	Npc: Npc
 }
 
 WallId: Wall Id: {0}
@@ -254,4 +41,300 @@ Defaults: {
 }
 
 RecommendedPick: "{0} {1}%"
-HappinessText: Happiness: {0}
+
+Configs: {
+	TwailaConfig: {
+		DisplayName: Mod Config
+
+		Headers: {
+			Features: Features
+			UIPosition: UI Position
+			UIPanel: UI Panel
+			UIText: UI Text
+			UIImage: UI Image
+			AutomaticOptions: Automatic Options
+		}
+
+		AntiCheat: {
+			Label: Anti Cheat Settings
+			Tooltip: Various settings to prevent cheating
+		}
+
+		DisplayContent: {
+			Label: Content Toggles
+			Tooltip: ""
+		}
+
+		UseDefaultPosition: {
+			Label: Use Default Position
+			Tooltip: Dragging the panel automatically disables this
+		}
+
+		LockPosition: {
+			Label: Lock Position
+			Tooltip: When this is OFF you can use the mouse to move the panel
+		}
+
+		AnchorX: {
+			Label: Anchor X
+			Tooltip: ""
+		}
+
+		AnchorY: {
+			Label: Anchor Y
+			Tooltip: ""
+		}
+
+		AnchorPosX: {
+			Label: Anchor Pos X
+			Tooltip: ""
+		}
+
+		AnchorPosY: {
+			Label: Anchor Pos Y
+			Tooltip: ""
+		}
+
+		MaxWidth: {
+			Label: Max Width (%)
+			Tooltip: Maximum % of the screen's width the panel can be
+		}
+
+		MaxHeight: {
+			Label: Max Height (%)
+			Tooltip: Maximum % of the screen's height the panel can be
+		}
+
+		PanelPadding: {
+			Label: Panel Padding
+			Tooltip: ""
+		}
+
+		CycleDelay: {
+			Label: Cycle Delay
+			Tooltip: The amount of time in ticks before the panel will cycle to the next type
+		}
+
+		ContentSetting: {
+			Label: Content Setting
+			Tooltip: ""
+		}
+
+		HoverOpacity: {
+			Label: Hover Opacity
+			Tooltip: ""
+		}
+
+		ContextMode: {
+			Label: Context Mode
+			Tooltip: ""
+		}
+
+		ShowBackground: {
+			Label: Show Background
+			Tooltip: ""
+		}
+
+		ShowInFullscreenMap: {
+			Label: Show In Fullscreen Map
+			Tooltip: ""
+		}
+
+		UIDisplaySettings: {
+			Label: UI Display
+			Tooltip: ""
+		}
+
+		PanelColor: {
+			Label: Panel Color
+			Tooltip: ""
+		}
+
+		TextShadow: {
+			Label: Text Shadow
+			Tooltip: ""
+		}
+
+		OverrideColor: {
+			Label: Override Color
+			Tooltip: Turn this on to override any pre-existing text color
+		}
+
+		TextColor: {
+			Label: Text Color
+			Tooltip: ""
+		}
+
+		UseItemTextures: {
+			Label: Use Item Textures
+			Tooltip: ON: Uses the texture of the item that place the tile. OFF: Uses the texture of the sprite in the world
+		}
+
+		ReservedImageWidth: {
+			Label: Reserved Image Width (%)
+			Tooltip: The % of the panel's width that is allocated for the image when the text is too long
+		}
+	}
+
+	AntiCheatSettings: {
+		Tooltip: ""
+
+		HideUnrevealedTiles: {
+			Label: Hide Unrevealed Tiles
+			Tooltip: Hides tiles that are not revealed on the player's map
+		}
+
+		HideWires: {
+			Label: Hide Wires
+			Tooltip: Hides wires that the player cannot see
+		}
+UseTextHeightForImage: {
+	Label: Use Text Height For Image
+	Tooltip: Shrinks the image height to be aligned with the text height
+}
+
+		HideEchoTiles: {
+			Label: Hide Echo Tiles
+			Tooltip: Hides echo tiles that the player cannot see
+		}
+
+		HideSuspiciousTiles: {
+			Label: Hide Suspicious Tiles
+			Tooltip: Hides tiles that are supposed to be a trick (Life Crystal Boulders, Dirtiest Block, Dead Man's Chests, etc)
+		}
+	}
+
+	Content: {
+		Tooltip: ""
+
+		ShowImage: {
+			Label: Show Image
+			Tooltip: ""
+		}
+
+		ShowName: {
+			Label: Show Name
+			Tooltip: ""
+		}
+
+		ShowMod: {
+			Label: Show Mod
+			Tooltip: ""
+		}
+
+		ShowId: {
+			Label: Show Id
+			Tooltip: ""
+		}
+
+		ShowPickaxePower: {
+			Label: Show Pickaxe Power
+			Tooltip: ""
+		}
+
+		ShowPickaxe: {
+			Label: Show Pickaxe
+			Tooltip: ""
+		}
+
+		ShowWire: {
+			Label: Show Wire
+			Tooltip: ""
+		}
+
+		ShowActuator: {
+			Label: Show Actuator
+			Tooltip: ""
+		}
+
+		ShowPaint: {
+			Label: Show Paint
+			Tooltip: ""
+		}
+
+		ShowCoating: {
+			Label: Show Coating
+			Tooltip: ""
+		}
+
+		ShowContainedItems: {
+			Label: Show Contained Items
+			Tooltip: ""
+		}
+	}
+
+	NameType: {
+		Tooltip: ""
+		DisplayName.Label: Display Name
+		InternalName.Label: Internal Name
+		FullName.Label: Full Name
+		Off.Label: Off
+	}
+
+	DisplayType: {
+		Tooltip: ""
+		Name.Label: Name
+		Icon.Label: Icon
+		Both.Label: Both
+		Off.Label: "{$NameType.Off.Label}"
+	}
+
+	HorizontalAnchor: {
+		Tooltip: ""
+		Left.Label: Left
+		Center.Label: Center
+		Right.Label: Right
+	}
+
+	VerticalAnchor: {
+		Tooltip: ""
+		Bottom.Label: Bottom
+		Center.Label: "{$HorizontalAnchor.Center.Label}"
+		Top.Label: Top
+	}
+
+	DrawMode: {
+		Tooltip: ""
+		Shrink.Label: Shrink
+		Trim.Label: Trim
+		Overflow.Label: Overflow
+	}
+
+	ContextUpdateMode: {
+		Tooltip: ""
+		Manual.Label: Manual
+		Automatic.Label: Automatic
+	}
+
+	DisplaySettings: {
+		Tooltip: ""
+
+		UIDisplay: {
+			Label: UI Display
+			Tooltip: ""
+		}
+
+		HideUIForAir: {
+			Label: Hide UI For Air
+			Tooltip: ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile
+		}
+
+		Headers.AutomaticOptions: Automatic Options Header
+	}
+
+	DisplayMode: {
+		Tooltip: ""
+		On.Label: On
+		Off.Label: "{$NameType.Off.Label}"
+		Automatic.Label: "{$ContextUpdateMode.Automatic.Label}"
+	}
+
+	ColorWrapper: {
+		Tooltip: ""
+
+		Color: {
+			Label: Color
+			Tooltip: ""
+		}
+	}
+}

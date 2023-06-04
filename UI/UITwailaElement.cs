@@ -8,9 +8,9 @@ namespace Twaila.UI
 {
     public enum DrawMode
     {
-        [Label("$Mods.Twaila.Enums.Shrink")] Shrink,
-        [Label("$Mods.Twaila.Enums.Trim")] Trim,
-        [Label("$Mods.Twaila.Enums.Overflow")] Overflow
+        Shrink,
+        Trim,
+        Overflow
     }
 
     public abstract class UITwailaElement : UIElement

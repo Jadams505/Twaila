@@ -5,11 +5,12 @@ This mod is greatly inspired by the Minecraft Mod WAILA by ProfMobius and is int
 Suggestions and Feedback are welcome
 
 Forum Page: https://forums.terraria.org/index.php?threads/terrarias-waila-twaila-mod.111090/
+Github: https://github.com/Jadams505/Twaila
 
 [h1]Config Options[/h1]
 Visit the Forum page for more details on config options
 [list]
-[*]AntiCheat: Only updates the UI if the tile has been revealed on the map
+[*]Anti Cheat Settings: Settings to prevent cheating
 [*]Content Toggles: Toggles the various UI features on and off 
 [*]UseDefaultPosition: Centers the panel on the top of the screen
 [*]LockPosition: Stops the mouse from being able to move the panel

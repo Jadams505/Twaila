@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Reflection;
 using System.Text;
 using Terraria;
 using Terraria.Enums;
@@ -8,6 +8,7 @@ using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
+using Terraria.ModLoader.Config.UI;
 using Terraria.ObjectData;
 
 namespace Twaila.Util
@@ -139,12 +140,30 @@ namespace Twaila.Util
                         if (tile.TileFrameX >= 864 && tile.TileFrameX < 900) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Diamond");
                     }
                     return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Default");
+                case TileID.SmallPiles1x1Echo:
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Default");
+                case TileID.SmallPiles2x1Echo:
+                    if (tile.TileFrameY == 0)
+                    {
+                        if (tile.TileFrameX >= 576 && tile.TileFrameX < 612) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Copper");
+                        if (tile.TileFrameX >= 612 && tile.TileFrameX < 648) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Silver");
+                        if (tile.TileFrameX >= 648 && tile.TileFrameX < 684) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Gold");
+                        if (tile.TileFrameX >= 684 && tile.TileFrameX < 720) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Amethyst");
+                        if (tile.TileFrameX >= 720 && tile.TileFrameX < 756) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Topaz");
+                        if (tile.TileFrameX >= 756 && tile.TileFrameX < 792) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Sapphire");
+                        if (tile.TileFrameX >= 792 && tile.TileFrameX < 828) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Emerald");
+                        if (tile.TileFrameX >= 828 && tile.TileFrameX < 864) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Ruby");
+                        if (tile.TileFrameX >= 864 && tile.TileFrameX < 900) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Diamond");
+                    }
+                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.SmallPiles.Default");
                 case TileID.LargePiles:
+                case TileID.LargePilesEcho:
                     if (tile.TileFrameX >= 868 && tile.TileFrameX < 972) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Copper");
                     if (tile.TileFrameX >= 972 && tile.TileFrameX < 1080) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Silver");
                     if (tile.TileFrameX >= 1080 && tile.TileFrameX < 1188) return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Gold");
                     return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles.Default");
                 case TileID.LargePiles2:
+                case TileID.LargePiles2Echo:
                     if (tile.TileFrameY >= 0 && tile.TileFrameY < 36 && tile.TileFrameX >= 918 && tile.TileFrameX < 972)
                         return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles2.EnchantedSword");
                     return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.LargePiles2.Default");
@@ -163,6 +182,8 @@ namespace Twaila.Util
                 case TileID.Hive:
                     return GetNameFromItem(ItemID.Hive);
                 case TileID.PlantDetritus:
+                case TileID.PlantDetritus2x2Echo:
+                case TileID.PlantDetritus3x2Echo:
                     return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PlantDetritus");
                 case TileID.WaterDrip:
                     return Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.WaterDrip, 0));
@@ -447,7 +468,8 @@ namespace Twaila.Util
                 ModTile mTile = TileLoader.GetTile(sandId);
                 if (mTile != null)
                 {
-                    string type = GetNameFromItem(mTile.ItemDrop);
+                    int tileDrop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
+                    string type = GetNameFromItem(tileDrop);
                     if (type != null)
                     {
                         return type + " " + Language.GetTextValue("MapObject.Cactus");
@@ -544,10 +566,12 @@ namespace Twaila.Util
 
         public static string ToLocalizedString(this Enum value)
         {
-            var info = value.GetType().GetMember(value.ToString()).FirstOrDefault();
-            string name = ((LabelAttribute)Attribute.GetCustomAttribute(info, typeof(LabelAttribute)))?.Label ?? value.ToString();
+            FieldInfo field = value.GetType().GetField(value.ToString());
+            MethodInfo labelMethod = typeof(ConfigManager).GetMethod("GetLocalizedLabel", BindingFlags.Static | BindingFlags.NonPublic);
+            PropertyFieldWrapper wrapper = new(field);
+            string key = labelMethod?.Invoke(null, new object[] { wrapper }) as string;
 
-            return name;
+            return Language.GetTextValue(key) ?? value.ToString();
         }
     }
 }

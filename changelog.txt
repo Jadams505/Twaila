@@ -1,3 +1,2 @@
 ﻿
-- Adjusted to the new keybind localization
-- Fixed a bug where you could move the panel in the full screen map
+- Fixed tiles placed by the rubblemaker having incorrect names
