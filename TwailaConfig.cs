@@ -27,7 +27,7 @@ namespace Twaila
             }
         }
 
-        [Header("$Mods.Twaila.Features")]
+        [Header("Features")]
 
         [SeparatePage]
         public AntiCheatSettings AntiCheat = new AntiCheatSettings();
@@ -39,8 +39,6 @@ namespace Twaila
         [Header("UIPosition")]
 
         [SeparatePage]
-        [Label("$Mods.Twaila.PanelPositionData.Label")]
-        [Tooltip("$Mods.Twaila.PanelPositionData.Tooltip")]
         public PanelContextData PanelPositionData = new PanelContextData();
         [DefaultValue(true)]
         public bool UseDefaultPosition;
@@ -147,8 +145,6 @@ namespace Twaila
         public int ReservedImageWidth;
 
         [DefaultValue(false)]
-        [Tooltip("$Mods.Twaila.UseTextHeightForImage.Tooltip")]
-        [Label("$Mods.Twaila.UseTextHeightForImage.Label")]
         public bool UseTextHeightForImage;
 
         public enum DisplayType
@@ -169,21 +165,19 @@ namespace Twaila
 
         public enum NumberType
         {
-            [Label("$Mods.Twaila.Enums.Number")] Number,
-            [Label("$Mods.Twaila.Enums.Text")] Text,
-            [Label("$Mods.Twaila.Enums.Both")] Both,
-            [Label("$Mods.Twaila.Enums.Off")] Off
+            Number,
+            Text,
+            Both,
+            Off
         }
 
 
         public class Content
         {
             [SeparatePage]
-            [Label("$Mods.Twaila.Content.ContentPriorities")]
             public Priorities ContentPriorities = new Priorities();
 
             [SeparatePage]
-            [Label("$Mods.Twaila.Content.NpcContent")]
             public NpcContent NpcContent = new NpcContent();
 
             [DefaultValue(true)]
@@ -221,15 +215,11 @@ namespace Twaila
 
             [Range(1, 20)]
             [DefaultValue(1)]
-            [Label("$Mods.Twaila.Content.StatsPerRow")]
             public int TextsPerRow;
 
             [Range(1, 20)]
             [DefaultValue(8)]
-            [Label("$Mods.Twaila.Content.IconsPerRow")]
             public int IconsPerRow;
-
-
 
             public Content()
             {
@@ -271,53 +261,41 @@ namespace Twaila
         public class NpcContent
         {
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.NpcContent.ShowHp")]
             public bool ShowHp;
 
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.NpcContent.ShowDefense")]
             public bool ShowDefense;
 
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.NpcContent.ShowAttack")]
             public bool ShowAttack;
 
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.NpcContent.ShowKnockback")]
             public bool ShowKnockback;
 
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.NpcContent.ShowKills")]
             public bool ShowKills;
 
             [DrawTicks]
-            [Label("$Mods.Twaila.NpcContent.ShowBuffs")]
             public DisplayType ShowBuffs;
 
             [DrawTicks]
-            [Label("$Mods.Twaila.NpcContent.ShowHappiness")]
             public NumberType ShowHappiness;
 
             [DrawTicks]
-            [Label("$Mods.Twaila.NpcContent.ShowNpcPreferences")]
             public DisplayType ShowNpcPreferences;
 
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.NpcContent.ShowBiomePreferences")]
             public bool ShowBiomePreferences;
 
             [Range(1, 20)]
             [DefaultValue(3)]
-            [Label("$Mods.Twaila.NpcContent.StatsPerRow")]
             public int StatsPerRow;
 
             [Range(1, 20)]
             [DefaultValue(8)]
-            [Label("$Mods.Twaila.NpcContent.IconsPerRow")]
             public int IconsPerRow;
 
             [SeparatePage]
-            [Label("$Mods.Twaila.NpcContent.HappinessColors")]
             public HappinessColors HappinessColors = new();
 
             public NpcContent()
@@ -357,26 +335,21 @@ namespace Twaila
 
         public class Priorities
         {
-            [Header("$Mods.Twaila.Priorities.Header")]
+            [Header("Priorities")]
 
             [DefaultValue(0)]
-            [Label("$Mods.Twaila.Priorities.WirePriority")]
             public int WirePriority;
 
             [DefaultValue(1)]
-            [Label("$Mods.Twaila.Priorities.NpcPriority")]
             public int NpcPriority;
 
             [DefaultValue(2)]
-            [Label("$Mods.Twaila.Priorities.TilePrioity")]
             public int TilePrioity;
 
             [DefaultValue(3)]
-            [Label("$Mods.Twaila.Priorities.LiquidPriority")]
             public int LiquidPriority;
 
             [DefaultValue(4)]
-            [Label("$Mods.Twaila.Priorities.WallPriority")]
             public int WallPriority;
 
             public Priorities()
@@ -506,16 +479,12 @@ namespace Twaila
 
         public class HappinessColors
         {
-            [Label("$Mods.Twaila.LoveColor")]
             public ColorWrapper LoveColor;
 
-            [Label("$Mods.Twaila.LikeColor")]
             public ColorWrapper LikeColor;
 
-            [Label("$Mods.Twaila.DislikeColor")]
             public ColorWrapper DislikeColor;
 
-            [Label("$Mods.Twaila.HateColor")]
             public ColorWrapper HateColor;
 
             public HappinessColors()
@@ -544,38 +513,28 @@ namespace Twaila
         public class PositionData
         {
             [DefaultValue(true)]
-            [Tooltip("$Mods.Twaila.UseDefaultPosition.Tooltip")]
-            [Label("$Mods.Twaila.UseDefaultPosition.Label")]
             public bool UseDefaultPosition;
 
             [DefaultValue(true)]
-            [Tooltip("$Mods.Twaila.LockPosition.Tooltip")]
-            [Label("$Mods.Twaila.LockPosition.Label")]
             public bool LockPosition;
 
             [DrawTicks]
             [DefaultValue(HorizontalAnchor.Center)]
-            [Label("$Mods.Twaila.AnchorX")]
             public HorizontalAnchor AnchorX = HorizontalAnchor.Center;
 
             [DrawTicks]
             [DefaultValue(VerticalAnchor.Top)]
-            [Label("$Mods.Twaila.AnchorY")]
             public VerticalAnchor AnchorY = VerticalAnchor.Top;
 
             [DefaultValue(0)]
             [Range(0, 2000)]
-            [Label("$Mods.Twaila.AnchorPosX")]
             public int AnchorPosX;
 
             [DefaultValue(0)]
             [Range(0, 2000)]
-            [Label("$Mods.Twaila.AnchorPosY")]
             public int AnchorPosY;
 
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.ShowUI.Label")]
-            [Tooltip("$Mods.Twaila.ShowUI.Tooltip")]
             public bool ShowUI;
 
             public PositionData()
@@ -621,13 +580,9 @@ namespace Twaila
         public class PanelContextData
         {
             [DefaultValue(true)]
-            [Label("$Mods.Twaila.SyncPositionData.Label")]
-            [Tooltip("$Mods.Twaila.SyncPositionData.Tooltip")]
             public bool SyncPositionData = true;
 
             [SeparatePage]
-            [Label("$Mods.Twaila.ClosedInventory.Label")]
-            [Tooltip("$Mods.Twaila.ClosedInventory.Tooltip")]
             public PositionData ClosedInventory = new PositionData()
             {
                 UseDefaultPosition = true,
@@ -640,8 +595,6 @@ namespace Twaila
             };
 
             [SeparatePage]
-            [Label("$Mods.Twaila.OpenInventory.Label")]
-            [Tooltip("$Mods.Twaila.OpenInventory.Tooltip")]
             public PositionData OpenInventory = new PositionData()
             {
                 UseDefaultPosition = true,
@@ -654,8 +607,6 @@ namespace Twaila
             };
 
             [SeparatePage]
-            [Label("$Mods.Twaila.InFullscreenMap.Label")]
-            [Tooltip("$Mods.Twaila.InFullscreenMap.Tooltip")]
             public PositionData InFullscreenMap = new PositionData()
             {
                 UseDefaultPosition = true,
