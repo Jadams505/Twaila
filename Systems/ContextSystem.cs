@@ -22,7 +22,9 @@ namespace Twaila.Systems
 
         public override void Load()
         {
-            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.TilePrioity);
+            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), 
+                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.TilePrioity,
+                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableTileContent);
             TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
             TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
             TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
@@ -34,16 +36,24 @@ namespace Twaila.Systems
             TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
             ContextEntries.Add(TileEntry);
 
-            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WallPriority);
+            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), 
+                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WallPriority,
+                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableWallContent);
             ContextEntries.Add(WallEntry);
 
-            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.LiquidPriority);
+            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), 
+                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.LiquidPriority,
+                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableLiquidContent);
             ContextEntries.Add(LiquidEntry);
 
-            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WirePriority);
+            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), 
+                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WirePriority,
+                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableWireContent);
             ContextEntries.Add(WireEntry);
 
-            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), () => TwailaConfig.Instance.DisplayContent.ContentPriorities.NpcPriority);
+            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), 
+                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.NpcPriority,
+                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableNpcContent);
             NpcEntry.ApplicableContexts.Add(TownNpcContext.CreateTownNpcContext);
             ContextEntries.Add(NpcEntry);
         }
@@ -162,7 +172,6 @@ namespace Twaila.Systems
 
     public class ContextEntry
     {
-
         public List<ContextFetcher> ApplicableContexts { get; set; }
 
         public ContextFetcher DefaultContext { get; set; }
@@ -171,16 +180,22 @@ namespace Twaila.Systems
 
         public Func<int> Priority { get; set; }
 
-        public ContextEntry(ContextFetcher defaultContext, LocalizedText name, Func<int> priority)
+        public Func<bool> Enabled { get; set; }
+
+        public ContextEntry(ContextFetcher defaultContext, LocalizedText name, Func<int> priority, Func<bool> enabled)
         {
             DefaultContext = defaultContext;
             ApplicableContexts = new List<ContextFetcher>();
             Name = name;
             Priority = priority;
+            Enabled = enabled;
         }
 
         public BaseContext Context(TwailaPoint pos)
         {
+            if (!Enabled())
+                return null;
+
             BaseContext foundContext = null;
             foreach(var entry in ApplicableContexts)
             {

@@ -180,6 +180,9 @@ namespace Twaila
             [SeparatePage]
             public NpcContent NpcContent = new NpcContent();
 
+            [SeparatePage]
+            public ContentToggles EnableContent = new ContentToggles();
+
             [DefaultValue(true)]
             public bool ShowImage;
 
@@ -374,6 +377,48 @@ namespace Twaila
             public override int GetHashCode()
             {
                 return HashCode.Combine(NpcPriority, WallPriority, TilePrioity, LiquidPriority, WirePriority);
+            }
+        }
+
+        public class ContentToggles
+        {
+            [DefaultValue(true)]
+            public bool EnableWireContent;
+
+            [DefaultValue(true)]
+            public bool EnableNpcContent;
+
+            [DefaultValue(true)]
+            public bool EnableTileContent;
+
+            [DefaultValue(true)]
+            public bool EnableLiquidContent;
+
+            [DefaultValue(true)]
+            public bool EnableWallContent;
+
+            public ContentToggles()
+            {
+                EnableWireContent = true;
+                EnableNpcContent = true;
+                EnableTileContent = true;
+                EnableLiquidContent = true;
+                EnableWallContent = true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is ContentToggles toggles &&
+                       EnableWireContent == toggles.EnableWireContent &&
+                       EnableNpcContent == toggles.EnableNpcContent &&
+                       EnableTileContent == toggles.EnableTileContent &&
+                       EnableLiquidContent == toggles.EnableLiquidContent &&
+                       EnableWallContent == toggles.EnableWallContent;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(EnableWireContent, EnableNpcContent, EnableTileContent, EnableLiquidContent, EnableWallContent);
             }
         }
 

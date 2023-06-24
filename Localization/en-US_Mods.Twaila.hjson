@@ -288,6 +288,11 @@ Configs: {
 			Label: Icons Per Row
 			Tooltip: ""
 		}
+
+		EnableContent: {
+			Label: Enable Content
+			Tooltip: ""
+		}
 	}
 
 	NameType: {
@@ -557,6 +562,35 @@ Configs: {
 		ShowUI: {
 			Label: Show UI
 			Tooltip: Whether or not to show the panel in this context
+		}
+	}
+
+	ContentToggles: {
+		Tooltip: ""
+
+		EnableWireContent: {
+			Label: Enable Wire Content
+			Tooltip: ""
+		}
+
+		EnableNpcContent: {
+			Label: Enable Npc Content
+			Tooltip: ""
+		}
+
+		EnableTileContent: {
+			Label: Enable Tile Content
+			Tooltip: ""
+		}
+
+		EnableLiquidContent: {
+			Label: Enable Liquid Content
+			Tooltip: ""
+		}
+
+		EnableWallContent: {
+			Label: Enable Wall Content
+			Tooltip: ""
 		}
 	}
 }
