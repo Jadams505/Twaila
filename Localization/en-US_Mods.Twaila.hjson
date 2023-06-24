@@ -10,6 +10,7 @@ Contexts: {
 	Wall: Wall
 	Liquid: Liquid
 	Wire: Wire
+	Npc: Npc
 }
 
 WallId: Wall Id: {0}
@@ -41,6 +42,7 @@ Defaults: {
 }
 
 RecommendedPick: "{0} {1}%"
+HappinessText: Happiness: {0}
 
 Configs: {
 	TwailaConfig: {
