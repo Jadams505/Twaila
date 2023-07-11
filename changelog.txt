@@ -1,2 +1,2 @@
 ﻿
-- Fixed tiles placed by the rubblemaker having incorrect names
+- Fixed certain tiles throwing exceptions in chat
