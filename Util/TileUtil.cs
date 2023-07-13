@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
@@ -11,7 +13,7 @@ namespace Twaila.Util
     {
         public static TileObjectData GetTileObjectData(Tile tile)
         {
-            TileObjectData data = ExtraObjectData.GetData(tile) ?? TileObjectData.GetTileData(tile);
+            TileObjectData data = ExtraObjectData.GetData(tile) ?? GetTileDataSafe(tile);
             return data;
         }
 
@@ -19,7 +21,25 @@ namespace Twaila.Util
         {
             TileObjectData data = ExtraObjectData.GetData(tileId, frameY) ??
                 TileObjectData.GetTileData(tileId, style);
-            return data;
+            return IsValidTileObjectData(data) ? data : null;
+        }
+
+        public static bool IsValidTileObjectData(TileObjectData data)
+        {
+            return data != null && data.CoordinateFullWidth > 0 && data.CoordinateFullHeight > 0 && data.StyleMultiplier > 0;
+        }
+
+        public static TileObjectData GetTileDataSafe(Tile tile)
+        {
+            TileObjectData data = GetRawData(tile);
+            return IsValidTileObjectData(data) ? TileObjectData.GetTileData(tile) : null;
+        }
+
+        private static readonly FieldInfo _tileObjectDataValues = typeof(TileObjectData).GetField("_data", BindingFlags.Static | BindingFlags.NonPublic);
+        private static TileObjectData GetRawData(Tile tile)
+        {
+            List<TileObjectData> data = (List<TileObjectData>)_tileObjectDataValues.GetValue(null);
+            return data[tile.TileType];
         }
 
         public static int GetTileStyle(Tile tile)
