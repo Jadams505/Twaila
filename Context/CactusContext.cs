@@ -5,6 +5,7 @@ using Twaila.Util;
 using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
+using Twaila.Config;
 
 namespace Twaila.Context
 {

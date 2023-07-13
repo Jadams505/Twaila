@@ -8,6 +8,7 @@ using System.Reflection;
 using Twaila.Util;
 using Twaila.Systems;
 using Terraria.ID;
+using Twaila.Config;
 
 namespace Twaila.Context
 {
@@ -58,7 +59,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             PopulateItems();
 

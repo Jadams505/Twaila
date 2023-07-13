@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Context;
 
 namespace Twaila.Systems

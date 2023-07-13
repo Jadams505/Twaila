@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Config.UI;
 using Terraria.ObjectData;
+using Twaila.Config;
 
 namespace Twaila.Util
 {

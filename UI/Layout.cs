@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Twaila.Config;
 using Twaila.Util;
 
 namespace Twaila.UI

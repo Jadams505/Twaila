@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;

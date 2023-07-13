@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Twaila.Systems;
 using Microsoft.Xna.Framework;
+using Twaila.Config;
 
 namespace Twaila.Context
 {

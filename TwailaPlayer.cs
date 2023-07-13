@@ -1,5 +1,6 @@
 ﻿using Terraria.GameInput;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Systems;
 
 namespace Twaila

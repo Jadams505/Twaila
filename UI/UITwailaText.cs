@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
+using Twaila.Config;
 
 namespace Twaila.UI
 {

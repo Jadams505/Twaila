@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.UI;
 using Twaila.Util;
 

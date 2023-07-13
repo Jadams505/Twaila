@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.UI;
+using Twaila.Config;
 using Twaila.Context;
 using Twaila.Systems;
 using Twaila.Util;
@@ -28,7 +29,7 @@ namespace Twaila.UI
         private Vector2 MaxPanelDimension => new Vector2(TwailaConfig.Instance.MaxWidth / 100.0f * Parent.GetDimensions().Width, TwailaConfig.Instance.MaxHeight / 100.0f * Parent.GetDimensions().Height);
         private Vector2 MaxPanelInnerDimension => new Vector2(MaxPanelDimension.X - PaddingLeft - PaddingRight, MaxPanelDimension.Y - PaddingTop - PaddingLeft);
 
-        private static TwailaConfig.PositionData CurrentPositionData => TwailaConfig.Instance.PanelPositionData.GetActiveContext();
+        private static PositionData CurrentPositionData => TwailaConfig.Instance.PanelPositionData.GetActiveContext();
 
         public TwailaPanel()
         {

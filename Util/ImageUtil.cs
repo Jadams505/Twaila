@@ -9,6 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using ReLogic.Content;
 using System;
+using Twaila.Config;
 
 namespace Twaila.Util
 {

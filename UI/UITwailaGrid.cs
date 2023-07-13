@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Twaila.Config;
 using Twaila.Util;
 
 namespace Twaila.UI

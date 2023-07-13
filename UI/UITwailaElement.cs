@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.ModLoader.Config;
 using Terraria.UI;
+using Twaila.Config;
 
 namespace Twaila.UI
 {

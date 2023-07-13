@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.UI;
+using Twaila.Config;
 using Twaila.Systems;
 
 namespace Twaila.UI

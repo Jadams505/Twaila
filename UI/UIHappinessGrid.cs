@@ -6,6 +6,7 @@ using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
+using Twaila.Config;
 
 namespace Twaila.UI
 {
