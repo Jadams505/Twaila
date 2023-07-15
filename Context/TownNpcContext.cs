@@ -25,7 +25,7 @@ namespace Twaila.Context
 
         public static TownNpcContext CreateTownNpcContext(TwailaPoint pos)
         {
-            if (IntersectsNPC(pos.BestPos(), out var npc) && npc.townNPC)
+            if (IntersectsNPC(pos.MouseWorldPos, out var npc) && npc.townNPC)
             {
                 return new TownNpcContext(pos);
             }

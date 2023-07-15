@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -39,7 +40,7 @@ namespace Twaila.Context
 
         public static NpcContext CreateNpcContext(TwailaPoint pos)
         {
-            if (IntersectsNPC(pos.BestPos(), out _))
+            if (IntersectsNPC(pos.MouseWorldPos, out _))
             {
                 return new NpcContext(pos);
             }
@@ -64,7 +65,7 @@ namespace Twaila.Context
         {
             TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
 
-            IntersectsNPC(Pos.BestPos(), out NPC foundNPC);
+            IntersectsNPC(Pos.MouseWorldPos, out NPC foundNPC);
 
             Npc = foundNPC;
 
@@ -219,15 +220,15 @@ namespace Twaila.Context
         {
             foreach(NPC npc in Main.npc)
             {
-                if (!npc.active)
-                {
+                if (!npc.active || npc.GivenOrTypeName == "")
                     continue;
-                } 
 
-                Rectangle npcHitbox = new Rectangle((int)npc.TopLeft.X - 16, (int)npc.TopLeft.Y - 16, npc.frame.Width, npc.frame.Height);
-                Rectangle mouseHitbox = new Rectangle(pos.X * 16, pos.Y * 16, 0, 0);
-                mouseHitbox.Intersects(ref npcHitbox, out bool mouseOver);
-                if (mouseOver)
+                Rectangle npcBox = new Rectangle((int)npc.Bottom.X - npc.frame.Width / 2, (int)npc.Bottom.Y - npc.frame.Height, npc.frame.Width, npc.frame.Height);
+                Rectangle mouseHitbox = new Rectangle(pos.X, pos.Y, 1, 1);
+                
+                NPCLoader.ModifyHoverBoundingBox(npc, ref npcBox);
+
+                if (mouseHitbox.Intersects(npcBox))
                 {
                     target = npc;
                     return true;

@@ -54,7 +54,7 @@ namespace Twaila.UI
 
         public static TwailaPoint GetCursorInfo()
         {
-            Point mouse = new Point(Main.mouseX, Main.mouseY);
+            Point mouse = Main.MouseWorld.ToPoint();
             Point tile = new Point(Player.tileTargetX, Player.tileTargetY);
             Point smart = new Point(Main.SmartCursorX, Main.SmartCursorY);
 
