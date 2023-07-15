@@ -137,7 +137,7 @@ namespace Twaila.Systems
 
     public struct TwailaPoint
     {
-        public Point MousePos;
+        public Point MouseWorldPos;
 
         public Point TilePos;
 
@@ -145,9 +145,9 @@ namespace Twaila.Systems
 
         public Point MapPos;
 
-        public TwailaPoint(Point mouse, Point tile, Point smart, Point map)
+        public TwailaPoint(Point mouseWorld, Point tile, Point smart, Point map)
         {
-            MousePos = mouse;
+            MouseWorldPos = mouseWorld;
             TilePos = tile;
             SmartCursorPos = smart;
             MapPos = map;
