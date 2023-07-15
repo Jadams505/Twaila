@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
