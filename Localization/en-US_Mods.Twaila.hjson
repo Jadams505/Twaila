@@ -185,6 +185,11 @@ Configs: {
 			Label: Anchor Pos Y
 			Tooltip: ""
 		}
+
+		CurrentContext: {
+			Label: Current Context
+			Tooltip: ""
+		}
 	}
 
 	AntiCheatSettings: {
@@ -590,6 +595,15 @@ Configs: {
 
 		EnableWallContent: {
 			Label: Enable Wall Content
+			Tooltip: ""
+		}
+	}
+
+	ContextIndex: {
+		Tooltip: ""
+
+		Index: {
+			Label: Index
 			Tooltip: ""
 		}
 	}

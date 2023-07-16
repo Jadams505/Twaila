@@ -41,11 +41,15 @@ namespace Twaila.UI
             Height.Set(0, 0);
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
+
+            currIndex = TwailaConfig.Instance.CurrentContext.Index;
         }
 
         public override void Update(GameTime gameTime)
         {
             // The order of these function calls is VERY important
+
+            TwailaConfig.Instance.CurrentContext.SetIndex(currIndex);
 
             // Shouldn't update if it shouldn't be seen
             if (!CurrentPositionData.ShowUI)

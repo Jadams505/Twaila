@@ -4,6 +4,7 @@ using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.UI;
 using Twaila.Config;
+using Twaila.Context;
 using Twaila.Systems;
 
 namespace Twaila.UI
@@ -91,6 +92,19 @@ namespace Twaila.UI
                 return false;
             }
             return true;
+        }
+
+        public static int CurrentContextIndex()
+        {
+            return _panel == null ? 0 : _panel.currIndex;
+        }
+
+        public static void SetCurrentContext(int index)
+        {
+            if(_panel != null)
+            {
+                _panel.currIndex = index;
+            }
         }
 
         public static void NextContext()

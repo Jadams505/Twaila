@@ -57,6 +57,8 @@ namespace Twaila.Systems
                 () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableNpcContent);
             NpcEntry.ApplicableContexts.Add(TownNpcContext.CreateTownNpcContext);
             ContextEntries.Add(NpcEntry);
+
+            TwailaConfig.Instance.CurrentContext.SetIndex(TwailaConfig.Instance.CurrentContext.Index);
         }
 
         public override void Unload()

@@ -53,6 +53,8 @@ namespace Twaila.Config
         [DrawTicks]
         public ContextUpdateMode ContextMode;
 
+        public ContextIndex CurrentContext = new ContextIndex();
+
         [DefaultValue(true)]
         public bool ShowBackground;
 
@@ -144,6 +146,13 @@ namespace Twaila.Config
                 PanelPositionData.ClosedInventory.CopyTo(PanelPositionData.OpenInventory);
                 PanelPositionData.ClosedInventory.CopyTo(PanelPositionData.InFullscreenMap);
             }
+
+            if(ContextSystem.Instance != null)
+            {
+                CurrentContext.SetIndex(CurrentContext.Index);
+                TwailaUI.SetCurrentContext(CurrentContext.Index);
+            }
+                
         }
 
         public void Save()
