@@ -18,7 +18,6 @@ namespace Twaila.UI
         public BaseContext CurrentContext { get; set; }
         public BaseContext PriorityContext { get; set; }
 
-        public int currIndex = 0;
         public int tick = 0;
 
         private int pickIndex = 0;
@@ -41,15 +40,11 @@ namespace Twaila.UI
             Height.Set(0, 0);
             Top.Set(0, 0);
             Left.Set(PlayerInput.RealScreenWidth / 2, 0);
-
-            currIndex = TwailaConfig.Instance.CurrentContext.Index;
         }
 
         public override void Update(GameTime gameTime)
         {
             // The order of these function calls is VERY important
-
-            TwailaConfig.Instance.CurrentContext.SetIndex(currIndex);
 
             // Shouldn't update if it shouldn't be seen
             if (!CurrentPositionData.ShowUI)
@@ -357,13 +352,14 @@ namespace Twaila.UI
 
         private BaseContext GetManualContext(ref TwailaPoint mouseInfo)
         {
-            return ContextSystem.Instance.CurrentContext(currIndex, mouseInfo);
+            return ContextSystem.Instance.CurrentContext(TwailaConfig.Instance.CurrentContext.Index, mouseInfo);
         }
 
         private BaseContext GetAutomaticContext(ref TwailaPoint mouseInfo)
         {
             Player player = Main.LocalPlayer;
-            BaseContext context = ContextSystem.Instance.CurrentContext(currIndex, mouseInfo) ?? ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
+            BaseContext context = ContextSystem.Instance.CurrentContext(TwailaConfig.Instance.CurrentContext.Index, mouseInfo) 
+                ?? ContextSystem.Instance.NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, mouseInfo);
 
             if (player.itemAnimation > 0)
             {
@@ -392,7 +388,7 @@ namespace Twaila.UI
             {
                 if(priorityContext != null)
                 {
-                    currIndex = first;
+                    TwailaConfig.Instance.CurrentContext.SetIndex(first);
                 }
                 
                 tick = 0;
@@ -405,7 +401,7 @@ namespace Twaila.UI
         {
             tick = 0;
             pickIndex++;
-            return ContextSystem.Instance.NextNonNullContext(ref currIndex, mouseInfo);
+            return ContextSystem.Instance.NextNonNullContext(mouseInfo);
         }
 
         private void UpdateCurrentContext(BaseContext context)

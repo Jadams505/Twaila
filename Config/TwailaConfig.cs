@@ -150,7 +150,6 @@ namespace Twaila.Config
             if(ContextSystem.Instance != null)
             {
                 CurrentContext.SetIndex(CurrentContext.Index);
-                TwailaUI.SetCurrentContext(CurrentContext.Index);
             }
                 
         }

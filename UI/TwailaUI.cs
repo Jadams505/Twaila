@@ -41,7 +41,7 @@ namespace Twaila.UI
                     if (TwailaConfig.Instance.UIDisplaySettings.HideUIForAir)
                     {
                         if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 || !_panel.Parent.ContainsPoint(Main.MouseScreen) ||
-                            (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(_panel.currIndex, GetCursorInfo()) == null))
+                            (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(GetCursorInfo()) == null))
                             && !_panel.ContainsPoint(Main.MouseScreen) && !Main.SmartCursorShowing && !_panel.IsDragging())
                         {
                             Enabled = false;
@@ -94,44 +94,33 @@ namespace Twaila.UI
             return true;
         }
 
-        public static int CurrentContextIndex()
-        {
-            return _panel == null ? 0 : _panel.currIndex;
-        }
-
-        public static void SetCurrentContext(int index)
-        {
-            if(_panel != null)
-            {
-                _panel.currIndex = index;
-            }
-        }
+        private static string NameOfCurrentContext => ContextSystem.Instance.ContextEntries[TwailaConfig.Instance.CurrentContext.Index].Name.Value;
 
         public static void NextContext()
         {
-            _panel.currIndex = ContextSystem.Instance.NextContextIndex(_panel.currIndex);
-            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
+            TwailaConfig.Instance.CurrentContext.SetIndex(ContextSystem.Instance.NextContextIndex());
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").Format(NameOfCurrentContext));
             _panel.tick = 0;
         }
 
         public static void PrevContext()
         {
-            _panel.currIndex = ContextSystem.Instance.PrevContextIndex(_panel.currIndex);
-            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
+            TwailaConfig.Instance.CurrentContext.SetIndex(ContextSystem.Instance.PrevContextIndex());
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").Format(NameOfCurrentContext));
             _panel.tick = 0;
         }
 
         public static void NextNonNullContext()
         {
-            ContextSystem.Instance.NextNonNullContext(ref _panel.currIndex, GetCursorInfo());
-            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
+            ContextSystem.Instance.NextNonNullContext(GetCursorInfo());
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").Format(NameOfCurrentContext));
             _panel.tick = 0;
         }
 
         public static void PrevNonNullContext()
         {
-            ContextSystem.Instance.PrevNonNullContext(ref _panel.currIndex, GetCursorInfo());
-            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").WithFormatArgs(ContextSystem.Instance.ContextEntries[_panel.currIndex].Name.Value));
+            ContextSystem.Instance.PrevNonNullContext(GetCursorInfo());
+            Main.NewText(Language.GetText("Mods.Twaila.CurrentContext").Format(NameOfCurrentContext));
             _panel.tick = 0;
         }
 

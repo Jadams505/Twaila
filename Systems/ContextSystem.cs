@@ -71,6 +71,8 @@ namespace Twaila.Systems
             return ContextEntries[currIndex].Context(pos);
         }
 
+        public BaseContext CurrentContext(TwailaPoint pos) => CurrentContext(TwailaConfig.Instance.CurrentContext.Index, pos);
+
         public BaseContext NextNonNullContext(ref int currIndex, TwailaPoint pos)
         {
             int i = currIndex;
@@ -85,6 +87,8 @@ namespace Twaila.Systems
             currIndex = i;
             return context;
         }
+
+        public BaseContext NextNonNullContext(TwailaPoint pos) => NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
 
         public BaseContext PrevNonNullContext(ref int currIndex, TwailaPoint pos)
         {
@@ -101,17 +105,23 @@ namespace Twaila.Systems
             return context;
         }
 
+        public BaseContext PrevNonNullContext(TwailaPoint pos) => PrevNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
+
         public int NextContextIndex(int currIndex)
         {
             int nextIndex = currIndex + 1;
             return nextIndex < ContextEntries.Count ? nextIndex : 0;
         }
 
+        public int NextContextIndex() => NextContextIndex(TwailaConfig.Instance.CurrentContext.Index);
+
         public int PrevContextIndex(int currIndex)
         {
             int prevIndex = currIndex - 1;
             return prevIndex >= 0 ? prevIndex : ContextEntries.Count - 1;
         }
+
+        public int PrevContextIndex() => PrevContextIndex(TwailaConfig.Instance.CurrentContext.Index);
 
         public List<ContextEntry> ContextEntriesAt(TwailaPoint pos)
         {
