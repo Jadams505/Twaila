@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Graphics;
@@ -31,10 +32,11 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-            if (Framing.GetTileSafely(pos.BestPos()).WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
-            {
+            if (tile.WallType <= 0 || tile.WallType >= WallLoader.WallCount)
+                return null;
+
+            if (tile.WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
                 return new WallContext(pos);
-            }
 
             return null;
         }

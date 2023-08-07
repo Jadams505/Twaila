@@ -4,6 +4,7 @@ using System.Reflection;
 using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Twaila.ObjectData;
 
@@ -112,14 +113,21 @@ namespace Twaila.Util
 
         public static bool IsTileRevealedToPlayer(Player player, Tile tile, Point tilePos)
         {
-            if (player.HasBuff(BuffID.Spelunker) && Main.tileSpelunker[tile.TileType])
+            if (tile.TileType >= TileLoader.TileCount)
+                return false;
+
+            if (player.HasBuff(BuffID.Spelunker))
             {
-                return true;
+                if (tile.TileType < 0 || tile.TileType >= Main.tileSpelunker.Length)
+                    return false;
+
+                if (Main.tileSpelunker[tile.TileType])
+                    return true;
             }
-            if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(tilePos.X, tilePos.Y, Main.player[Main.myPlayer]))
-            {
+
+            if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(tilePos.X, tilePos.Y, player))
                 return true;
-            }
+
             return Main.Map.IsRevealed(tilePos.X, tilePos.Y);
         }
 

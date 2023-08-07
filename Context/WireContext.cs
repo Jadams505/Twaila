@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.UI;
+using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -41,6 +42,9 @@ namespace Twaila.Context
 
             bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
 
+            if(tile.TileType >= TileLoader.TileCount)
+                return null;
+            
             if (noTile)
             {
                 if (hasWire && (!TwailaConfig.Instance.AntiCheat.HideWires || canSeeWire))
