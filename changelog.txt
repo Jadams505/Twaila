@@ -1,2 +1,2 @@
 ﻿
-- Fixed certain tiles throwing exceptions in chat
+- Fixed a crash from bad tile types

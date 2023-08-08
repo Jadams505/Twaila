@@ -128,6 +128,12 @@ namespace Twaila.Util
             if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(tilePos.X, tilePos.Y, player))
                 return true;
 
+            if (tilePos.X < 0 || tilePos.X >= Main.Map.MaxWidth)
+                return false;
+
+            if (tilePos.Y < 0 || tilePos.Y >= Main.Map.MaxHeight)
+                return false;
+
             return Main.Map.IsRevealed(tilePos.X, tilePos.Y);
         }
 
