@@ -28,10 +28,11 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(pos.BestPos());
 
+            if (tile.TileType >= TileLoader.TileCount)
+                return null;
+
             if (tile.LiquidAmount > 0 && !TileUtil.IsBlockedByAntiCheat(tile, pos.BestPos()))
-            {
                 return new LiquidContext(pos);
-            }
 
             return null;
         }

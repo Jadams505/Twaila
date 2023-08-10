@@ -490,6 +490,43 @@ namespace Twaila.Util
 
         public static Texture2D GetImageFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
         {
+            try
+            {
+                // Taken from TileLoader.SetDrawPositions (Called by TilesRenderer.GetTileDrawData)
+                // Unloaded tiles can cause an IndexOutOfBoundsException on tileData.CoordinateHeights
+                // This is because it has same frameX and frameY as the original tile but has the TileObjectData of an unloaded tile
+                TileObjectData tileData = TileObjectData.GetTileData(tile.TileType, 0, 0);
+                if (tileData != null)
+                {
+                    int partY = 0;
+                    for (int remainingFrameY = tile.TileFrameY % tileData.CoordinateFullHeight; partY < tileData.Height && remainingFrameY - tileData.CoordinateHeights[partY] + tileData.CoordinatePadding >= 0; partY++)
+                    {
+                        remainingFrameY -= tileData.CoordinateHeights[partY] + tileData.CoordinatePadding;
+                    }
+
+                    if (partY >= tileData.CoordinateHeights.Length)
+                        return null;
+                }
+
+                TileObjectData data = TileUtil.GetTileObjectData(tile);
+                short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
+                Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
+                    ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
+                    out _, out _, out _, out _);
+                if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
+                {
+                    tileFx += (short)addX;
+                    tileFy += (short)addY;
+                }
+                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
+            }
+            catch(Exception e)
+            {
+                Twaila.Instance.Logger.Error(e.Message);
+                return null;
+            }
+            
+        }
             TileObjectData data = TileUtil.GetTileObjectData(tile);
             short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
             Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,

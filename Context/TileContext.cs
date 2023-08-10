@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using Twaila.Config;
 using Twaila.Graphics;
@@ -42,10 +44,11 @@ namespace Twaila.Context
         {
             Tile tile = Framing.GetTileSafely(pos.BestPos());
 
-            if (tile.HasTile && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
-            {
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+            
+            if (!TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
                 return new TileContext(pos);
-            }
 
             return null;
         }
