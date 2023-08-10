@@ -90,10 +90,10 @@ Tiles: {
 	// TreeRuby: Ruby Tree
 	// TreeDiamond: Diamond Tree
 	// TreeAmber: Amber Tree
-	// VoiletMoss: Violet Moss Stone Block
-	// VoiletMossBrick: Violet Moss Gray Brick
-	// RainbowMoss: Rainbow Moss Stone Block
-	// RainbowMossBrick: Rainbow Moss Gray Brick
+	// VioletMoss: Neon Moss Stone Block
+	// VioletMossBrick: Neon Moss Gray Brick
+	// RainbowMoss: Helium Moss Stone Block
+	// RainbowMossBrick: Helium Moss Gray Brick
 	// AshGrass: Ash Grass
 	// TreeAsh: Ash Tree
 	// CorruptVines: Corrupt Vine

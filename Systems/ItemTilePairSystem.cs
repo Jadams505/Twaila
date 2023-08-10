@@ -437,6 +437,8 @@ namespace Twaila.Systems
                     else if (tile.TileFrameX < 154) return ItemID.KryptonMoss;
                     else if (tile.TileFrameX < 176) return ItemID.XenonMoss;
                     else if (tile.TileFrameX < 198) return ItemID.ArgonMoss;
+                    else if (tile.TileFrameX < 220) return ItemID.VioletMoss;
+                    else if (tile.TileFrameX < 242) return ItemID.RainbowMoss;
                     break;
                 case TileID.GrateClosed:
                     return ItemID.Grate;
