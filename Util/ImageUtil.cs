@@ -525,19 +525,6 @@ namespace Twaila.Util
                 Twaila.Instance.Logger.Error(e.Message);
                 return null;
             }
-            
-        }
-            TileObjectData data = TileUtil.GetTileObjectData(tile);
-            short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
-            Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
-                ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
-                out _, out _, out _, out _);
-            if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
-            {
-                tileFx += (short)addX;
-                tileFy += (short)addY;
-            }
-            return GetImageFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
         }
 
         public enum NpcStat
