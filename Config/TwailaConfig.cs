@@ -83,7 +83,7 @@ namespace Twaila.Config
         [DefaultValue(25)]
         public int ReservedImageWidth;
 
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public bool UseTextHeightForImage;
 
         public enum DisplayMode

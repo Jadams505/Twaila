@@ -41,6 +41,9 @@ namespace Twaila.Context
 
         public static NpcContext CreateNpcContext(TwailaPoint pos)
         {
+            if (Main.mapFullscreen)
+                return null;
+
             if (IntersectsNPC(pos.MouseWorldPos, out _))
             {
                 return new NpcContext(pos);

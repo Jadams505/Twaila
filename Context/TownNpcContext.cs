@@ -26,6 +26,9 @@ namespace Twaila.Context
 
         public static TownNpcContext CreateTownNpcContext(TwailaPoint pos)
         {
+            if (Main.mapFullscreen)
+                return null;
+
             if (IntersectsNPC(pos.MouseWorldPos, out var npc) && npc.townNPC)
             {
                 return new TownNpcContext(pos);
