@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -55,13 +56,14 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             WallId = tile.WallType;
 
             if (content.ShowId)
             {
                 Id = Language.GetText("Mods.Twaila.WallId").WithFormatArgs(WallId).Value;
+                TextGrid.Add(new UITwailaText(Id));
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Wall, out string paintText, out int paintIcon))
@@ -70,12 +72,13 @@ namespace Twaila.Context
                 {
                     if (paintIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(paintIcon).ToRender());
                     }
                 }
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
                     PaintText = paintText;
+                    TextGrid.Add(new UITwailaText(PaintText));
                 }
             }
 
@@ -86,17 +89,19 @@ namespace Twaila.Context
                 {
                     if (illuminantIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(illuminantIcon).ToRender());
                     }
                     if (echoIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(echoIcon).ToRender());
                     }
                 }
                 if (content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
                 {
                     IlluminantText = illuminantText;
                     EchoText = echoText;
+                    TextGrid.Add(new UITwailaText(IlluminantText));
+                    TextGrid.Add(new UITwailaText(EchoText));
                 }
             }
         }
@@ -133,31 +138,6 @@ namespace Twaila.Context
             return ImageUtil.GetWallRenderFromTile(tile);
         }
 
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(PaintText))
-            {
-                elements.Insert(0, new UITwailaText(PaintText));
-            }
-            if (!string.IsNullOrEmpty(IlluminantText))
-            {
-                elements.Insert(0, new UITwailaText(IlluminantText));
-            }
-            if (!string.IsNullOrEmpty(EchoText))
-            {
-                elements.Insert(0, new UITwailaText(EchoText));
-            }
-            if (!string.IsNullOrEmpty(Id))
-            {
-                elements.Insert(0, new UITwailaText(Id));
-            }
-            
-
-            return elements;
-        }
-
         protected override string GetName()
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
@@ -174,11 +154,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModWall mWall = WallLoader.GetWall(WallId);
-            if (mWall != null)
-            {
-                return mWall.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mWall);
         }
     }
 }

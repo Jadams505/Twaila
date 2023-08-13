@@ -6,6 +6,7 @@ using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Twaila.Config;
 using Twaila.ObjectData;
 
 namespace Twaila.Util

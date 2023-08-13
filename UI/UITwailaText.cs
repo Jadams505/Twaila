@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
+using Twaila.Config;
 
 namespace Twaila.UI
 {
@@ -60,10 +62,16 @@ namespace Twaila.UI
             return ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale));
         }
 
+        public const int VerticalTrimBuffer = 10;
+
         protected override void DrawTrimmed(SpriteBatch spriteBatch)
         {
+            if(Width.Pixels == 0 || Height.Pixels == 0)
+            {
+                return;
+            }
             Vector2 textSize = GetContentSize();
-            if(textSize.Y <= Height.Pixels)
+            if(textSize.Y <= Height.Pixels + VerticalTrimBuffer)
             {
                 List<TextSnippet> snippets = ChatManager.ParseMessage(Text, Color);
                 if(snippets.Count == 0)
@@ -142,7 +150,11 @@ namespace Twaila.UI
         private void DrawText(SpriteBatch spriteBatch, TextSnippet[] snippets, Vector2 scale)
         {
             ChatManager.ConvertNormalSnippets(snippets);
+
             Vector2 drawPos = new Vector2(GetDimensions().X, GetDimensions().Y).Floor();
+            Vector2 drawSize = ChatManager.GetStringSize(Font, Text, new Vector2(Scale, Scale)) * scale;
+            drawPos.Y += Math.Max(0, (int)(Height.Pixels - drawSize.Y) / 2f); // center the text vertically - this doesn't really work because GetStringSize is kind of bad (text is taller than it appears) 
+
             if (TextShadow)
             {
                 ChatManager.DrawColorCodedStringShadow(spriteBatch, Font, snippets, drawPos, Color.Black * Opacity, 0, Vector2.Zero, scale);

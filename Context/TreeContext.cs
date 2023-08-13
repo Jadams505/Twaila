@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.Util;
@@ -83,11 +84,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(DirtId);
-            if (mTile != null)
-            {
-                return mTile.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mTile);
         }
 
         private int GetTreeDirt()

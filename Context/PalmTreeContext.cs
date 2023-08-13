@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using Twaila.Util;
 using Twaila.Graphics;
 using Twaila.Systems;
+using Twaila.Config;
 
 namespace Twaila.Context
 {
@@ -73,11 +74,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(SandId);
-            if (mTile != null)
-            {
-                return mTile.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mTile);
         }
 
         private int GetPalmTreeSand()

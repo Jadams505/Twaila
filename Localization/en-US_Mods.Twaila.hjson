@@ -10,6 +10,7 @@ Contexts: {
 	Wall: Wall
 	Liquid: Liquid
 	Wire: Wire
+	Npc: Npc
 }
 
 WallId: Wall Id: {0}
@@ -41,6 +42,7 @@ Defaults: {
 }
 
 RecommendedPick: "{0} {1}%"
+HappinessText: Happiness: {0}
 
 Configs: {
 	TwailaConfig: {
@@ -52,7 +54,6 @@ Configs: {
 			UIPanel: UI Panel
 			UIText: UI Text
 			UIImage: UI Image
-			AutomaticOptions: Automatic Options
 		}
 
 		AntiCheat: {
@@ -62,36 +63,6 @@ Configs: {
 
 		DisplayContent: {
 			Label: Content Toggles
-			Tooltip: ""
-		}
-
-		UseDefaultPosition: {
-			Label: Use Default Position
-			Tooltip: Dragging the panel automatically disables this
-		}
-
-		LockPosition: {
-			Label: Lock Position
-			Tooltip: When this is OFF you can use the mouse to move the panel
-		}
-
-		AnchorX: {
-			Label: Anchor X
-			Tooltip: ""
-		}
-
-		AnchorY: {
-			Label: Anchor Y
-			Tooltip: ""
-		}
-
-		AnchorPosX: {
-			Label: Anchor Pos X
-			Tooltip: ""
-		}
-
-		AnchorPosY: {
-			Label: Anchor Pos Y
 			Tooltip: ""
 		}
 
@@ -173,6 +144,51 @@ Configs: {
 		ReservedImageWidth: {
 			Label: Reserved Image Width (%)
 			Tooltip: The % of the panel's width that is allocated for the image when the text is too long
+		}
+
+		UseTextHeightForImage: {
+			Label: Use Text Height For Image
+			Tooltip: Shrinks the image height to be aligned with the text height
+		}
+
+		PanelPositionData: {
+			Label: Panel Position Data
+			Tooltip: Data about where to position the panel based on certain criteria like inventory open or closed
+		}
+
+		UseDefaultPosition: {
+			Label: Use Default Position
+			Tooltip: ""
+		}
+
+		LockPosition: {
+			Label: Lock Position
+			Tooltip: ""
+		}
+
+		AnchorX: {
+			Label: Anchor X
+			Tooltip: ""
+		}
+
+		AnchorY: {
+			Label: Anchor Y
+			Tooltip: ""
+		}
+
+		AnchorPosX: {
+			Label: Anchor Pos X
+			Tooltip: ""
+		}
+
+		AnchorPosY: {
+			Label: Anchor Pos Y
+			Tooltip: ""
+		}
+
+		CurrentContext: {
+			Label: Current Context
+			Tooltip: ""
 		}
 	}
 
@@ -257,6 +273,31 @@ Configs: {
 			Label: Show Contained Items
 			Tooltip: ""
 		}
+
+		ContentPriorities: {
+			Label: Content Priorities
+			Tooltip: ""
+		}
+
+		NpcContent: {
+			Label: Npc Content
+			Tooltip: ""
+		}
+
+		TextsPerRow: {
+			Label: Stats Per Row
+			Tooltip: ""
+		}
+
+		IconsPerRow: {
+			Label: Icons Per Row
+			Tooltip: ""
+		}
+
+		EnableContent: {
+			Label: Enable Content
+			Tooltip: ""
+		}
 	}
 
 	NameType: {
@@ -315,7 +356,7 @@ Configs: {
 			Tooltip: ON: The UI disappears when hovering over air tiles. OFF: The UI retains the last solid tile
 		}
 
-		Headers.AutomaticOptions: Automatic Options Header
+		Headers.AutomaticOptions: Automatic Options
 	}
 
 	DisplayMode: {
@@ -330,6 +371,239 @@ Configs: {
 
 		Color: {
 			Label: Color
+			Tooltip: ""
+		}
+	}
+
+	Priorities: {
+		Tooltip: ""
+
+		WirePriority: {
+			Label: Wire Priority
+			Tooltip: ""
+		}
+
+		NpcPriority: {
+			Label: Npc Priority
+			Tooltip: ""
+		}
+
+		TilePrioity: {
+			Label: Tile Prioity
+			Tooltip: ""
+		}
+
+		LiquidPriority: {
+			Label: Liquid Priority
+			Tooltip: ""
+		}
+
+		WallPriority: {
+			Label: Wall Priority
+			Tooltip: ""
+		}
+
+		Headers.Priorities: Priorities (Lower values have higher priority)
+	}
+
+	NpcContent: {
+		Tooltip: ""
+
+		ShowHp: {
+			Label: Show Hp
+			Tooltip: ""
+		}
+
+		ShowDefense: {
+			Label: Show Defense
+			Tooltip: ""
+		}
+
+		ShowAttack: {
+			Label: Show Attack
+			Tooltip: ""
+		}
+
+		ShowKnockback: {
+			Label: Show Knockback
+			Tooltip: ""
+		}
+
+		ShowKills: {
+			Label: Show Kills
+			Tooltip: ""
+		}
+
+		ShowBuffs: {
+			Label: Show Buffs
+			Tooltip: ""
+		}
+
+		ShowHappiness: {
+			Label: Show Happiness
+			Tooltip: ""
+		}
+
+		ShowNpcPreferences: {
+			Label: Show Npc Preferences
+			Tooltip: ""
+		}
+
+		ShowBiomePreferences: {
+			Label: Show Biome Preferences
+			Tooltip: ""
+		}
+
+		StatsPerRow: {
+			Label: Stats Per Row
+			Tooltip: ""
+		}
+
+		IconsPerRow: {
+			Label: Icons Per Row
+			Tooltip: ""
+		}
+
+		HappinessColors: {
+			Label: Happiness Colors
+			Tooltip: ""
+		}
+	}
+
+	NumberType: {
+		Tooltip: ""
+		Number.Label: Number
+		Text.Label: Text
+		Both.Label: Both
+		Off.Label: Off
+	}
+
+	HappinessColors: {
+		Tooltip: ""
+
+		LoveColor: {
+			Label: Love Color
+			Tooltip: ""
+		}
+
+		LikeColor: {
+			Label: Like Color
+			Tooltip: ""
+		}
+
+		DislikeColor: {
+			Label: Dislike Color
+			Tooltip: ""
+		}
+
+		HateColor: {
+			Label: Hate Color
+			Tooltip: ""
+		}
+	}
+
+	PanelContextData: {
+		Tooltip: ""
+
+		SyncPositionData: {
+			Label: Sync Position Data
+			Tooltip:
+				'''
+				Syncs all the position data below with the Closed Inventory data
+				If ON editing data other than Closed Inventory will have no effect
+				If OFF you can set the position presets below to change the panel's position based on certain criteria
+				'''
+		}
+
+		ClosedInventory: {
+			Label: Closed Inventory
+			Tooltip: Information about where to position the panel when your inventory is closed
+		}
+
+		OpenInventory: {
+			Label: Open Inventory
+			Tooltip: Information about where to position the panel when your inventory is open
+		}
+
+		InFullscreenMap: {
+			Label: In Fullscreen Map
+			Tooltip: Information about where to position the panel when in the fullscreen map
+		}
+	}
+
+	PositionData: {
+		Tooltip: ""
+
+		UseDefaultPosition: {
+			Label: Use Default Position
+			Tooltip: Dragging the panel automatically disables this
+		}
+
+		LockPosition: {
+			Label: Lock Position
+			Tooltip: When this is OFF you can use the mouse to move the panel
+		}
+
+		AnchorX: {
+			Label: Anchor X
+			Tooltip: ""
+		}
+
+		AnchorY: {
+			Label: Anchor Y
+			Tooltip: ""
+		}
+
+		AnchorPosX: {
+			Label: Anchor Pos X
+			Tooltip: ""
+		}
+
+		AnchorPosY: {
+			Label: Anchor Pos Y
+			Tooltip: ""
+		}
+
+		ShowUI: {
+			Label: Show UI
+			Tooltip: Whether or not to show the panel in this context
+		}
+	}
+
+	ContentToggles: {
+		Tooltip: ""
+
+		EnableWireContent: {
+			Label: Enable Wire Content
+			Tooltip: ""
+		}
+
+		EnableNpcContent: {
+			Label: Enable Npc Content
+			Tooltip: ""
+		}
+
+		EnableTileContent: {
+			Label: Enable Tile Content
+			Tooltip: ""
+		}
+
+		EnableLiquidContent: {
+			Label: Enable Liquid Content
+			Tooltip: ""
+		}
+
+		EnableWallContent: {
+			Label: Enable Wall Content
+			Tooltip: ""
+		}
+	}
+
+	ContextIndex: {
+		Tooltip: ""
+
+		Index: {
+			Label: Index
 			Tooltip: ""
 		}
 	}

@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
+using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -41,7 +42,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             ItemId = GetItemId();
 
@@ -49,11 +50,12 @@ namespace Twaila.Context
             {
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(ItemId));
+                    IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(ItemId));
                 }
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
                     ItemText = Lang.GetItemNameValue(ItemId);
+                    TextGrid.Add(new UITwailaText(ItemText));
                 }
             }
         }
@@ -72,17 +74,6 @@ namespace Twaila.Context
                 return otherContext.ItemId != ItemId;
             }
             return true;
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(ItemText))
-            {
-                elements.Insert(0, new UITwailaText(ItemText));
-            }
-            return elements;
         }
 
         private int GetItemId()

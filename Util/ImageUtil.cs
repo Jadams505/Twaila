@@ -9,6 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using ReLogic.Content;
 using System;
+using Twaila.Config;
 
 namespace Twaila.Util
 {
@@ -524,7 +525,64 @@ namespace Twaila.Util
                 Twaila.Instance.Logger.Error(e.Message);
                 return null;
             }
-            
+        }
+
+        public enum NpcStat
+        {
+            Health,
+            Attack,
+            Defense,
+            Knockback,
+            Kill
+        }
+
+        public static TwailaRender GetRenderForNpcStat(NpcStat stat)
+        {
+            Texture2D texture = stat switch
+            {
+                NpcStat.Health => ModContent.Request<Texture2D>("Twaila/Assets/Health")?.Value,
+                NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
+                NpcStat.Defense => ModContent.Request<Texture2D>("Twaila/Assets/Defense")?.Value,
+                NpcStat.Knockback => ModContent.Request<Texture2D>("Twaila/Assets/Knockback")?.Value,
+                NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
+                _ => null
+            }; 
+
+            RenderBuilder builder = new RenderBuilder();
+            float scale = 16.5f / Math.Max(texture.Width, texture.Height);
+            builder.AddImage(texture, Point.Zero, texture.Frame(), scale);
+
+            return builder.Build();
+        }
+
+        public static TwailaRender GetRenderForNpc(NPC npc)
+        {
+            RenderBuilder builder = new RenderBuilder();
+            if (npc != null)
+            {
+                Rectangle drawFrame = new Rectangle(0, 0, npc.frame.Width, npc.frame.Height);
+
+                Color drawColor = npc.color;
+                if (drawColor.A == 0)
+                {
+                    drawColor = Color.White;
+                }
+
+                float scale = MathHelper.Clamp(npc.scale, 0, 1);
+
+                builder.AddImage(ImageUtil.GetNPCTexture(npc.type), Point.Zero, drawFrame, drawColor, scale);
+            }
+            return builder.Build();
+        } 
+
+        public static TwailaRender GetRenderForBuff(int type)
+        {
+            Texture2D texture = TextureAssets.Buff[type].Value;
+
+            RenderBuilder builder = new RenderBuilder();
+            builder.AddImage(texture, Point.Zero, texture.Bounds);
+
+            return builder.Build();
         }
 
         public static Texture2D GetTileTexture(int tileId)
@@ -570,6 +628,16 @@ namespace Twaila.Util
                 case EquipType.Legs:
                     Main.instance.LoadArmorLegs(item.legSlot);
                     return TextureAssets.ArmorLeg[item.legSlot].Value;
+            }
+            return null;
+        }
+
+        public static Texture2D GetNPCTexture(int npcId)
+        {
+            if (npcId >= 0 && npcId < TextureAssets.Npc.Length)
+            {
+                Main.instance.LoadNPC(npcId);
+                return TextureAssets.Npc[npcId].Value;
             }
             return null;
         }

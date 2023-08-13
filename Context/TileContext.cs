@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
+using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -56,7 +57,7 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             TileId = tile.TileType;
             FrameX = tile.TileFrameX;
@@ -65,6 +66,7 @@ namespace Twaila.Context
             if (content.ShowId)
             {
                 Id = Language.GetText("Mods.Twaila.TileId").WithFormatArgs(TileId).Value;
+                TextGrid.Add(new UITwailaText(Id));
             }
 
             if (InfoUtil.GetPaintInfo(tile, TileType.Tile, out string paintText, out int paintIcon))
@@ -73,12 +75,13 @@ namespace Twaila.Context
                 {
                     if (paintIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(paintIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(paintIcon).ToRender());
                     }
                 }
                 if (content.ShowPaint == TwailaConfig.DisplayType.Name || content.ShowPaint == TwailaConfig.DisplayType.Both)
                 {
                     PaintText = paintText;
+                    TextGrid.Add(new UITwailaText(PaintText));
                 }
             }
 
@@ -89,17 +92,19 @@ namespace Twaila.Context
                 {
                     if(illuminantIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(illuminantIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(illuminantIcon).ToRender());
                     }
                     if(echoIcon > 0)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(echoIcon).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(echoIcon).ToRender());
                     }
                 }
                 if(content.ShowCoating == TwailaConfig.DisplayType.Name || content.ShowCoating == TwailaConfig.DisplayType.Both)
                 {
                     IlluminantText = illuminantText;
                     EchoText = echoText;
+                    TextGrid.Add(new UITwailaText(IlluminantText));
+                    TextGrid.Add(new UITwailaText(EchoText));
                 }
             }
 
@@ -109,18 +114,20 @@ namespace Twaila.Context
                 {
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Icon || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetItemTexture(pickId).ToRender());
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(pickId).ToRender());
                     }
                     if (content.ShowPickaxe == TwailaConfig.DisplayType.Name || content.ShowPickaxe == TwailaConfig.DisplayType.Both)
                     {
                         RecommendedPickaxe = Language.GetText("Mods.Twaila.RecommendedPick")
                             .WithFormatArgs(Lang.GetItemNameValue(pickId), InfoUtil.GetPickPowerForItem(pickId)).Value;
+                        TextGrid.Add(new UITwailaText(RecommendedPickaxe));
                     }
                 }
 
                 if (content.ShowPickaxePower)
                 {
                     PickPower = pickText;
+                    TextGrid.Add(new UITwailaText(PickPower));
                 }
             }
         }
@@ -190,38 +197,6 @@ namespace Twaila.Context
             return texture.ToRender();
         }
 
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(PaintText))
-            {
-                elements.Insert(0, new UITwailaText(PaintText));
-            }
-            if (!string.IsNullOrEmpty(IlluminantText))
-            {
-                elements.Insert(0, new UITwailaText(IlluminantText));
-            }
-            if (!string.IsNullOrEmpty(EchoText))
-            {
-                elements.Insert(0, new UITwailaText(EchoText));
-            }
-            if (!string.IsNullOrEmpty(RecommendedPickaxe))
-            {
-                elements.Insert(0, new UITwailaText(RecommendedPickaxe));
-            }
-            if (!string.IsNullOrEmpty(PickPower))
-            {
-                elements.Insert(0, new UITwailaText(PickPower));
-            }
-            if (!string.IsNullOrEmpty(Id))
-            {
-                elements.Insert(0, new UITwailaText(Id));
-            }
-
-            return elements;
-        }
-
         protected override string GetName()
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
@@ -240,11 +215,7 @@ namespace Twaila.Context
         protected override string GetMod()
         {
             ModTile mTile = TileLoader.GetTile(TileId);
-            if (mTile != null)
-            {
-                return mTile.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mTile);
         }
     }
 }

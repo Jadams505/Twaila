@@ -48,10 +48,7 @@ namespace Twaila.Systems
 
         public override void PostDrawFullscreenMap(ref string mouseText)
         {
-            if (TwailaConfig.Instance.ShowInFullscreenMap)
-            {
-                _ = DrawGUI();
-            }
+            DrawGUI();
         }
     }
 }

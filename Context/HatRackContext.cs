@@ -8,6 +8,7 @@ using System.Reflection;
 using Twaila.Util;
 using Twaila.Systems;
 using Terraria.ID;
+using Twaila.Config;
 
 namespace Twaila.Context
 {
@@ -58,7 +59,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             PopulateItems();
 
@@ -69,28 +70,15 @@ namespace Twaila.Context
                 {
                     if(content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
-                        Icons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(id));
+                        IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(id));
                     }
                     if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
                         ItemTexts[i] = NameUtil.GetNameFromItem(id);
+                        TextGrid.Add(new UITwailaText(ItemTexts[i]));
                     }
                 }
             }		
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            foreach(string name in ItemTexts)
-            {
-                if (!string.IsNullOrEmpty(name))
-                {
-                    elements.Insert(0, new UITwailaText(name));
-                }
-            }
-            return elements;
         }
 
         private void PopulateItems()

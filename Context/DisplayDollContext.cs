@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
+using Twaila.Config;
 using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
@@ -17,13 +18,10 @@ namespace Twaila.Context
         protected int[] ItemIds { get; set; }
         protected string[] ItemTexts { get; set; }
 
-        protected UITwailaIconLine DisplayContentIcons { get; set; }
-
         public DisplayDollContext(TwailaPoint point) : base(point)
         {
             ItemIds = new int[MAX_ITEM_COUNT];
             ItemTexts = new string[MAX_ITEM_COUNT];
-            DisplayContentIcons = new UITwailaIconLine();
         }
 
         public static DisplayDollContext CreateDisplayDollContext(TwailaPoint pos)
@@ -61,7 +59,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             PopulateItems();
 
@@ -72,39 +70,15 @@ namespace Twaila.Context
                 {
                     if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
-                        if(Icons.IconImages.Count != 0 && Icons.IconImages.Count < 6)
-                        {
-                            Icons.IconImages.Add(ImageUtil.GetRenderForIconItem(id));
-                        }
-                        else
-                        {
-                            DisplayContentIcons.IconImages.Insert(0, ImageUtil.GetRenderForIconItem(id));
-                        }
+                        IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(id));
                     }
                     if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                     {
                         ItemTexts[i] = NameUtil.GetNameFromItem(id);
+                        TextGrid.Add(new UITwailaText(ItemTexts[i]));
                     }
                 }
             }
-        }
-
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            foreach (string name in ItemTexts)
-            {
-                if (!string.IsNullOrEmpty(name))
-                {
-                    elements.Insert(0, new UITwailaText(name));
-                }
-            }
-            if (DisplayContentIcons.IconImages.Count > 0)
-            {
-                elements.Add(DisplayContentIcons);
-            }
-            return elements;
         }
 
         private void PopulateItems()

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.ModLoader.Config;
 using Terraria.UI;
+using Twaila.Config;
 
 namespace Twaila.UI
 {
@@ -51,6 +52,23 @@ namespace Twaila.UI
             Opacity = config.HoverOpacity;
         }
 
+        public Vector2 GetScaleVector(Vector2 maxSize)
+        {
+            float scaleX = 1;
+            if (GetContentSize().X > maxSize.X)
+            {
+                scaleX = maxSize.X / GetContentSize().X;
+            }
+            float scaleY = 1;
+            if (GetContentSize().Y > maxSize.Y)
+            {
+                scaleY = maxSize.Y / GetContentSize().Y;
+            }
+            return new Vector2(scaleX, scaleY);
+        }
+
+        public Vector2 GetDrawScaleVector() => GetScaleVector(new Vector2(Width.Pixels, Height.Pixels));
+
         // Gets the uniform scale it would take to shrink the content to maxSize
         public float GetScale(Vector2 maxSize)
         {
@@ -72,10 +90,21 @@ namespace Twaila.UI
 
         public abstract Vector2 GetContentSize();
 
-        protected abstract void DrawShrunk(SpriteBatch spriteBatch);
+        public virtual Vector2 SizePriority() => Vector2.One;
 
-        protected abstract void DrawTrimmed(SpriteBatch spriteBatch);
+        protected virtual void DrawShrunk(SpriteBatch spriteBatch)
+        {
 
-        protected abstract void DrawOverflow(SpriteBatch spriteBatch);
+        }
+
+        protected virtual void DrawTrimmed(SpriteBatch spriteBatch)
+        {
+
+        }
+
+        protected virtual void DrawOverflow(SpriteBatch spriteBatch)
+        {
+
+        }
     }
 }

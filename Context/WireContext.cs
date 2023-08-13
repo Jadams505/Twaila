@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -21,11 +22,18 @@ namespace Twaila.Context
         protected string WireText { get; set; }
         protected string ActuatorText { get; set; }
 
-        protected UITwailaIconLine Icons { get; set; }
+        protected UITwailaIconGrid IconGrid { get; set; }
+
+        protected UITwailaGrid TextGrid { get; set; }
 
         public WireContext(TwailaPoint point) : base(point)
         {
-            Icons = new UITwailaIconLine();
+            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow, 20f);
+
+            TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow)
+            {
+                SmartRows = true,
+            };
             WireText = "";
             ActuatorText = "";
         }
@@ -72,7 +80,7 @@ namespace Twaila.Context
         public override void Update()
         {
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             HasActuator = tile.HasActuator;
             RedWire = tile.RedWire;
@@ -91,13 +99,14 @@ namespace Twaila.Context
                         {
                             if(icon > 0)
                             {
-                                Icons.IconImages.Add(ImageUtil.GetItemTexture(icon).ToRender());
+                                IconGrid.AddIcon(ImageUtil.GetItemTexture(icon).ToRender());
                             }
                         }
                     }
                     if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
                     {
                         WireText = wireText;
+                        TextGrid.Add(new UITwailaText(WireText));
                     }
                 }
             }
@@ -109,12 +118,13 @@ namespace Twaila.Context
                     {
                         if (actIcon > 0)
                         {
-                            Icons.IconImages.Add(ImageUtil.GetItemTexture(actIcon).ToRender());
+                            IconGrid.AddIcon(ImageUtil.GetItemTexture(actIcon).ToRender());
                         }
                     }
                     if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
                     {
                         ActuatorText = actText;
+                        TextGrid.Add(new UITwailaText(ActuatorText));
                     }
                 }
             }
@@ -131,7 +141,7 @@ namespace Twaila.Context
                 layout.Image.SetImage(GetImage(Main.spriteBatch));
             }
 
-            InfoElements().ForEach(element => layout.InfoBox.AddAndEnable(element));
+            InfoElements().ForEach(element => layout.InfoBox.Add(element));
 
             layout.Mod.SetText(GetMod());
         }
@@ -156,19 +166,14 @@ namespace Twaila.Context
         {
             List<UITwailaElement> elements = new List<UITwailaElement>();
 
-            if (!string.IsNullOrEmpty(WireText))
+            if(TextGrid.GridElements.Count > 0)
             {
-                elements.Add(new UITwailaText(WireText));
+                elements.Add(TextGrid);
             }
-            if (!string.IsNullOrEmpty(ActuatorText))
+            if(IconGrid.GridElements.Count > 0)
             {
-                elements.Add(new UITwailaText(ActuatorText));
+                elements.Add(IconGrid);
             }
-            if(Icons.IconImages.Count > 0)
-            {
-                elements.Add(Icons);
-            }
-
             return elements;
         }
 

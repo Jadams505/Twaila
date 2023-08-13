@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.UI;
@@ -50,7 +51,7 @@ namespace Twaila.Context
         {
             base.Update();
             Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            TwailaConfig.Content content = TwailaConfig.Instance.DisplayContent;
+            Content content = TwailaConfig.Instance.DisplayContent;
 
             LiquidId = tile.LiquidType;
             WaterStyle = Main.waterStyle;
@@ -65,6 +66,7 @@ namespace Twaila.Context
                 {
                     Id = Language.GetText("Mods.Twaila.LiquidId").WithFormatArgs(LiquidId).Value;
                 }
+                TextGrid.Add(new UITwailaText(Id));
             }
         }
 
@@ -112,26 +114,10 @@ namespace Twaila.Context
             return ImageUtil.GetLiquidRenderFromTile(tile);
         }
 
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = base.InfoElements();
-
-            if (!string.IsNullOrEmpty(Id))
-            {
-                elements.Insert(0, new UITwailaText(Id));
-            }
-
-            return elements;
-        }
-
         protected override string GetMod()
         {
             ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(WaterStyle);
-            if (mWater != null)
-            {
-                return mWater.Mod.DisplayName;
-            }
-            return "Terraria";
+            return NameUtil.GetMod(mWater);
         }
 
     }
