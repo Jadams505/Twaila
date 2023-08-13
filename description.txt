@@ -40,6 +40,22 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.5.0.0 (8/13/2023)
+- Added support for npcs
+- Added a grid based system for displaying content on the UI
+- Fixed a long standing issue where the recommended pickaxe would not cycle
+- Fixed a visual glitch with the "Hide UI For Air" config option
+- Added priorities to change the order content appears (DisplayContent.ContentPriorities)
+- Added toggles for each type of content to easily enable and disable content
+- "Use Text Height For Image" was added and enabled which shrinks the panel's image size to the text size
+- All position related config elements were moved to their own tab ("Panel Position Data")
+- The UI can now be positioned differently depending on certain conditions
+- Added a "Current Context" option that allows you change what type of content is being displayed without keybinds
+v0.4.0.4 (8/10/2023)
+- Fixed a crash from certain unloaded tiles
+- Fixed multiple incorrect localization keys
+v0.4.0.3 (8/8/2023)
+- Fixed a crash from bad tile types
 v0.4.0.2 (7/11/2023)
 - Fixed certain tiles throwing exceptions in chat
 v0.4.0.1 (5/16/2023)
