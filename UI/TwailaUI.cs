@@ -56,7 +56,7 @@ namespace Twaila.UI
 
         public static TwailaPoint GetCursorInfo()
         {
-            Point mouse = Main.MouseWorld.ToPoint();
+            Point mouse = MouseWorldSafe();
             Point tile = new Point(Player.tileTargetX, Player.tileTargetY);
             Point smart = new Point(Main.SmartCursorX, Main.SmartCursorY);
 
@@ -67,6 +67,27 @@ namespace Twaila.UI
             Point map = new Point((int)x, (int)y);
 
             return new TwailaPoint(mouse, tile, smart, map);
+        }
+
+        private static Point MouseWorldSafe()
+        {
+            int mouseX = Main.mouseX;
+            int mouseY = Main.mouseY;
+            int lastMouseX = Main.lastMouseX;
+            int lastMouseY = Main.lastMouseY;
+
+            PlayerInput.SetZoom_Unscaled();
+
+            // This call has side effects, so I reset mouse positions just in case
+            PlayerInput.SetZoom_MouseInWorld(); 
+            Point mouse = Main.MouseWorld.ToPoint();
+
+            Main.mouseX = mouseX;
+            Main.mouseY = mouseY;
+            Main.lastMouseX = lastMouseX;
+            Main.lastMouseY = lastMouseY;
+
+            return mouse;
         }
 
         public static bool InBounds(int targetX, int targetY)
