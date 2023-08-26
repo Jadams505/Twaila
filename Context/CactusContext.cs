@@ -82,15 +82,15 @@ namespace Twaila.Context
             int x = Pos.BestPos().X, y = Pos.BestPos().Y;
             do
             {
-                if (Main.tile[x, y + 1].TileType == TileID.Cactus)
+                if (Framing.GetTileSafely(x, y + 1).TileType == TileID.Cactus)
                 {
                     y++;
                 }
-                else if (Main.tile[x + 1, y].TileType == TileID.Cactus)
+                else if (Framing.GetTileSafely(x + 1, y).TileType == TileID.Cactus)
                 {
                     x++;
                 }
-                else if (Main.tile[x - 1, y].TileType == TileID.Cactus)
+                else if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Cactus)
                 {
                     x--;
                 }
@@ -99,12 +99,12 @@ namespace Twaila.Context
                     y++;
                 }
             }
-            while (Main.tile[x, y].TileType == TileID.Cactus && Main.tile[x, y].HasTile);
-            if (!Main.tile[x, y].HasTile)
+            while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Cactus && Framing.GetTileSafely(x, y).HasTile);
+            if (!Framing.GetTileSafely(x, y).HasTile)
             {
                 return -1;
             }
-            return Main.tile[x, y].TileType;
+            return Framing.GetTileSafely(x, y).TileType;
         }
     }
 }

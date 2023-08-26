@@ -84,13 +84,13 @@ namespace Twaila.Context
             do
             {
                 y += 1;
-            } while (Main.tile[x, y].TileType == TileID.PalmTree && Main.tile[x, y].HasTile);
+            } while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.PalmTree && Framing.GetTileSafely(x, y).HasTile);
 
-            if (!Main.tile[x, y].HasTile)
+            if (!Framing.GetTileSafely(x, y).HasTile)
             {
                 return -1;
             }
-            return Main.tile[x, y].TileType;
+            return Framing.GetTileSafely(x, y).TileType;
         }
     }
 }

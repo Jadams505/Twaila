@@ -1,2 +1,2 @@
 ﻿
-- Fixed an issue with npc hitbox detection
+- Fixed issues with out of bounds tiles

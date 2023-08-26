@@ -90,24 +90,25 @@ namespace Twaila.Context
         private int GetTreeDirt()
         {
             int x = Pos.BestPos().X, y = Pos.BestPos().Y;
-            if (Main.tile[x - 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
+
+            if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
             {
                 x--;
             }
-            if (Main.tile[x + 1, y].TileType == TileID.Trees && Main.tile[x, y + 1].TileType != TileID.Trees && Main.tile[x, y - 1].TileType != TileID.Trees)
+            if (Framing.GetTileSafely(x + 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
             {
                 x++;
             }
             do
             {
                 y += 1;
-            } while (Main.tile[x, y].TileType == TileID.Trees && Main.tile[x, y].HasTile);
+            } while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y).HasTile);
 
-            if (!Main.tile[x, y].HasTile)
+            if (!Framing.GetTileSafely(x, y).HasTile)
             {
                 return -1;
             }
-            return Main.tile[x, y].TileType;
+            return Framing.GetTileSafely(x, y).TileType;
         }
     }
 }

@@ -80,17 +80,18 @@ namespace Twaila.Context
         private int GetSaplingTile()
         {
             Point bestPos = Pos.BestPos();
+            int x = bestPos.X;
             int y = bestPos.Y;
             do
             {
                 y++;
-            } while (TileID.Sets.TreeSapling[Main.tile[bestPos.X, y].TileType] && Main.tile[bestPos.X, y].HasTile);
+            } while (WorldGen.InWorld(x, y) && TileID.Sets.TreeSapling[Framing.GetTileSafely(x, y).TileType] && Framing.GetTileSafely(x, y).HasTile);
 
-            if (!Main.tile[bestPos.X, y].HasTile)
+            if (!Framing.GetTileSafely(x, y).HasTile)
             {
                 return -1;
             }
-            return Main.tile[bestPos.X, y].TileType;
+            return Framing.GetTileSafely(x, y).TileType;
         }
     }
 }
