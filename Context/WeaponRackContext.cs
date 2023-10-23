@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Twaila.Config;
 using Twaila.Graphics;
 using Twaila.Systems;
@@ -26,12 +27,19 @@ namespace Twaila.Context
 
         public static WeaponRackContext CreateWeaponRackContext(TwailaPoint pos)
         {
-            Point bestPos = pos.BestPos();
-            Tile tile = Framing.GetTileSafely(bestPos);
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
+
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
             if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
             {
-                Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 3, height: 3);
-                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+                Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 3, height: 3);
+                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
                 {
                     return new WeaponRackContext(pos);
                 }
@@ -62,8 +70,8 @@ namespace Twaila.Context
 
         protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, Pos.BestPos().X, Pos.BestPos().Y, ItemId);
+            Tile tile = Framing.GetTileSafely(BestTilePos);
+            return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
         }
 
         public override bool ContextChanged(BaseContext other)
@@ -78,7 +86,7 @@ namespace Twaila.Context
 
         private int GetItemId()
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(Pos.BestPos().X, Pos.BestPos().Y, width: 3, height: 3);
+            Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 3);
             int id = TEWeaponsRack.Find(targetPos.X, targetPos.Y);
             Item item = ((TEWeaponsRack)TileEntity.ByID[id]).item;
             return item.type;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
@@ -42,12 +43,16 @@ namespace Twaila.Context
 
         public static TileContext CreateTileContext(TwailaPoint pos)
         {
-            Tile tile = Framing.GetTileSafely(pos.BestPos());
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
 
             if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
                 return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
             
-            if (!TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            if (!TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
                 return new TileContext(pos);
 
             return null;
@@ -56,7 +61,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(Pos.BestTilePos());
             Content content = TwailaConfig.Instance.DisplayContent;
 
             TileId = tile.TileType;
@@ -179,31 +184,31 @@ namespace Twaila.Context
 
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
+            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(BestTilePos), TileType.Tile);
             Texture2D texture = ImageUtil.GetItemTexture(itemId);
             return texture.ToRender();
         }
 
         protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(BestTilePos);
             Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
                     TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType) ?? TreeUtil.GetImageForAshTree(spriteBatch, tile.TileType);
             if (texture != null)
             {
                 return new TwailaRender(texture, 0.5f);
             }
-            texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.BestPos().X, Pos.BestPos().Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
+            texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
             return texture.ToRender();
         }
 
         protected override string GetName()
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(BestTilePos);
             int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Tile);
 
             string displayName = NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
-                ?? NameUtil.GetNameFromMap(tile, Pos.BestPos().X, Pos.BestPos().Y);
+                ?? NameUtil.GetNameFromMap(tile, BestTilePos.X, BestTilePos.Y);
             string internalName = NameUtil.GetInternalTileName(TileId, false);
             string fullName = NameUtil.GetInternalTileName(TileId, true);
 

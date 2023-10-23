@@ -314,12 +314,6 @@ namespace Twaila.UI
             BaseContext context = null;
             BaseContext priorityContext = null;
 
-            if (!TwailaUI.InBounds(mouseInfo.BestPos().X, mouseInfo.BestPos().Y))
-            {
-                tick = 0;
-                return;
-            }
-
             if(TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual)
             {
                 context = GetManualContext(ref mouseInfo);

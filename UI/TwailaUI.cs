@@ -40,9 +40,13 @@ namespace Twaila.UI
                 case TwailaConfig.DisplayMode.Automatic:
                     if (TwailaConfig.Instance.UIDisplaySettings.HideUIForAir)
                     {
-                        if ((ContextSystem.Instance.ContextEntryCountAt(GetCursorInfo()) == 0 || !_panel.Parent.ContainsPoint(Main.MouseScreen) ||
-                            (TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(GetCursorInfo()) == null))
-                            && !_panel.ContainsPoint(Main.MouseScreen) && !Main.SmartCursorShowing && !_panel.IsDragging())
+                        TwailaPoint cursorInfo = GetCursorInfo();
+                        bool panelIsHovered = _panel.ContainsPoint(Main.MouseScreen);
+                        bool NoValidContexts(TwailaPoint cursorInfo) => ContextSystem.Instance.ContextEntryCountAt(cursorInfo) == 0;
+                        bool ManualContextIsNull(TwailaPoint cursorInfo) => TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(cursorInfo) == null;
+                        
+                        if ((!IsMouseOnScreen() || NoValidContexts(cursorInfo) || ManualContextIsNull(cursorInfo))
+                            && !panelIsHovered && !_panel.IsDragging())
                         {
                             Enabled = false;
                             break;
@@ -90,30 +94,7 @@ namespace Twaila.UI
             return mouse;
         }
 
-        public static bool InBounds(int targetX, int targetY)
-        {
-            if (Main.mapFullscreen)
-            {
-                return targetX >= 0 && targetX < Main.maxTilesX && targetY >= 0 && targetY < Main.maxTilesY;
-            }
-            if (targetX < (Main.screenPosition.X - 16) / 16) // left
-            {
-                return false;
-            }
-            if (16 * targetX > PlayerInput.RealScreenWidth + Main.screenPosition.X) // right
-            {
-                return false;
-            }
-            if (targetY < (Main.screenPosition.Y - 16) / 16) // top
-            {
-                return false;
-            }
-            if (16 * targetY > PlayerInput.RealScreenHeight + Main.screenPosition.Y) // bottom
-            {
-                return false;
-            }
-            return true;
-        }
+        public static bool IsMouseOnScreen() => _panel.Parent.ContainsPoint(Main.MouseScreen);
 
         private static string NameOfCurrentContext => ContextSystem.Instance.ContextEntries[TwailaConfig.Instance.CurrentContext.Index].Name.Value;
 

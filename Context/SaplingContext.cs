@@ -21,9 +21,16 @@ namespace Twaila.Context
 
         public static SaplingContext CreateSaplingContext(TwailaPoint pos)
         {
-            Tile tile = Framing.GetTileSafely(pos.BestPos());
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
 
-            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
+            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
                 return new SaplingContext(pos);
             }
@@ -49,13 +56,13 @@ namespace Twaila.Context
 
         protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
-            return ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, Pos.BestPos().X, Pos.BestPos().Y).ToRender();
+            Tile tile = Framing.GetTileSafely(BestTilePos);
+            return ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y).ToRender();
         }
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(Pos.BestPos()), TileType.Tile);
+            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(BestTilePos), TileType.Tile);
             Texture2D texture = ImageUtil.GetItemTexture(itemId);
             return texture.ToRender();
         }
@@ -79,7 +86,7 @@ namespace Twaila.Context
 
         private int GetSaplingTile()
         {
-            Point bestPos = Pos.BestPos();
+            Point bestPos = BestTilePos;
             int x = bestPos.X;
             int y = bestPos.Y;
             do

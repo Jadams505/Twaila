@@ -327,7 +327,7 @@ namespace Twaila.Util
                         case WaterStyleID.Hallow:
                             return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Hallowed");
                         case WaterStyleID.Snow:
-                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Snow");
+                            return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Tundra");
                         case WaterStyleID.Desert:
                             return Language.GetTextValue("Mods.Twaila.ManualNames.Liquids.Water.Desert");
                         case WaterStyleID.Underground:

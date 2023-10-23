@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent.Drawing;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -117,23 +118,29 @@ namespace Twaila.Util
             if (tile.TileType >= TileLoader.TileCount)
                 return false;
 
-            if (player.HasBuff(BuffID.Spelunker))
-            {
-                if (tile.TileType < 0 || tile.TileType >= Main.tileSpelunker.Length)
-                    return false;
-
-                if (Main.tileSpelunker[tile.TileType])
-                    return true;
-            }
-
-            if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(tilePos.X, tilePos.Y, player))
-                return true;
-
             if (tilePos.X < 0 || tilePos.X >= Main.Map.MaxWidth)
                 return false;
 
             if (tilePos.Y < 0 || tilePos.Y >= Main.Map.MaxHeight)
                 return false;
+
+            if (!WorldGen.InWorld(tilePos.X, tilePos.Y))
+                return false;
+
+            if(!Main.mapFullscreen)
+            {
+                if (player.HasBuff(BuffID.Spelunker))
+                {
+                    if (tile.TileType >= Main.tileSpelunker.Length)
+                        return false;
+
+                    if (Main.tileSpelunker[tile.TileType])
+                        return true;
+                }
+
+                if (player.HasBuff(BuffID.Dangersense) && TileDrawing.IsTileDangerous(tilePos.X, tilePos.Y, player))
+                    return true;
+            }
 
             return Main.Map.IsRevealed(tilePos.X, tilePos.Y);
         }
@@ -145,6 +152,41 @@ namespace Twaila.Util
             int posYAdjusted = tileCoordY - tile.TileFrameY / size % height;
 
              return new Point(posXAdjusted, posYAdjusted);
+        }
+
+        public static bool IsTileValid(Tile tile) => tile.HasTile && tile.TileType < TileLoader.TileCount;
+
+        public static bool IsTilePosInBounds(Point tilePos)
+        {
+            if (!WorldGen.InWorld(tilePos.X, tilePos.Y))
+                return false;
+
+            if (!Main.mapFullscreen)
+                return IsTilePosOnScreen(tilePos);
+
+            return true;
+        }
+
+        public static bool IsTilePosOnScreen(Point tilePos)
+        {
+            int targetX = tilePos.X, targetY = tilePos.Y;
+            if (targetX < (Main.screenPosition.X - 16) / 16) // left
+            {
+                return false;
+            }
+            if (16 * targetX > PlayerInput.RealScreenWidth + Main.screenPosition.X) // right
+            {
+                return false;
+            }
+            if (targetY < (Main.screenPosition.Y - 16) / 16) // top
+            {
+                return false;
+            }
+            if (16 * targetY > PlayerInput.RealScreenHeight + Main.screenPosition.Y) // bottom
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

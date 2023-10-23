@@ -9,6 +9,7 @@ using Twaila.Util;
 using Twaila.Systems;
 using Terraria.ID;
 using Twaila.Config;
+using Terraria.ModLoader;
 
 namespace Twaila.Context
 {
@@ -26,12 +27,19 @@ namespace Twaila.Context
 
         public static HatRackContext CreateHatRackContext(TwailaPoint pos)
         {
-            Point bestPos = pos.BestPos();
-            Tile tile = Framing.GetTileSafely(bestPos);
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
+
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
             if (tile.TileType == TileID.HatRack)
             {
-                Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 3, height: 4);
-                if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+                Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 3, height: 4);
+                if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
                 {
                     return new HatRackContext(pos);
                 }
@@ -81,12 +89,17 @@ namespace Twaila.Context
             }		
         }
 
+        private static readonly FieldInfo TEHatRack_items = typeof(TEHatRack).GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+
         private void PopulateItems()
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(Pos.BestPos().X, Pos.BestPos().Y, width: 3, height: 4);
+            Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 4);
             int id = TEHatRack.Find(targetPos.X, targetPos.Y);
             TEHatRack instance = (TEHatRack)TileEntity.ByID[id];
-            Item[] items = (Item[])instance.GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);
+            Item[] items = (Item[])TEHatRack_items?.GetValue(instance);
+
+            if (items is null)
+                return;
 
             for(int i = 0; i < items.Length; ++i)
             {

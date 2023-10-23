@@ -165,7 +165,7 @@ namespace Twaila.Systems
             MapPos = map;
         }
 
-        public Point BestPos()
+        public readonly Point BestTilePos()
         {
             if (Main.SmartCursorShowing)
             {

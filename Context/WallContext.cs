@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -31,12 +32,16 @@ namespace Twaila.Context
 
         public static WallContext CreateWallContext(TwailaPoint pos)
         {
-            Tile tile = Framing.GetTileSafely(pos.BestPos());
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
 
-            if (tile.WallType <= 0 || tile.WallType >= WallLoader.WallCount)
+            if (tile.WallType == WallID.None || tile.WallType >= WallLoader.WallCount)
                 return null;
 
-            if (tile.WallType > 0 && !TileUtil.IsWallBlockedByAntiCheat(tile, pos.BestPos()))
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
+            if (!TileUtil.IsWallBlockedByAntiCheat(tile, tilePos))
                 return new WallContext(pos);
 
             return null;
@@ -55,7 +60,7 @@ namespace Twaila.Context
         public override void Update()
         {
             base.Update();
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(BestTilePos);
             Content content = TwailaConfig.Instance.DisplayContent;
 
             WallId = tile.WallType;
@@ -127,20 +132,20 @@ namespace Twaila.Context
 
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(BestTilePos);
             int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Wall);
             return ImageUtil.GetItemTexture(itemId).ToRender();
         }
 
         protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(BestTilePos);
             return ImageUtil.GetWallRenderFromTile(tile);
         }
 
         protected override string GetName()
         {
-            Tile tile = Framing.GetTileSafely(Pos.BestPos());
+            Tile tile = Framing.GetTileSafely(BestTilePos);
 
             string displayName = NameUtil.GetNameFromItem(ItemTilePairSystem.GetItemId(tile, TileType.Wall));
             string internalName = NameUtil.GetInternalWallName(WallId, false);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -21,9 +22,16 @@ namespace Twaila.Context
 
         public static TreeContext CreateTreeContext(TwailaPoint pos)
         {
-            Tile tile = Framing.GetTileSafely(pos.BestPos());
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
 
-            if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
+            if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
                 return new TreeContext(pos);
             }
@@ -42,7 +50,7 @@ namespace Twaila.Context
             if(other?.GetType() == typeof(TreeContext))
             {
                 TreeContext otherContext = (TreeContext)other;
-                return otherContext.DirtId != DirtId || (DirtId == TileID.JungleGrass && Math.Sign(Pos.BestPos().Y - Main.worldSurface) != Math.Sign(otherContext.Pos.BestPos().Y - Main.worldSurface));
+                return otherContext.DirtId != DirtId || (DirtId == TileID.JungleGrass && Math.Sign(BestTilePos.Y - Main.worldSurface) != Math.Sign(otherContext.BestTilePos.Y - Main.worldSurface));
             }
             return true;
         }
@@ -60,7 +68,7 @@ namespace Twaila.Context
                 int treeWood = TreeUtil.GetTreeWood(DirtId);
                 if (treeWood != -1)
                 {
-                    return new TwailaRender(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, Pos.BestPos().Y), scale);
+                    return new TwailaRender(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, BestTilePos.Y), scale);
                 }
             }
             else if (TileId == TileID.MushroomTrees)
@@ -89,7 +97,8 @@ namespace Twaila.Context
 
         private int GetTreeDirt()
         {
-            int x = Pos.BestPos().X, y = Pos.BestPos().Y;
+            Point bestPos = BestTilePos;
+            int x = bestPos.X, y = bestPos.Y;
 
             if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
             {

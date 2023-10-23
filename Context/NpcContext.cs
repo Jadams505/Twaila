@@ -57,7 +57,7 @@ namespace Twaila.Context
             if (other?.GetType() == typeof(NpcContext))
             {
                 NpcContext otherContext = (NpcContext)other;
-                if(Npc?.type == otherContext.Npc.type)
+                if(Npc?.type == otherContext.Npc?.type)
                 {
                     return Npc?.netID != otherContext.Npc?.netID;
                 }

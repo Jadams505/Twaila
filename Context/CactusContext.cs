@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.Config;
+using Microsoft.Xna.Framework;
 
 namespace Twaila.Context
 {
@@ -20,9 +21,16 @@ namespace Twaila.Context
 
         public static CactusContext CreateCactusContext(TwailaPoint pos)
         {
-            Tile tile = Framing.GetTileSafely(pos.BestPos());
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
 
-            if (tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
+            if (tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
                 return new CactusContext(pos);
             }
@@ -79,7 +87,8 @@ namespace Twaila.Context
 
         private int GetCactusSand()
         {
-            int x = Pos.BestPos().X, y = Pos.BestPos().Y;
+            Point bestPos = BestTilePos;
+            int x = bestPos.X, y = bestPos.Y;
             do
             {
                 if (Framing.GetTileSafely(x, y + 1).TileType == TileID.Cactus)
@@ -100,6 +109,7 @@ namespace Twaila.Context
                 }
             }
             while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Cactus && Framing.GetTileSafely(x, y).HasTile);
+
             if (!Framing.GetTileSafely(x, y).HasTile)
             {
                 return -1;

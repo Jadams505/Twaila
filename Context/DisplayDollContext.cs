@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Twaila.Config;
 using Twaila.Systems;
 using Twaila.UI;
@@ -26,12 +27,19 @@ namespace Twaila.Context
 
         public static DisplayDollContext CreateDisplayDollContext(TwailaPoint pos)
         {
-            Point bestPos = pos.BestPos();
-            Tile tile = Framing.GetTileSafely(bestPos);
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
+
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
             if (tile.TileType == TileID.Mannequin || tile.TileType == TileID.Womannequin || tile.TileType == TileID.DisplayDoll)
             {
-                Point targetPos = TileUtil.TileEntityCoordinates(bestPos.X, bestPos.Y, width: 2, height: 3);
-                if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, bestPos))
+                Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 2, height: 3);
+                if (TEDisplayDoll.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
                 {
                     return new DisplayDollContext(pos);
                 }
@@ -81,12 +89,17 @@ namespace Twaila.Context
             }
         }
 
+        private static readonly FieldInfo TEDisplayDoll_items = typeof(TEDisplayDoll).GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+
         private void PopulateItems()
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(Pos.BestPos().X, Pos.BestPos().Y, width: 2, height: 3);
+            Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 2, height: 3);
             int id = TEDisplayDoll.Find(targetPos.X, targetPos.Y);
             TEDisplayDoll instance = (TEDisplayDoll)TileEntity.ByID[id];
-            Item[] items = (Item[])instance.GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);
+            Item[] items = (Item[])TEDisplayDoll_items?.GetValue(instance);
+
+            if (items is null)
+                return;
 
             for (int i = 0; i < items.Length; ++i)
             {

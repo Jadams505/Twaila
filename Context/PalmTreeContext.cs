@@ -6,6 +6,7 @@ using Twaila.Util;
 using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.Config;
+using Microsoft.Xna.Framework;
 
 namespace Twaila.Context
 {
@@ -20,9 +21,16 @@ namespace Twaila.Context
 
         public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
         {
-            Tile tile = Framing.GetTileSafely(pos.BestPos());
+            Point tilePos = pos.BestTilePos();
+            Tile tile = Framing.GetTileSafely(tilePos);
 
-            if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, pos.BestPos()))
+            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
+                return null;
+
+            if (!TileUtil.IsTilePosInBounds(tilePos))
+                return null;
+
+            if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
                 return new PalmTreeContext(pos);
             }
@@ -79,8 +87,8 @@ namespace Twaila.Context
 
         private int GetPalmTreeSand()
         {
-            int x = Pos.BestPos().X;
-            int y = Pos.BestPos().Y;
+            int x = BestTilePos.X;
+            int y = BestTilePos.Y;
             do
             {
                 y += 1;
