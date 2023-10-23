@@ -1,2 +1,3 @@
 ﻿
-- Fixed issues with out of bounds tiles
+- Fixed more issues with out of bounds tiles
+- Fixed incorrect name for Tundra Water
