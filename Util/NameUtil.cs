@@ -347,7 +347,7 @@ namespace Twaila.Util
                     }
                     if(Main.waterStyle >= Main.maxLiquidTypes)
                     {
-                        return GetInternalLiquidName(Main.waterStyle, false).SplitPascalCase();
+                        return GetInternalLiquidName(Main.waterStyle, fullName: false, pretty: true);
                     }
                 }
             }
@@ -540,26 +540,27 @@ namespace Twaila.Util
             return null;
         }
 
-        public static string GetInternalTileName(int tileId, bool fullName)
+        public static string GetInternalTileName(int tileId, bool fullName, bool pretty = false)
         {
             ModTile mTile = TileLoader.GetTile(tileId);
-            return GetInternalName(mTile, fullName);
+            return GetInternalName(mTile, fullName, pretty);
         }
 
-        public static string GetInternalWallName(int wallId, bool fullName)
+        public static string GetInternalWallName(int wallId, bool fullName, bool pretty = false)
         {
             ModWall mWall = WallLoader.GetWall(wallId);
-            return GetInternalName(mWall, fullName);
+            return GetInternalName(mWall, fullName, pretty);
         }
 
-        public static string GetInternalLiquidName(int waterStyle, bool fullName)
+        public static string GetInternalLiquidName(int waterStyle, bool fullName, bool pretty = false)
         {
             ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(waterStyle);
-            return GetInternalName(mWater, fullName);
+            return GetInternalName(mWater, fullName, pretty);
         }
 
-        public static string GetInternalName(ModType type, bool fullName)
+        public static string GetInternalName(ModType type, bool fullName, bool pretty = false)
         {
+            if (pretty) return type.PrettyPrintName();
             return fullName ? type?.GetType().FullName : type?.Name;
         }
 

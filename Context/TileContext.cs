@@ -208,7 +208,7 @@ namespace Twaila.Context
             int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Tile);
 
             string displayName = NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
-                ?? NameUtil.GetNameFromMap(tile, BestTilePos.X, BestTilePos.Y);
+                ?? NameUtil.GetNameFromMap(tile, BestTilePos.X, BestTilePos.Y) ?? NameUtil.GetInternalTileName(TileId, fullName: false, pretty: true);
             string internalName = NameUtil.GetInternalTileName(TileId, false);
             string fullName = NameUtil.GetInternalTileName(TileId, true);
 

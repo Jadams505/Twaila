@@ -13,9 +13,14 @@ namespace Twaila.Systems
         Tile, Wall, Liquid, Empty
     }
 
+    public record DropPlacePair(int DropItem, int PlaceItem)
+    {
+        public static readonly DropPlacePair Default = new(-1, -1);
+    }
+
     public class ItemTilePairSystem : ModSystem
     {
-        private static Dictionary<TileStylePair, int> _tileToItemDictionary;
+        private static Dictionary<TileStylePair, DropPlacePair> _tileToItemDictionary;
         private static List<PickPowerPair> _pickaxes;
 
         public static int GetItemId(Tile tile, TileType type)
@@ -50,7 +55,7 @@ namespace Twaila.Systems
 
         public override void PostAddRecipes() // loaded at this point so that all items from all mods have been loaded
         {
-            _tileToItemDictionary = new Dictionary<TileStylePair, int>();
+            _tileToItemDictionary = new();
             _pickaxes = new List<PickPowerPair>();
             Populate(); 
         }
@@ -79,23 +84,24 @@ namespace Twaila.Systems
                     return -1;
             }
             TileStylePair pair = new TileStylePair(id, style, type);
-            int firstTry = _tileToItemDictionary.GetValueOrDefault(pair, -1);
-            if (firstTry == -1 && pair.Style != 0)
+            var firstTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
+            if (firstTry.DropItem == -1 && pair.Style != 0)
             {
                 pair.Style = 0;
-                int secondTry = _tileToItemDictionary.GetValueOrDefault(pair, -1);
-                return secondTry; // this works for a lot of tiles that are directional (improve later)
+                var secondTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
+                return secondTry.DropItem; // this works for a lot of tiles that are directional (improve later)
             }
-            return firstTry;
+            return firstTry.DropItem;
         }
 
-        private static void AddEntry(int id, int style, TileType type, int itemId)
+        private static void AddEntry(int id, int style, TileType type, int dropItem = -1, int placeItem = -1)
         {
             TileStylePair pair = new TileStylePair(id, style, type);
-            if (!_tileToItemDictionary.TryAdd(pair, itemId))
-            {
-                //Twaila.Instance.Logger.Warn("Cannot use itemId: " + itemId + " becuase " + pair + " already exists!");
-            }
+            DropPlacePair existing = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
+
+            dropItem = dropItem == -1 ? existing.DropItem : dropItem;
+            placeItem = placeItem == -1 ? existing.PlaceItem : placeItem;
+            _tileToItemDictionary[pair] = existing with { DropItem = dropItem, PlaceItem = placeItem };
         }
 
         private static void Populate()
@@ -114,11 +120,11 @@ namespace Twaila.Systems
                     {
                         AddOpenDoorEntry(i);
                     }
-                    AddEntry(item.createTile, item.placeStyle, TileType.Tile, i);
+                    AddEntry(item.createTile, item.placeStyle, TileType.Tile, dropItem: i, placeItem: i);
                 }
                 if (item.createWall != -1)
                 {
-                    AddEntry(item.createWall, 0, TileType.Wall, i);
+                    AddEntry(item.createWall, 0, TileType.Wall, dropItem: i, placeItem: i);
                 }
             }
 
@@ -126,9 +132,16 @@ namespace Twaila.Systems
             {
                 ModTile mTile = TileLoader.GetTile(i);
                 int drop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
+                Item dropItem = new Item(drop);
+                if (drop != 0 && dropItem.createTile != i)
+                {
+                    Twaila.Instance.Logger.Debug($"Tile: {mTile.Name}, type: {i}, dropItem: {drop}, createTile: {dropItem.createTile}");
+                    //continue;
+                }
+                ModItem mItem = ItemLoader.GetItem(drop);
                 if (mTile != null && drop != 0)
                 {
-                    AddEntry(i, 0, TileType.Tile, drop);
+                    AddEntry(i, 0, TileType.Tile, dropItem: drop);
                 }
             }
 
@@ -140,7 +153,7 @@ namespace Twaila.Systems
                     ModWall mWall = WallLoader.GetWall(i);
                     if (mWall != null && wallDropLookup.TryGetValue(mWall.Type, out int wallDrop) && wallDrop != 0)
                     {
-                        AddEntry(i, 0, TileType.Wall, wallDrop);
+                        AddEntry(i, 0, TileType.Wall, dropItem: wallDrop);
                     }
                 }
             }
@@ -157,11 +170,11 @@ namespace Twaila.Systems
                     if (mItem.Item.createTile != -1 && TileUtil.GetTileObjectData(mItem.Item.createTile, 0, 0) != null)
                     {
                         AddOpenDoorEntry(i);
-                        AddEntry(mItem.Item.createTile, mItem.Item.placeStyle, TileType.Tile, i);
+                        AddEntry(mItem.Item.createTile, mItem.Item.placeStyle, TileType.Tile, placeItem: i);
                     }
                     if (mItem.Item.createWall != -1)
                     {
-                        AddEntry(mItem.Item.createWall, 0, TileType.Wall, i);
+                        AddEntry(mItem.Item.createWall, 0, TileType.Wall, placeItem: i);
                     }
                 }
             }
@@ -302,7 +315,7 @@ namespace Twaila.Systems
                 int openDoorId = TileID.Sets.OpenDoorID[mItem.Item.createTile];
                 if (openDoorId != -1)
                 {
-                    AddEntry(openDoorId, mItem.Item.placeStyle, TileType.Tile, doorItemId);
+                    AddEntry(openDoorId, mItem.Item.placeStyle, TileType.Tile, placeItem: doorItemId);
                 }
             }
             else
@@ -311,7 +324,7 @@ namespace Twaila.Systems
                 item.SetDefaults(doorItemId);
                 if (item.createTile == TileID.ClosedDoor)
                 {
-                    AddEntry(TileID.OpenDoor, item.placeStyle, TileType.Tile, doorItemId);
+                    AddEntry(TileID.OpenDoor, item.placeStyle, TileType.Tile, dropItem: doorItemId, placeItem: doorItemId);
                 }
             }
         }
