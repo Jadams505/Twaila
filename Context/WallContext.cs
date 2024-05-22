@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -146,8 +147,13 @@ namespace Twaila.Context
         protected override string GetName()
         {
             Tile tile = Framing.GetTileSafely(BestTilePos);
+            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Wall);
 
-            string displayName = NameUtil.GetNameFromItem(ItemTilePairSystem.GetItemId(tile, TileType.Wall));
+            string dropName = NameUtil.GetNameFromItem(itemEntry.DropItem);
+            string placeName = NameUtil.GetNameFromItem(itemEntry.PlaceItem);
+            string internalPrettyName = NameUtil.GetInternalWallName(tile.WallType, fullName: false, pretty: true);
+
+            string displayName = NamingSystem.Instance.GetName(dropName, placeName, mapName: null, internalPrettyName); 
             string internalName = NameUtil.GetInternalWallName(WallId, false);
             string fullName = NameUtil.GetInternalWallName(WallId, true);
 

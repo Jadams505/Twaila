@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 using static Twaila.Config.TwailaConfig;
@@ -15,6 +16,9 @@ namespace Twaila.Config
 
         [SeparatePage]
         public NpcContent NpcContent = new NpcContent();
+
+        [SeparatePage]
+        public NamingPreferences NamingPreferences = new();
 
         [DefaultValue(true)]
         public bool ShowImage;
@@ -77,15 +81,24 @@ namespace Twaila.Config
 
         public override bool Equals(object obj)
         {
-            if (obj is Content other)
-            {
-                return ShowImage == other.ShowImage && ShowMod == other.ShowMod && ShowName == other.ShowName
-                    && ShowPickaxePower == other.ShowPickaxePower && ShowWire == other.ShowWire &&
-                    ShowActuator == other.ShowActuator && ShowPaint == other.ShowPaint && ShowPickaxe == other.ShowPickaxe
-                    && ShowId == other.ShowId && ShowContainedItems == other.ShowContainedItems && ShowCoating == other.ShowCoating
-                    && NpcContent == other.NpcContent && IconsPerRow == other.IconsPerRow && TextsPerRow == other.TextsPerRow;
-            }
-            return base.Equals(obj);
+            return obj is Content content &&
+                   EqualityComparer<ContentToggles>.Default.Equals(EnableContent, content.EnableContent) &&
+                   EqualityComparer<Priorities>.Default.Equals(ContentPriorities, content.ContentPriorities) &&
+                   EqualityComparer<NpcContent>.Default.Equals(NpcContent, content.NpcContent) &&
+                   EqualityComparer<NamingPreferences>.Default.Equals(NamingPreferences, content.NamingPreferences) &&
+                   ShowImage == content.ShowImage &&
+                   ShowName == content.ShowName &&
+                   ShowMod == content.ShowMod &&
+                   ShowId == content.ShowId &&
+                   ShowPickaxePower == content.ShowPickaxePower &&
+                   ShowPickaxe == content.ShowPickaxe &&
+                   ShowWire == content.ShowWire &&
+                   ShowActuator == content.ShowActuator &&
+                   ShowPaint == content.ShowPaint &&
+                   ShowCoating == content.ShowCoating &&
+                   ShowContainedItems == content.ShowContainedItems &&
+                   TextsPerRow == content.TextsPerRow &&
+                   IconsPerRow == content.IconsPerRow;
         }
 
         public override int GetHashCode()

@@ -140,6 +140,7 @@ namespace Twaila.Config
         public override void OnChanged()
         {
             ContextSystem.Instance?.SortContexts();
+            NamingSystem.Instance?.SortContexts();
 
             if (PanelPositionData.SyncPositionData)
             {

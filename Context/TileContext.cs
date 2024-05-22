@@ -205,10 +205,19 @@ namespace Twaila.Context
         protected override string GetName()
         {
             Tile tile = Framing.GetTileSafely(BestTilePos);
-            int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Tile);
+            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
 
-            string displayName = NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile) ?? NameUtil.GetNameFromItem(itemId)
-                ?? NameUtil.GetNameFromMap(tile, BestTilePos.X, BestTilePos.Y) ?? NameUtil.GetInternalTileName(TileId, fullName: false, pretty: true);
+            string displayName = NameUtil.GetNameForManualTiles(tile) ?? NameUtil.GetNameForChest(tile);
+
+            if (displayName is null)
+            {
+                string dropName = NameUtil.GetNameFromItem(itemEntry.DropItem);
+                string placedName = NameUtil.GetNameFromItem(itemEntry.PlaceItem);
+                string mapName = NameUtil.GetNameFromMap(tile, BestTilePos.X, BestTilePos.Y);
+                string internalPrettyName = NameUtil.GetInternalTileName(TileId, fullName: false, pretty: true);
+                displayName = NamingSystem.Instance.GetName(dropName, placedName, mapName, internalPrettyName);
+            }
+
             string internalName = NameUtil.GetInternalTileName(TileId, false);
             string fullName = NameUtil.GetInternalTileName(TileId, true);
 

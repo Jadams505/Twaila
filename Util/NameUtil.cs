@@ -356,22 +356,26 @@ namespace Twaila.Util
 
         public static string GetNameForTree(int dirtId)
         {
-            switch (WorldGen.GetTreeType(dirtId))
+            var mTree = PlantLoader.GetTree(dirtId);
+            if (mTree is null)
             {
-                case TreeTypes.Forest:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Forest");
-                case TreeTypes.Corrupt:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Corrupt");
-                case TreeTypes.Mushroom:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Mushroom");
-                case TreeTypes.Crimson:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Crimson");
-                case TreeTypes.Jungle:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Jungle");
-                case TreeTypes.Snow:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Snow");
-                case TreeTypes.Hallowed:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Hallowed");
+                switch (WorldGen.GetTreeType(dirtId))
+                {
+                    case TreeTypes.Forest:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Forest");
+                    case TreeTypes.Corrupt:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Corrupt");
+                    case TreeTypes.Mushroom:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Mushroom");
+                    case TreeTypes.Crimson:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Crimson");
+                    case TreeTypes.Jungle:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Jungle");
+                    case TreeTypes.Snow:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Snow");
+                    case TreeTypes.Hallowed:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Trees.Hallowed");
+                }
             }
             int itemId = TreeUtil.GetTreeWood(dirtId);
             if (itemId != -1)
@@ -383,17 +387,22 @@ namespace Twaila.Util
 
         public static string GetNameForPalmTree(int sandId)
         {
-            switch (WorldGen.GetTreeType(sandId))
+            var mTree = PlantLoader.GetTree(sandId);
+            if (mTree is null)
             {
-                case TreeTypes.Palm:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.Default");
-                case TreeTypes.PalmCrimson:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmCrimson");
-                case TreeTypes.PalmCorrupt:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmCorrupt");
-                case TreeTypes.PalmHallowed:
-                    return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmHallowed");
+                switch (WorldGen.GetTreeType(sandId))
+                {
+                    case TreeTypes.Palm:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.Default");
+                    case TreeTypes.PalmCrimson:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmCrimson");
+                    case TreeTypes.PalmCorrupt:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmCorrupt");
+                    case TreeTypes.PalmHallowed:
+                        return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.PalmTree.PalmHallowed");
+                }
             }
+            
             int itemId = TreeUtil.GetTreeWood(sandId);
             if (itemId != -1)
             {
@@ -469,11 +478,12 @@ namespace Twaila.Util
                 ModTile mTile = TileLoader.GetTile(sandId);
                 if (mTile != null)
                 {
+                    string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
                     int tileDrop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
                     string type = GetNameFromItem(tileDrop);
                     if (type != null)
                     {
-                        return type + " " + Language.GetTextValue("MapObject.Cactus");
+                        return type + " " + cactus;
                     }
                 }
             }
@@ -560,7 +570,7 @@ namespace Twaila.Util
 
         public static string GetInternalName(ModType type, bool fullName, bool pretty = false)
         {
-            if (pretty) return type.PrettyPrintName();
+            if (pretty) return type?.PrettyPrintName();
             return fullName ? type?.GetType().FullName : type?.Name;
         }
 

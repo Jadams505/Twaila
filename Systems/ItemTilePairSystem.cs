@@ -13,7 +13,7 @@ namespace Twaila.Systems
         Tile, Wall, Liquid, Empty
     }
 
-    public record DropPlacePair(int DropItem, int PlaceItem)
+    public record struct DropPlacePair(int DropItem, int PlaceItem)
     {
         public static readonly DropPlacePair Default = new(-1, -1);
     }
@@ -32,6 +32,17 @@ namespace Twaila.Systems
             }
             int style = CalculatedPlaceStyle(tile);
             return GetItemId(tile, style, type);
+        }
+
+        public static DropPlacePair GetItemEntry(Tile tile, TileType type)
+        {
+            int id = GetManualItemId(tile, type);
+            if (id != -1)
+            {
+                return new(DropItem: id, PlaceItem: id);
+            }
+            int style = CalculatedPlaceStyle(tile);
+            return GetItemEntry(tile, style, type);
         }
 
         public static int GetPickId(int pickPower, int startIndex, out int foundIndex)
@@ -68,22 +79,7 @@ namespace Twaila.Systems
 
         private static int GetItemId(Tile tile, int style, TileType type)
         {
-            int id = -1;
-            switch (type)
-            {
-                case TileType.Tile:
-                    id = tile.TileType;
-                    break;
-                case TileType.Wall:
-                    id = tile.WallType;
-                    break;
-                case TileType.Liquid:
-                    id = tile.LiquidType;
-                    break;
-                default:
-                    return -1;
-            }
-            TileStylePair pair = new TileStylePair(id, style, type);
+            TileStylePair pair = new TileStylePair(tile, style, type);
             var firstTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
             if (firstTry.DropItem == -1 && pair.Style != 0)
             {
@@ -92,6 +88,30 @@ namespace Twaila.Systems
                 return secondTry.DropItem; // this works for a lot of tiles that are directional (improve later)
             }
             return firstTry.DropItem;
+        }
+
+        private static DropPlacePair GetItemEntry(Tile tile, int style, TileType type)
+        {
+            TileStylePair pair = new TileStylePair(tile, style, type);
+            int drop, placed;
+            var firstTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
+            drop = firstTry.DropItem;
+            if (firstTry.DropItem == -1 && pair.Style != 0)
+            {
+                pair.Style = 0;
+                var secondTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
+                drop = secondTry.DropItem; // this works for a lot of tiles that are directional (improve later)
+            }
+
+            placed = firstTry.PlaceItem;
+            if (firstTry.PlaceItem == -1 && pair.Style != 0)
+            {
+                pair.Style = 0;
+                var secondTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
+                placed = secondTry.PlaceItem; // this works for a lot of tiles that are directional (improve later)
+            }
+
+            return new(drop, placed);
         }
 
         private static void AddEntry(int id, int style, TileType type, int dropItem = -1, int placeItem = -1)
@@ -684,6 +704,17 @@ namespace Twaila.Systems
                 Id = id;
                 Style = style;
                 Type = type;
+            }
+
+            public TileStylePair(Tile tile, int style, TileType type) : this(-1, style, type)
+            {
+                Id = type switch
+                {
+                    TileType.Tile => tile.TileType,
+                    TileType.Wall => tile.WallType,
+                    TileType.Liquid => tile.LiquidType,
+                    _ => -1
+                };
             }
 
             public override string ToString()

@@ -298,6 +298,11 @@ Configs: {
 			Label: Enable Content
 			Tooltip: ""
 		}
+
+		NamingPreferences: {
+			Label: Naming Preferences
+			Tooltip: ""
+		}
 	}
 
 	NameType: {
@@ -604,6 +609,82 @@ Configs: {
 
 		Index: {
 			Label: Index
+			Tooltip: ""
+		}
+	}
+
+	NamingPreferences: {
+		Tooltip: ""
+
+		EnableNames: {
+			Label: Enable Names
+			Tooltip: ""
+		}
+
+		NamePriorities: {
+			Label: Name Priorities
+			Tooltip: ""
+		}
+
+		Headers.Priorities: Priorities (Lower values have higher priority)
+
+		ReadMe: {
+			Label: Read Me
+			Tooltip:
+				'''
+				Tiles do not inherently have names, so these methods are used instead in default order:
+				1) Placed Item: Name of the item that places the tile (doesn't always exist, but most accurate)
+				2) Map: Name of the entry on the map (often doesn't exist and imprecise')
+				3) Internal: Name of the tile in the code (modded tiles only)
+				4) Dropped Item: Name of the item that drops from tile (doesn't always exists, could have more than one)
+				'''
+		}
+	}
+
+	EnabledNames: {
+		Tooltip: ""
+
+		EnableDroppedItemName: {
+			Label: Enable Dropped Item Name
+			Tooltip: Use the name of the item that drops from the tile as the tile name
+		}
+
+		EnablePlacedItemName: {
+			Label: Enable Placed Item Name
+			Tooltip: Use the name of the item that places the tile as the tile name
+		}
+
+		EnableMapName: {
+			Label: Enable Map Name
+			Tooltip: Use the name given on the map (doesn't always exists and often imprecise)
+		}
+
+		EnableInternalName: {
+			Label: Enable Internal Name
+			Tooltip: Use the internal/code names (modded tiles only)
+		}
+	}
+
+	NamePriorities: {
+		Tooltip: ""
+
+		DroppedItemPriority: {
+			Label: Dropped Item Priority
+			Tooltip: ""
+		}
+
+		PlacedItemPriority: {
+			Label: Placed Item Priority
+			Tooltip: ""
+		}
+
+		MapPriority: {
+			Label: Map Priority
+			Tooltip: ""
+		}
+
+		InternalPriority: {
+			Label: Internal Priority
 			Tooltip: ""
 		}
 	}
