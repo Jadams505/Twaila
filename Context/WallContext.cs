@@ -134,8 +134,11 @@ namespace Twaila.Context
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(BestTilePos);
-            int itemId = ItemTilePairSystem.GetItemId(tile, TileType.Wall);
-            return ImageUtil.GetItemTexture(itemId).ToRender();
+            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Wall);
+
+            // same dilemma as tiles DropItem vs PlaceItem
+            Texture2D texture = ImageUtil.GetItemTexture(itemEntry.DropItem) ?? ImageUtil.GetItemTexture(itemEntry.PlaceItem);
+            return texture.ToRender();
         }
 
         protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)

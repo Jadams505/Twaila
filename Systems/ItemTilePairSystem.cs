@@ -13,7 +13,7 @@ namespace Twaila.Systems
         Tile, Wall, Liquid, Empty
     }
 
-    public record struct DropPlacePair(int DropItem, int PlaceItem)
+    public record struct DropPlacePair(int DropItem = -1, int PlaceItem = -1)
     {
         public static readonly DropPlacePair Default = new(-1, -1);
     }
@@ -22,17 +22,6 @@ namespace Twaila.Systems
     {
         private static Dictionary<TileStylePair, DropPlacePair> _tileToItemDictionary;
         private static List<PickPowerPair> _pickaxes;
-
-        public static int GetItemId(Tile tile, TileType type)
-        {
-            int id = GetManualItemId(tile, type);
-            if (id != -1)
-            {
-                return id;
-            }
-            int style = CalculatedPlaceStyle(tile);
-            return GetItemId(tile, style, type);
-        }
 
         public static DropPlacePair GetItemEntry(Tile tile, TileType type)
         {
@@ -75,19 +64,6 @@ namespace Twaila.Systems
         {
             _pickaxes = null;
             _tileToItemDictionary = null;
-        }
-
-        private static int GetItemId(Tile tile, int style, TileType type)
-        {
-            TileStylePair pair = new TileStylePair(tile, style, type);
-            var firstTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
-            if (firstTry.DropItem == -1 && pair.Style != 0)
-            {
-                pair.Style = 0;
-                var secondTry = _tileToItemDictionary.GetValueOrDefault(pair, DropPlacePair.Default);
-                return secondTry.DropItem; // this works for a lot of tiles that are directional (improve later)
-            }
-            return firstTry.DropItem;
         }
 
         private static DropPlacePair GetItemEntry(Tile tile, int style, TileType type)
@@ -152,13 +128,6 @@ namespace Twaila.Systems
             {
                 ModTile mTile = TileLoader.GetTile(i);
                 int drop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
-                Item dropItem = new Item(drop);
-                if (drop != 0 && dropItem.createTile != i)
-                {
-                    Twaila.Instance.Logger.Debug($"Tile: {mTile.Name}, type: {i}, dropItem: {drop}, createTile: {dropItem.createTile}");
-                    //continue;
-                }
-                ModItem mItem = ItemLoader.GetItem(drop);
                 if (mTile != null && drop != 0)
                 {
                     AddEntry(i, 0, TileType.Tile, dropItem: drop);
@@ -370,6 +339,8 @@ namespace Twaila.Systems
         {
             switch (tile.TileType)
             {
+                case TileID.Grass:
+                    return ItemID.GrassSeeds;
                 case TileID.Plants:
                     if (tile.TileFrameX == 144) return ItemID.Mushroom;
                     break;

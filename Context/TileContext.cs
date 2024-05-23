@@ -184,8 +184,12 @@ namespace Twaila.Context
 
         protected virtual TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(BestTilePos), TileType.Tile);
-            Texture2D texture = ImageUtil.GetItemTexture(itemId);
+            Tile tile = Framing.GetTileSafely(BestTilePos);
+            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
+
+            // should this be DropItem or PlaceItem old way was drop, but place makes more sense?
+            // Maybe make this configurable, so it's not my fault if it's wrong
+            Texture2D texture = ImageUtil.GetItemTexture(itemEntry.DropItem) ?? ImageUtil.GetItemTexture(itemEntry.PlaceItem);
             return texture.ToRender();
         }
 

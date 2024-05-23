@@ -62,8 +62,9 @@ namespace Twaila.Context
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
         {
-            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(BestTilePos), TileType.Tile);
-            Texture2D texture = ImageUtil.GetItemTexture(itemId);
+            Tile tile = Framing.GetTileSafely(BestTilePos);
+            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
+            Texture2D texture = ImageUtil.GetItemTexture(itemEntry.PlaceItem);
             return texture.ToRender();
         }
 

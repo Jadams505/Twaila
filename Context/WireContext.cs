@@ -152,8 +152,9 @@ namespace Twaila.Context
 
         protected override string GetName()
         {
-            int itemId = ItemTilePairSystem.GetItemId(Framing.GetTileSafely(BestTilePos), TileType.Tile);
-            return NameUtil.GetNameFromItem(itemId);
+            Tile tile = Framing.GetTileSafely(BestTilePos);
+            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
+            return NameUtil.GetNameFromItem(itemEntry.DropItem);
         }
 
         protected override string GetMod()
