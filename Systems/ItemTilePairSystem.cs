@@ -156,7 +156,7 @@ namespace Twaila.Systems
                     {
                         _pickaxes.Add(new PickPowerPair(mItem.Item.pick, i));
                     }
-                    if (mItem.Item.createTile != -1 && TileUtil.GetTileObjectData(mItem.Item.createTile, 0, 0) != null)
+                    if (mItem.Item.createTile != -1)
                     {
                         AddOpenDoorEntry(i);
                         AddEntry(mItem.Item.createTile, mItem.Item.placeStyle, TileType.Tile, placeItem: i);
