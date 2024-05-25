@@ -38,8 +38,20 @@ namespace Twaila.Util
         public static string GetNameFromMap(Tile tile, int x, int y)
         {
             string mapName = Lang.GetMapObjectName(Main.Map[x, y].Type);
-            int style = TileObjectData.GetTileStyle(tile);
-            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(tile.TileType, style == -1 ? 0 : style));
+            ModTile mTile = TileLoader.GetTile(tile.TileType);
+            int option = 0;
+
+            if (mTile is not null)
+            {
+                option = mTile.GetMapOption(x, y);
+            }
+            else
+            {
+                // I don't really know what this does, but it sound correct
+                MapHelper.GetTileBaseOption(x, y, tile.TileType, tile, ref option);
+            }
+
+            string altMapName = Lang.GetMapObjectName(MapHelper.TileToLookup(tile.TileType, option));
             if (!string.IsNullOrEmpty(mapName))
             {
                 return mapName;
@@ -48,6 +60,7 @@ namespace Twaila.Util
             {
                 return altMapName;
             }
+
             return null;
         }
 
