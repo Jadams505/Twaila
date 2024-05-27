@@ -40,6 +40,13 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.5.1.0 (5/25/2024)
+- Added "Naming Preferences" to the config
+- Fixed tree and cactus names
+- Fixed some incorrect map names
+v0.5.0.3 (10/22/2023)
+- Fixed more issues with out of bounds tiles
+- Fixed incorrect name for Tundra Water
 v0.5.0.2 (8/25/2023)
 - Fixed issues with out of bounds tiles
 v0.5.0.1 (8/15/2023)

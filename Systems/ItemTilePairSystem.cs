@@ -16,6 +16,23 @@ namespace Twaila.Systems
     public record struct DropPlacePair(int DropItem = -1, int PlaceItem = -1)
     {
         public static readonly DropPlacePair Default = new(-1, -1);
+
+        public readonly int FirstOrDefault()
+        {
+            int itemId = -1;
+            foreach(var type in NamingSystem.Instance.NameSchemes)
+            {
+                if (type is DroppedItemScheme)
+                    itemId = DropItem;
+                else if (type is PlacedItemScheme)
+                    itemId = PlaceItem;
+
+                if (itemId != -1) 
+                    return itemId;
+            }
+
+            return itemId;
+        }
     }
 
     public class ItemTilePairSystem : ModSystem

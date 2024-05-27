@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Default;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using Twaila.Config;
 using Twaila.Graphics;
@@ -187,9 +184,7 @@ namespace Twaila.Context
             Tile tile = Framing.GetTileSafely(BestTilePos);
             var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
 
-            // should this be DropItem or PlaceItem old way was drop, but place makes more sense?
-            // Maybe make this configurable, so it's not my fault if it's wrong
-            Texture2D texture = ImageUtil.GetItemTexture(itemEntry.DropItem) ?? ImageUtil.GetItemTexture(itemEntry.PlaceItem);
+            Texture2D texture = ImageUtil.GetItemTexture(itemEntry.FirstOrDefault());
             return texture.ToRender();
         }
 

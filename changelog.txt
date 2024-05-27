@@ -1,3 +1,7 @@
 ﻿
-- Fixed more issues with out of bounds tiles
-- Fixed incorrect name for Tundra Water
+TWAILA v{ModVersion} has been published to {tMLBuildPurpose} tML v{tMLVersion}.
+Learn more at the [url={ModHomepage}]homepage[/url]
+
+- Added "Naming Preferences" to the config
+- Fixed tree and cactus names
+- Fixed some incorrect map names
