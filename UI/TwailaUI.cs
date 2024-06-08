@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;
@@ -63,12 +64,12 @@ namespace Twaila.UI
             Point mouse = MouseWorldSafe();
             Point tile = new Point(Player.tileTargetX, Player.tileTargetY);
             Point smart = new Point(Main.SmartCursorX, Main.SmartCursorY);
+            Point map = default;
 
-            float mapSpaceX = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.X) + (Main.screenWidth / 2.0f);
-            float mapSpaceY = Main.mapFullscreenScale * (10 - Main.mapFullscreenPos.Y) + (Main.screenHeight / 2.0f);
-            float x = (Main.mouseX - mapSpaceX) / Main.mapFullscreenScale + 10;
-            float y = (Main.mouseY - mapSpaceY) / Main.mapFullscreenScale + 10;
-            Point map = new Point((int)x, (int)y);
+            if (Main.LocalPlayer.TryGetModPlayer<TwailaPlayer>(out var player))
+            {
+                map = player.MapTilePos;
+            }
 
             return new TwailaPoint(mouse, tile, smart, map);
         }
