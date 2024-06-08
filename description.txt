@@ -40,6 +40,10 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.5.1.1 (6/8/2024)
+- Added "Show Position" to the config to diplay the coordinates of tiles
+- Fixed logic in full screen map to properly account for UI scale
+- Fixed hat racks and mannequins not showing their contained items
 v0.5.1.0 (5/25/2024)
 - Added "Naming Preferences" to the config
 - Fixed tree and cactus names

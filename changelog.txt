@@ -2,6 +2,6 @@
 TWAILA v{ModVersion} has been published to {tMLBuildPurpose} tML v{tMLVersion}.
 Learn more at the [url={ModHomepage}]homepage[/url]
 
-- Added "Naming Preferences" to the config
-- Fixed tree and cactus names
-- Fixed some incorrect map names
+- Added "Show Position" to the config to diplay the coordinates of tiles
+- Fixed logic in full screen map to properly account for UI scale
+- Fixed hat racks and mannequins not showing their contained items
