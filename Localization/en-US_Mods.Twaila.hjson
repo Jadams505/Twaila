@@ -303,6 +303,11 @@ Configs: {
 			Label: Naming Preferences
 			Tooltip: ""
 		}
+
+		ShowPosition: {
+			Label: Show Position
+			Tooltip: ""
+		}
 	}
 
 	NameType: {

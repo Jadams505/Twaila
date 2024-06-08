@@ -89,7 +89,7 @@ namespace Twaila.Context
             }
         }
 
-        private static readonly FieldInfo TEDisplayDoll_items = typeof(TEDisplayDoll).GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly FieldInfo TEDisplayDoll_items = typeof(TEDisplayDoll).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private void PopulateItems()
         {
@@ -99,7 +99,10 @@ namespace Twaila.Context
             Item[] items = (Item[])TEDisplayDoll_items?.GetValue(instance);
 
             if (items is null)
+            {
+                Twaila.Instance.Logger.Warn(nameof(TEDisplayDoll_items) + " is null. Please Report");
                 return;
+            }
 
             for (int i = 0; i < items.Length; ++i)
             {

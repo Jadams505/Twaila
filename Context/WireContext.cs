@@ -22,6 +22,7 @@ namespace Twaila.Context
 
         protected string WireText { get; set; }
         protected string ActuatorText { get; set; }
+        protected string PositionText { get; set; }
 
         protected UITwailaIconGrid IconGrid { get; set; }
 
@@ -39,6 +40,7 @@ namespace Twaila.Context
             };
             WireText = "";
             ActuatorText = "";
+            PositionText = "";
         }
 
         public static WireContext CreateWireContext(TwailaPoint pos)
@@ -132,6 +134,13 @@ namespace Twaila.Context
                     }
                 }
             }
+
+            if (TwailaConfig.Instance.DisplayContent.ShowPosition)
+            {
+                PositionText = $"X: {BestTilePos.X} Y: {BestTilePos.Y}";
+                TextGrid.Add(new UITwailaText(PositionText));
+            }
+            
         }
 
         public override void UpdateOnChange(BaseContext prevContext, Layout layout)

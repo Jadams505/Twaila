@@ -32,6 +32,8 @@ namespace Twaila.Config
         [DefaultValue(false)]
         public bool ShowId;
 
+        public bool ShowPosition = false;
+
         [DefaultValue(true)]
         public bool ShowPickaxePower;
 
@@ -66,6 +68,7 @@ namespace Twaila.Config
             ShowImage = true;
             ShowMod = true;
             ShowId = false;
+            ShowPosition = false;
             ShowPickaxePower = true;
             ShowPickaxe = DisplayType.Icon;
             ShowWire = DisplayType.Icon;
@@ -90,6 +93,7 @@ namespace Twaila.Config
                    ShowName == content.ShowName &&
                    ShowMod == content.ShowMod &&
                    ShowId == content.ShowId &&
+                   ShowPosition == content.ShowPosition &&
                    ShowPickaxePower == content.ShowPickaxePower &&
                    ShowPickaxe == content.ShowPickaxe &&
                    ShowWire == content.ShowWire &&

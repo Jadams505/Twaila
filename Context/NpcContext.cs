@@ -144,6 +144,11 @@ namespace Twaila.Context
                     }
                 }
             }
+
+            if (content.ShowPosition)
+            {
+                InfoGrid.Add(new UITwailaText($"X: {(int)Npc.position.X} Y: {(int)Npc.position.Y}"));
+            }
         }
 
         public override void UpdateOnChange(BaseContext prevContext, Layout layout)
