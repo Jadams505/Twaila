@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System.Reflection;
+using Terraria;
 using Terraria.GameContent.Personalities;
 using Terraria.ID;
 using Terraria.Localization;
@@ -284,9 +285,16 @@ namespace Twaila.Util
             };
         }
 
+        internal static PropertyInfo Player_talkNPC = typeof(Player).GetProperty("talkNPC", BindingFlags.Instance | BindingFlags.Public);
+
         public static double GetNpcHappiness(NPC npc, out string asNumber, out string asText)
         {
+            // ShopHelper.GetShoppingSettings() is only called in Vanilla when talking to an NPC
+            // So temporarily setting it makes it safer to call
+            var oldIndex = Main.LocalPlayer.talkNPC;
+            Player_talkNPC?.SetValue(Main.LocalPlayer, npc.whoAmI);
             var settings = Main.ShopHelper.GetShoppingSettings(Main.LocalPlayer, npc); // this might have side effects
+            Player_talkNPC?.SetValue(Main.LocalPlayer, oldIndex);
 
             double price = settings.PriceAdjustment;
 
