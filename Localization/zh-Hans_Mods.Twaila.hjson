@@ -374,7 +374,20 @@ Configs: {
 				'''
 		}
 
-		// Headers.AutomaticOptions: Automatic Options
+		Headers: {
+			// AutomaticOptions: Automatic Options
+			// OtherOptions: Other Options
+		}
+
+		HideUIWhenTalkingToNPCs: {
+			// Label: Hide UI When Talking To NPCs
+			// Tooltip: ""
+		}
+
+		HideUIWhenEditingSigns: {
+			// Label: Hide UI When Editing Signs
+			// Tooltip: ""
+		}
 	}
 
 	DisplayMode: {

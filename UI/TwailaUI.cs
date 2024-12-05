@@ -30,14 +30,24 @@ namespace Twaila.UI
 
         public static void Update(GameTime time)
         {
+            Enabled = ShouldPanelBeEnabled();
+            _interface?.Update(time);
+        }
+
+        public static bool ShouldPanelBeEnabled()
+        {
+            if (TwailaConfig.Instance.UIDisplaySettings.HideUIWhenTalkingToNPCs && Main.npcChatText != "")
+                return false;
+
+            if (TwailaConfig.Instance.UIDisplaySettings.HideUIWhenEditingSigns && Main.LocalPlayer.sign != -1)
+                return false;
+
             switch (TwailaConfig.Instance.UIDisplaySettings.UIDisplay)
             {
                 case TwailaConfig.DisplayMode.On:
-                    Enabled = true;
-                    break;
+                    return true;
                 case TwailaConfig.DisplayMode.Off:
-                    Enabled = false;
-                    break;
+                    return false;
                 case TwailaConfig.DisplayMode.Automatic:
                     if (TwailaConfig.Instance.UIDisplaySettings.HideUIForAir)
                     {
@@ -45,18 +55,17 @@ namespace Twaila.UI
                         bool panelIsHovered = _panel.ContainsPoint(Main.MouseScreen);
                         bool NoValidContexts(TwailaPoint cursorInfo) => ContextSystem.Instance.ContextEntryCountAt(cursorInfo) == 0;
                         bool ManualContextIsNull(TwailaPoint cursorInfo) => TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(cursorInfo) == null;
-                        
+
                         if ((!IsMouseOnScreen() || NoValidContexts(cursorInfo) || ManualContextIsNull(cursorInfo))
                             && !panelIsHovered && !_panel.IsDragging())
                         {
-                            Enabled = false;
-                            break;
+                            return false;
                         }
                     }
-                    Enabled = true;
-                    break;
+                    return true;
             }
-            _interface?.Update(time);
+
+            return true;
         }
 
         public static TwailaPoint GetCursorInfo()
