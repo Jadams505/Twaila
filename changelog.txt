@@ -2,6 +2,6 @@
 TWAILA v{ModVersion} has been published to {tMLBuildPurpose} tML v{tMLVersion}.
 Learn more at the [url={ModHomepage}]homepage[/url]
 
-- Added "Show Position" to the config to diplay the coordinates of tiles
-- Fixed logic in full screen map to properly account for UI scale
-- Fixed hat racks and mannequins not showing their contained items
+- Added "Hide UI When Talking To NPCs" and "Hide UI When Editing Signs" to the 'UI Display' config
+- Fixed bad IL code for displaying in the Fullscreen Map
+- Fixed an issue with NPC happiness
