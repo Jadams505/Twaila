@@ -10,12 +10,13 @@ using Terraria.ModLoader;
 using ReLogic.Content;
 using System;
 using Twaila.Config;
+using System.Collections.Generic;
 
 namespace Twaila.Util
 {
     public static class ImageUtil
     {
-        public static Texture2D GetImageFromTile(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderFromTile(SpriteBatch spriteBatch, Tile tile)
         {
             int size = 16;
             int padding = 2;
@@ -23,16 +24,16 @@ namespace Twaila.Util
 
             if (texture != null)
             {
-                TextureBuilder builder = new TextureBuilder();
+                RenderBuilder builder = new();
                 for (int row = 0; row < 2; ++row)
                 {
                     for (int col = 0; col < 2; ++col)
                     {
                         Rectangle copyRectangle = new Rectangle(col * (size + padding), 54 + row * (size + padding), size, size);
-                        builder.AddComponent(copyRectangle, texture, new Point(size * col, size * row));
+                        builder.AddImage(texture, new(col * size, row * size), copyRectangle);
                     }
                 }
-                return builder.Build(spriteBatch.GraphicsDevice);
+                return builder.Build();
             }
             return null;
         }
@@ -488,6 +489,37 @@ namespace Twaila.Util
             return null;
         }
 
+        public static TwailaRender GetRenderFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
+        {
+            if (data == null)
+            {
+                return TwailaRender.Empty;
+            }
+            Texture2D texture = GetTileTexture(tileId);
+            if (texture != null)
+            {
+                RenderBuilder builder = new();
+
+                frameX = frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
+                frameY = frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
+
+                int height = 0;
+                for (int row = 0; row < data.Height; ++row)
+                {
+                    for (int col = 0; col < data.Width; ++col)
+                    {
+                        int width = data.CoordinateWidth;
+                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
+                            frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
+                        builder.AddImage(texture, source: copyRectangle, position: new Point(width * col, height));
+                    }
+                    height += data.CoordinateHeights[row];
+                }
+                return builder.Build();
+            }
+            return TwailaRender.Empty;
+        }
+
         public static Texture2D GetImageFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
         {
             try
@@ -524,6 +556,45 @@ namespace Twaila.Util
             {
                 Twaila.Instance.Logger.Error(e.Message);
                 return null;
+            }
+        }
+
+        public static TwailaRender GetRenderFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
+        {
+            try
+            {
+                // Taken from TileLoader.SetDrawPositions (Called by TilesRenderer.GetTileDrawData)
+                // Unloaded tiles can cause an IndexOutOfBoundsException on tileData.CoordinateHeights
+                // This is because it has same frameX and frameY as the original tile but has the TileObjectData of an unloaded tile
+                TileObjectData tileData = TileObjectData.GetTileData(tile.TileType, 0, 0);
+                if (tileData != null)
+                {
+                    int partY = 0;
+                    for (int remainingFrameY = tile.TileFrameY % tileData.CoordinateFullHeight; partY < tileData.Height && remainingFrameY - tileData.CoordinateHeights[partY] + tileData.CoordinatePadding >= 0; partY++)
+                    {
+                        remainingFrameY -= tileData.CoordinateHeights[partY] + tileData.CoordinatePadding;
+                    }
+
+                    if (partY >= tileData.CoordinateHeights.Length)
+                        return TwailaRender.Empty;
+                }
+
+                TileObjectData data = TileUtil.GetTileObjectData(tile);
+                short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
+                Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
+                    ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
+                    out _, out _, out _, out _);
+                if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
+                {
+                    tileFx += (short)addX;
+                    tileFy += (short)addY;
+                }
+                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
+            }
+            catch (Exception e)
+            {
+                Twaila.Instance.Logger.Error(e.Message);
+                return TwailaRender.Empty;
             }
         }
 
@@ -658,6 +729,12 @@ namespace Twaila.Util
         public static TwailaRender ToRender(this Texture2D texture)
         {
             return new TwailaRender(texture);
+        }
+
+        public static TwailaRender Coalesce(this TwailaRender first, TwailaRender second)
+        {
+            if (first.CanDraw()) return first;
+            return second;
         }
     }
 }

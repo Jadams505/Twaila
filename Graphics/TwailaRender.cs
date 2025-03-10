@@ -8,6 +8,8 @@ namespace Twaila.Graphics
 {
     public class TwailaRender
     {
+        public static readonly TwailaRender Empty = new();
+
         public List<DrawInfo> Info { get; private set; }
 
         public float Width { get; private set; }

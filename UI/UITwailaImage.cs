@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Twaila.Graphics;
@@ -10,6 +11,10 @@ namespace Twaila.UI
 {
     public class UITwailaImage : UITwailaElement
     {
+        /// <summary>
+        /// Seems to fix gaps in textures when drawing with SamplerState.PointClamp
+        /// </summary>
+        public readonly float MagicScale = 0.01f;
         public TwailaRender Render { get; private set; }
 
         public UITwailaImage()
@@ -31,6 +36,11 @@ namespace Twaila.UI
         {
             if (Render != null && Render.CanDraw())
             {
+                // Fixes gaps in textures taken from TileDefinitionOptionElement
+                RasterizerState rasterizerState = spriteBatch.GraphicsDevice.RasterizerState;
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+
                 base.DrawSelf(spriteBatch);
             }
         }
@@ -51,7 +61,7 @@ namespace Twaila.UI
         {
             Rectangle drawDim = DrawDimensions();
             float scale = GetDrawScale();
-            Render.Draw(spriteBatch, drawDim, Color.White * Opacity, scale);
+            Render.Draw(spriteBatch, drawDim, Color.White * Opacity, scale + MagicScale);
         }
 
         public Rectangle DrawDimensions()

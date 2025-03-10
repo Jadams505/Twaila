@@ -197,8 +197,11 @@ namespace Twaila.Context
             {
                 return new TwailaRender(texture, 0.5f);
             }
-            texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y) ?? ImageUtil.GetImageFromTile(spriteBatch, tile);
-            return texture.ToRender();
+            texture = ImageUtil.GetImageCustom(spriteBatch, tile) ?? ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y);
+
+            TwailaRender render = ImageUtil.GetRenderFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y)
+                .Coalesce(ImageUtil.GetRenderFromTile(spriteBatch, tile));
+            return texture is null ? render : texture.ToRender();
         }
 
         protected override string GetName()
