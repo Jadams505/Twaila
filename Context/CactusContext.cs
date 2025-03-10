@@ -58,9 +58,9 @@ namespace Twaila.Context
         {
             if (TileLoader.CanGrowModCactus(SandTileId))
             {
-                return TreeUtil.GetImageForCactus(spriteBatch, SandTileId, true).ToRender();
+                return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: true);
             }
-            return TreeUtil.GetImageForCactus(spriteBatch, SandTileId, false).ToRender();
+            return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: false);
         }
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)

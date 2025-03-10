@@ -58,12 +58,12 @@ namespace Twaila.Context
         {
             if (TileLoader.CanGrowModPalmTree(SandId))
             {
-                return new TwailaRender(TreeUtil.GetImageForModdedPalmTree(spriteBatch, SandId), 0.5f);
+                return TreeUtil.GetRenderForModdedPalmTree(spriteBatch, SandId);
             }
             int palmTreeWood = TreeUtil.GetTreeWood(SandId);
             if (palmTreeWood != -1)
             {
-                return new TwailaRender(TreeUtil.GetImageForPalmTree(spriteBatch, palmTreeWood), 0.5f);
+                return TreeUtil.GetRenderForPalmTree(spriteBatch, palmTreeWood);
             }
             return new TwailaRender();
         }

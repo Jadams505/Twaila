@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -117,6 +118,14 @@ namespace Twaila.Graphics
                 {
                     spriteBatch.Draw(draw.Texture, drawPos, source, draw.Color.MultiplyRGBA(color), 0, Vector2.Zero, draw.Scale * scale, 0, 0);
                 }
+            }
+        }
+
+        public void Transform(Action<DrawInfo> action)
+        {
+            foreach (var info in Info)
+            {
+                action(info);
             }
         }
 

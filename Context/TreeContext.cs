@@ -57,23 +57,22 @@ namespace Twaila.Context
 
         protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
-            float scale = 0.5f;
             if (TileId == TileID.Trees)
             {
                 if (TileLoader.CanGrowModTree(DirtId))
                 {
-                    Texture2D treeTexture = TreeUtil.GetImageForModdedTree(spriteBatch, DirtId);
-                    return new TwailaRender(treeTexture, scale);
+                    TwailaRender treeRender = TreeUtil.GetRenderForModdedTree(spriteBatch, DirtId);
+                    return treeRender;
                 }
                 int treeWood = TreeUtil.GetTreeWood(DirtId);
                 if (treeWood != -1)
                 {
-                    return new TwailaRender(TreeUtil.GetImageForVanillaTree(spriteBatch, treeWood, BestTilePos.Y), scale);
+                    return TreeUtil.GetRenderForVanillaTree(spriteBatch, treeWood, BestTilePos.Y);
                 }
             }
             else if (TileId == TileID.MushroomTrees)
             {
-                return new TwailaRender(TreeUtil.GetImageForMushroomTree(spriteBatch), scale);
+                return TreeUtil.GetRenderForMushroomTree(spriteBatch);
             }
             return new TwailaRender();
         }

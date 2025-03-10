@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.UI;
@@ -56,7 +57,7 @@ namespace Twaila.UI
                         bool NoValidContexts(TwailaPoint cursorInfo) => ContextSystem.Instance.ContextEntryCountAt(cursorInfo) == 0;
                         bool ManualContextIsNull(TwailaPoint cursorInfo) => TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual && ContextSystem.Instance.CurrentContext(cursorInfo) == null;
 
-                        if ((!IsMouseOnScreen() || NoValidContexts(cursorInfo) || ManualContextIsNull(cursorInfo))
+                        if ((/*!IsMouseOnScreen() || */NoValidContexts(cursorInfo) || ManualContextIsNull(cursorInfo))
                             && !panelIsHovered && !_panel.IsDragging())
                         {
                             return false;
@@ -104,6 +105,7 @@ namespace Twaila.UI
             return mouse;
         }
 
+        // This doesn't appear to be working with low UI scales
         public static bool IsMouseOnScreen() => _panel.Parent.ContainsPoint(Main.MouseScreen);
 
         private static string NameOfCurrentContext => ContextSystem.Instance.ContextEntries[TwailaConfig.Instance.CurrentContext.Index].Name.Value;

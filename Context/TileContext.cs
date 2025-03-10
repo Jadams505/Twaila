@@ -191,11 +191,12 @@ namespace Twaila.Context
         protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(BestTilePos);
-            Texture2D texture = TreeUtil.GetImageForVanityTree(spriteBatch, tile.TileType) ??
-                    TreeUtil.GetImageForGemTree(spriteBatch, tile.TileType) ?? TreeUtil.GetImageForAshTree(spriteBatch, tile.TileType);
-            if (texture != null)
+            TwailaRender treeRender = TreeUtil.GetRenderForVanityTree(spriteBatch, tile.TileType)
+                .Coalesce(TreeUtil.GetRenderForGemTree(spriteBatch, tile.TileType))
+                .Coalesce(TreeUtil.GetRenderForAshTree(spriteBatch, tile.TileType));
+            if (treeRender.CanDraw())
             {
-                return new TwailaRender(texture, 0.5f);
+                return treeRender;
             }
 
             TwailaRender render = ImageUtil.GetRenderCustom(spriteBatch, tile)
