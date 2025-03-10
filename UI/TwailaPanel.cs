@@ -15,8 +15,9 @@ namespace Twaila.UI;
 public class TwailaPanel : UIPanel, IDragable
 {
     public Layout Layout { get; set; }
-    public BaseContext CurrentContext { get; set; }
-    public BaseContext PriorityContext { get; set; }
+    // Once this gets populated once it "should" never be null again
+    public BaseContext? CurrentContext { get; set; }
+    public BaseContext? PriorityContext { get; set; }
 
     public int tick = 0;
 
@@ -311,8 +312,8 @@ public class TwailaPanel : UIPanel, IDragable
     private void UpdatePanelContents()
     {
         TwailaPoint mouseInfo = TwailaUI.GetCursorInfo();
-        BaseContext context = null;
-        BaseContext priorityContext = null;
+        BaseContext? context = null;
+        BaseContext? priorityContext = null;
 
         if(TwailaConfig.Instance.ContextMode == TwailaConfig.ContextUpdateMode.Manual)
         {
@@ -344,15 +345,15 @@ public class TwailaPanel : UIPanel, IDragable
         CurrentContext = context;
     }
 
-    private BaseContext GetManualContext(ref TwailaPoint mouseInfo)
+    private static BaseContext? GetManualContext(ref TwailaPoint mouseInfo)
     {
         return ContextSystem.Instance.CurrentContext(TwailaConfig.Instance.CurrentContext.Index, mouseInfo);
     }
 
-    private BaseContext GetAutomaticContext(ref TwailaPoint mouseInfo)
+    private static BaseContext? GetAutomaticContext(ref TwailaPoint mouseInfo)
     {
         Player player = Main.LocalPlayer;
-        BaseContext context = ContextSystem.Instance.CurrentContext(TwailaConfig.Instance.CurrentContext.Index, mouseInfo) 
+        BaseContext? context = ContextSystem.Instance.CurrentContext(TwailaConfig.Instance.CurrentContext.Index, mouseInfo) 
             ?? ContextSystem.Instance.NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, mouseInfo);
 
         if (player.itemAnimation > 0)
@@ -369,10 +370,10 @@ public class TwailaPanel : UIPanel, IDragable
         return context;
     }
 
-    private BaseContext GetPriorityContext(ref TwailaPoint mouseInfo)
+    private BaseContext? GetPriorityContext(ref TwailaPoint mouseInfo)
     {
         int first = 0;
-        BaseContext priorityContext = ContextSystem.Instance.CurrentContext(0, mouseInfo) ?? ContextSystem.Instance.NextNonNullContext(ref first, mouseInfo);
+        BaseContext? priorityContext = ContextSystem.Instance.CurrentContext(0, mouseInfo) ?? ContextSystem.Instance.NextNonNullContext(ref first, mouseInfo);
 
         if (PriorityContext?.GetType() == priorityContext?.GetType())
         {
@@ -391,7 +392,7 @@ public class TwailaPanel : UIPanel, IDragable
         return priorityContext;
     }
 
-    private BaseContext CycleContext(ref TwailaPoint mouseInfo)
+    private BaseContext? CycleContext(ref TwailaPoint mouseInfo)
     {
         tick = 0;
         pickIndex++;

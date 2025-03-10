@@ -25,7 +25,7 @@ public class WeaponRackContext : TileContext
         ItemText = "";
     }
 
-    public static WeaponRackContext CreateWeaponRackContext(TwailaPoint pos)
+    public static WeaponRackContext? CreateWeaponRackContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -74,7 +74,7 @@ public class WeaponRackContext : TileContext
         return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if (other?.GetType() == typeof(WeaponRackContext))
         {

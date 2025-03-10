@@ -20,7 +20,7 @@ public static class ImageUtil
     {
         int size = 16;
         int padding = 2;
-        Texture2D texture = GetTileTexture(tile.TileType);
+        Texture2D? texture = GetTileTexture(tile.TileType);
 
         if (texture != null)
         {
@@ -44,7 +44,7 @@ public static class ImageUtil
         {
             int size = 32;
             int startX = 324, startY = 108;
-            Texture2D texture = GetWallTexture(tile);
+            Texture2D? texture = GetWallTexture(tile);
 
             if (texture != null)
             {
@@ -63,7 +63,7 @@ public static class ImageUtil
         {
             int size = 16;
             int startX = 0, startY = 0;
-            Texture2D texture = null;
+            Texture2D? texture = null;
             switch (tile.LiquidType)
             {
                 case LiquidID.Lava:
@@ -193,7 +193,7 @@ public static class ImageUtil
         if(tileId == TileID.MysticSnakeRope)
         {
             RenderBuilder builder = new();
-            Texture2D texture = GetTileTexture(tileId);
+            Texture2D? texture = GetTileTexture(tileId);
             int size = 16;
             int padding = 2;
             for(int i = 0; i < 3; ++i)
@@ -212,7 +212,7 @@ public static class ImageUtil
         if(tile.TileType == TileID.Cattail)
         {
             RenderBuilder builder = new();
-            Texture2D texture = GetTileTexture(tile.TileType);
+            Texture2D? texture = GetTileTexture(tile.TileType);
             int size = 16;
             int padding = 2;
             int bottomStyle = 4;
@@ -234,8 +234,8 @@ public static class ImageUtil
     {
         if(tile.TileType == TileID.MasterTrophyBase)
         {
-            Texture2D baseTexture = GetTileTexture(tile.TileType);
-            Texture2D relicTexture = TextureAssets.Extra[198].ForceVanillaLoad();
+            Texture2D? baseTexture = GetTileTexture(tile.TileType);
+            Texture2D? relicTexture = TextureAssets.Extra[198].ForceVanillaLoad();
             int size = 48;
             int padding = 2;
             int frameY = tile.TileFrameX / 54 * (size + padding);
@@ -258,8 +258,8 @@ public static class ImageUtil
     {
         if(tile.TileType == TileID.TeleportationPylon)
         {
-            Texture2D baseTexture = GetTileTexture(tile.TileType);
-            Texture2D pylonTexture = TextureAssets.Extra[181].ForceVanillaLoad();
+            Texture2D? baseTexture = GetTileTexture(tile.TileType);
+            Texture2D? pylonTexture = TextureAssets.Extra[181].ForceVanillaLoad();
             int pylonWidth = 28, pylonHeight = 44;
             int padding = 2;
             int frameX = 90 + (tile.TileFrameX / 54 * (pylonWidth + padding));
@@ -312,11 +312,11 @@ public static class ImageUtil
     {
         RenderBuilder builder = new RenderBuilder();
 
-        Texture2D foodTexture = GetItemTexture(foodId);
+        Texture2D? foodTexture = GetItemTexture(foodId);
         Rectangle foodBox = ItemID.Sets.IsFood[foodId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3,
             frameX: 0, frameY: 2) : foodTexture.Frame();
 
-        Texture2D plateTexture = GetTileTexture(TileID.FoodPlatter);
+        Texture2D? plateTexture = GetTileTexture(TileID.FoodPlatter);
         Rectangle plateBox = plateTexture.Frame(horizontalFrames: 2);
 
         Point drawPos = Point.Zero;
@@ -332,7 +332,7 @@ public static class ImageUtil
 
     public static TwailaRender GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
     {
-        Texture2D texture = GetItemTexture(itemId);
+        Texture2D? texture = GetItemTexture(itemId);
         DrawAnimation animation = Main.itemAnimations[itemId];
 
         if (animation != null)
@@ -349,7 +349,7 @@ public static class ImageUtil
 
     public static TwailaRender GetRenderForIconItem(int itemId)
     {
-        Texture2D texture = GetItemTexture(itemId);
+        Texture2D? texture = GetItemTexture(itemId);
         DrawAnimation animation = Main.itemAnimations[itemId];
 
         if (animation != null)
@@ -368,7 +368,7 @@ public static class ImageUtil
     {
         RenderBuilder builder = new();
 
-        Texture2D itemTexture = GetItemTexture(itemId);
+        Texture2D? itemTexture = GetItemTexture(itemId);
         DrawAnimation itemAnimation = Main.itemAnimations[itemId];
         Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
 
@@ -401,7 +401,7 @@ public static class ImageUtil
     {
         RenderBuilder builder = new();
 
-        Texture2D itemTexture = GetItemTexture(itemId);
+        Texture2D? itemTexture = GetItemTexture(itemId);
         DrawAnimation itemAnimation = Main.itemAnimations[itemId];
         Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
 
@@ -439,7 +439,7 @@ public static class ImageUtil
         int startY = 66;
         if (tile.TileType == TileID.MarbleColumn)
         {
-            Texture2D texture = GetTileTexture(tile.TileType);
+            Texture2D? texture = GetTileTexture(tile.TileType);
             if (texture != null)
             {
                 RenderBuilder builder = new();
@@ -460,8 +460,8 @@ public static class ImageUtil
     public static TwailaRender GetDebugRender(SpriteBatch spriteBatch, Tile tile)
     {
         RenderBuilder builder = new();
-        Texture2D texture = GetTileTexture(tile.TileType);
-        builder.AddImage(texture, source: new Rectangle(0, 0, texture.Width, texture.Height), position: Point.Zero);
+        Texture2D? texture = GetTileTexture(tile.TileType);
+        builder.AddImage(texture, source: new Rectangle(0, 0, texture!.Width, texture!.Height), position: Point.Zero);
         return builder.Build();
     }
 
@@ -471,7 +471,7 @@ public static class ImageUtil
         {
             return TwailaRender.Empty;
         }
-        Texture2D texture = GetTileTexture(tileId);
+        Texture2D? texture = GetTileTexture(tileId);
         if (texture != null)
         {
             RenderBuilder builder = new();
@@ -546,7 +546,7 @@ public static class ImageUtil
 
     public static TwailaRender GetRenderForNpcStat(NpcStat stat)
     {
-        Texture2D texture = stat switch
+        Texture2D? texture = stat switch
         {
             NpcStat.Health => ModContent.Request<Texture2D>("Twaila/Assets/Health")?.Value,
             NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
@@ -554,13 +554,17 @@ public static class ImageUtil
             NpcStat.Knockback => ModContent.Request<Texture2D>("Twaila/Assets/Knockback")?.Value,
             NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
             _ => null
-        }; 
+        };
 
-        RenderBuilder builder = new RenderBuilder();
-        float scale = 16.5f / Math.Max(texture.Width, texture.Height);
-        builder.AddImage(texture, Point.Zero, texture.Frame(), scale);
+        if (texture is not null)
+        {
+            RenderBuilder builder = new();
+            float scale = 16.5f / Math.Max(texture.Width, texture.Height);
+            builder.AddImage(texture, Point.Zero, texture.Frame(), scale);
+            return builder.Build();
+        }
 
-        return builder.Build();
+        return TwailaRender.Empty;
     }
 
     public static TwailaRender GetRenderForNpc(NPC npc)
@@ -593,7 +597,7 @@ public static class ImageUtil
         return builder.Build();
     }
 
-    public static Texture2D GetTileTexture(int tileId)
+    public static Texture2D? GetTileTexture(int tileId)
     {
         if(tileId >= 0 && tileId < TextureAssets.Tile.Length)
         {
@@ -603,7 +607,7 @@ public static class ImageUtil
         return null;
     }
 
-    public static Texture2D GetWallTexture(Tile tile)
+    public static Texture2D? GetWallTexture(Tile tile)
     {
         if (tile.WallType >= 0 && tile.WallType < TextureAssets.Wall.Length)
         {
@@ -613,7 +617,7 @@ public static class ImageUtil
         return null;
     }
 
-    public static Texture2D GetItemTexture(int itemId)
+    public static Texture2D? GetItemTexture(int itemId)
     {
         if (itemId >= 0 && itemId < TextureAssets.Item.Length)
         {
@@ -623,7 +627,7 @@ public static class ImageUtil
         return null;
     }
 
-    public static Texture2D GetArmorTexture(Item item, EquipType equipType)
+    public static Texture2D? GetArmorTexture(Item item, EquipType equipType)
     {
         switch (equipType)
         {
@@ -640,7 +644,7 @@ public static class ImageUtil
         return null;
     }
 
-    public static Texture2D GetNPCTexture(int npcId)
+    public static Texture2D? GetNPCTexture(int npcId)
     {
         if (npcId >= 0 && npcId < TextureAssets.Npc.Length)
         {
@@ -652,10 +656,6 @@ public static class ImageUtil
 
     public static Texture2D ForceVanillaLoad(this Asset<Texture2D> asset)
     {
-        if(asset == null)
-        {
-            return null;
-        }
         if (asset.State == AssetState.NotLoaded)
         {
             return Main.Assets.Request<Texture2D>(asset.Name, AssetRequestMode.ImmediateLoad).Value;
@@ -663,7 +663,7 @@ public static class ImageUtil
         return asset.Value;
     }
 
-    public static TwailaRender ToRender(this Texture2D texture)
+    public static TwailaRender ToRender(this Texture2D? texture)
     {
         return new TwailaRender(texture);
     }

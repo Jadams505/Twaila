@@ -16,7 +16,7 @@ public class NamingPreferences
 
     public bool ReadMe => true;
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is NamingPreferences preferences &&
                EqualityComparer<EnabledNames>.Default.Equals(EnableNames, preferences.EnableNames) &&
@@ -36,7 +36,7 @@ public class EnabledNames
     public bool EnableInternalName = true;
     public bool EnableDroppedItemName = true;
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is EnabledNames names &&
                EnableDroppedItemName == names.EnableDroppedItemName &&
@@ -58,7 +58,7 @@ public class NamePriorities
     public int InternalPriority = 2;
     public int DroppedItemPriority = 3;
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is NamePriorities priorities &&
                DroppedItemPriority == priorities.DroppedItemPriority &&

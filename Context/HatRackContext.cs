@@ -17,15 +17,13 @@ public class HatRackContext : TileContext
 {
     public const int MAX_ITEM_COUNT = 2;
     protected int[] ItemIds { get; set; }
-    protected string[] ItemTexts { get; set; }
 
     public HatRackContext(TwailaPoint pos) : base(pos)
     {
         ItemIds = new int[MAX_ITEM_COUNT];
-        ItemTexts = new string[MAX_ITEM_COUNT];
     }
 
-    public static HatRackContext CreateHatRackContext(TwailaPoint pos)
+    public static HatRackContext? CreateHatRackContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -47,7 +45,7 @@ public class HatRackContext : TileContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if (other?.GetType() == typeof(HatRackContext))
         {
@@ -82,29 +80,28 @@ public class HatRackContext : TileContext
                 }
                 if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    ItemTexts[i] = NameUtil.GetNameFromItem(id);
-                    TextGrid.Add(new UITwailaText(ItemTexts[i]));
+                    string? name = NameUtil.GetNameFromItem(id);
+                    TextGrid.Add(new UITwailaText(name));
                 }
             }
         }		
     }
 
-    private static readonly FieldInfo TEHatRack_items = typeof(TEHatRack).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+    private static readonly FieldInfo? TEHatRack_items = typeof(TEHatRack).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
 
     private void PopulateItems()
     {
         Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 4);
         int id = TEHatRack.Find(targetPos.X, targetPos.Y);
         TEHatRack instance = (TEHatRack)TileEntity.ByID[id];
-        Item[] items = (Item[])TEHatRack_items?.GetValue(instance);
 
-        if (items is null)
+        if (TEHatRack_items?.GetValue(instance) is not Item[] items)
         {
             Twaila.Instance.Logger.Warn(nameof(TEHatRack_items) + " is null. Please Report");
             return;
         }
 
-        for(int i = 0; i < items.Length; ++i)
+        for (int i = 0; i < items.Length; ++i)
         {
             ItemIds[i] = items[i].type;
         }

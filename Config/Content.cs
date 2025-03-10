@@ -82,7 +82,7 @@ public class Content
         TextsPerRow = 1;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is Content content &&
                EqualityComparer<ContentToggles>.Default.Equals(EnableContent, content.EnableContent) &&

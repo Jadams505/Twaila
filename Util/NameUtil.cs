@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Terraria;
 using Terraria.Enums;
@@ -16,7 +17,7 @@ namespace Twaila.Util;
 
 public static class NameUtil
 {
-    public static string GetNameFromItem(int itemId)
+    public static string? GetNameFromItem(int itemId)
     {
         if (itemId == -1)
         {
@@ -35,7 +36,7 @@ public static class NameUtil
         return name;
     }
 
-    public static string GetNameFromMap(Tile tile, int x, int y)
+    public static string? GetNameFromMap(Tile tile, int x, int y)
     {
         string mapName = Lang.GetMapObjectName(Main.Map[x, y].Type);
         ModTile mTile = TileLoader.GetTile(tile.TileType);
@@ -64,7 +65,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForManualTiles(Tile tile)
+    public static string? GetNameForManualTiles(Tile tile)
     {
         switch (tile.TileType)
         {
@@ -309,7 +310,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForLiquids(Tile tile)
+    public static string? GetNameForLiquids(Tile tile)
     {
         if(tile.LiquidAmount > 0)
         {
@@ -367,7 +368,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForTree(int dirtId)
+    public static string? GetNameForTree(int dirtId)
     {
         var mTree = PlantLoader.GetTree(dirtId);
         if (mTree is null)
@@ -398,7 +399,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForPalmTree(int sandId)
+    public static string? GetNameForPalmTree(int sandId)
     {
         var mTree = PlantLoader.GetTree(sandId);
         if (mTree is null)
@@ -424,7 +425,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForSapling(int tileId, int dirtId)
+    public static string? GetNameForSapling(int tileId, int dirtId)
     {
         if (TileID.Sets.TreeSapling[tileId])
         {
@@ -473,7 +474,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForCactus(int sandId)
+    public static string? GetNameForCactus(int sandId)
     {
         switch (sandId)
         {
@@ -493,7 +494,7 @@ public static class NameUtil
             {
                 string cactus = Lang.GetMapObjectName(MapHelper.TileToLookup(TileID.Cactus, 0));
                 int tileDrop = TileLoader.GetItemDropFromTypeAndStyle(mTile.Type);
-                string type = GetNameFromItem(tileDrop);
+                string? type = GetNameFromItem(tileDrop);
                 if (type != null)
                 {
                     return type + " " + cactus;
@@ -503,7 +504,7 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForChest(Tile tile)
+    public static string? GetNameForChest(Tile tile)
     {
         if(tile.TileType == TileID.Containers)
         {
@@ -524,14 +525,15 @@ public static class NameUtil
         return null;
     }
 
-    public static string GetNameForBuff(int buffType)
+    public static string? GetNameForBuff(int buffType)
     {
-        string name = Lang.GetBuffName(buffType);
+        if (buffType < 0 || buffType >= BuffLoader.BuffCount) return null;
 
+        string name = Lang.GetBuffName(buffType);
         return name.Replace("BuffName.", "");
     }
 
-    public static string SplitPascalCase(this string word)
+    public static string? SplitPascalCase(this string? word)
     {
         StringBuilder builder = new StringBuilder();
         if(word != null)
@@ -549,53 +551,55 @@ public static class NameUtil
         return word;
     }
 
-    public static string GetName(TwailaConfig.NameType nameType, string displayName, string internalName, string fullName)
+    public static string? GetName(TwailaConfig.NameType nameType, string? displayName, string? internalName, string? fullName)
     {
-        switch (nameType)
+        return nameType switch
         {
-            case TwailaConfig.NameType.DisplayName:
-                return displayName ?? internalName ?? fullName;
-            case TwailaConfig.NameType.InternalName:
-                return internalName ?? fullName ?? displayName;
-            case TwailaConfig.NameType.FullName:
-                return fullName ?? internalName ?? displayName;
-        }
-        return null;
+            TwailaConfig.NameType.DisplayName => displayName ?? internalName ?? fullName,
+            TwailaConfig.NameType.InternalName => internalName ?? fullName ?? displayName,
+            TwailaConfig.NameType.FullName => fullName ?? internalName ?? displayName,
+            _ => null,
+        };
     }
 
-    public static string GetInternalTileName(int tileId, bool fullName, bool pretty = false)
+    public static string? GetInternalTileName(int tileId, bool fullName, bool pretty = false)
     {
         ModTile mTile = TileLoader.GetTile(tileId);
         return GetInternalName(mTile, fullName, pretty);
     }
 
-    public static string GetInternalWallName(int wallId, bool fullName, bool pretty = false)
+    public static string? GetInternalWallName(int wallId, bool fullName, bool pretty = false)
     {
         ModWall mWall = WallLoader.GetWall(wallId);
         return GetInternalName(mWall, fullName, pretty);
     }
 
-    public static string GetInternalLiquidName(int waterStyle, bool fullName, bool pretty = false)
+    public static string? GetInternalLiquidName(int waterStyle, bool fullName, bool pretty = false)
     {
         ModWaterStyle mWater = LoaderManager.Get<WaterStylesLoader>().Get(waterStyle);
         return GetInternalName(mWater, fullName, pretty);
     }
 
-    public static string GetInternalName(ModType type, bool fullName, bool pretty = false)
+    public static string? GetInternalName(ModType? type, bool fullName, bool pretty = false)
     {
         if (pretty) return type?.PrettyPrintName();
         return fullName ? type?.GetType().FullName : type?.Name;
     }
 
-    public static string GetMod(ModType type) => type == null ? "Terraria" : type.Mod.DisplayName;
+    public static string GetMod(ModType? type) => type == null ? "Terraria" : type.Mod.DisplayName;
 
+    internal static MethodInfo? ConfigManager_GetLocalizedLabel = typeof(ConfigManager).GetMethod("GetLocalizedLabel", BindingFlags.Static | BindingFlags.NonPublic);
     public static string ToLocalizedString(this Enum value)
     {
-        FieldInfo field = value.GetType().GetField(value.ToString());
-        MethodInfo labelMethod = typeof(ConfigManager).GetMethod("GetLocalizedLabel", BindingFlags.Static | BindingFlags.NonPublic);
-        PropertyFieldWrapper wrapper = new(field);
-        string key = labelMethod?.Invoke(null, new object[] { wrapper }) as string;
+        FieldInfo? field = value.GetType().GetField(value.ToString());
+        if (field is null) return value.ToString();
 
-        return Language.GetTextValue(key) ?? value.ToString();
+        MethodInfo? labelMethod = typeof(ConfigManager).GetMethod("GetLocalizedLabel", BindingFlags.Static | BindingFlags.NonPublic);
+        if (labelMethod is null) return value.ToString();
+
+        PropertyFieldWrapper wrapper = new(field);
+        if (labelMethod.Invoke(null, [wrapper]) is not string key || !Language.Exists(key)) return value.ToString();
+
+        return Language.GetTextValue(key);
     }
 }

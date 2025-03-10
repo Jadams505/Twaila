@@ -29,7 +29,7 @@ public class DisplaySettings
         HideUIWhenEditingSigns = false;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is DisplaySettings other)
         {

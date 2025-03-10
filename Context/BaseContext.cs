@@ -17,9 +17,9 @@ public abstract class BaseContext
 
     public abstract void Update();
 
-    public abstract bool ContextChanged(BaseContext other);
+    public abstract bool ContextChanged(BaseContext? other);
 
-    protected abstract string GetName();
+    protected abstract string? GetName();
 
     protected abstract TwailaRender GetImage(SpriteBatch spriteBatch);
 
@@ -27,5 +27,5 @@ public abstract class BaseContext
 
     protected abstract string GetMod();
 
-    public abstract void UpdateOnChange(BaseContext prevContext, Layout layout);
+    public abstract void UpdateOnChange(BaseContext? prevContext, Layout layout);
 }

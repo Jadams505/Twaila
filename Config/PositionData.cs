@@ -54,7 +54,7 @@ public class PositionData
         other.ShowUI = ShowUI;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is PositionData data &&
                AnchorX == data.AnchorX &&

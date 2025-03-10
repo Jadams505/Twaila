@@ -20,7 +20,7 @@ public class ContextIndex
             Index = Math.Clamp(index, 0, ContextSystem.Instance.ContextEntries.Count - 1);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is ContextIndex index &&
                Index == index.Index;

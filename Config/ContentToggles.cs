@@ -29,7 +29,7 @@ public class ContentToggles
         EnableWallContent = true;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is ContentToggles toggles &&
                EnableWireContent == toggles.EnableWireContent &&

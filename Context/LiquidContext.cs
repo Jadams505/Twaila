@@ -25,7 +25,7 @@ public class LiquidContext : WireContext
         Id = "";
     }
 
-    public static LiquidContext CreateLiquidContext(TwailaPoint pos)
+    public static LiquidContext? CreateLiquidContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -42,7 +42,7 @@ public class LiquidContext : WireContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(LiquidContext))
         {
@@ -78,9 +78,9 @@ public class LiquidContext : WireContext
     protected override string GetName()
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
-        string displayName = NameUtil.GetNameForLiquids(tile);
-        string internalName = NameUtil.GetInternalLiquidName(WaterStyle, false);
-        string fullName = NameUtil.GetInternalLiquidName(WaterStyle, true);
+        string? displayName = NameUtil.GetNameForLiquids(tile);
+        string? internalName = NameUtil.GetInternalLiquidName(WaterStyle, false);
+        string? fullName = NameUtil.GetInternalLiquidName(WaterStyle, true);
 
         TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 

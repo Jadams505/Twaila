@@ -23,7 +23,7 @@ public class FoodPlatterContext : TileContext
         ItemText = "";
     }
 
-    public static FoodPlatterContext CreateFoodPlatterContext(TwailaPoint pos)
+    public static FoodPlatterContext? CreateFoodPlatterContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -63,7 +63,7 @@ public class FoodPlatterContext : TileContext
         }
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(FoodPlatterContext))
         {

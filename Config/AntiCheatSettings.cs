@@ -25,7 +25,7 @@ public class AntiCheatSettings
         HideSuspiciousTiles = true;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is AntiCheatSettings other)
         {

@@ -25,7 +25,7 @@ public class ItemFrameContext : TileContext
         ItemText = "";
     }
 
-    public static ItemFrameContext CreateItemFrameContext(TwailaPoint pos)
+    public static ItemFrameContext? CreateItemFrameContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -74,7 +74,7 @@ public class ItemFrameContext : TileContext
         return ImageUtil.GetRenderForItemFrame(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if (other?.GetType() == typeof(ItemFrameContext))
         {

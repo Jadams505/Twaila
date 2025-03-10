@@ -5,6 +5,7 @@ using Twaila.Util;
 using Terraria;
 using Terraria.ID;
 using Terraria.ObjectData;
+using System.Reflection;
 
 namespace Twaila.Systems;
 
@@ -37,8 +38,8 @@ public record struct DropPlacePair(int DropItem = -1, int PlaceItem = -1)
 
 public class ItemTilePairSystem : ModSystem
 {
-    private static Dictionary<TileStylePair, DropPlacePair> _tileToItemDictionary;
-    private static List<PickPowerPair> _pickaxes;
+    private static Dictionary<TileStylePair, DropPlacePair> _tileToItemDictionary = [];
+    private static List<PickPowerPair> _pickaxes = [];
 
     public static DropPlacePair GetItemEntry(Tile tile, TileType type)
     {
@@ -79,8 +80,8 @@ public class ItemTilePairSystem : ModSystem
 
     public override void Unload()
     {
-        _pickaxes = null;
-        _tileToItemDictionary = null;
+        _pickaxes = null!;
+        _tileToItemDictionary = null!;
     }
 
     private static DropPlacePair GetItemEntry(Tile tile, int style, TileType type)
@@ -151,8 +152,7 @@ public class ItemTilePairSystem : ModSystem
             }
         }
 
-        Dictionary<int, int> wallDropLookup = (Dictionary<int, int>)typeof(WallLoader)?.GetField("wallTypeToItemType", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.GetValue(null);
-        if(wallDropLookup != null)
+        if (typeof(WallLoader)?.GetField("wallTypeToItemType", BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null) is Dictionary<int, int> wallDropLookup)
         {
             for (int i = WallID.Count; i < WallLoader.WallCount; ++i) // modded walls
             {
@@ -163,7 +163,11 @@ public class ItemTilePairSystem : ModSystem
                 }
             }
         }
-        
+        else
+        {
+            Twaila.Instance.Logger.Warn($"Wall Type Lookup failed to populate. Please Report.");
+        }
+
         for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i) // modded items
         {
             ModItem mItem = ItemLoader.GetItem(i);
@@ -190,13 +194,12 @@ public class ItemTilePairSystem : ModSystem
 
     private static int CalculatedPlaceStyle(Tile tile)
     {
-        TileObjectData data = null;
         int style = GetCustomPlaceStyle(tile);
         if (style != -1)
         {
             return style;
         }
-        GetTileInfo(tile, ref style, ref data);
+        GetTileInfo(tile, ref style, out TileObjectData? data);
         int calculatedStyle = style;
         if (data != null)
         {
@@ -269,7 +272,7 @@ public class ItemTilePairSystem : ModSystem
         return -1;
     }
 
-    private static void GetTileInfo(Tile tile, ref int style, ref TileObjectData data)
+    private static void GetTileInfo(Tile tile, ref int style, out TileObjectData? data)
     {
         data = TileUtil.GetTileObjectData(tile);
         if (data != null)
@@ -710,7 +713,7 @@ public class ItemTilePairSystem : ModSystem
             return $"Id: {Id} Style: {Style} Type: {Type}";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is TileStylePair pair &&
                     Style == pair.Style &&

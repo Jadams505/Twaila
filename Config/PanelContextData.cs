@@ -66,7 +66,7 @@ public class PanelContextData
         return ClosedInventory;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is PanelContextData data &&
                ClosedInventory == data.ClosedInventory &&

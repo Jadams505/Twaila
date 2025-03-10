@@ -20,7 +20,7 @@ public class TreeContext : TileContext
         DirtId = GetTreeDirt();
     }
 
-    public static TreeContext CreateTreeContext(TwailaPoint pos)
+    public static TreeContext? CreateTreeContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -45,7 +45,7 @@ public class TreeContext : TileContext
         DirtId = GetTreeDirt();
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(TreeContext))
         {
@@ -79,9 +79,9 @@ public class TreeContext : TileContext
 
     protected override string GetName()
     {
-        string displayName = NameUtil.GetNameForTree(DirtId);
-        string internalName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().Name;
-        string fullName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().FullName;
+        string? displayName = NameUtil.GetNameForTree(DirtId);
+        string? internalName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().Name;
+        string? fullName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().FullName;
 
         TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 

@@ -16,7 +16,7 @@ public class ColorWrapper
         Color = new Color(0, 0, 0, 0);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is Color other)
         {

@@ -19,7 +19,7 @@ public class CactusContext : TileContext
         SandTileId = GetCactusSand();
     }
 
-    public static CactusContext CreateCactusContext(TwailaPoint pos)
+    public static CactusContext? CreateCactusContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -38,7 +38,7 @@ public class CactusContext : TileContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if (other?.GetType() == typeof(CactusContext))
         {
@@ -65,14 +65,14 @@ public class CactusContext : TileContext
 
     protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
     {
-        return new TwailaRender();
+        return TwailaRender.Empty;
     }
 
     protected override string GetName()
     {
-        string displayName = NameUtil.GetNameForCactus(SandTileId);
-        string internalName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().Name;
-        string fullName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().FullName;
+        string? displayName = NameUtil.GetNameForCactus(SandTileId);
+        string? internalName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().Name;
+        string? fullName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().FullName;
 
         TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 

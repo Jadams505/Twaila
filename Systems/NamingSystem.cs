@@ -34,7 +34,7 @@ public class NamingSystem : ModSystem
 
     public override void Unload()
     {
-        NameSchemes = null;
+        NameSchemes = null!;
         base.Unload();
     }
 
@@ -43,9 +43,9 @@ public class NamingSystem : ModSystem
         NameSchemes.Sort((first, second) => first.GetPriority().CompareTo(second.GetPriority()));
     }
 
-    public string GetName(string droppedItemName, string placedItemName, string mapName, string internalName)
+    public string? GetName(string? droppedItemName, string? placedItemName, string? mapName, string? internalName)
     {
-        string SchemeToName(NameScheme scheme) => scheme switch
+        string? SchemeToName(NameScheme scheme) => scheme switch
         {
             DroppedItemScheme => droppedItemName,
             PlacedItemScheme => placedItemName,
@@ -58,7 +58,7 @@ public class NamingSystem : ModSystem
         {
             if (!scheme.IsEnabled()) continue;
 
-            string name = SchemeToName(scheme);
+            string? name = SchemeToName(scheme);
             if (name is not null)
                 return name;
         }

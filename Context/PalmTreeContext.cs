@@ -19,7 +19,7 @@ public class PalmTreeContext : TileContext
         SandId = GetPalmTreeSand();
     }
 
-    public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
+    public static PalmTreeContext? CreatePalmTreeContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -44,7 +44,7 @@ public class PalmTreeContext : TileContext
         SandId = GetPalmTreeSand();
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(PalmTreeContext))
         {
@@ -70,9 +70,9 @@ public class PalmTreeContext : TileContext
 
     protected override string GetName()
     {
-        string displayName = NameUtil.GetNameForPalmTree(SandId);
-        string internalName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().Name;
-        string fullName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().FullName;
+        string? displayName = NameUtil.GetNameForPalmTree(SandId);
+        string? internalName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().Name;
+        string? fullName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().FullName;
 
         TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 

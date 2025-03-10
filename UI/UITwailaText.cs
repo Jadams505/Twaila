@@ -13,14 +13,14 @@ namespace Twaila.UI;
 
 public class UITwailaText : UITwailaElement
 {
-    public string Text { get; private set; }
+    public string Text { get; private set; } = "";
     public Color Color { get; set; }
     public bool OverrideTextColor { get; set; }
     public float Scale { get; set; }
     public DynamicSpriteFont Font { get; set; }
     public bool TextShadow { get; set; }
 
-    public UITwailaText(string text, DynamicSpriteFont font, Color color, float scale)
+    public UITwailaText(string? text, DynamicSpriteFont font, Color color, float scale)
     {
         Font = font;
         Color = color;
@@ -28,11 +28,11 @@ public class UITwailaText : UITwailaElement
         SetText(text);
     }
 
-    public UITwailaText(string text) : this(text, FontAssets.ItemStack.Value, Color.White, 1f) { }
+    public UITwailaText(string? text) : this(text, FontAssets.ItemStack.Value, Color.White, 1f) { }
 
     public UITwailaText() : this(Language.GetTextValue("Mods.Twaila.Defaults.Text")) { }
 
-    public void SetText(string text)
+    public void SetText(string? text)
     {
         if(string.IsNullOrEmpty(text))
         {

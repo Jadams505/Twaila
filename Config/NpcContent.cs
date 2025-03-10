@@ -61,7 +61,7 @@ public class NpcContent
         HappinessColors = new();
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is NpcContent other)
         {

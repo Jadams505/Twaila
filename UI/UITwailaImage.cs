@@ -15,7 +15,7 @@ public class UITwailaImage : UITwailaElement
     /// Seems to fix gaps in textures when drawing with SamplerState.PointClamp
     /// </summary>
     public readonly float MagicScale = 0.01f;
-    public TwailaRender Render { get; private set; }
+    public TwailaRender Render { get; private set; } = null!;
 
     public UITwailaImage()
     {

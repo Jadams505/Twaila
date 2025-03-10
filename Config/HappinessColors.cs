@@ -24,7 +24,7 @@ public class HappinessColors
         HateColor = new(232, 56, 31, 255);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is HappinessColors other &&
                LoveColor == other.LoveColor &&

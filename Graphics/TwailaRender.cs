@@ -52,7 +52,7 @@ public class TwailaRender
         Height = biggestY - smallestY;
     }
 
-    public TwailaRender(Texture2D texture, float scale = 1) : this()
+    public TwailaRender(Texture2D? texture, float scale = 1) : this()
     {
         if (texture != null)
         {

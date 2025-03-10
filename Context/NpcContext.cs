@@ -14,7 +14,7 @@ namespace Twaila.Context;
 
 public class NpcContext : BaseContext
 {
-    protected NPC Npc { get; set; }
+    protected NPC? Npc { get; set; }
 
     protected string Id { get; set; }
     protected string Hp { get; set; }
@@ -39,7 +39,7 @@ public class NpcContext : BaseContext
         Kills = "";
     }
 
-    public static NpcContext CreateNpcContext(TwailaPoint pos)
+    public static NpcContext? CreateNpcContext(TwailaPoint pos)
     {
         if (Main.mapFullscreen)
             return null;
@@ -52,7 +52,7 @@ public class NpcContext : BaseContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if (other?.GetType() == typeof(NpcContext))
         {
@@ -69,7 +69,7 @@ public class NpcContext : BaseContext
     {
         Content content = TwailaConfig.Instance.DisplayContent;
 
-        IntersectsNPC(Pos.MouseWorldPos, out NPC foundNPC);
+        IntersectsNPC(Pos.MouseWorldPos, out NPC? foundNPC);
 
         Npc = foundNPC;
 
@@ -151,7 +151,7 @@ public class NpcContext : BaseContext
         }
     }
 
-    public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+    public override void UpdateOnChange(BaseContext? prevContext, Layout layout)
     {
         Update();
 
@@ -169,9 +169,9 @@ public class NpcContext : BaseContext
 
     protected override TwailaRender GetImage(SpriteBatch spriteBatch)
     {
-        RenderBuilder builder = new RenderBuilder();
         if(Npc != null)
         {
+            RenderBuilder builder = new RenderBuilder();
             Rectangle drawFrame = new Rectangle(0, 0, Npc.frame.Width, Npc.frame.Height);
 
             Color drawColor = Npc.color;
@@ -187,7 +187,7 @@ public class NpcContext : BaseContext
             return builder.Build();
         }
 
-        return null;
+        return TwailaRender.Empty;
     }
 
     protected override string GetMod()
@@ -195,13 +195,13 @@ public class NpcContext : BaseContext
         return NameUtil.GetMod(Npc?.ModNPC);
     }
 
-    protected override string GetName()
+    protected override string? GetName()
     {
         if (Npc != null)
         {
             string displayName = Npc.FullName;
-            string internalName = NameUtil.GetInternalName(Npc.ModNPC, false);
-            string fullName = NameUtil.GetInternalName(Npc.ModNPC, true);
+            string? internalName = NameUtil.GetInternalName(Npc.ModNPC, false);
+            string? fullName = NameUtil.GetInternalName(Npc.ModNPC, true);
 
             TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
             return NameUtil.GetName(nameType, displayName, internalName, fullName);
@@ -225,7 +225,7 @@ public class NpcContext : BaseContext
         return elements;
     }
 
-    public static bool IntersectsNPC(Point pos, out NPC target)
+    public static bool IntersectsNPC(Point pos, out NPC? target)
     {
         foreach(NPC npc in Main.npc)
         {

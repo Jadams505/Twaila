@@ -32,7 +32,7 @@ public class Priorities
         WallPriority = 4;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is Priorities priorities &&
                NpcPriority == priorities.NpcPriority &&

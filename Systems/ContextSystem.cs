@@ -15,11 +15,11 @@ public class ContextSystem : ModSystem
 
     public List<ContextEntry> ContextEntries { get; private set; } = new List<ContextEntry>();
 
-    public ContextEntry TileEntry { get; private set; }
-    public ContextEntry WallEntry { get; private set; }
-    public ContextEntry LiquidEntry { get; private set; }
-    public ContextEntry WireEntry { get; private set; }
-    public ContextEntry NpcEntry { get; private set; }
+    public ContextEntry TileEntry { get; private set; } = null!;
+    public ContextEntry WallEntry { get; private set; } = null!;
+    public ContextEntry LiquidEntry { get; private set; } = null!;
+    public ContextEntry WireEntry { get; private set; } = null!;
+    public ContextEntry NpcEntry { get; private set; } = null!;
 
     public override void Load()
     {
@@ -63,20 +63,26 @@ public class ContextSystem : ModSystem
 
     public override void Unload()
     {
-        ContextEntries = null;
+        ContextEntries = null!;
     }
 
-    public BaseContext CurrentContext(int currIndex, TwailaPoint pos)
+    public BaseContext? CurrentContext(int currIndex, TwailaPoint pos)
     {
         return ContextEntries[currIndex].Context(pos);
     }
 
-    public BaseContext CurrentContext(TwailaPoint pos) => CurrentContext(TwailaConfig.Instance.CurrentContext.Index, pos);
+    public BaseContext? CurrentContext(TwailaPoint pos) => CurrentContext(TwailaConfig.Instance.CurrentContext.Index, pos);
 
-    public BaseContext NextNonNullContext(ref int currIndex, TwailaPoint pos)
+    /// <summary>
+    /// Gets the next context that is not null. If there is none then the context does not change.
+    /// </summary>
+    /// <param name="currIndex"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public BaseContext? NextNonNullContext(ref int currIndex, TwailaPoint pos)
     {
         int i = currIndex;
-        BaseContext context;
+        BaseContext? context;
         do
         {
             i = NextContextIndex(i);
@@ -88,12 +94,19 @@ public class ContextSystem : ModSystem
         return context;
     }
 
-    public BaseContext NextNonNullContext(TwailaPoint pos) => NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
+    /// <inheritdoc cref="NextNonNullContext"/>
+    public BaseContext? NextNonNullContext(TwailaPoint pos) => NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
 
-    public BaseContext PrevNonNullContext(ref int currIndex, TwailaPoint pos)
+    /// <summary>
+    /// Gets the previous context that is not null. If there is none then the context does not change.
+    /// </summary>
+    /// <param name="currIndex"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public BaseContext? PrevNonNullContext(ref int currIndex, TwailaPoint pos)
     {
         int i = currIndex;
-        BaseContext context;
+        BaseContext? context;
         do
         {
             i = PrevContextIndex(i);
@@ -105,7 +118,7 @@ public class ContextSystem : ModSystem
         return context;
     }
 
-    public BaseContext PrevNonNullContext(TwailaPoint pos) => PrevNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
+    public BaseContext? PrevNonNullContext(TwailaPoint pos) => PrevNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
 
     public int NextContextIndex(int currIndex)
     {
@@ -181,7 +194,7 @@ public struct TwailaPoint
     }
 }
 
-public delegate BaseContext ContextFetcher(TwailaPoint pos);
+public delegate BaseContext? ContextFetcher(TwailaPoint pos);
 
 public class ContextEntry
 {
@@ -204,15 +217,15 @@ public class ContextEntry
         Enabled = enabled;
     }
 
-    public BaseContext Context(TwailaPoint pos)
+    public BaseContext? Context(TwailaPoint pos)
     {
         if (!Enabled())
             return null;
 
-        BaseContext foundContext = null;
+        BaseContext? foundContext = null;
         foreach(var entry in ApplicableContexts)
         {
-            BaseContext context = entry.Invoke(pos);
+            BaseContext? context = entry.Invoke(pos);
             if (context != null)
             {
                 foundContext = context;

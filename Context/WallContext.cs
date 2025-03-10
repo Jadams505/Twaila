@@ -29,7 +29,7 @@ public class WallContext : WireContext
         EchoText = "";
     }
 
-    public static WallContext CreateWallContext(TwailaPoint pos)
+    public static WallContext? CreateWallContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -46,7 +46,7 @@ public class WallContext : WireContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(WallContext))
         {
@@ -134,7 +134,7 @@ public class WallContext : WireContext
         Tile tile = Framing.GetTileSafely(BestTilePos);
         var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Wall);
 
-        Texture2D texture = ImageUtil.GetItemTexture(itemEntry.FirstOrDefault());
+        Texture2D? texture = ImageUtil.GetItemTexture(itemEntry.FirstOrDefault());
         return texture.ToRender();
     }
 
@@ -149,13 +149,13 @@ public class WallContext : WireContext
         Tile tile = Framing.GetTileSafely(BestTilePos);
         var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Wall);
 
-        string dropName = NameUtil.GetNameFromItem(itemEntry.DropItem);
-        string placeName = NameUtil.GetNameFromItem(itemEntry.PlaceItem);
-        string internalPrettyName = NameUtil.GetInternalWallName(tile.WallType, fullName: false, pretty: true);
+        string? dropName = NameUtil.GetNameFromItem(itemEntry.DropItem);
+        string? placeName = NameUtil.GetNameFromItem(itemEntry.PlaceItem);
+        string? internalPrettyName = NameUtil.GetInternalWallName(tile.WallType, fullName: false, pretty: true);
 
-        string displayName = NamingSystem.Instance.GetName(dropName, placeName, mapName: null, internalPrettyName); 
-        string internalName = NameUtil.GetInternalWallName(WallId, false);
-        string fullName = NameUtil.GetInternalWallName(WallId, true);
+        string? displayName = NamingSystem.Instance.GetName(dropName, placeName, mapName: null, internalPrettyName); 
+        string? internalName = NameUtil.GetInternalWallName(WallId, false);
+        string? fullName = NameUtil.GetInternalWallName(WallId, true);
 
         TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 

@@ -17,15 +17,13 @@ public class DisplayDollContext : TileContext
 {
     public const int MAX_ITEM_COUNT = 8;
     protected int[] ItemIds { get; set; }
-    protected string[] ItemTexts { get; set; }
 
     public DisplayDollContext(TwailaPoint point) : base(point)
     {
         ItemIds = new int[MAX_ITEM_COUNT];
-        ItemTexts = new string[MAX_ITEM_COUNT];
     }
 
-    public static DisplayDollContext CreateDisplayDollContext(TwailaPoint pos)
+    public static DisplayDollContext? CreateDisplayDollContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -47,7 +45,7 @@ public class DisplayDollContext : TileContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if (other?.GetType() == typeof(DisplayDollContext))
         {
@@ -82,23 +80,21 @@ public class DisplayDollContext : TileContext
                 }
                 if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    ItemTexts[i] = NameUtil.GetNameFromItem(id);
-                    TextGrid.Add(new UITwailaText(ItemTexts[i]));
+                    TextGrid.Add(new UITwailaText(NameUtil.GetNameFromItem(id)));
                 }
             }
         }
     }
 
-    private static readonly FieldInfo TEDisplayDoll_items = typeof(TEDisplayDoll).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+    private static readonly FieldInfo? TEDisplayDoll_items = typeof(TEDisplayDoll).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
 
     private void PopulateItems()
     {
         Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 2, height: 3);
         int id = TEDisplayDoll.Find(targetPos.X, targetPos.Y);
         TEDisplayDoll instance = (TEDisplayDoll)TileEntity.ByID[id];
-        Item[] items = (Item[])TEDisplayDoll_items?.GetValue(instance);
 
-        if (items is null)
+        if (TEDisplayDoll_items?.GetValue(instance) is not Item[] items)
         {
             Twaila.Instance.Logger.Warn(nameof(TEDisplayDoll_items) + " is null. Please Report");
             return;

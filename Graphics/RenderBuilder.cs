@@ -13,7 +13,7 @@ public class RenderBuilder
         _drawInstructions = new List<DrawInfo>();
     }
 
-    public void AddImage(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
+    public void AddImage(Texture2D? texture, Point position, Rectangle source, Color color, float scale = 1)
     {
         if(texture != null)
         {
@@ -26,7 +26,7 @@ public class RenderBuilder
         AddImage(info.Texture, info.Position, info.Source, info.Color, info.Scale);
     }
 
-    public void AddImage(Texture2D texture, Point position, Rectangle source, float scale = 1)
+    public void AddImage(Texture2D? texture, Point position, Rectangle source, float scale = 1)
     {
         AddImage(texture, position, source, Color.White, scale);
     }

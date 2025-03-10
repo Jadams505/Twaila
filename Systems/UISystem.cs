@@ -9,7 +9,7 @@ namespace Twaila.Systems;
 
 public class UISystem : ModSystem
 {
-    private static GameTime _lastUpdateTime;
+    private static GameTime _lastUpdateTime = null!;
 
     public override void Load()
     {

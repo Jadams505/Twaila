@@ -43,7 +43,7 @@ public class WireContext : BaseContext
         PositionText = "";
     }
 
-    public static WireContext CreateWireContext(TwailaPoint pos)
+    public static WireContext? CreateWireContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -73,7 +73,7 @@ public class WireContext : BaseContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(WireContext))
         {
@@ -143,7 +143,7 @@ public class WireContext : BaseContext
         
     }
 
-    public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+    public override void UpdateOnChange(BaseContext? prevContext, Layout layout)
     {
         Update();
 
@@ -159,7 +159,7 @@ public class WireContext : BaseContext
         layout.Mod.SetText(GetMod());
     }
 
-    protected override string GetName()
+    protected override string? GetName()
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
         var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);

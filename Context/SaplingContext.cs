@@ -19,7 +19,7 @@ public class SaplingContext : TileContext
         DirtId = GetSaplingTile();
     }
 
-    public static SaplingContext CreateSaplingContext(TwailaPoint pos)
+    public static SaplingContext? CreateSaplingContext(TwailaPoint pos)
     {
         Point tilePos = pos.BestTilePos();
         Tile tile = Framing.GetTileSafely(tilePos);
@@ -38,7 +38,7 @@ public class SaplingContext : TileContext
         return null;
     }
 
-    public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext? other)
     {
         if(other?.GetType() == typeof(SaplingContext))
         {
@@ -64,15 +64,15 @@ public class SaplingContext : TileContext
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
         var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
-        Texture2D texture = ImageUtil.GetItemTexture(itemEntry.PlaceItem);
+        Texture2D? texture = ImageUtil.GetItemTexture(itemEntry.PlaceItem);
         return texture.ToRender();
     }
 
     protected override string GetName()
     {
-        string displayName = NameUtil.GetNameForSapling(TileId, DirtId);
-        string internalName = NameUtil.GetInternalTileName(TileId, false);
-        string fullName = NameUtil.GetInternalTileName(TileId, true);
+        string? displayName = NameUtil.GetNameForSapling(TileId, DirtId);
+        string? internalName = NameUtil.GetInternalTileName(TileId, false);
+        string? fullName = NameUtil.GetInternalTileName(TileId, true);
 
         TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
 
