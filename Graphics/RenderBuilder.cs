@@ -2,46 +2,45 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
-namespace Twaila.Graphics
+namespace Twaila.Graphics;
+
+public class RenderBuilder
 {
-    public class RenderBuilder
+    private List<DrawInfo> _drawInstructions;
+
+    public RenderBuilder()
     {
-        private List<DrawInfo> _drawInstructions;
+        _drawInstructions = new List<DrawInfo>();
+    }
 
-        public RenderBuilder()
+    public void AddImage(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
+    {
+        if(texture != null)
         {
-            _drawInstructions = new List<DrawInfo>();
+            _drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
         }
+    }
 
-        public void AddImage(Texture2D texture, Point position, Rectangle source, Color color, float scale = 1)
-        {
-            if(texture != null)
-            {
-                _drawInstructions.Add(new DrawInfo(texture, position, source, color, scale));
-            }
-        }
+    public void AddImage(DrawInfo info)
+    {
+        AddImage(info.Texture, info.Position, info.Source, info.Color, info.Scale);
+    }
 
-        public void AddImage(DrawInfo info)
-        {
-            AddImage(info.Texture, info.Position, info.Source, info.Color, info.Scale);
-        }
+    public void AddImage(Texture2D texture, Point position, Rectangle source, float scale = 1)
+    {
+        AddImage(texture, position, source, Color.White, scale);
+    }
 
-        public void AddImage(Texture2D texture, Point position, Rectangle source, float scale = 1)
+    public void AddRender(TwailaRender render, Point position, float scale = 1)
+    {
+        foreach (var info in render.Info)
         {
-            AddImage(texture, position, source, Color.White, scale);
+            AddImage(new(info.Texture, info.Position + position, info.Source, info.Scale * scale));
         }
+    }
 
-        public void AddRender(TwailaRender render, Point position, float scale = 1)
-        {
-            foreach (var info in render.Info)
-            {
-                AddImage(new(info.Texture, info.Position + position, info.Source, info.Scale * scale));
-            }
-        }
-
-        public TwailaRender Build()
-        {
-            return new TwailaRender(_drawInstructions);
-        }
+    public TwailaRender Build()
+    {
+        return new TwailaRender(_drawInstructions);
     }
 }

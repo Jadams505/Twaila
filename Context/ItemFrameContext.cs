@@ -12,84 +12,83 @@ using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class ItemFrameContext : TileContext
 {
-    public class ItemFrameContext : TileContext
+    protected int ItemId { get; set; }
+    protected string ItemText { get; set; }
+
+    public ItemFrameContext(TwailaPoint point) : base(point)
     {
-        protected int ItemId { get; set; }
-        protected string ItemText { get; set; }
+        ItemId = 0;
+        ItemText = "";
+    }
 
-        public ItemFrameContext(TwailaPoint point) : base(point)
-        {
-            ItemId = 0;
-            ItemText = "";
-        }
+    public static ItemFrameContext CreateItemFrameContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static ItemFrameContext CreateItemFrameContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (tile.TileType == TileID.ItemFrame)
-            {
-                Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 2, height: 2);
-                if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-                {
-                    return new ItemFrameContext(pos);
-                }
-            }
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override void Update()
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (tile.TileType == TileID.ItemFrame)
         {
-            base.Update();
-            Content content = TwailaConfig.Instance.DisplayContent;
-
-            ItemId = GetItemId();
-
-            if (ItemId > 0)
+            Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 2, height: 2);
+            if (TEItemFrame.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
-                if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                {
-                    IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(ItemId));
-                }
-                if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                {
-                    ItemText = Lang.GetItemNameValue(ItemId);
-                    TextGrid.Add(new UITwailaText(ItemText));
-                }
+                return new ItemFrameContext(pos);
             }
         }
+        return null;
+    }
 
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
-        {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            return ImageUtil.GetRenderForItemFrame(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
-        }
+    public override void Update()
+    {
+        base.Update();
+        Content content = TwailaConfig.Instance.DisplayContent;
 
-        public override bool ContextChanged(BaseContext other)
+        ItemId = GetItemId();
+
+        if (ItemId > 0)
         {
-            if (other?.GetType() == typeof(ItemFrameContext))
+            if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
             {
-                ItemFrameContext otherContext = (ItemFrameContext)other;
-                return otherContext.ItemId != ItemId;
+                IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(ItemId));
             }
-            return true;
+            if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
+            {
+                ItemText = Lang.GetItemNameValue(ItemId);
+                TextGrid.Add(new UITwailaText(ItemText));
+            }
         }
+    }
 
-        private int GetItemId()
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        return ImageUtil.GetRenderForItemFrame(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if (other?.GetType() == typeof(ItemFrameContext))
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 2, height: 2);
-            int id = TEItemFrame.Find(targetPos.X, targetPos.Y);
-            Item item = ((TEItemFrame)TileEntity.ByID[id]).item;
-            return item.type;
+            ItemFrameContext otherContext = (ItemFrameContext)other;
+            return otherContext.ItemId != ItemId;
         }
+        return true;
+    }
+
+    private int GetItemId()
+    {
+        Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 2, height: 2);
+        int id = TEItemFrame.Find(targetPos.X, targetPos.Y);
+        Item item = ((TEItemFrame)TileEntity.ByID[id]).item;
+        return item.type;
     }
 }

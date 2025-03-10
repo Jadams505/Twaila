@@ -8,113 +8,112 @@ using Twaila.Systems;
 using Twaila.Config;
 using Microsoft.Xna.Framework;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class CactusContext : TileContext
 {
-    public class CactusContext : TileContext
+    protected int SandTileId { get; set; }
+
+    public CactusContext(TwailaPoint pos) : base(pos)
     {
-        protected int SandTileId { get; set; }
+        SandTileId = GetCactusSand();
+    }
 
-        public CactusContext(TwailaPoint pos) : base(pos)
-        {
-            SandTileId = GetCactusSand();
-        }
+    public static CactusContext CreateCactusContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static CactusContext CreateCactusContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-            {
-                return new CactusContext(pos);
-            }
-
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
+
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (tile.TileType == TileID.Cactus && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
+        {
+            return new CactusContext(pos);
         }
 
-        public override bool ContextChanged(BaseContext other)
+        return null;
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if (other?.GetType() == typeof(CactusContext))
         {
-            if (other?.GetType() == typeof(CactusContext))
+            CactusContext otherContext = (CactusContext)other;
+            return otherContext.SandTileId != SandTileId;
+        }
+        return true;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        SandTileId = GetCactusSand();
+    }
+
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        if (TileLoader.CanGrowModCactus(SandTileId))
+        {
+            return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: true);
+        }
+        return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: false);
+    }
+
+    protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
+    {
+        return new TwailaRender();
+    }
+
+    protected override string GetName()
+    {
+        string displayName = NameUtil.GetNameForCactus(SandTileId);
+        string internalName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().Name;
+        string fullName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().FullName;
+
+        TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
+
+        return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
+    }
+
+    protected override string GetMod()
+    {
+        ModTile mTile = TileLoader.GetTile(SandTileId);
+        return NameUtil.GetMod(mTile);
+    }
+
+    private int GetCactusSand()
+    {
+        Point bestPos = BestTilePos;
+        int x = bestPos.X, y = bestPos.Y;
+        do
+        {
+            if (Framing.GetTileSafely(x, y + 1).TileType == TileID.Cactus)
             {
-                CactusContext otherContext = (CactusContext)other;
-                return otherContext.SandTileId != SandTileId;
+                y++;
             }
-            return true;
-        }
-
-        public override void Update()
-        {
-            base.Update();
-            SandTileId = GetCactusSand();
-        }
-
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
-        {
-            if (TileLoader.CanGrowModCactus(SandTileId))
+            else if (Framing.GetTileSafely(x + 1, y).TileType == TileID.Cactus)
             {
-                return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: true);
+                x++;
             }
-            return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: false);
-        }
-
-        protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
-        {
-            return new TwailaRender();
-        }
-
-        protected override string GetName()
-        {
-            string displayName = NameUtil.GetNameForCactus(SandTileId);
-            string internalName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().Name;
-            string fullName = PlantLoader.Get<ModCactus>(TileId, SandTileId)?.GetType().FullName;
-
-            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
-
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
-        }
-
-        protected override string GetMod()
-        {
-            ModTile mTile = TileLoader.GetTile(SandTileId);
-            return NameUtil.GetMod(mTile);
-        }
-
-        private int GetCactusSand()
-        {
-            Point bestPos = BestTilePos;
-            int x = bestPos.X, y = bestPos.Y;
-            do
+            else if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Cactus)
             {
-                if (Framing.GetTileSafely(x, y + 1).TileType == TileID.Cactus)
-                {
-                    y++;
-                }
-                else if (Framing.GetTileSafely(x + 1, y).TileType == TileID.Cactus)
-                {
-                    x++;
-                }
-                else if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Cactus)
-                {
-                    x--;
-                }
-                else
-                {
-                    y++;
-                }
+                x--;
             }
-            while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Cactus && Framing.GetTileSafely(x, y).HasTile);
-
-            if (!Framing.GetTileSafely(x, y).HasTile)
+            else
             {
-                return -1;
+                y++;
             }
-            return Framing.GetTileSafely(x, y).TileType;
         }
+        while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Cactus && Framing.GetTileSafely(x, y).HasTile);
+
+        if (!Framing.GetTileSafely(x, y).HasTile)
+        {
+            return -1;
+        }
+        return Framing.GetTileSafely(x, y).TileType;
     }
 }

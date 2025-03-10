@@ -2,52 +2,51 @@
 using Terraria.UI;
 using Twaila.UI;
 
-namespace Twaila.Util
+namespace Twaila.Util;
+
+public static class UIUtil
 {
-    public static class UIUtil
+    public static Vector2 GetSizeIfAppended(this UIElement element)
     {
-        public static Vector2 GetSizeIfAppended(this UIElement element)
+        if (element.Parent != null && element.Parent.HasChild(element))
         {
-            if (element.Parent != null && element.Parent.HasChild(element))
-            {
-                return new Vector2(element.Width.Pixels, element.Height.Pixels);
-            }
-            return Vector2.Zero;
+            return new Vector2(element.Width.Pixels, element.Height.Pixels);
         }
+        return Vector2.Zero;
+    }
 
-        public static float GetSizeIfAppended(this UIElement element, float size)
+    public static float GetSizeIfAppended(this UIElement element, float size)
+    {
+        if (element.Parent != null && element.Parent.HasChild(element))
         {
-            if (element.Parent != null && element.Parent.HasChild(element))
-            {
-                return size;
-            }
-            return 0f;
+            return size;
         }
+        return 0f;
+    }
 
-        public static void AppendOrRemove(this UIElement parent, UIElement child, bool shouldAppend)
+    public static void AppendOrRemove(this UIElement parent, UIElement child, bool shouldAppend)
+    {
+        if (shouldAppend)
         {
-            if (shouldAppend)
+            if (!parent.HasChild(child))
             {
-                if (!parent.HasChild(child))
-                {
-                    parent.Append(child);
-                }
-            }
-            else if (parent.HasChild(child))
-            {
-                parent.RemoveChild(child);
+                parent.Append(child);
             }
         }
-
-        public static void ScaleElement(this UITwailaElement element, Vector2 maxSize)
+        else if (parent.HasChild(child))
         {
-            float scale = element.GetScale(maxSize);
-            float width = element.GetContentSize().X * scale;
-            float height = element.GetContentSize().Y * scale;
-
-            element.Width.Set(width, 0);
-            element.Height.Set(height, 0);
-            element.Recalculate();
+            parent.RemoveChild(child);
         }
+    }
+
+    public static void ScaleElement(this UITwailaElement element, Vector2 maxSize)
+    {
+        float scale = element.GetScale(maxSize);
+        float width = element.GetContentSize().X * scale;
+        float height = element.GetContentSize().Y * scale;
+
+        element.Width.Set(width, 0);
+        element.Height.Set(height, 0);
+        element.Recalculate();
     }
 }

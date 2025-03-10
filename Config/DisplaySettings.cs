@@ -2,48 +2,47 @@
 using Terraria.ModLoader.Config;
 using static Twaila.Config.TwailaConfig;
 
-namespace Twaila.Config
+namespace Twaila.Config;
+
+public class DisplaySettings
 {
-    public class DisplaySettings
+    [DefaultValue(DisplayMode.Automatic)]
+    [DrawTicks]
+    public DisplayMode UIDisplay = DisplayMode.Automatic;
+
+    [Header("AutomaticOptions")]
+    [DefaultValue(false)]
+    public bool HideUIForAir;
+
+    [Header("OtherOptions")]
+    [DefaultValue(false)]
+    public bool HideUIWhenTalkingToNPCs;
+
+    [DefaultValue(false)]
+    public bool HideUIWhenEditingSigns;
+
+    public DisplaySettings()
     {
-        [DefaultValue(DisplayMode.Automatic)]
-        [DrawTicks]
-        public DisplayMode UIDisplay = DisplayMode.Automatic;
+        UIDisplay = DisplayMode.Automatic;
+        HideUIForAir = false;
+        HideUIWhenTalkingToNPCs = false;
+        HideUIWhenEditingSigns = false;
+    }
 
-        [Header("AutomaticOptions")]
-        [DefaultValue(false)]
-        public bool HideUIForAir;
-
-        [Header("OtherOptions")]
-        [DefaultValue(false)]
-        public bool HideUIWhenTalkingToNPCs;
-
-        [DefaultValue(false)]
-        public bool HideUIWhenEditingSigns;
-
-        public DisplaySettings()
+    public override bool Equals(object obj)
+    {
+        if (obj is DisplaySettings other)
         {
-            UIDisplay = DisplayMode.Automatic;
-            HideUIForAir = false;
-            HideUIWhenTalkingToNPCs = false;
-            HideUIWhenEditingSigns = false;
+            return UIDisplay == other.UIDisplay && 
+                HideUIForAir == other.HideUIForAir &&
+                HideUIWhenTalkingToNPCs == other.HideUIWhenTalkingToNPCs &&
+                HideUIWhenEditingSigns == other.HideUIWhenEditingSigns;
         }
+        return base.Equals(obj);
+    }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is DisplaySettings other)
-            {
-                return UIDisplay == other.UIDisplay && 
-                    HideUIForAir == other.HideUIForAir &&
-                    HideUIWhenTalkingToNPCs == other.HideUIWhenTalkingToNPCs &&
-                    HideUIWhenEditingSigns == other.HideUIWhenEditingSigns;
-            }
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return new { UIDisplay, HideUIForAir }.GetHashCode();
-        }
+    public override int GetHashCode()
+    {
+        return new { UIDisplay, HideUIForAir }.GetHashCode();
     }
 }

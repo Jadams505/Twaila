@@ -12,84 +12,83 @@ using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class WeaponRackContext : TileContext
 {
-    public class WeaponRackContext : TileContext
+    protected int ItemId { get; set; }
+    protected string ItemText { get; set; }
+
+    public WeaponRackContext (TwailaPoint point) : base(point)
     {
-        protected int ItemId { get; set; }
-        protected string ItemText { get; set; }
+        ItemId = 0;
+        ItemText = "";
+    }
 
-        public WeaponRackContext (TwailaPoint point) : base(point)
-        {
-            ItemId = 0;
-            ItemText = "";
-        }
+    public static WeaponRackContext CreateWeaponRackContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static WeaponRackContext CreateWeaponRackContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
-            {
-                Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 3, height: 3);
-                if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-                {
-                    return new WeaponRackContext(pos);
-                }
-            }
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override void Update()
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (tile.TileType == TileID.WeaponsRack2 || tile.TileType == TileID.WeaponsRack)
         {
-            base.Update();
-            Content content = TwailaConfig.Instance.DisplayContent;
-
-            ItemId = GetItemId();
-
-            if (ItemId > 0)
+            Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 3, height: 3);
+            if (TEWeaponsRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
-                if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                {
-                    IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(ItemId));
-                }
-                if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                {
-                    ItemText = Lang.GetItemNameValue(ItemId);
-                    TextGrid.Add(new UITwailaText(ItemText));
-                }
+                return new WeaponRackContext(pos);
             }
         }
+        return null;
+    }
 
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
-        {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
-        }
+    public override void Update()
+    {
+        base.Update();
+        Content content = TwailaConfig.Instance.DisplayContent;
 
-        public override bool ContextChanged(BaseContext other)
+        ItemId = GetItemId();
+
+        if (ItemId > 0)
         {
-            if (other?.GetType() == typeof(WeaponRackContext))
+            if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
             {
-                WeaponRackContext otherContext = (WeaponRackContext)other;
-                return otherContext.ItemId != ItemId;
+                IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(ItemId));
             }
-            return true;
+            if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
+            {
+                ItemText = Lang.GetItemNameValue(ItemId);
+                TextGrid.Add(new UITwailaText(ItemText));
+            }
         }
+    }
 
-        private int GetItemId()
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if (other?.GetType() == typeof(WeaponRackContext))
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 3);
-            int id = TEWeaponsRack.Find(targetPos.X, targetPos.Y);
-            Item item = ((TEWeaponsRack)TileEntity.ByID[id]).item;
-            return item.type;
+            WeaponRackContext otherContext = (WeaponRackContext)other;
+            return otherContext.ItemId != ItemId;
         }
+        return true;
+    }
+
+    private int GetItemId()
+    {
+        Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 3);
+        int id = TEWeaponsRack.Find(targetPos.X, targetPos.Y);
+        Item item = ((TEWeaponsRack)TileEntity.ByID[id]).item;
+        return item.type;
     }
 }

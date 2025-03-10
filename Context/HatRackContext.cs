@@ -11,103 +11,102 @@ using Terraria.ID;
 using Twaila.Config;
 using Terraria.ModLoader;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class HatRackContext : TileContext
 {
-    public class HatRackContext : TileContext
+    public const int MAX_ITEM_COUNT = 2;
+    protected int[] ItemIds { get; set; }
+    protected string[] ItemTexts { get; set; }
+
+    public HatRackContext(TwailaPoint pos) : base(pos)
     {
-        public const int MAX_ITEM_COUNT = 2;
-        protected int[] ItemIds { get; set; }
-        protected string[] ItemTexts { get; set; }
+        ItemIds = new int[MAX_ITEM_COUNT];
+        ItemTexts = new string[MAX_ITEM_COUNT];
+    }
 
-        public HatRackContext(TwailaPoint pos) : base(pos)
-        {
-            ItemIds = new int[MAX_ITEM_COUNT];
-            ItemTexts = new string[MAX_ITEM_COUNT];
-        }
+    public static HatRackContext CreateHatRackContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static HatRackContext CreateHatRackContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (tile.TileType == TileID.HatRack)
-            {
-                Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 3, height: 4);
-                if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-                {
-                    return new HatRackContext(pos);
-                }
-            }
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override bool ContextChanged(BaseContext other)
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (tile.TileType == TileID.HatRack)
         {
-            if (other?.GetType() == typeof(HatRackContext))
+            Point targetPos = TileUtil.TileEntityCoordinates(tilePos.X, tilePos.Y, width: 3, height: 4);
+            if (TEHatRack.Find(targetPos.X, targetPos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
             {
-                HatRackContext otherContext = (HatRackContext)other;
-                for(int i = 0; i < otherContext.ItemIds.Length; ++i)
+                return new HatRackContext(pos);
+            }
+        }
+        return null;
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if (other?.GetType() == typeof(HatRackContext))
+        {
+            HatRackContext otherContext = (HatRackContext)other;
+            for(int i = 0; i < otherContext.ItemIds.Length; ++i)
+            {
+                if (otherContext.ItemIds[i] != ItemIds[i])
                 {
-                    if (otherContext.ItemIds[i] != ItemIds[i])
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                return false;
             }
-            return true;
+            return false;
         }
+        return true;
+    }
 
-        public override void Update()
+    public override void Update()
+    {
+        base.Update();
+        Content content = TwailaConfig.Instance.DisplayContent;
+
+        PopulateItems();
+
+        for(int i = 0; i < ItemIds.Length; ++i)
         {
-            base.Update();
-            Content content = TwailaConfig.Instance.DisplayContent;
-
-            PopulateItems();
-
-            for(int i = 0; i < ItemIds.Length; ++i)
+            int id = ItemIds[i];
+            if(id > 0)
             {
-                int id = ItemIds[i];
-                if(id > 0)
+                if(content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
                 {
-                    if(content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                    {
-                        IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(id));
-                    }
-                    if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                    {
-                        ItemTexts[i] = NameUtil.GetNameFromItem(id);
-                        TextGrid.Add(new UITwailaText(ItemTexts[i]));
-                    }
+                    IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(id));
                 }
-            }		
+                if(content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
+                {
+                    ItemTexts[i] = NameUtil.GetNameFromItem(id);
+                    TextGrid.Add(new UITwailaText(ItemTexts[i]));
+                }
+            }
+        }		
+    }
+
+    private static readonly FieldInfo TEHatRack_items = typeof(TEHatRack).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private void PopulateItems()
+    {
+        Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 4);
+        int id = TEHatRack.Find(targetPos.X, targetPos.Y);
+        TEHatRack instance = (TEHatRack)TileEntity.ByID[id];
+        Item[] items = (Item[])TEHatRack_items?.GetValue(instance);
+
+        if (items is null)
+        {
+            Twaila.Instance.Logger.Warn(nameof(TEHatRack_items) + " is null. Please Report");
+            return;
         }
 
-        private static readonly FieldInfo TEHatRack_items = typeof(TEHatRack).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private void PopulateItems()
+        for(int i = 0; i < items.Length; ++i)
         {
-            Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 3, height: 4);
-            int id = TEHatRack.Find(targetPos.X, targetPos.Y);
-            TEHatRack instance = (TEHatRack)TileEntity.ByID[id];
-            Item[] items = (Item[])TEHatRack_items?.GetValue(instance);
-
-            if (items is null)
-            {
-                Twaila.Instance.Logger.Warn(nameof(TEHatRack_items) + " is null. Please Report");
-                return;
-            }
-
-            for(int i = 0; i < items.Length; ++i)
-            {
-                ItemIds[i] = items[i].type;
-            }
+            ItemIds[i] = items[i].type;
         }
     }
 }

@@ -8,98 +8,97 @@ using Twaila.Systems;
 using Microsoft.Xna.Framework;
 using Twaila.Config;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class SaplingContext : TileContext
 {
-    public class SaplingContext : TileContext
+    public int DirtId { get; private set; }
+
+    public SaplingContext(TwailaPoint pos) : base(pos)
     {
-        public int DirtId { get; private set; }
+        DirtId = GetSaplingTile();
+    }
 
-        public SaplingContext(TwailaPoint pos) : base(pos)
-        {
-            DirtId = GetSaplingTile();
-        }
+    public static SaplingContext CreateSaplingContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static SaplingContext CreateSaplingContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-            {
-                return new SaplingContext(pos);
-            }
-
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override bool ContextChanged(BaseContext other)
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (TileID.Sets.TreeSapling[tile.TileType] && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
         {
-            if(other?.GetType() == typeof(SaplingContext))
-            {
-                SaplingContext otherContext = (SaplingContext)other;
-                return otherContext.DirtId != DirtId || StyleChanged(otherContext);
-            }
-            return true;
+            return new SaplingContext(pos);
         }
 
-        public override void Update()
+        return null;
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if(other?.GetType() == typeof(SaplingContext))
         {
-            base.Update();
-            DirtId = GetSaplingTile();
+            SaplingContext otherContext = (SaplingContext)other;
+            return otherContext.DirtId != DirtId || StyleChanged(otherContext);
         }
+        return true;
+    }
 
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    public override void Update()
+    {
+        base.Update();
+        DirtId = GetSaplingTile();
+    }
+
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        return ImageUtil.GetRenderFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y);
+    }
+
+    protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
+        Texture2D texture = ImageUtil.GetItemTexture(itemEntry.PlaceItem);
+        return texture.ToRender();
+    }
+
+    protected override string GetName()
+    {
+        string displayName = NameUtil.GetNameForSapling(TileId, DirtId);
+        string internalName = NameUtil.GetInternalTileName(TileId, false);
+        string fullName = NameUtil.GetInternalTileName(TileId, true);
+
+        TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
+
+        return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
+    }
+
+    protected override string GetMod()
+    {
+        ModTile mTile = TileLoader.GetTile(TileId);
+        return NameUtil.GetMod(mTile);
+    }
+
+    private int GetSaplingTile()
+    {
+        Point bestPos = BestTilePos;
+        int x = bestPos.X;
+        int y = bestPos.Y;
+        do
         {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            return ImageUtil.GetRenderFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y);
-        }
+            y++;
+        } while (WorldGen.InWorld(x, y) && TileID.Sets.TreeSapling[Framing.GetTileSafely(x, y).TileType] && Framing.GetTileSafely(x, y).HasTile);
 
-        protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
+        if (!Framing.GetTileSafely(x, y).HasTile)
         {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
-            Texture2D texture = ImageUtil.GetItemTexture(itemEntry.PlaceItem);
-            return texture.ToRender();
+            return -1;
         }
-
-        protected override string GetName()
-        {
-            string displayName = NameUtil.GetNameForSapling(TileId, DirtId);
-            string internalName = NameUtil.GetInternalTileName(TileId, false);
-            string fullName = NameUtil.GetInternalTileName(TileId, true);
-
-            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
-
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
-        }
-
-        protected override string GetMod()
-        {
-            ModTile mTile = TileLoader.GetTile(TileId);
-            return NameUtil.GetMod(mTile);
-        }
-
-        private int GetSaplingTile()
-        {
-            Point bestPos = BestTilePos;
-            int x = bestPos.X;
-            int y = bestPos.Y;
-            do
-            {
-                y++;
-            } while (WorldGen.InWorld(x, y) && TileID.Sets.TreeSapling[Framing.GetTileSafely(x, y).TileType] && Framing.GetTileSafely(x, y).HasTile);
-
-            if (!Framing.GetTileSafely(x, y).HasTile)
-            {
-                return -1;
-            }
-            return Framing.GetTileSafely(x, y).TileType;
-        }
+        return Framing.GetTileSafely(x, y).TileType;
     }
 }

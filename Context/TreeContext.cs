@@ -9,114 +9,113 @@ using Twaila.Graphics;
 using Twaila.Systems;
 using Twaila.Util;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class TreeContext : TileContext
 {
-    public class TreeContext : TileContext
+    protected int DirtId { get; private set; }
+
+    public TreeContext(TwailaPoint pos) : base(pos)
     {
-        protected int DirtId { get; private set; }
+        DirtId = GetTreeDirt();
+    }
 
-        public TreeContext(TwailaPoint pos) : base(pos)
-        {
-            DirtId = GetTreeDirt();
-        }
+    public static TreeContext CreateTreeContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static TreeContext CreateTreeContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-            {
-                return new TreeContext(pos);
-            }
-
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override void Update()
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if ((tile.TileType == TileID.Trees || tile.TileType == TileID.MushroomTrees) && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
         {
-            base.Update();
-            DirtId = GetTreeDirt();
+            return new TreeContext(pos);
         }
 
-        public override bool ContextChanged(BaseContext other)
+        return null;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        DirtId = GetTreeDirt();
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if(other?.GetType() == typeof(TreeContext))
         {
-            if(other?.GetType() == typeof(TreeContext))
-            {
-                TreeContext otherContext = (TreeContext)other;
-                return otherContext.DirtId != DirtId || (DirtId == TileID.JungleGrass && Math.Sign(BestTilePos.Y - Main.worldSurface) != Math.Sign(otherContext.BestTilePos.Y - Main.worldSurface));
-            }
-            return true;
+            TreeContext otherContext = (TreeContext)other;
+            return otherContext.DirtId != DirtId || (DirtId == TileID.JungleGrass && Math.Sign(BestTilePos.Y - Main.worldSurface) != Math.Sign(otherContext.BestTilePos.Y - Main.worldSurface));
         }
+        return true;
+    }
 
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        if (TileId == TileID.Trees)
         {
-            if (TileId == TileID.Trees)
+            if (TileLoader.CanGrowModTree(DirtId))
             {
-                if (TileLoader.CanGrowModTree(DirtId))
-                {
-                    TwailaRender treeRender = TreeUtil.GetRenderForModdedTree(spriteBatch, DirtId);
-                    return treeRender;
-                }
-                int treeWood = TreeUtil.GetTreeWood(DirtId);
-                if (treeWood != -1)
-                {
-                    return TreeUtil.GetRenderForVanillaTree(spriteBatch, treeWood, BestTilePos.Y);
-                }
+                TwailaRender treeRender = TreeUtil.GetRenderForModdedTree(spriteBatch, DirtId);
+                return treeRender;
             }
-            else if (TileId == TileID.MushroomTrees)
+            int treeWood = TreeUtil.GetTreeWood(DirtId);
+            if (treeWood != -1)
             {
-                return TreeUtil.GetRenderForMushroomTree(spriteBatch);
+                return TreeUtil.GetRenderForVanillaTree(spriteBatch, treeWood, BestTilePos.Y);
             }
-            return new TwailaRender();
         }
-
-        protected override string GetName()
+        else if (TileId == TileID.MushroomTrees)
         {
-            string displayName = NameUtil.GetNameForTree(DirtId);
-            string internalName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().Name;
-            string fullName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().FullName;
-
-            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
-
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
+            return TreeUtil.GetRenderForMushroomTree(spriteBatch);
         }
+        return new TwailaRender();
+    }
 
-        protected override string GetMod()
+    protected override string GetName()
+    {
+        string displayName = NameUtil.GetNameForTree(DirtId);
+        string internalName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().Name;
+        string fullName = PlantLoader.Get<ModTree>(TileId, DirtId)?.GetType().FullName;
+
+        TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
+
+        return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
+    }
+
+    protected override string GetMod()
+    {
+        ModTile mTile = TileLoader.GetTile(DirtId);
+        return NameUtil.GetMod(mTile);
+    }
+
+    private int GetTreeDirt()
+    {
+        Point bestPos = BestTilePos;
+        int x = bestPos.X, y = bestPos.Y;
+
+        if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
         {
-            ModTile mTile = TileLoader.GetTile(DirtId);
-            return NameUtil.GetMod(mTile);
+            x--;
         }
-
-        private int GetTreeDirt()
+        if (Framing.GetTileSafely(x + 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
         {
-            Point bestPos = BestTilePos;
-            int x = bestPos.X, y = bestPos.Y;
-
-            if (Framing.GetTileSafely(x - 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
-            {
-                x--;
-            }
-            if (Framing.GetTileSafely(x + 1, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y + 1).TileType != TileID.Trees && Framing.GetTileSafely(x, y - 1).TileType != TileID.Trees)
-            {
-                x++;
-            }
-            do
-            {
-                y += 1;
-            } while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y).HasTile);
-
-            if (!Framing.GetTileSafely(x, y).HasTile)
-            {
-                return -1;
-            }
-            return Framing.GetTileSafely(x, y).TileType;
+            x++;
         }
+        do
+        {
+            y += 1;
+        } while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Trees && Framing.GetTileSafely(x, y).HasTile);
+
+        if (!Framing.GetTileSafely(x, y).HasTile)
+        {
+            return -1;
+        }
+        return Framing.GetTileSafely(x, y).TileType;
     }
 }

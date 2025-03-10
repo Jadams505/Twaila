@@ -8,97 +8,96 @@ using Twaila.Systems;
 using Twaila.Config;
 using Microsoft.Xna.Framework;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class PalmTreeContext : TileContext
 {
-    public class PalmTreeContext : TileContext
+    protected int SandId { get; set; }
+
+    public PalmTreeContext(TwailaPoint pos) : base(pos)
     {
-        protected int SandId { get; set; }
+        SandId = GetPalmTreeSand();
+    }
 
-        public PalmTreeContext(TwailaPoint pos) : base(pos)
-        {
-            SandId = GetPalmTreeSand();
-        }
+    public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static PalmTreeContext CreatePalmTreeContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-            {
-                return new PalmTreeContext(pos);
-            }
-
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override void Update()
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (tile.TileType == TileID.PalmTree && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
         {
-            base.Update();
-            SandId = GetPalmTreeSand();
+            return new PalmTreeContext(pos);
         }
 
-        public override bool ContextChanged(BaseContext other)
+        return null;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        SandId = GetPalmTreeSand();
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if(other?.GetType() == typeof(PalmTreeContext))
         {
-            if(other?.GetType() == typeof(PalmTreeContext))
-            {
-                PalmTreeContext otherContext = (PalmTreeContext)other;
-                return otherContext.SandId != SandId;
-            }
-            return true;
+            PalmTreeContext otherContext = (PalmTreeContext)other;
+            return otherContext.SandId != SandId;
         }
+        return true;
+    }
 
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        if (TileLoader.CanGrowModPalmTree(SandId))
         {
-            if (TileLoader.CanGrowModPalmTree(SandId))
-            {
-                return TreeUtil.GetRenderForModdedPalmTree(spriteBatch, SandId);
-            }
-            int palmTreeWood = TreeUtil.GetTreeWood(SandId);
-            if (palmTreeWood != -1)
-            {
-                return TreeUtil.GetRenderForPalmTree(spriteBatch, palmTreeWood);
-            }
-            return new TwailaRender();
+            return TreeUtil.GetRenderForModdedPalmTree(spriteBatch, SandId);
         }
-
-        protected override string GetName()
+        int palmTreeWood = TreeUtil.GetTreeWood(SandId);
+        if (palmTreeWood != -1)
         {
-            string displayName = NameUtil.GetNameForPalmTree(SandId);
-            string internalName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().Name;
-            string fullName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().FullName;
-
-            TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
-
-            return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
+            return TreeUtil.GetRenderForPalmTree(spriteBatch, palmTreeWood);
         }
+        return new TwailaRender();
+    }
 
-        protected override string GetMod()
+    protected override string GetName()
+    {
+        string displayName = NameUtil.GetNameForPalmTree(SandId);
+        string internalName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().Name;
+        string fullName = PlantLoader.Get<ModPalmTree>(TileId, SandId)?.GetType().FullName;
+
+        TwailaConfig.NameType nameType = TwailaConfig.Instance.DisplayContent.ShowName;
+
+        return NameUtil.GetName(nameType, displayName, internalName, fullName) ?? base.GetName();
+    }
+
+    protected override string GetMod()
+    {
+        ModTile mTile = TileLoader.GetTile(SandId);
+        return NameUtil.GetMod(mTile);
+    }
+
+    private int GetPalmTreeSand()
+    {
+        int x = BestTilePos.X;
+        int y = BestTilePos.Y;
+        do
         {
-            ModTile mTile = TileLoader.GetTile(SandId);
-            return NameUtil.GetMod(mTile);
-        }
+            y += 1;
+        } while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.PalmTree && Framing.GetTileSafely(x, y).HasTile);
 
-        private int GetPalmTreeSand()
+        if (!Framing.GetTileSafely(x, y).HasTile)
         {
-            int x = BestTilePos.X;
-            int y = BestTilePos.Y;
-            do
-            {
-                y += 1;
-            } while (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.PalmTree && Framing.GetTileSafely(x, y).HasTile);
-
-            if (!Framing.GetTileSafely(x, y).HasTile)
-            {
-                return -1;
-            }
-            return Framing.GetTileSafely(x, y).TileType;
+            return -1;
         }
+        return Framing.GetTileSafely(x, y).TileType;
     }
 }

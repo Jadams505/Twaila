@@ -10,83 +10,82 @@ using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class FoodPlatterContext : TileContext
 {
-    public class FoodPlatterContext : TileContext
+    protected int FoodItemId { get; set; }
+    protected string ItemText { get; set; }
+
+    public FoodPlatterContext(TwailaPoint point) : base(point)
     {
-        protected int FoodItemId { get; set; }
-        protected string ItemText { get; set; }
+        FoodItemId = 0;
+        ItemText = "";
+    }
 
-        public FoodPlatterContext(TwailaPoint point) : base(point)
-        {
-            FoodItemId = 0;
-            ItemText = "";
-        }
+    public static FoodPlatterContext CreateFoodPlatterContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static FoodPlatterContext CreateFoodPlatterContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            if (TEFoodPlatter.Find(tilePos.X, tilePos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
-            {
-                return new FoodPlatterContext(pos);
-            }
-
+        if (!tile.HasTile || tile.TileType >= TileLoader.TileCount)
             return null;
+
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        if (TEFoodPlatter.Find(tilePos.X, tilePos.Y) != -1 && !TileUtil.IsTileBlockedByAntiCheat(tile, tilePos))
+        {
+            return new FoodPlatterContext(pos);
         }
 
-        public override void Update()
+        return null;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        Content content = TwailaConfig.Instance.DisplayContent;
+
+        FoodItemId = GetFoodItemId();
+
+        if (FoodItemId > 0)
         {
-            base.Update();
-            Content content = TwailaConfig.Instance.DisplayContent;
-
-            FoodItemId = GetFoodItemId();
-
-            if (FoodItemId > 0)
+            if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
             {
-                if (content.ShowContainedItems == TwailaConfig.DisplayType.Icon || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                {
-                    IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(FoodItemId));
-                }
-                if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
-                {
-                    ItemText = Lang.GetItemNameValue(FoodItemId);
-                    TextGrid.Add(new UITwailaText(ItemText));
-                }
+                IconGrid.AddIcon(ImageUtil.GetRenderForIconItem(FoodItemId));
+            }
+            if (content.ShowContainedItems == TwailaConfig.DisplayType.Name || content.ShowContainedItems == TwailaConfig.DisplayType.Both)
+            {
+                ItemText = Lang.GetItemNameValue(FoodItemId);
+                TextGrid.Add(new UITwailaText(ItemText));
             }
         }
+    }
 
-        public override bool ContextChanged(BaseContext other)
+    public override bool ContextChanged(BaseContext other)
+    {
+        if(other?.GetType() == typeof(FoodPlatterContext))
         {
-            if(other?.GetType() == typeof(FoodPlatterContext))
-            {
-                FoodPlatterContext otherContext = (FoodPlatterContext)other;
-                return otherContext.FoodItemId != FoodItemId;
-            }
-            return true;
+            FoodPlatterContext otherContext = (FoodPlatterContext)other;
+            return otherContext.FoodItemId != FoodItemId;
         }
+        return true;
+    }
 
-        protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    protected override TwailaRender TileImage(SpriteBatch spriteBatch)
+    {
+        if(FoodItemId != 0)
         {
-            if(FoodItemId != 0)
-            {
-                return ImageUtil.GetRenderForPlate(FoodItemId);
-            }
-            return base.TileImage(spriteBatch);
+            return ImageUtil.GetRenderForPlate(FoodItemId);
         }
+        return base.TileImage(spriteBatch);
+    }
 
-        private int GetFoodItemId()
-        {
-            int id = TEFoodPlatter.Find(BestTilePos.X, BestTilePos.Y);
-            Item item = ((TEFoodPlatter)TileEntity.ByID[id]).item;
-            return item.type;
-        }
+    private int GetFoodItemId()
+    {
+        int id = TEFoodPlatter.Find(BestTilePos.X, BestTilePos.Y);
+        Item item = ((TEFoodPlatter)TileEntity.ByID[id]).item;
+        return item.type;
     }
 }

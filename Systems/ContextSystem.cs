@@ -7,219 +7,218 @@ using Terraria.ModLoader;
 using Twaila.Config;
 using Twaila.Context;
 
-namespace Twaila.Systems
+namespace Twaila.Systems;
+
+public class ContextSystem : ModSystem
 {
-    public class ContextSystem : ModSystem
+    public static ContextSystem Instance => ModContent.GetInstance<ContextSystem>();
+
+    public List<ContextEntry> ContextEntries { get; private set; } = new List<ContextEntry>();
+
+    public ContextEntry TileEntry { get; private set; }
+    public ContextEntry WallEntry { get; private set; }
+    public ContextEntry LiquidEntry { get; private set; }
+    public ContextEntry WireEntry { get; private set; }
+    public ContextEntry NpcEntry { get; private set; }
+
+    public override void Load()
     {
-        public static ContextSystem Instance => ModContent.GetInstance<ContextSystem>();
+        TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), 
+            () => TwailaConfig.Instance.DisplayContent.ContentPriorities.TilePrioity,
+            () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableTileContent);
+        TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
+        TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
+        TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
+        TileEntry.ApplicableContexts.Add(SaplingContext.CreateSaplingContext);
+        TileEntry.ApplicableContexts.Add(FoodPlatterContext.CreateFoodPlatterContext);
+        TileEntry.ApplicableContexts.Add(ItemFrameContext.CreateItemFrameContext);
+        TileEntry.ApplicableContexts.Add(WeaponRackContext.CreateWeaponRackContext);
+        TileEntry.ApplicableContexts.Add(HatRackContext.CreateHatRackContext);
+        TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
+        ContextEntries.Add(TileEntry);
 
-        public List<ContextEntry> ContextEntries { get; private set; } = new List<ContextEntry>();
+        WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), 
+            () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WallPriority,
+            () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableWallContent);
+        ContextEntries.Add(WallEntry);
 
-        public ContextEntry TileEntry { get; private set; }
-        public ContextEntry WallEntry { get; private set; }
-        public ContextEntry LiquidEntry { get; private set; }
-        public ContextEntry WireEntry { get; private set; }
-        public ContextEntry NpcEntry { get; private set; }
+        LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), 
+            () => TwailaConfig.Instance.DisplayContent.ContentPriorities.LiquidPriority,
+            () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableLiquidContent);
+        ContextEntries.Add(LiquidEntry);
 
-        public override void Load()
-        {
-            TileEntry = new ContextEntry(TileContext.CreateTileContext, Language.GetText("Mods.Twaila.Contexts.Tile"), 
-                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.TilePrioity,
-                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableTileContent);
-            TileEntry.ApplicableContexts.Add(PalmTreeContext.CreatePalmTreeContext);
-            TileEntry.ApplicableContexts.Add(CactusContext.CreateCactusContext);
-            TileEntry.ApplicableContexts.Add(TreeContext.CreateTreeContext);
-            TileEntry.ApplicableContexts.Add(SaplingContext.CreateSaplingContext);
-            TileEntry.ApplicableContexts.Add(FoodPlatterContext.CreateFoodPlatterContext);
-            TileEntry.ApplicableContexts.Add(ItemFrameContext.CreateItemFrameContext);
-            TileEntry.ApplicableContexts.Add(WeaponRackContext.CreateWeaponRackContext);
-            TileEntry.ApplicableContexts.Add(HatRackContext.CreateHatRackContext);
-            TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
-            ContextEntries.Add(TileEntry);
+        WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), 
+            () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WirePriority,
+            () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableWireContent);
+        ContextEntries.Add(WireEntry);
 
-            WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), 
-                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WallPriority,
-                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableWallContent);
-            ContextEntries.Add(WallEntry);
+        NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), 
+            () => TwailaConfig.Instance.DisplayContent.ContentPriorities.NpcPriority,
+            () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableNpcContent);
+        NpcEntry.ApplicableContexts.Add(TownNpcContext.CreateTownNpcContext);
+        ContextEntries.Add(NpcEntry);
 
-            LiquidEntry = new ContextEntry(LiquidContext.CreateLiquidContext, Language.GetText("Mods.Twaila.Contexts.Liquid"), 
-                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.LiquidPriority,
-                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableLiquidContent);
-            ContextEntries.Add(LiquidEntry);
-
-            WireEntry = new ContextEntry(WireContext.CreateWireContext, Language.GetText("Mods.Twaila.Contexts.Wire"), 
-                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.WirePriority,
-                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableWireContent);
-            ContextEntries.Add(WireEntry);
-
-            NpcEntry = new ContextEntry(NpcContext.CreateNpcContext, Language.GetText("Mods.Twaila.Contexts.Npc"), 
-                () => TwailaConfig.Instance.DisplayContent.ContentPriorities.NpcPriority,
-                () => TwailaConfig.Instance.DisplayContent.EnableContent.EnableNpcContent);
-            NpcEntry.ApplicableContexts.Add(TownNpcContext.CreateTownNpcContext);
-            ContextEntries.Add(NpcEntry);
-
-            TwailaConfig.Instance.CurrentContext.SetIndex(TwailaConfig.Instance.CurrentContext.Index);
-        }
-
-        public override void Unload()
-        {
-            ContextEntries = null;
-        }
-
-        public BaseContext CurrentContext(int currIndex, TwailaPoint pos)
-        {
-            return ContextEntries[currIndex].Context(pos);
-        }
-
-        public BaseContext CurrentContext(TwailaPoint pos) => CurrentContext(TwailaConfig.Instance.CurrentContext.Index, pos);
-
-        public BaseContext NextNonNullContext(ref int currIndex, TwailaPoint pos)
-        {
-            int i = currIndex;
-            BaseContext context;
-            do
-            {
-                i = NextContextIndex(i);
-                context = CurrentContext(i, pos);
-            }
-            while (context == null && i != currIndex);
-
-            currIndex = i;
-            return context;
-        }
-
-        public BaseContext NextNonNullContext(TwailaPoint pos) => NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
-
-        public BaseContext PrevNonNullContext(ref int currIndex, TwailaPoint pos)
-        {
-            int i = currIndex;
-            BaseContext context;
-            do
-            {
-                i = PrevContextIndex(i);
-                context = CurrentContext(i, pos);
-            }
-            while (context == null && i != currIndex);
-
-            currIndex = i;
-            return context;
-        }
-
-        public BaseContext PrevNonNullContext(TwailaPoint pos) => PrevNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
-
-        public int NextContextIndex(int currIndex)
-        {
-            int nextIndex = currIndex + 1;
-            return nextIndex < ContextEntries.Count ? nextIndex : 0;
-        }
-
-        public int NextContextIndex() => NextContextIndex(TwailaConfig.Instance.CurrentContext.Index);
-
-        public int PrevContextIndex(int currIndex)
-        {
-            int prevIndex = currIndex - 1;
-            return prevIndex >= 0 ? prevIndex : ContextEntries.Count - 1;
-        }
-
-        public int PrevContextIndex() => PrevContextIndex(TwailaConfig.Instance.CurrentContext.Index);
-
-        public List<ContextEntry> ContextEntriesAt(TwailaPoint pos)
-        {
-            return ContextEntries.FindAll(entry => entry.Context(pos) != null);
-        }
-
-        public int ContextEntryCountAt(TwailaPoint pos)
-        {
-            int count = 0;
-            foreach(var entry in ContextEntries)
-            {
-                if (entry.Context(pos) != null)
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        public void SortContexts()
-        {
-            ContextEntries.Sort((first, second) => first.Priority().CompareTo(second.Priority()));
-        }
+        TwailaConfig.Instance.CurrentContext.SetIndex(TwailaConfig.Instance.CurrentContext.Index);
     }
 
-    public struct TwailaPoint
+    public override void Unload()
     {
-        public Point MouseWorldPos;
-
-        public Point TilePos;
-
-        public Point SmartCursorPos;
-
-        public Point MapPos;
-
-        public TwailaPoint(Point mouseWorld, Point tile, Point smart, Point map)
-        {
-            MouseWorldPos = mouseWorld;
-            TilePos = tile;
-            SmartCursorPos = smart;
-            MapPos = map;
-        }
-
-        public readonly Point BestTilePos()
-        {
-            if (Main.SmartCursorShowing)
-            {
-                return SmartCursorPos;
-            }
-            
-            if (Main.mapFullscreen)
-            {
-                return MapPos;
-            }
-            
-            return TilePos;
-        }
+        ContextEntries = null;
     }
 
-    public delegate BaseContext ContextFetcher(TwailaPoint pos);
-
-    public class ContextEntry
+    public BaseContext CurrentContext(int currIndex, TwailaPoint pos)
     {
-        public List<ContextFetcher> ApplicableContexts { get; set; }
+        return ContextEntries[currIndex].Context(pos);
+    }
 
-        public ContextFetcher DefaultContext { get; set; }
+    public BaseContext CurrentContext(TwailaPoint pos) => CurrentContext(TwailaConfig.Instance.CurrentContext.Index, pos);
 
-        public LocalizedText Name { get; set; }
-
-        public Func<int> Priority { get; set; }
-
-        public Func<bool> Enabled { get; set; }
-
-        public ContextEntry(ContextFetcher defaultContext, LocalizedText name, Func<int> priority, Func<bool> enabled)
+    public BaseContext NextNonNullContext(ref int currIndex, TwailaPoint pos)
+    {
+        int i = currIndex;
+        BaseContext context;
+        do
         {
-            DefaultContext = defaultContext;
-            ApplicableContexts = new List<ContextFetcher>();
-            Name = name;
-            Priority = priority;
-            Enabled = enabled;
+            i = NextContextIndex(i);
+            context = CurrentContext(i, pos);
         }
+        while (context == null && i != currIndex);
 
-        public BaseContext Context(TwailaPoint pos)
+        currIndex = i;
+        return context;
+    }
+
+    public BaseContext NextNonNullContext(TwailaPoint pos) => NextNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
+
+    public BaseContext PrevNonNullContext(ref int currIndex, TwailaPoint pos)
+    {
+        int i = currIndex;
+        BaseContext context;
+        do
         {
-            if (!Enabled())
-                return null;
+            i = PrevContextIndex(i);
+            context = CurrentContext(i, pos);
+        }
+        while (context == null && i != currIndex);
 
-            BaseContext foundContext = null;
-            foreach(var entry in ApplicableContexts)
+        currIndex = i;
+        return context;
+    }
+
+    public BaseContext PrevNonNullContext(TwailaPoint pos) => PrevNonNullContext(ref TwailaConfig.Instance.CurrentContext.Index, pos);
+
+    public int NextContextIndex(int currIndex)
+    {
+        int nextIndex = currIndex + 1;
+        return nextIndex < ContextEntries.Count ? nextIndex : 0;
+    }
+
+    public int NextContextIndex() => NextContextIndex(TwailaConfig.Instance.CurrentContext.Index);
+
+    public int PrevContextIndex(int currIndex)
+    {
+        int prevIndex = currIndex - 1;
+        return prevIndex >= 0 ? prevIndex : ContextEntries.Count - 1;
+    }
+
+    public int PrevContextIndex() => PrevContextIndex(TwailaConfig.Instance.CurrentContext.Index);
+
+    public List<ContextEntry> ContextEntriesAt(TwailaPoint pos)
+    {
+        return ContextEntries.FindAll(entry => entry.Context(pos) != null);
+    }
+
+    public int ContextEntryCountAt(TwailaPoint pos)
+    {
+        int count = 0;
+        foreach(var entry in ContextEntries)
+        {
+            if (entry.Context(pos) != null)
             {
-                BaseContext context = entry.Invoke(pos);
-                if (context != null)
-                {
-                    foundContext = context;
-                    break;
-                }
+                count++;
             }
-            return foundContext ?? DefaultContext.Invoke(pos);
         }
+        return count;
+    }
+
+    public void SortContexts()
+    {
+        ContextEntries.Sort((first, second) => first.Priority().CompareTo(second.Priority()));
+    }
+}
+
+public struct TwailaPoint
+{
+    public Point MouseWorldPos;
+
+    public Point TilePos;
+
+    public Point SmartCursorPos;
+
+    public Point MapPos;
+
+    public TwailaPoint(Point mouseWorld, Point tile, Point smart, Point map)
+    {
+        MouseWorldPos = mouseWorld;
+        TilePos = tile;
+        SmartCursorPos = smart;
+        MapPos = map;
+    }
+
+    public readonly Point BestTilePos()
+    {
+        if (Main.SmartCursorShowing)
+        {
+            return SmartCursorPos;
+        }
+        
+        if (Main.mapFullscreen)
+        {
+            return MapPos;
+        }
+        
+        return TilePos;
+    }
+}
+
+public delegate BaseContext ContextFetcher(TwailaPoint pos);
+
+public class ContextEntry
+{
+    public List<ContextFetcher> ApplicableContexts { get; set; }
+
+    public ContextFetcher DefaultContext { get; set; }
+
+    public LocalizedText Name { get; set; }
+
+    public Func<int> Priority { get; set; }
+
+    public Func<bool> Enabled { get; set; }
+
+    public ContextEntry(ContextFetcher defaultContext, LocalizedText name, Func<int> priority, Func<bool> enabled)
+    {
+        DefaultContext = defaultContext;
+        ApplicableContexts = new List<ContextFetcher>();
+        Name = name;
+        Priority = priority;
+        Enabled = enabled;
+    }
+
+    public BaseContext Context(TwailaPoint pos)
+    {
+        if (!Enabled())
+            return null;
+
+        BaseContext foundContext = null;
+        foreach(var entry in ApplicableContexts)
+        {
+            BaseContext context = entry.Invoke(pos);
+            if (context != null)
+            {
+                foundContext = context;
+                break;
+            }
+        }
+        return foundContext ?? DefaultContext.Invoke(pos);
     }
 }

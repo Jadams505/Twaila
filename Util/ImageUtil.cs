@@ -12,16 +12,434 @@ using System;
 using Twaila.Config;
 using System.Collections.Generic;
 
-namespace Twaila.Util
+namespace Twaila.Util;
+
+public static class ImageUtil
 {
-    public static class ImageUtil
+    public static TwailaRender GetRenderFromTile(SpriteBatch spriteBatch, Tile tile)
     {
-        public static TwailaRender GetRenderFromTile(SpriteBatch spriteBatch, Tile tile)
+        int size = 16;
+        int padding = 2;
+        Texture2D texture = GetTileTexture(tile.TileType);
+
+        if (texture != null)
+        {
+            RenderBuilder builder = new();
+            for (int row = 0; row < 2; ++row)
+            {
+                for (int col = 0; col < 2; ++col)
+                {
+                    Rectangle copyRectangle = new Rectangle(col * (size + padding), 54 + row * (size + padding), size, size);
+                    builder.AddImage(texture, new(col * size, row * size), copyRectangle);
+                }
+            }
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetWallRenderFromTile(Tile tile)
+    {
+        if (tile.WallType > 0)
+        {
+            int size = 32;
+            int startX = 324, startY = 108;
+            Texture2D texture = GetWallTexture(tile);
+
+            if (texture != null)
+            {
+                RenderBuilder builder = new RenderBuilder();
+                Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
+                builder.AddImage(source: copyRectangle, texture: texture, position: Point.Zero);
+                return builder.Build();
+            }
+        }
+        return new TwailaRender();
+    }
+
+    public static TwailaRender GetLiquidRenderFromTile(Tile tile)
+    {
+        if (tile.LiquidAmount > 0)
         {
             int size = 16;
-            int padding = 2;
-            Texture2D texture = GetTileTexture(tile.TileType);
+            int startX = 0, startY = 0;
+            Texture2D texture = null;
+            switch (tile.LiquidType)
+            {
+                case LiquidID.Lava:
+                    texture = TextureAssets.Liquid[WaterStyleID.Lava].ForceVanillaLoad();
+                    break;
+                case LiquidID.Honey:
+                    texture = TextureAssets.Liquid[WaterStyleID.Honey].ForceVanillaLoad();
+                    break;
+                case LiquidID.Water:
+                    texture = TextureAssets.Liquid[Main.waterStyle].ForceVanillaLoad();
+                    break;
+            }
 
+            if (texture != null)
+            {
+                RenderBuilder builder = new RenderBuilder();
+                Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
+                builder.AddImage(source: copyRectangle, texture: texture, position: Point.Zero);
+                return builder.Build();
+            }
+        }
+        return new TwailaRender();
+    }
+
+    public static TwailaRender GetRenderCustom(SpriteBatch spriteBatch, Tile tile)
+    {
+        return GetRenderForCampfire(spriteBatch, tile)
+            .Coalesce(GetRenderForHerbs(spriteBatch, tile))
+            .Coalesce(GetRenderForXmasTree(spriteBatch, tile))
+            .Coalesce(TreeUtil.GetRenderForBamboo(spriteBatch, tile.TileType))
+            .Coalesce(TreeUtil.GetRenderForSeaweed(spriteBatch, tile.TileType))
+            .Coalesce(GetRenderForMannequins(spriteBatch, tile))
+            .Coalesce(GetRenderForSnakeRope(spriteBatch, tile.TileType))
+            .Coalesce(GetRenderForCattail(spriteBatch, tile))
+            .Coalesce(GetRenderForRelic(spriteBatch, tile))
+            .Coalesce(GetRenderForPylon(spriteBatch, tile))
+            .Coalesce(GetRenderForVoidVault(spriteBatch, tile))
+            .Coalesce(GetRenderForMarbleColumn(spriteBatch, tile));
+    }
+
+    /*
+        For some reason the frameY for campfires when they are turned off does not match the frameY on
+        their spritesheet. It might have something to do with animation frames
+    */
+    public static TwailaRender GetRenderForCampfire(SpriteBatch spriteBatch, Tile tile)
+    {
+        if (tile.TileType == TileID.Campfire && !TwailaConfig.Instance.UseItemTextures)
+        {
+            TileObjectData data = TileObjectData.GetTileData(tile);
+            int mutableFrameY = tile.TileFrameY;
+            if (tile.TileFrameY >= data.CoordinateFullHeight)
+            {
+                mutableFrameY = 288; // this is the correct frameY for the campfire when it is turned off
+            }
+            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, data);
+        }
+        return TwailaRender.Empty;
+    }
+
+    /*
+        Becuase herb tiles bloom and unbloom based on various conditions the tileId's do not reflect what texture
+        is actually being displayed. Thus those conditions must be explititly checked in order to determine if the tile is
+        mature or blooming
+        Blinkroot and Shiverthorn are exceptions because once bloomed they never unbloom
+    */
+    public static TwailaRender GetRenderForHerbs(SpriteBatch spriteBatch, Tile tile)
+    {
+        if (tile.TileType == TileID.MatureHerbs)
+        {
+            int mutableId = tile.TileType;
+            int style = TileObjectData.GetTileStyle(tile);
+            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            if (style == 0 && Main.dayTime) // daybloom
+            {
+                mutableId = TileID.BloomingHerbs;
+            }
+            else if (style == 1 && !Main.dayTime) // moonglow
+            {
+                mutableId = TileID.BloomingHerbs;
+            }
+            else if (style == 3 && !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0)) // deathweed
+            {
+                mutableId = TileID.BloomingHerbs;
+            }
+            else if (style == 4 && (Main.raining || Main.cloudAlpha > 0)) // waterleaf
+            {
+                mutableId = TileID.BloomingHerbs;
+            }
+            else if (style == 5 && !Main.raining && Main.time > 40500) // fireblossom
+            {
+                mutableId = TileID.BloomingHerbs;
+            }
+            return GetRenderFromTileObjectData(spriteBatch, mutableId, tile.TileFrameX, tile.TileFrameY, data);
+        }
+        return TwailaRender.Empty;
+    }
+
+    /*
+        Christmas trees store extra data in the top left tile to account for decorations
+    */
+    public static TwailaRender GetRenderForXmasTree(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(tile.TileType == TileID.ChristmasTree)
+        {
+            int mutableFrameY = tile.TileFrameY;
+            if(tile.TileFrameX >= 10) // the top left tile's frameX is always 10
+            {
+                mutableFrameY = 0; // sets the frameY to what it would be if it had no decorations
+            }
+            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForMannequins(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(tile.TileType == TileID.DisplayDoll)
+        {
+            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForSnakeRope(SpriteBatch spriteBatch, int tileId)
+    {
+        if(tileId == TileID.MysticSnakeRope)
+        {
+            RenderBuilder builder = new();
+            Texture2D texture = GetTileTexture(tileId);
+            int size = 16;
+            int padding = 2;
+            for(int i = 0; i < 3; ++i)
+            {
+                builder.AddImage(texture, 
+                    source: new Rectangle(size + padding, 0 + i * (size + padding), size, size), 
+                    position: new Point(0, 0 + i * size));
+            }
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForCattail(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(tile.TileType == TileID.Cattail)
+        {
+            RenderBuilder builder = new();
+            Texture2D texture = GetTileTexture(tile.TileType);
+            int size = 16;
+            int padding = 2;
+            int bottomStyle = 4;
+            int middleStyle = 8;
+            int topStyle = 11;
+
+            Point drawPos = Point.Zero;
+            builder.AddImage(texture, source: new Rectangle((size + padding) * topStyle, tile.TileFrameY, size, size), position: drawPos);
+            drawPos.Y += size;
+            builder.AddImage(texture, source: new Rectangle((size + padding) * middleStyle, tile.TileFrameY, size, size), position: drawPos);
+            drawPos.Y += size;
+            builder.AddImage(texture, source: new Rectangle((size + padding) * bottomStyle, tile.TileFrameY, size, size), position: drawPos);
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForRelic(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(tile.TileType == TileID.MasterTrophyBase)
+        {
+            Texture2D baseTexture = GetTileTexture(tile.TileType);
+            Texture2D relicTexture = TextureAssets.Extra[198].ForceVanillaLoad();
+            int size = 48;
+            int padding = 2;
+            int frameY = tile.TileFrameX / 54 * (size + padding);
+
+            Point drawPos = Point.Zero;
+            RenderBuilder builder = new();
+            builder.AddImage(relicTexture, source: new Rectangle(0, frameY, size, size), position: drawPos);
+            drawPos.Y += size;
+            for(int i = 0; i < 3; ++i)
+            {
+                builder.AddImage(baseTexture, source: new Rectangle(i * 18, 54, 16, 16), position: drawPos);
+                drawPos.X += 16;
+            }
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForPylon(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(tile.TileType == TileID.TeleportationPylon)
+        {
+            Texture2D baseTexture = GetTileTexture(tile.TileType);
+            Texture2D pylonTexture = TextureAssets.Extra[181].ForceVanillaLoad();
+            int pylonWidth = 28, pylonHeight = 44;
+            int padding = 2;
+            int frameX = 90 + (tile.TileFrameX / 54 * (pylonWidth + padding));
+
+            Point drawPos = Point.Zero;
+            RenderBuilder builder = new();             
+            int startY = 18;
+            int startX = tile.TileFrameX / 54 * 54;
+            for (int row = 0; row < 3; ++row)
+            {
+                for (int col = 0; col < 3; ++col)
+                {
+                    builder.AddImage(baseTexture, source: new Rectangle(startX + (col * 18), startY + (row * 18), 16, 16), position: new Point(16 * col, row * 16));
+                }
+            }
+            drawPos.X += 10;
+            drawPos.Y -= 16;
+            builder.AddImage(pylonTexture, source: new Rectangle(frameX, 0, pylonWidth, pylonHeight), position: drawPos);
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForVoidVault(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(tile.TileType == TileID.VoidVault)
+        {
+            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
+    {
+        if(!tile.HasTile && tile.WallType == 0 && tile.LiquidAmount <= 0)
+        {
+            if (tile.HasActuator)
+            {
+                return GetItemTexture(ItemID.Actuator).ToRender();
+            }
+            if (tile.YellowWire || tile.GreenWire || tile.BlueWire || tile.RedWire)
+            {
+                return GetItemTexture(ItemID.Wire).ToRender();
+            } 
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForPlate(int foodId)
+    {
+        RenderBuilder builder = new RenderBuilder();
+
+        Texture2D foodTexture = GetItemTexture(foodId);
+        Rectangle foodBox = ItemID.Sets.IsFood[foodId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3,
+            frameX: 0, frameY: 2) : foodTexture.Frame();
+
+        Texture2D plateTexture = GetTileTexture(TileID.FoodPlatter);
+        Rectangle plateBox = plateTexture.Frame(horizontalFrames: 2);
+
+        Point drawPos = Point.Zero;
+
+        builder.AddImage(plateTexture, drawPos, plateBox);
+        drawPos.Y += 16;
+        drawPos.Y -= foodBox.Height;
+        drawPos.X -= (foodBox.Width - 16) / 2;
+        builder.AddImage(foodTexture, drawPos, foodBox);
+
+        return builder.Build();
+    }
+
+    public static TwailaRender GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
+    {
+        Texture2D texture = GetItemTexture(itemId);
+        DrawAnimation animation = Main.itemAnimations[itemId];
+
+        if (animation != null)
+        {
+            RenderBuilder builder = new();
+            Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
+
+            builder.AddImage(texture, source: box, position: Point.Zero);
+
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderForIconItem(int itemId)
+    {
+        Texture2D texture = GetItemTexture(itemId);
+        DrawAnimation animation = Main.itemAnimations[itemId];
+
+        if (animation != null)
+        {
+            RenderBuilder builer = new RenderBuilder();
+            Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
+
+            builer.AddImage(source: box, texture: texture, position: Point.Zero);
+
+            return builer.Build();
+        }
+        return texture.ToRender();
+    }
+
+    public static TwailaRender GetRenderForItemFrame(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
+    {
+        RenderBuilder builder = new();
+
+        Texture2D itemTexture = GetItemTexture(itemId);
+        DrawAnimation itemAnimation = Main.itemAnimations[itemId];
+        Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
+
+        TwailaRender frameRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
+        Rectangle frameBox = new(0, 0, (int)frameRender.Width, (int)frameRender.Height); // is casting a good idea?
+
+        Vector2 drawPos = Vector2.Zero;
+
+        float itemFrameSize = 20f;
+        float scale = 1f;
+
+        if (itemBox.Width > itemFrameSize || itemBox.Height > itemFrameSize)
+        {
+            scale = (itemBox.Width <= itemBox.Height) ? (itemFrameSize / itemBox.Height) : (itemFrameSize / itemBox.Width);
+        }
+
+        builder.AddRender(frameRender, drawPos.ToPoint());
+
+        drawPos.X += frameBox.Width / 2;
+        drawPos.Y += frameBox.Height / 2;
+        drawPos.X -= itemBox.Width / 2 * scale;
+        drawPos.Y -= itemBox.Height / 2 * scale;
+
+        builder.AddImage(source: itemBox, texture: itemTexture, position: drawPos.ToPoint(), scale: scale);
+
+        return builder.Build();
+    }
+
+    public static TwailaRender GetRenderForWeaponRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
+    {
+        RenderBuilder builder = new();
+
+        Texture2D itemTexture = GetItemTexture(itemId);
+        DrawAnimation itemAnimation = Main.itemAnimations[itemId];
+        Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
+
+        TwailaRender rackRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
+        Rectangle rackBox = new(0, 0, (int)rackRender.Width, (int)rackRender.Height); // is casting a good idea
+
+        Vector2 drawPos = Vector2.Zero;
+
+        float rackSize = 40f;
+        float scale = 1f;
+
+        if (itemBox.Width > rackSize || itemBox.Height > rackSize)
+        {
+            scale = (itemBox.Width <= itemBox.Height) ? (rackSize / itemBox.Height) : (rackSize / itemBox.Width);
+        }
+
+        builder.AddRender(rackRender, drawPos.ToPoint());
+
+        drawPos.X += rackBox.Width / 2;
+        drawPos.Y += rackBox.Height / 2;
+        drawPos.X -= itemBox.Width / 2 * scale;
+        drawPos.Y -= itemBox.Height / 2 * scale;
+
+        builder.AddImage(itemTexture, drawPos.ToPoint(), itemBox, Color.White, scale);
+
+        return builder.Build();
+    }
+    
+    public static TwailaRender GetRenderForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
+    {
+        int width = 16;
+        int height = 18;
+        int paddingX = 2;
+        int paddingY = 6;
+        int startY = 66;
+        if (tile.TileType == TileID.MarbleColumn)
+        {
+            Texture2D texture = GetTileTexture(tile.TileType);
             if (texture != null)
             {
                 RenderBuilder builder = new();
@@ -29,649 +447,230 @@ namespace Twaila.Util
                 {
                     for (int col = 0; col < 2; ++col)
                     {
-                        Rectangle copyRectangle = new Rectangle(col * (size + padding), 54 + row * (size + padding), size, size);
-                        builder.AddImage(texture, new(col * size, row * size), copyRectangle);
+                        Rectangle copyRectangle = new Rectangle(col * (width + paddingX), startY + row * (height + paddingY), width, height);
+                        builder.AddImage(texture, source: copyRectangle, position: new Point(width * col, height * row));
                     }
                 }
                 return builder.Build();
             }
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetDebugRender(SpriteBatch spriteBatch, Tile tile)
+    {
+        RenderBuilder builder = new();
+        Texture2D texture = GetTileTexture(tile.TileType);
+        builder.AddImage(texture, source: new Rectangle(0, 0, texture.Width, texture.Height), position: Point.Zero);
+        return builder.Build();
+    }
+
+    public static TwailaRender GetRenderFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
+    {
+        if (data == null)
+        {
             return TwailaRender.Empty;
         }
-
-        public static TwailaRender GetWallRenderFromTile(Tile tile)
-        {
-            if (tile.WallType > 0)
-            {
-                int size = 32;
-                int startX = 324, startY = 108;
-                Texture2D texture = GetWallTexture(tile);
-
-                if (texture != null)
-                {
-                    RenderBuilder builder = new RenderBuilder();
-                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
-                    builder.AddImage(source: copyRectangle, texture: texture, position: Point.Zero);
-                    return builder.Build();
-                }
-            }
-            return new TwailaRender();
-        }
-
-        public static TwailaRender GetLiquidRenderFromTile(Tile tile)
-        {
-            if (tile.LiquidAmount > 0)
-            {
-                int size = 16;
-                int startX = 0, startY = 0;
-                Texture2D texture = null;
-                switch (tile.LiquidType)
-                {
-                    case LiquidID.Lava:
-                        texture = TextureAssets.Liquid[WaterStyleID.Lava].ForceVanillaLoad();
-                        break;
-                    case LiquidID.Honey:
-                        texture = TextureAssets.Liquid[WaterStyleID.Honey].ForceVanillaLoad();
-                        break;
-                    case LiquidID.Water:
-                        texture = TextureAssets.Liquid[Main.waterStyle].ForceVanillaLoad();
-                        break;
-                }
-
-                if (texture != null)
-                {
-                    RenderBuilder builder = new RenderBuilder();
-                    Rectangle copyRectangle = new Rectangle(startX, startY, size, size);
-                    builder.AddImage(source: copyRectangle, texture: texture, position: Point.Zero);
-                    return builder.Build();
-                }
-            }
-            return new TwailaRender();
-        }
-
-        public static TwailaRender GetRenderCustom(SpriteBatch spriteBatch, Tile tile)
-        {
-            return GetRenderForCampfire(spriteBatch, tile)
-                .Coalesce(GetRenderForHerbs(spriteBatch, tile))
-                .Coalesce(GetRenderForXmasTree(spriteBatch, tile))
-                .Coalesce(TreeUtil.GetRenderForBamboo(spriteBatch, tile.TileType))
-                .Coalesce(TreeUtil.GetRenderForSeaweed(spriteBatch, tile.TileType))
-                .Coalesce(GetRenderForMannequins(spriteBatch, tile))
-                .Coalesce(GetRenderForSnakeRope(spriteBatch, tile.TileType))
-                .Coalesce(GetRenderForCattail(spriteBatch, tile))
-                .Coalesce(GetRenderForRelic(spriteBatch, tile))
-                .Coalesce(GetRenderForPylon(spriteBatch, tile))
-                .Coalesce(GetRenderForVoidVault(spriteBatch, tile))
-                .Coalesce(GetRenderForMarbleColumn(spriteBatch, tile));
-        }
-
-        /*
-            For some reason the frameY for campfires when they are turned off does not match the frameY on
-            their spritesheet. It might have something to do with animation frames
-        */
-        public static TwailaRender GetRenderForCampfire(SpriteBatch spriteBatch, Tile tile)
-        {
-            if (tile.TileType == TileID.Campfire && !TwailaConfig.Instance.UseItemTextures)
-            {
-                TileObjectData data = TileObjectData.GetTileData(tile);
-                int mutableFrameY = tile.TileFrameY;
-                if (tile.TileFrameY >= data.CoordinateFullHeight)
-                {
-                    mutableFrameY = 288; // this is the correct frameY for the campfire when it is turned off
-                }
-                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, data);
-            }
-            return TwailaRender.Empty;
-        }
-
-        /*
-            Becuase herb tiles bloom and unbloom based on various conditions the tileId's do not reflect what texture
-            is actually being displayed. Thus those conditions must be explititly checked in order to determine if the tile is
-            mature or blooming
-            Blinkroot and Shiverthorn are exceptions because once bloomed they never unbloom
-        */
-        public static TwailaRender GetRenderForHerbs(SpriteBatch spriteBatch, Tile tile)
-        {
-            if (tile.TileType == TileID.MatureHerbs)
-            {
-                int mutableId = tile.TileType;
-                int style = TileObjectData.GetTileStyle(tile);
-                TileObjectData data = TileUtil.GetTileObjectData(tile);
-                if (style == 0 && Main.dayTime) // daybloom
-                {
-                    mutableId = TileID.BloomingHerbs;
-                }
-                else if (style == 1 && !Main.dayTime) // moonglow
-                {
-                    mutableId = TileID.BloomingHerbs;
-                }
-                else if (style == 3 && !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0)) // deathweed
-                {
-                    mutableId = TileID.BloomingHerbs;
-                }
-                else if (style == 4 && (Main.raining || Main.cloudAlpha > 0)) // waterleaf
-                {
-                    mutableId = TileID.BloomingHerbs;
-                }
-                else if (style == 5 && !Main.raining && Main.time > 40500) // fireblossom
-                {
-                    mutableId = TileID.BloomingHerbs;
-                }
-                return GetRenderFromTileObjectData(spriteBatch, mutableId, tile.TileFrameX, tile.TileFrameY, data);
-            }
-            return TwailaRender.Empty;
-        }
-
-        /*
-            Christmas trees store extra data in the top left tile to account for decorations
-        */
-        public static TwailaRender GetRenderForXmasTree(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.TileType == TileID.ChristmasTree)
-            {
-                int mutableFrameY = tile.TileFrameY;
-                if(tile.TileFrameX >= 10) // the top left tile's frameX is always 10
-                {
-                    mutableFrameY = 0; // sets the frameY to what it would be if it had no decorations
-                }
-                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForMannequins(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.TileType == TileID.DisplayDoll)
-            {
-                TileObjectData data = TileUtil.GetTileObjectData(tile);
-                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForSnakeRope(SpriteBatch spriteBatch, int tileId)
-        {
-            if(tileId == TileID.MysticSnakeRope)
-            {
-                RenderBuilder builder = new();
-                Texture2D texture = GetTileTexture(tileId);
-                int size = 16;
-                int padding = 2;
-                for(int i = 0; i < 3; ++i)
-                {
-                    builder.AddImage(texture, 
-                        source: new Rectangle(size + padding, 0 + i * (size + padding), size, size), 
-                        position: new Point(0, 0 + i * size));
-                }
-                return builder.Build();
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForCattail(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.TileType == TileID.Cattail)
-            {
-                RenderBuilder builder = new();
-                Texture2D texture = GetTileTexture(tile.TileType);
-                int size = 16;
-                int padding = 2;
-                int bottomStyle = 4;
-                int middleStyle = 8;
-                int topStyle = 11;
-
-                Point drawPos = Point.Zero;
-                builder.AddImage(texture, source: new Rectangle((size + padding) * topStyle, tile.TileFrameY, size, size), position: drawPos);
-                drawPos.Y += size;
-                builder.AddImage(texture, source: new Rectangle((size + padding) * middleStyle, tile.TileFrameY, size, size), position: drawPos);
-                drawPos.Y += size;
-                builder.AddImage(texture, source: new Rectangle((size + padding) * bottomStyle, tile.TileFrameY, size, size), position: drawPos);
-                return builder.Build();
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForRelic(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.TileType == TileID.MasterTrophyBase)
-            {
-                Texture2D baseTexture = GetTileTexture(tile.TileType);
-                Texture2D relicTexture = TextureAssets.Extra[198].ForceVanillaLoad();
-                int size = 48;
-                int padding = 2;
-                int frameY = tile.TileFrameX / 54 * (size + padding);
-
-                Point drawPos = Point.Zero;
-                RenderBuilder builder = new();
-                builder.AddImage(relicTexture, source: new Rectangle(0, frameY, size, size), position: drawPos);
-                drawPos.Y += size;
-                for(int i = 0; i < 3; ++i)
-                {
-                    builder.AddImage(baseTexture, source: new Rectangle(i * 18, 54, 16, 16), position: drawPos);
-                    drawPos.X += 16;
-                }
-                return builder.Build();
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForPylon(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.TileType == TileID.TeleportationPylon)
-            {
-                Texture2D baseTexture = GetTileTexture(tile.TileType);
-                Texture2D pylonTexture = TextureAssets.Extra[181].ForceVanillaLoad();
-                int pylonWidth = 28, pylonHeight = 44;
-                int padding = 2;
-                int frameX = 90 + (tile.TileFrameX / 54 * (pylonWidth + padding));
-
-                Point drawPos = Point.Zero;
-                RenderBuilder builder = new();             
-                int startY = 18;
-                int startX = tile.TileFrameX / 54 * 54;
-                for (int row = 0; row < 3; ++row)
-                {
-                    for (int col = 0; col < 3; ++col)
-                    {
-                        builder.AddImage(baseTexture, source: new Rectangle(startX + (col * 18), startY + (row * 18), 16, 16), position: new Point(16 * col, row * 16));
-                    }
-                }
-                drawPos.X += 10;
-                drawPos.Y -= 16;
-                builder.AddImage(pylonTexture, source: new Rectangle(frameX, 0, pylonWidth, pylonHeight), position: drawPos);
-                return builder.Build();
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForVoidVault(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(tile.TileType == TileID.VoidVault)
-            {
-                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
-        {
-            if(!tile.HasTile && tile.WallType == 0 && tile.LiquidAmount <= 0)
-            {
-                if (tile.HasActuator)
-                {
-                    return GetItemTexture(ItemID.Actuator).ToRender();
-                }
-                if (tile.YellowWire || tile.GreenWire || tile.BlueWire || tile.RedWire)
-                {
-                    return GetItemTexture(ItemID.Wire).ToRender();
-                } 
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForPlate(int foodId)
-        {
-            RenderBuilder builder = new RenderBuilder();
-
-            Texture2D foodTexture = GetItemTexture(foodId);
-            Rectangle foodBox = ItemID.Sets.IsFood[foodId] ? foodTexture.Frame(horizontalFrames: 1, verticalFrames: 3,
-                frameX: 0, frameY: 2) : foodTexture.Frame();
-
-            Texture2D plateTexture = GetTileTexture(TileID.FoodPlatter);
-            Rectangle plateBox = plateTexture.Frame(horizontalFrames: 2);
-
-            Point drawPos = Point.Zero;
-
-            builder.AddImage(plateTexture, drawPos, plateBox);
-            drawPos.Y += 16;
-            drawPos.Y -= foodBox.Height;
-            drawPos.X -= (foodBox.Width - 16) / 2;
-            builder.AddImage(foodTexture, drawPos, foodBox);
-
-            return builder.Build();
-        }
-
-        public static TwailaRender GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
-        {
-            Texture2D texture = GetItemTexture(itemId);
-            DrawAnimation animation = Main.itemAnimations[itemId];
-
-            if (animation != null)
-            {
-                RenderBuilder builder = new();
-                Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
-
-                builder.AddImage(texture, source: box, position: Point.Zero);
-
-                return builder.Build();
-            }
-            return TwailaRender.Empty;
-        }
-
-        public static TwailaRender GetRenderForIconItem(int itemId)
-        {
-            Texture2D texture = GetItemTexture(itemId);
-            DrawAnimation animation = Main.itemAnimations[itemId];
-
-            if (animation != null)
-            {
-                RenderBuilder builer = new RenderBuilder();
-                Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
-
-                builer.AddImage(source: box, texture: texture, position: Point.Zero);
-
-                return builer.Build();
-            }
-            return texture.ToRender();
-        }
-
-        public static TwailaRender GetRenderForItemFrame(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
+        Texture2D texture = GetTileTexture(tileId);
+        if (texture != null)
         {
             RenderBuilder builder = new();
 
-            Texture2D itemTexture = GetItemTexture(itemId);
-            DrawAnimation itemAnimation = Main.itemAnimations[itemId];
-            Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
+            frameX = frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
+            frameY = frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
 
-            TwailaRender frameRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
-            Rectangle frameBox = new(0, 0, (int)frameRender.Width, (int)frameRender.Height); // is casting a good idea?
-
-            Vector2 drawPos = Vector2.Zero;
-
-            float itemFrameSize = 20f;
-            float scale = 1f;
-
-            if (itemBox.Width > itemFrameSize || itemBox.Height > itemFrameSize)
+            int height = 0;
+            for (int row = 0; row < data.Height; ++row)
             {
-                scale = (itemBox.Width <= itemBox.Height) ? (itemFrameSize / itemBox.Height) : (itemFrameSize / itemBox.Width);
-            }
-
-            builder.AddRender(frameRender, drawPos.ToPoint());
-
-            drawPos.X += frameBox.Width / 2;
-            drawPos.Y += frameBox.Height / 2;
-            drawPos.X -= itemBox.Width / 2 * scale;
-            drawPos.Y -= itemBox.Height / 2 * scale;
-
-            builder.AddImage(source: itemBox, texture: itemTexture, position: drawPos.ToPoint(), scale: scale);
-
-            return builder.Build();
-        }
-
-        public static TwailaRender GetRenderForWeaponRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
-        {
-            RenderBuilder builder = new();
-
-            Texture2D itemTexture = GetItemTexture(itemId);
-            DrawAnimation itemAnimation = Main.itemAnimations[itemId];
-            Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
-
-            TwailaRender rackRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
-            Rectangle rackBox = new(0, 0, (int)rackRender.Width, (int)rackRender.Height); // is casting a good idea
-
-            Vector2 drawPos = Vector2.Zero;
-
-            float rackSize = 40f;
-            float scale = 1f;
-
-            if (itemBox.Width > rackSize || itemBox.Height > rackSize)
-            {
-                scale = (itemBox.Width <= itemBox.Height) ? (rackSize / itemBox.Height) : (rackSize / itemBox.Width);
-            }
-
-            builder.AddRender(rackRender, drawPos.ToPoint());
-
-            drawPos.X += rackBox.Width / 2;
-            drawPos.Y += rackBox.Height / 2;
-            drawPos.X -= itemBox.Width / 2 * scale;
-            drawPos.Y -= itemBox.Height / 2 * scale;
-
-            builder.AddImage(itemTexture, drawPos.ToPoint(), itemBox, Color.White, scale);
-
-            return builder.Build();
-        }
-        
-        public static TwailaRender GetRenderForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
-        {
-            int width = 16;
-            int height = 18;
-            int paddingX = 2;
-            int paddingY = 6;
-            int startY = 66;
-            if (tile.TileType == TileID.MarbleColumn)
-            {
-                Texture2D texture = GetTileTexture(tile.TileType);
-                if (texture != null)
+                for (int col = 0; col < data.Width; ++col)
                 {
-                    RenderBuilder builder = new();
-                    for (int row = 0; row < 2; ++row)
-                    {
-                        for (int col = 0; col < 2; ++col)
-                        {
-                            Rectangle copyRectangle = new Rectangle(col * (width + paddingX), startY + row * (height + paddingY), width, height);
-                            builder.AddImage(texture, source: copyRectangle, position: new Point(width * col, height * row));
-                        }
-                    }
-                    return builder.Build();
+                    int width = data.CoordinateWidth;
+                    Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
+                        frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
+                    builder.AddImage(texture, source: copyRectangle, position: new Point(width * col, height));
                 }
+                height += data.CoordinateHeights[row];
             }
+            return builder.Build();
+        }
+        return TwailaRender.Empty;
+    }
+
+    public static TwailaRender GetRenderFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
+    {
+        try
+        {
+            // Taken from TileLoader.SetDrawPositions (Called by TilesRenderer.GetTileDrawData)
+            // Unloaded tiles can cause an IndexOutOfBoundsException on tileData.CoordinateHeights
+            // This is because it has same frameX and frameY as the original tile but has the TileObjectData of an unloaded tile
+            TileObjectData tileData = TileObjectData.GetTileData(tile.TileType, 0, 0);
+            if (tileData != null)
+            {
+                int partY = 0;
+                for (int remainingFrameY = tile.TileFrameY % tileData.CoordinateFullHeight; partY < tileData.Height && remainingFrameY - tileData.CoordinateHeights[partY] + tileData.CoordinatePadding >= 0; partY++)
+                {
+                    remainingFrameY -= tileData.CoordinateHeights[partY] + tileData.CoordinatePadding;
+                }
+
+                if (partY >= tileData.CoordinateHeights.Length)
+                    return TwailaRender.Empty;
+            }
+
+            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
+            Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
+                ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
+                out _, out _, out _, out _);
+            if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
+            {
+                tileFx += (short)addX;
+                tileFy += (short)addY;
+            }
+            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
+        }
+        catch (Exception e)
+        {
+            Twaila.Instance.Logger.Error(e.Message);
             return TwailaRender.Empty;
         }
+    }
 
-        public static TwailaRender GetDebugRender(SpriteBatch spriteBatch, Tile tile)
-        {
-            RenderBuilder builder = new();
-            Texture2D texture = GetTileTexture(tile.TileType);
-            builder.AddImage(texture, source: new Rectangle(0, 0, texture.Width, texture.Height), position: Point.Zero);
-            return builder.Build();
-        }
+    public enum NpcStat
+    {
+        Health,
+        Attack,
+        Defense,
+        Knockback,
+        Kill
+    }
 
-        public static TwailaRender GetRenderFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
+    public static TwailaRender GetRenderForNpcStat(NpcStat stat)
+    {
+        Texture2D texture = stat switch
         {
-            if (data == null)
+            NpcStat.Health => ModContent.Request<Texture2D>("Twaila/Assets/Health")?.Value,
+            NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
+            NpcStat.Defense => ModContent.Request<Texture2D>("Twaila/Assets/Defense")?.Value,
+            NpcStat.Knockback => ModContent.Request<Texture2D>("Twaila/Assets/Knockback")?.Value,
+            NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
+            _ => null
+        }; 
+
+        RenderBuilder builder = new RenderBuilder();
+        float scale = 16.5f / Math.Max(texture.Width, texture.Height);
+        builder.AddImage(texture, Point.Zero, texture.Frame(), scale);
+
+        return builder.Build();
+    }
+
+    public static TwailaRender GetRenderForNpc(NPC npc)
+    {
+        RenderBuilder builder = new RenderBuilder();
+        if (npc != null)
+        {
+            Rectangle drawFrame = new Rectangle(0, 0, npc.frame.Width, npc.frame.Height);
+
+            Color drawColor = npc.color;
+            if (drawColor.A == 0)
             {
-                return TwailaRender.Empty;
+                drawColor = Color.White;
             }
-            Texture2D texture = GetTileTexture(tileId);
-            if (texture != null)
-            {
-                RenderBuilder builder = new();
 
-                frameX = frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
-                frameY = frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
+            float scale = MathHelper.Clamp(npc.scale, 0, 1);
 
-                int height = 0;
-                for (int row = 0; row < data.Height; ++row)
-                {
-                    for (int col = 0; col < data.Width; ++col)
-                    {
-                        int width = data.CoordinateWidth;
-                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
-                            frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
-                        builder.AddImage(texture, source: copyRectangle, position: new Point(width * col, height));
-                    }
-                    height += data.CoordinateHeights[row];
-                }
-                return builder.Build();
-            }
-            return TwailaRender.Empty;
+            builder.AddImage(ImageUtil.GetNPCTexture(npc.type), Point.Zero, drawFrame, drawColor, scale);
         }
+        return builder.Build();
+    } 
 
-        public static TwailaRender GetRenderFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
+    public static TwailaRender GetRenderForBuff(int type)
+    {
+        Texture2D texture = TextureAssets.Buff[type].Value;
+
+        RenderBuilder builder = new RenderBuilder();
+        builder.AddImage(texture, Point.Zero, texture.Bounds);
+
+        return builder.Build();
+    }
+
+    public static Texture2D GetTileTexture(int tileId)
+    {
+        if(tileId >= 0 && tileId < TextureAssets.Tile.Length)
         {
-            try
-            {
-                // Taken from TileLoader.SetDrawPositions (Called by TilesRenderer.GetTileDrawData)
-                // Unloaded tiles can cause an IndexOutOfBoundsException on tileData.CoordinateHeights
-                // This is because it has same frameX and frameY as the original tile but has the TileObjectData of an unloaded tile
-                TileObjectData tileData = TileObjectData.GetTileData(tile.TileType, 0, 0);
-                if (tileData != null)
-                {
-                    int partY = 0;
-                    for (int remainingFrameY = tile.TileFrameY % tileData.CoordinateFullHeight; partY < tileData.Height && remainingFrameY - tileData.CoordinateHeights[partY] + tileData.CoordinatePadding >= 0; partY++)
-                    {
-                        remainingFrameY -= tileData.CoordinateHeights[partY] + tileData.CoordinatePadding;
-                    }
-
-                    if (partY >= tileData.CoordinateHeights.Length)
-                        return TwailaRender.Empty;
-                }
-
-                TileObjectData data = TileUtil.GetTileObjectData(tile);
-                short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
-                Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
-                    ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
-                    out _, out _, out _, out _);
-                if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
-                {
-                    tileFx += (short)addX;
-                    tileFy += (short)addY;
-                }
-                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
-            }
-            catch (Exception e)
-            {
-                Twaila.Instance.Logger.Error(e.Message);
-                return TwailaRender.Empty;
-            }
+            Main.instance.LoadTiles(tileId);
+            return TextureAssets.Tile[tileId].Value;
         }
+        return null;
+    }
 
-        public enum NpcStat
+    public static Texture2D GetWallTexture(Tile tile)
+    {
+        if (tile.WallType >= 0 && tile.WallType < TextureAssets.Wall.Length)
         {
-            Health,
-            Attack,
-            Defense,
-            Knockback,
-            Kill
+            Main.instance.LoadWall(tile.WallType);
+            return TextureAssets.Wall[tile.WallType].Value;
         }
+        return null;
+    }
 
-        public static TwailaRender GetRenderForNpcStat(NpcStat stat)
+    public static Texture2D GetItemTexture(int itemId)
+    {
+        if (itemId >= 0 && itemId < TextureAssets.Item.Length)
         {
-            Texture2D texture = stat switch
-            {
-                NpcStat.Health => ModContent.Request<Texture2D>("Twaila/Assets/Health")?.Value,
-                NpcStat.Attack => ModContent.Request<Texture2D>("Twaila/Assets/Attack")?.Value,
-                NpcStat.Defense => ModContent.Request<Texture2D>("Twaila/Assets/Defense")?.Value,
-                NpcStat.Knockback => ModContent.Request<Texture2D>("Twaila/Assets/Knockback")?.Value,
-                NpcStat.Kill => GetItemTexture(ItemID.Tombstone),
-                _ => null
-            }; 
-
-            RenderBuilder builder = new RenderBuilder();
-            float scale = 16.5f / Math.Max(texture.Width, texture.Height);
-            builder.AddImage(texture, Point.Zero, texture.Frame(), scale);
-
-            return builder.Build();
+            Main.instance.LoadItem(itemId);
+            return TextureAssets.Item[itemId].Value;
         }
+        return null;
+    }
 
-        public static TwailaRender GetRenderForNpc(NPC npc)
+    public static Texture2D GetArmorTexture(Item item, EquipType equipType)
+    {
+        switch (equipType)
         {
-            RenderBuilder builder = new RenderBuilder();
-            if (npc != null)
-            {
-                Rectangle drawFrame = new Rectangle(0, 0, npc.frame.Width, npc.frame.Height);
-
-                Color drawColor = npc.color;
-                if (drawColor.A == 0)
-                {
-                    drawColor = Color.White;
-                }
-
-                float scale = MathHelper.Clamp(npc.scale, 0, 1);
-
-                builder.AddImage(ImageUtil.GetNPCTexture(npc.type), Point.Zero, drawFrame, drawColor, scale);
-            }
-            return builder.Build();
-        } 
-
-        public static TwailaRender GetRenderForBuff(int type)
-        {
-            Texture2D texture = TextureAssets.Buff[type].Value;
-
-            RenderBuilder builder = new RenderBuilder();
-            builder.AddImage(texture, Point.Zero, texture.Bounds);
-
-            return builder.Build();
+            case EquipType.Head:
+                Main.instance.LoadArmorHead(item.headSlot);
+                return TextureAssets.ArmorHead[item.headSlot].Value;
+            case EquipType.Body:
+                Main.instance.LoadArmorBody(item.bodySlot);
+                return TextureAssets.ArmorBody[item.bodySlot].Value;
+            case EquipType.Legs:
+                Main.instance.LoadArmorLegs(item.legSlot);
+                return TextureAssets.ArmorLeg[item.legSlot].Value;
         }
+        return null;
+    }
 
-        public static Texture2D GetTileTexture(int tileId)
+    public static Texture2D GetNPCTexture(int npcId)
+    {
+        if (npcId >= 0 && npcId < TextureAssets.Npc.Length)
         {
-            if(tileId >= 0 && tileId < TextureAssets.Tile.Length)
-            {
-                Main.instance.LoadTiles(tileId);
-                return TextureAssets.Tile[tileId].Value;
-            }
+            Main.instance.LoadNPC(npcId);
+            return TextureAssets.Npc[npcId].Value;
+        }
+        return null;
+    }
+
+    public static Texture2D ForceVanillaLoad(this Asset<Texture2D> asset)
+    {
+        if(asset == null)
+        {
             return null;
         }
-
-        public static Texture2D GetWallTexture(Tile tile)
+        if (asset.State == AssetState.NotLoaded)
         {
-            if (tile.WallType >= 0 && tile.WallType < TextureAssets.Wall.Length)
-            {
-                Main.instance.LoadWall(tile.WallType);
-                return TextureAssets.Wall[tile.WallType].Value;
-            }
-            return null;
+            return Main.Assets.Request<Texture2D>(asset.Name, AssetRequestMode.ImmediateLoad).Value;
         }
+        return asset.Value;
+    }
 
-        public static Texture2D GetItemTexture(int itemId)
-        {
-            if (itemId >= 0 && itemId < TextureAssets.Item.Length)
-            {
-                Main.instance.LoadItem(itemId);
-                return TextureAssets.Item[itemId].Value;
-            }
-            return null;
-        }
+    public static TwailaRender ToRender(this Texture2D texture)
+    {
+        return new TwailaRender(texture);
+    }
 
-        public static Texture2D GetArmorTexture(Item item, EquipType equipType)
-        {
-            switch (equipType)
-            {
-                case EquipType.Head:
-                    Main.instance.LoadArmorHead(item.headSlot);
-                    return TextureAssets.ArmorHead[item.headSlot].Value;
-                case EquipType.Body:
-                    Main.instance.LoadArmorBody(item.bodySlot);
-                    return TextureAssets.ArmorBody[item.bodySlot].Value;
-                case EquipType.Legs:
-                    Main.instance.LoadArmorLegs(item.legSlot);
-                    return TextureAssets.ArmorLeg[item.legSlot].Value;
-            }
-            return null;
-        }
-
-        public static Texture2D GetNPCTexture(int npcId)
-        {
-            if (npcId >= 0 && npcId < TextureAssets.Npc.Length)
-            {
-                Main.instance.LoadNPC(npcId);
-                return TextureAssets.Npc[npcId].Value;
-            }
-            return null;
-        }
-
-        public static Texture2D ForceVanillaLoad(this Asset<Texture2D> asset)
-        {
-            if(asset == null)
-            {
-                return null;
-            }
-            if (asset.State == AssetState.NotLoaded)
-            {
-                return Main.Assets.Request<Texture2D>(asset.Name, AssetRequestMode.ImmediateLoad).Value;
-            }
-            return asset.Value;
-        }
-
-        public static TwailaRender ToRender(this Texture2D texture)
-        {
-            return new TwailaRender(texture);
-        }
-
-        public static TwailaRender Coalesce(this TwailaRender first, TwailaRender second)
-        {
-            if (first.CanDraw()) return first;
-            return second;
-        }
+    public static TwailaRender Coalesce(this TwailaRender first, TwailaRender second)
+    {
+        if (first.CanDraw()) return first;
+        return second;
     }
 }

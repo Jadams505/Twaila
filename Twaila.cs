@@ -5,64 +5,63 @@ using Terraria;
 using Terraria.ModLoader;
 using Twaila.ObjectData;
 
-namespace Twaila
+namespace Twaila;
+
+public class Twaila : Mod
 {
-    public class Twaila : Mod
+    public static Twaila Instance => ModContent.GetInstance<Twaila>();
+
+    public override void Load()
     {
-        public static Twaila Instance => ModContent.GetInstance<Twaila>();
+        ExtraObjectData.Initialize();
+        IL_Main.DrawMap += IL_Main_DrawMap;
+    }
 
-        public override void Load()
+    private void IL_Main_DrawMap(MonoMod.Cil.ILContext il)
+    {
+        var cursor = new ILCursor(il);
+        int mapXLocalIndex = -1;
+        int mapYLocalIndex = -1;
+        int flag2LocalIndex = -1;
+
+        cursor.DefineLabel();
+
+        bool preSuccess = cursor.TryGotoNext(MoveType.After,
+            x => x.MatchStloc(out flag2LocalIndex),             // stloc.s flag2
+            x => x.MatchLdloc(flag2LocalIndex),                 // ldloc.s flag2
+            x => x.MatchBrtrue(out _));                         // brtrue
+                                                                      
+
+        bool postSuccess = cursor.TryGotoNext(MoveType.Before,
+            x => x.MatchLdsfld(typeof(Main), nameof(Main.Map)),         // ldsfld Main::Map
+            x => x.MatchLdloc(out mapXLocalIndex),                      // ldloc.s num89
+            x => x.MatchLdloc(out mapYLocalIndex));                     // ldloc.s num90
+
+        bool validIndexes = mapXLocalIndex != -1 && mapYLocalIndex != -1 && flag2LocalIndex != -1;
+
+        if (!preSuccess || !postSuccess || !validIndexes)
         {
-            ExtraObjectData.Initialize();
-            IL_Main.DrawMap += IL_Main_DrawMap;
+            Logger.Warn("Failed to IL edit Main.DrawMap");
+            return;
         }
 
-        private void IL_Main_DrawMap(MonoMod.Cil.ILContext il)
+        MonoModHooks.DumpIL(this, il);
+
+        cursor.Emit(OpCodes.Ldloc, mapXLocalIndex);    // ldloc.s num89
+        cursor.Emit(OpCodes.Ldloc, mapYLocalIndex);    // ldloc.s num90
+        cursor.EmitDelegate(StealMapPointFromVanilla);
+    }
+
+    public static void StealMapPointFromVanilla(int x, int y)
+    {
+        if (Main.LocalPlayer.TryGetModPlayer<TwailaPlayer>(out var player))
         {
-            var cursor = new ILCursor(il);
-            int mapXLocalIndex = -1;
-            int mapYLocalIndex = -1;
-            int flag2LocalIndex = -1;
-
-            cursor.DefineLabel();
-
-            bool preSuccess = cursor.TryGotoNext(MoveType.After,
-                x => x.MatchStloc(out flag2LocalIndex),             // stloc.s flag2
-                x => x.MatchLdloc(flag2LocalIndex),                 // ldloc.s flag2
-                x => x.MatchBrtrue(out _));                         // brtrue
-                                                                          
-
-            bool postSuccess = cursor.TryGotoNext(MoveType.Before,
-                x => x.MatchLdsfld(typeof(Main), nameof(Main.Map)),         // ldsfld Main::Map
-                x => x.MatchLdloc(out mapXLocalIndex),                      // ldloc.s num89
-                x => x.MatchLdloc(out mapYLocalIndex));                     // ldloc.s num90
-
-            bool validIndexes = mapXLocalIndex != -1 && mapYLocalIndex != -1 && flag2LocalIndex != -1;
-
-            if (!preSuccess || !postSuccess || !validIndexes)
-            {
-                Logger.Warn("Failed to IL edit Main.DrawMap");
-                return;
-            }
-
-            MonoModHooks.DumpIL(this, il);
-
-            cursor.Emit(OpCodes.Ldloc, mapXLocalIndex);    // ldloc.s num89
-            cursor.Emit(OpCodes.Ldloc, mapYLocalIndex);    // ldloc.s num90
-            cursor.EmitDelegate(StealMapPointFromVanilla);
+            player.MapTilePos = new Point(x, y);
         }
+    }
 
-        public static void StealMapPointFromVanilla(int x, int y)
-        {
-            if (Main.LocalPlayer.TryGetModPlayer<TwailaPlayer>(out var player))
-            {
-                player.MapTilePos = new Point(x, y);
-            }
-        }
-
-        public override void Unload()
-        {
-            ExtraObjectData.Unload();
-        }
+    public override void Unload()
+    {
+        ExtraObjectData.Unload();
     }
 }

@@ -10,191 +10,190 @@ using Twaila.Systems;
 using Twaila.UI;
 using Twaila.Util;
 
-namespace Twaila.Context
+namespace Twaila.Context;
+
+public class WireContext : BaseContext
 {
-    public class WireContext : BaseContext
+    protected bool HasActuator { get; set; }
+    protected bool RedWire { get; set; }
+    protected bool BlueWire { get; set; }
+    protected bool YellowWire { get; set; }
+    protected bool GreenWire { get; set; }
+
+    protected string WireText { get; set; }
+    protected string ActuatorText { get; set; }
+    protected string PositionText { get; set; }
+
+    protected UITwailaIconGrid IconGrid { get; set; }
+
+    protected UITwailaGrid TextGrid { get; set; }
+
+    protected Point BestTilePos => Pos.BestTilePos(); 
+
+    public WireContext(TwailaPoint point) : base(point)
     {
-        protected bool HasActuator { get; set; }
-        protected bool RedWire { get; set; }
-        protected bool BlueWire { get; set; }
-        protected bool YellowWire { get; set; }
-        protected bool GreenWire { get; set; }
+        IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow, 20f);
 
-        protected string WireText { get; set; }
-        protected string ActuatorText { get; set; }
-        protected string PositionText { get; set; }
-
-        protected UITwailaIconGrid IconGrid { get; set; }
-
-        protected UITwailaGrid TextGrid { get; set; }
-
-        protected Point BestTilePos => Pos.BestTilePos(); 
-
-        public WireContext(TwailaPoint point) : base(point)
+        TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow)
         {
-            IconGrid = new UITwailaIconGrid(TwailaConfig.Instance.DisplayContent.IconsPerRow, 20f);
+            SmartRows = true,
+        };
+        WireText = "";
+        ActuatorText = "";
+        PositionText = "";
+    }
 
-            TextGrid = new UITwailaGrid(TwailaConfig.Instance.DisplayContent.TextsPerRow)
-            {
-                SmartRows = true,
-            };
-            WireText = "";
-            ActuatorText = "";
-            PositionText = "";
-        }
+    public static WireContext CreateWireContext(TwailaPoint pos)
+    {
+        Point tilePos = pos.BestTilePos();
+        Tile tile = Framing.GetTileSafely(tilePos);
 
-        public static WireContext CreateWireContext(TwailaPoint pos)
-        {
-            Point tilePos = pos.BestTilePos();
-            Tile tile = Framing.GetTileSafely(tilePos);
-
-            if(tile.TileType >= TileLoader.TileCount)
-                return null;
-
-            if (!TileUtil.IsTilePosInBounds(tilePos))
-                return null;
-
-            bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
-            bool hasWire = tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
-            bool canSeeWire = WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires;
-            bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
-            
-            if (noTile)
-            {
-                if (hasWire && (!TwailaConfig.Instance.AntiCheat.HideWires || canSeeWire))
-                {
-                    return new WireContext(pos);
-                }
-                if (tile.HasActuator && (!TwailaConfig.Instance.AntiCheat.HideWires || canSeeActuator))
-                {
-                    return new WireContext(pos);
-                }
-            }
+        if(tile.TileType >= TileLoader.TileCount)
             return null;
-        }
 
-        public override bool ContextChanged(BaseContext other)
+        if (!TileUtil.IsTilePosInBounds(tilePos))
+            return null;
+
+        bool noTile = !tile.HasTile && tile.WallType <= 0 && tile.LiquidAmount <= 0;
+        bool hasWire = tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
+        bool canSeeWire = WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires;
+        bool canSeeActuator = WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires; // literally only necessary for the actuation rod
+        
+        if (noTile)
         {
-            if(other?.GetType() == typeof(WireContext))
+            if (hasWire && (!TwailaConfig.Instance.AntiCheat.HideWires || canSeeWire))
             {
-                WireContext otherContext = (WireContext)other;
-                return otherContext.HasActuator != HasActuator;
+                return new WireContext(pos);
             }
-            return true;
-        }
-
-        public override void Update()
-        {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            Content content = TwailaConfig.Instance.DisplayContent;
-
-            HasActuator = tile.HasActuator;
-            RedWire = tile.RedWire;
-            BlueWire = tile.BlueWire;
-            YellowWire = tile.YellowWire;
-            GreenWire = tile.GreenWire;
-            //Icons = new TwailaIconLine();
-
-            if(!TwailaConfig.Instance.AntiCheat.HideWires || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
+            if (tile.HasActuator && (!TwailaConfig.Instance.AntiCheat.HideWires || canSeeActuator))
             {
-                if (InfoUtil.GetWireInfo(tile, out string wireText, out int[] wireIcons))
+                return new WireContext(pos);
+            }
+        }
+        return null;
+    }
+
+    public override bool ContextChanged(BaseContext other)
+    {
+        if(other?.GetType() == typeof(WireContext))
+        {
+            WireContext otherContext = (WireContext)other;
+            return otherContext.HasActuator != HasActuator;
+        }
+        return true;
+    }
+
+    public override void Update()
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        Content content = TwailaConfig.Instance.DisplayContent;
+
+        HasActuator = tile.HasActuator;
+        RedWire = tile.RedWire;
+        BlueWire = tile.BlueWire;
+        YellowWire = tile.YellowWire;
+        GreenWire = tile.GreenWire;
+        //Icons = new TwailaIconLine();
+
+        if(!TwailaConfig.Instance.AntiCheat.HideWires || (WiresUI.Settings.DrawWires && !WiresUI.Settings.HideWires))
+        {
+            if (InfoUtil.GetWireInfo(tile, out string wireText, out int[] wireIcons))
+            {
+                if (content.ShowWire == TwailaConfig.DisplayType.Icon || content.ShowWire == TwailaConfig.DisplayType.Both)
                 {
-                    if (content.ShowWire == TwailaConfig.DisplayType.Icon || content.ShowWire == TwailaConfig.DisplayType.Both)
+                    foreach (int icon in wireIcons)
                     {
-                        foreach (int icon in wireIcons)
+                        if(icon > 0)
                         {
-                            if(icon > 0)
-                            {
-                                IconGrid.AddIcon(ImageUtil.GetItemTexture(icon).ToRender());
-                            }
+                            IconGrid.AddIcon(ImageUtil.GetItemTexture(icon).ToRender());
                         }
                     }
-                    if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
-                    {
-                        WireText = wireText;
-                        TextGrid.Add(new UITwailaText(WireText));
-                    }
                 }
-            }
-            if (!TwailaConfig.Instance.AntiCheat.HideWires || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
-            {
-                if (InfoUtil.GetActuatorInfo(tile, out string actText, out int actIcon))
+                if (content.ShowWire == TwailaConfig.DisplayType.Name || content.ShowWire == TwailaConfig.DisplayType.Both)
                 {
-                    if (content.ShowActuator == TwailaConfig.DisplayType.Icon || content.ShowActuator == TwailaConfig.DisplayType.Both)
-                    {
-                        if (actIcon > 0)
-                        {
-                            IconGrid.AddIcon(ImageUtil.GetItemTexture(actIcon).ToRender());
-                        }
-                    }
-                    if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
-                    {
-                        ActuatorText = actText;
-                        TextGrid.Add(new UITwailaText(ActuatorText));
-                    }
+                    WireText = wireText;
+                    TextGrid.Add(new UITwailaText(WireText));
                 }
             }
-
-            if (TwailaConfig.Instance.DisplayContent.ShowPosition)
+        }
+        if (!TwailaConfig.Instance.AntiCheat.HideWires || WiresUI.Settings.HideWires || WiresUI.Settings.DrawWires)
+        {
+            if (InfoUtil.GetActuatorInfo(tile, out string actText, out int actIcon))
             {
-                PositionText = $"X: {BestTilePos.X} Y: {BestTilePos.Y}";
-                TextGrid.Add(new UITwailaText(PositionText));
+                if (content.ShowActuator == TwailaConfig.DisplayType.Icon || content.ShowActuator == TwailaConfig.DisplayType.Both)
+                {
+                    if (actIcon > 0)
+                    {
+                        IconGrid.AddIcon(ImageUtil.GetItemTexture(actIcon).ToRender());
+                    }
+                }
+                if (content.ShowActuator == TwailaConfig.DisplayType.Name || content.ShowActuator == TwailaConfig.DisplayType.Both)
+                {
+                    ActuatorText = actText;
+                    TextGrid.Add(new UITwailaText(ActuatorText));
+                }
             }
-            
         }
 
-        public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+        if (TwailaConfig.Instance.DisplayContent.ShowPosition)
         {
-            Update();
-
-            layout.Name.SetText(GetName());
-
-            if (ContextChanged(prevContext))
-            {
-                layout.Image.SetImage(GetImage(Main.spriteBatch));
-            }
-
-            InfoElements().ForEach(element => layout.InfoBox.Add(element));
-
-            layout.Mod.SetText(GetMod());
+            PositionText = $"X: {BestTilePos.X} Y: {BestTilePos.Y}";
+            TextGrid.Add(new UITwailaText(PositionText));
         }
+        
+    }
 
-        protected override string GetName()
+    public override void UpdateOnChange(BaseContext prevContext, Layout layout)
+    {
+        Update();
+
+        layout.Name.SetText(GetName());
+
+        if (ContextChanged(prevContext))
         {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
-            return NameUtil.GetNameFromItem(itemEntry.DropItem);
+            layout.Image.SetImage(GetImage(Main.spriteBatch));
         }
 
-        protected override string GetMod()
+        InfoElements().ForEach(element => layout.InfoBox.Add(element));
+
+        layout.Mod.SetText(GetMod());
+    }
+
+    protected override string GetName()
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Tile);
+        return NameUtil.GetNameFromItem(itemEntry.DropItem);
+    }
+
+    protected override string GetMod()
+    {
+        return "Terraria";
+    }
+
+    protected override TwailaRender GetImage(SpriteBatch spriteBatch)
+    {
+        return ImageUtil.GetRenderForWireAndActuator(spriteBatch, Framing.GetTileSafely(BestTilePos));
+    }
+
+    protected override List<UITwailaElement> InfoElements()
+    {
+        List<UITwailaElement> elements = new List<UITwailaElement>();
+
+        if(TextGrid.GridElements.Count > 0)
         {
-            return "Terraria";
+            elements.Add(TextGrid);
         }
-
-        protected override TwailaRender GetImage(SpriteBatch spriteBatch)
+        if(IconGrid.GridElements.Count > 0)
         {
-            return ImageUtil.GetRenderForWireAndActuator(spriteBatch, Framing.GetTileSafely(BestTilePos));
+            elements.Add(IconGrid);
         }
+        return elements;
+    }
 
-        protected override List<UITwailaElement> InfoElements()
-        {
-            List<UITwailaElement> elements = new List<UITwailaElement>();
-
-            if(TextGrid.GridElements.Count > 0)
-            {
-                elements.Add(TextGrid);
-            }
-            if(IconGrid.GridElements.Count > 0)
-            {
-                elements.Add(IconGrid);
-            }
-            return elements;
-        }
-
-        public bool HasWire()
-        {
-            Tile tile = Framing.GetTileSafely(BestTilePos);
-            return tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
-        }
+    public bool HasWire()
+    {
+        Tile tile = Framing.GetTileSafely(BestTilePos);
+        return tile.RedWire || tile.BlueWire || tile.YellowWire || tile.GreenWire;
     }
 }

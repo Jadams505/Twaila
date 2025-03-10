@@ -1,10 +1,9 @@
 ﻿
-namespace Twaila.UI
-{
-    public interface IDragable
-    {
-        bool IsDragging();
+namespace Twaila.UI;
 
-        void Drag();
-    }
+public interface IDragable
+{
+    bool IsDragging();
+
+    void Drag();
 }

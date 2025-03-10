@@ -5,106 +5,105 @@ using Terraria.ModLoader.Config;
 using Terraria.UI;
 using Twaila.Config;
 
-namespace Twaila.UI
+namespace Twaila.UI;
+
+public enum DrawMode
 {
-    public enum DrawMode
+    Shrink,
+    Trim,
+    Overflow
+}
+
+public abstract class UITwailaElement : UIElement
+{
+    public DrawMode DrawMode { get; set; }
+    public float Opacity { get; set; }
+
+    public UITwailaElement()
     {
-        Shrink,
-        Trim,
-        Overflow
+        DrawMode = DrawMode.Trim;
+        Opacity = 1.0f;
     }
 
-    public abstract class UITwailaElement : UIElement
+    protected override void DrawSelf(SpriteBatch spriteBatch)
     {
-        public DrawMode DrawMode { get; set; }
-        public float Opacity { get; set; }
-
-        public UITwailaElement()
+        switch (DrawMode)
         {
-            DrawMode = DrawMode.Trim;
-            Opacity = 1.0f;
+            case DrawMode.Trim:
+                DrawTrimmed(spriteBatch);
+                break;
+            case DrawMode.Shrink:
+                DrawShrunk(spriteBatch);
+                break;
+            case DrawMode.Overflow:
+                DrawOverflow(spriteBatch);
+                break;
         }
+    }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch)
+    public virtual void ApplyConfigSettings(TwailaConfig config)
+    {
+        DrawMode = config.ContentSetting;
+        Opacity = 1;
+    }
+
+    public virtual void ApplyHoverSettings(TwailaConfig config)
+    {
+        Opacity = config.HoverOpacity;
+    }
+
+    public Vector2 GetScaleVector(Vector2 maxSize)
+    {
+        float scaleX = 1;
+        if (GetContentSize().X > maxSize.X)
         {
-            switch (DrawMode)
-            {
-                case DrawMode.Trim:
-                    DrawTrimmed(spriteBatch);
-                    break;
-                case DrawMode.Shrink:
-                    DrawShrunk(spriteBatch);
-                    break;
-                case DrawMode.Overflow:
-                    DrawOverflow(spriteBatch);
-                    break;
-            }
+            scaleX = maxSize.X / GetContentSize().X;
         }
-
-        public virtual void ApplyConfigSettings(TwailaConfig config)
+        float scaleY = 1;
+        if (GetContentSize().Y > maxSize.Y)
         {
-            DrawMode = config.ContentSetting;
-            Opacity = 1;
+            scaleY = maxSize.Y / GetContentSize().Y;
         }
+        return new Vector2(scaleX, scaleY);
+    }
 
-        public virtual void ApplyHoverSettings(TwailaConfig config)
+    public Vector2 GetDrawScaleVector() => GetScaleVector(new Vector2(Width.Pixels, Height.Pixels));
+
+    // Gets the uniform scale it would take to shrink the content to maxSize
+    public float GetScale(Vector2 maxSize)
+    {
+        float scaleX = 1;
+        if (GetContentSize().X > maxSize.X)
         {
-            Opacity = config.HoverOpacity;
+            scaleX = maxSize.X / GetContentSize().X;
         }
-
-        public Vector2 GetScaleVector(Vector2 maxSize)
+        float scaleY = 1;
+        if (GetContentSize().Y > maxSize.Y)
         {
-            float scaleX = 1;
-            if (GetContentSize().X > maxSize.X)
-            {
-                scaleX = maxSize.X / GetContentSize().X;
-            }
-            float scaleY = 1;
-            if (GetContentSize().Y > maxSize.Y)
-            {
-                scaleY = maxSize.Y / GetContentSize().Y;
-            }
-            return new Vector2(scaleX, scaleY);
+            scaleY = maxSize.Y / GetContentSize().Y;
         }
+        return Math.Min(scaleX, scaleY);
+    }
 
-        public Vector2 GetDrawScaleVector() => GetScaleVector(new Vector2(Width.Pixels, Height.Pixels));
+    // Gets the uniform scale it would take to shrink the content to this element's dimensions
+    public float GetDrawScale() => GetScale(new Vector2(Width.Pixels, Height.Pixels));
 
-        // Gets the uniform scale it would take to shrink the content to maxSize
-        public float GetScale(Vector2 maxSize)
-        {
-            float scaleX = 1;
-            if (GetContentSize().X > maxSize.X)
-            {
-                scaleX = maxSize.X / GetContentSize().X;
-            }
-            float scaleY = 1;
-            if (GetContentSize().Y > maxSize.Y)
-            {
-                scaleY = maxSize.Y / GetContentSize().Y;
-            }
-            return Math.Min(scaleX, scaleY);
-        }
+    public abstract Vector2 GetContentSize();
 
-        // Gets the uniform scale it would take to shrink the content to this element's dimensions
-        public float GetDrawScale() => GetScale(new Vector2(Width.Pixels, Height.Pixels));
+    public virtual Vector2 SizePriority() => Vector2.One;
 
-        public abstract Vector2 GetContentSize();
+    protected virtual void DrawShrunk(SpriteBatch spriteBatch)
+    {
 
-        public virtual Vector2 SizePriority() => Vector2.One;
+    }
 
-        protected virtual void DrawShrunk(SpriteBatch spriteBatch)
-        {
+    protected virtual void DrawTrimmed(SpriteBatch spriteBatch)
+    {
 
-        }
+    }
 
-        protected virtual void DrawTrimmed(SpriteBatch spriteBatch)
-        {
+    protected virtual void DrawOverflow(SpriteBatch spriteBatch)
+    {
 
-        }
-
-        protected virtual void DrawOverflow(SpriteBatch spriteBatch)
-        {
-
-        }
     }
 }
