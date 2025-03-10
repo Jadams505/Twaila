@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Twaila.Graphics
 {
+    [Obsolete("Use RenderBuilder instead")]
     public class TextureBuilder
     {
         private class Component
