@@ -93,8 +93,8 @@ namespace Twaila.Util
             return GetRenderForCampfire(spriteBatch, tile)
                 .Coalesce(GetRenderForHerbs(spriteBatch, tile))
                 .Coalesce(GetRenderForXmasTree(spriteBatch, tile))
-                //.Coalesce(TreeUtil.GetImageForBamboo(spriteBatch, tile.TileType))
-                //.Coalesce(TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType))
+                .Coalesce(TreeUtil.GetRenderForBamboo(spriteBatch, tile.TileType))
+                .Coalesce(TreeUtil.GetRenderForSeaweed(spriteBatch, tile.TileType))
                 .Coalesce(GetRenderForMannequins(spriteBatch, tile))
                 .Coalesce(GetRenderForSnakeRope(spriteBatch, tile.TileType))
                 .Coalesce(GetRenderForCattail(spriteBatch, tile))
@@ -366,14 +366,14 @@ namespace Twaila.Util
 
         public static TwailaRender GetRenderForItemFrame(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
         {
-            RenderBuilder builer = new RenderBuilder();
+            RenderBuilder builder = new();
 
             Texture2D itemTexture = GetItemTexture(itemId);
             DrawAnimation itemAnimation = Main.itemAnimations[itemId];
             Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
 
-            Texture2D frameTexture = GetImageFromTileDrawing(spriteBatch, tile, posX, posY);
-            Rectangle frameBox = frameTexture.Frame();
+            TwailaRender frameRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
+            Rectangle frameBox = new(0, 0, (int)frameRender.Width, (int)frameRender.Height); // is casting a good idea?
 
             Vector2 drawPos = Vector2.Zero;
 
@@ -384,29 +384,29 @@ namespace Twaila.Util
             {
                 scale = (itemBox.Width <= itemBox.Height) ? (itemFrameSize / itemBox.Height) : (itemFrameSize / itemBox.Width);
             }
-            
-            builer.AddImage(source: frameBox, texture: frameTexture, position: drawPos.ToPoint());
+
+            builder.AddRender(frameRender, drawPos.ToPoint());
 
             drawPos.X += frameBox.Width / 2;
             drawPos.Y += frameBox.Height / 2;
             drawPos.X -= itemBox.Width / 2 * scale;
             drawPos.Y -= itemBox.Height / 2 * scale;
 
-            builer.AddImage(source: itemBox, texture: itemTexture, position: drawPos.ToPoint(), scale: scale);
+            builder.AddImage(source: itemBox, texture: itemTexture, position: drawPos.ToPoint(), scale: scale);
 
-            return builer.Build();
+            return builder.Build();
         }
 
         public static TwailaRender GetRenderForWeaponRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
         {
-            RenderBuilder builer = new RenderBuilder();
+            RenderBuilder builder = new();
 
             Texture2D itemTexture = GetItemTexture(itemId);
             DrawAnimation itemAnimation = Main.itemAnimations[itemId];
             Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
 
-            Texture2D rackTexture = GetImageFromTileDrawing(spriteBatch, tile, posX, posY);
-            Rectangle rackBox = rackTexture.Frame();
+            TwailaRender rackRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
+            Rectangle rackBox = new(0, 0, (int)rackRender.Width, (int)rackRender.Height); // is casting a good idea
 
             Vector2 drawPos = Vector2.Zero;
 
@@ -418,16 +418,16 @@ namespace Twaila.Util
                 scale = (itemBox.Width <= itemBox.Height) ? (rackSize / itemBox.Height) : (rackSize / itemBox.Width);
             }
 
-            builer.AddImage(source: rackBox, texture: rackTexture, position: drawPos.ToPoint());
+            builder.AddRender(rackRender, drawPos.ToPoint());
 
             drawPos.X += rackBox.Width / 2;
             drawPos.Y += rackBox.Height / 2;
             drawPos.X -= itemBox.Width / 2 * scale;
             drawPos.Y -= itemBox.Height / 2 * scale;
 
-            builer.AddImage(itemTexture, drawPos.ToPoint(), itemBox, Color.White, scale);
+            builder.AddImage(itemTexture, drawPos.ToPoint(), itemBox, Color.White, scale);
 
-            return builer.Build();
+            return builder.Build();
         }
         
         public static TwailaRender GetRenderForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
@@ -465,37 +465,6 @@ namespace Twaila.Util
             return builder.Build();
         }
 
-        public static Texture2D GetImageFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
-        {
-            if (data == null)
-            {
-                return null;
-            }
-            Texture2D texture = GetTileTexture(tileId);
-            if (texture != null)
-            {
-                TextureBuilder builder = new TextureBuilder();
-
-                frameX = frameX / data.CoordinateFullWidth * data.CoordinateFullWidth;
-                frameY = frameY / data.CoordinateFullHeight * data.CoordinateFullHeight;
-
-                int height = 0;
-                for (int row = 0; row < data.Height; ++row)
-                {
-                    for (int col = 0; col < data.Width; ++col)
-                    {
-                        int width = data.CoordinateWidth;
-                        Rectangle copyRectangle = new Rectangle(frameX + (width + data.CoordinatePadding) * col,
-                            frameY + height + data.CoordinatePadding * row, width, data.CoordinateHeights[row]);
-                        builder.AddComponent(copyRectangle, texture, new Point(width * col, height));
-                    }
-                    height += data.CoordinateHeights[row];
-                }
-                return builder.Build(spriteBatch.GraphicsDevice);
-            }
-            return null;
-        }
-
         public static TwailaRender GetRenderFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
         {
             if (data == null)
@@ -525,45 +494,6 @@ namespace Twaila.Util
                 return builder.Build();
             }
             return TwailaRender.Empty;
-        }
-
-        public static Texture2D GetImageFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
-        {
-            try
-            {
-                // Taken from TileLoader.SetDrawPositions (Called by TilesRenderer.GetTileDrawData)
-                // Unloaded tiles can cause an IndexOutOfBoundsException on tileData.CoordinateHeights
-                // This is because it has same frameX and frameY as the original tile but has the TileObjectData of an unloaded tile
-                TileObjectData tileData = TileObjectData.GetTileData(tile.TileType, 0, 0);
-                if (tileData != null)
-                {
-                    int partY = 0;
-                    for (int remainingFrameY = tile.TileFrameY % tileData.CoordinateFullHeight; partY < tileData.Height && remainingFrameY - tileData.CoordinateHeights[partY] + tileData.CoordinatePadding >= 0; partY++)
-                    {
-                        remainingFrameY -= tileData.CoordinateHeights[partY] + tileData.CoordinatePadding;
-                    }
-
-                    if (partY >= tileData.CoordinateHeights.Length)
-                        return null;
-                }
-
-                TileObjectData data = TileUtil.GetTileObjectData(tile);
-                short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
-                Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
-                    ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,
-                    out _, out _, out _, out _);
-                if (Main.tileFrame[tile.TileType] == 0) // if the tile is not animated
-                {
-                    tileFx += (short)addX;
-                    tileFy += (short)addY;
-                }
-                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
-            }
-            catch(Exception e)
-            {
-                Twaila.Instance.Logger.Error(e.Message);
-                return null;
-            }
         }
 
         public static TwailaRender GetRenderFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)

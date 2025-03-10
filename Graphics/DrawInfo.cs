@@ -27,6 +27,15 @@ namespace Twaila.Graphics
 
         }
 
+        public DrawInfo(DrawInfo other)
+        {
+            Texture = other.Texture;
+            Position = other.Position;
+            Source = other.Source;
+            Color = other.Color;
+            Scale = other.Scale;
+        }
+
         public Vector2 Size()
         {
             return new Vector2(Source.Width * Scale, Source.Height * Scale);

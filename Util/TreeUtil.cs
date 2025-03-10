@@ -360,7 +360,7 @@ namespace Twaila.Util
             return builder.Build(spriteBatch.GraphicsDevice);
         }
 
-        public static Texture2D GetImageForBamboo(SpriteBatch spriteBatch, int tileId)
+        public static TwailaRender GetRenderForBamboo(SpriteBatch spriteBatch, int tileId)
         {
             if(tileId == TileID.Bamboo)
             {
@@ -375,20 +375,20 @@ namespace Twaila.Util
 
                 Point drawPos = Point.Zero;
 
-                TextureBuilder builder = new TextureBuilder();
-                builder.AddComponent(new Rectangle(topStyle * (size + padding), 0, size, size), texture, drawPos);
+                RenderBuilder builder = new();
+                builder.AddImage(texture, source: new Rectangle(topStyle * (size + padding), 0, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle(middle1Style * (size + padding), 0, size, size), texture, drawPos);
+                builder.AddImage(texture, source: new Rectangle(middle1Style * (size + padding), 0, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle(middle2Style * (size + padding), 0, size, size), texture, drawPos);
+                builder.AddImage(texture, source: new Rectangle(middle2Style * (size + padding), 0, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle(bottomStyle * (size + padding), 0, size, size), texture, drawPos);
-                return builder.Build(spriteBatch.GraphicsDevice);
+                builder.AddImage(texture, source: new Rectangle(bottomStyle * (size + padding), 0, size, size), position: drawPos);
+                return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForSeaweed(SpriteBatch spriteBatch, int tileId)
+        public static TwailaRender GetRenderForSeaweed(SpriteBatch spriteBatch, int tileId)
         {
             if (tileId == TileID.Seaweed)
             {
@@ -403,17 +403,17 @@ namespace Twaila.Util
 
                 Point drawPos = Point.Zero;
 
-                TextureBuilder builder = new TextureBuilder();
-                builder.AddComponent(new Rectangle(topStyle * (size + padding), 0, size, size), texture, drawPos);
+                RenderBuilder builder = new();
+                builder.AddImage(texture, source: new Rectangle(topStyle * (size + padding), 0, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle(middle1Style * (size + padding), 0, size, size), texture, drawPos);
+                builder.AddImage(texture, source: new Rectangle(middle1Style * (size + padding), 0, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle(middle2Style * (size + padding), 0, size, size), texture, drawPos);
+                builder.AddImage(texture, source: new Rectangle(middle2Style * (size + padding), 0, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle(bottomStyle * (size + padding), 0, size, size), texture, drawPos);
-                return builder.Build(spriteBatch.GraphicsDevice);
+                builder.AddImage(texture, source: new Rectangle(bottomStyle * (size + padding), 0, size, size), position: drawPos);
+                return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
         public static int GetTreeWood(int treeDirt)

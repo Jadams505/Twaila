@@ -31,6 +31,14 @@ namespace Twaila.Graphics
             AddImage(texture, position, source, Color.White, scale);
         }
 
+        public void AddRender(TwailaRender render, Point position, float scale = 1)
+        {
+            foreach (var info in render.Info)
+            {
+                AddImage(new(info.Texture, info.Position + position, info.Source, info.Scale * scale));
+            }
+        }
+
         public TwailaRender Build()
         {
             return new TwailaRender(_drawInstructions);

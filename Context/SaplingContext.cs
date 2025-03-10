@@ -57,7 +57,7 @@ namespace Twaila.Context
         protected override TwailaRender TileImage(SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(BestTilePos);
-            return ImageUtil.GetImageFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y).ToRender();
+            return ImageUtil.GetRenderFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y);
         }
 
         protected override TwailaRender ItemImage(SpriteBatch spriteBatch)
