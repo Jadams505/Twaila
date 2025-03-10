@@ -35,7 +35,7 @@ namespace Twaila.Util
                 }
                 return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
         public static TwailaRender GetWallRenderFromTile(Tile tile)
@@ -88,21 +88,27 @@ namespace Twaila.Util
             return new TwailaRender();
         }
 
-        public static Texture2D GetImageCustom(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderCustom(SpriteBatch spriteBatch, Tile tile)
         {
-            return GetImageForCampfire(spriteBatch, tile) ?? GetImageForHerbs(spriteBatch, tile) ??
-                GetImageForXmasTree(spriteBatch, tile) ?? TreeUtil.GetImageForBamboo(spriteBatch, tile.TileType)
-                ?? TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType) ?? GetImageForMannequins(spriteBatch, tile)
-                ?? GetImageForSnakeRope(spriteBatch, tile.TileType) ?? GetImageForCattail(spriteBatch, tile)
-                ?? GetImageForRelic(spriteBatch, tile) ?? GetImageForPylon(spriteBatch, tile) ??
-                GetImageForVoidVault(spriteBatch, tile) ?? GetImageForMarbleColumn(spriteBatch, tile);
+            return GetRenderForCampfire(spriteBatch, tile)
+                .Coalesce(GetRenderForHerbs(spriteBatch, tile))
+                .Coalesce(GetRenderForXmasTree(spriteBatch, tile))
+                //.Coalesce(TreeUtil.GetImageForBamboo(spriteBatch, tile.TileType))
+                //.Coalesce(TreeUtil.GetImageForSeaweed(spriteBatch, tile.TileType))
+                .Coalesce(GetRenderForMannequins(spriteBatch, tile))
+                .Coalesce(GetRenderForSnakeRope(spriteBatch, tile.TileType))
+                .Coalesce(GetRenderForCattail(spriteBatch, tile))
+                .Coalesce(GetRenderForRelic(spriteBatch, tile))
+                .Coalesce(GetRenderForPylon(spriteBatch, tile))
+                .Coalesce(GetRenderForVoidVault(spriteBatch, tile))
+                .Coalesce(GetRenderForMarbleColumn(spriteBatch, tile));
         }
 
         /*
             For some reason the frameY for campfires when they are turned off does not match the frameY on
             their spritesheet. It might have something to do with animation frames
         */
-        public static Texture2D GetImageForCampfire(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForCampfire(SpriteBatch spriteBatch, Tile tile)
         {
             if (tile.TileType == TileID.Campfire && !TwailaConfig.Instance.UseItemTextures)
             {
@@ -112,9 +118,9 @@ namespace Twaila.Util
                 {
                     mutableFrameY = 288; // this is the correct frameY for the campfire when it is turned off
                 }
-                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, data);
+                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, data);
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
         /*
@@ -123,7 +129,7 @@ namespace Twaila.Util
             mature or blooming
             Blinkroot and Shiverthorn are exceptions because once bloomed they never unbloom
         */
-        public static Texture2D GetImageForHerbs(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForHerbs(SpriteBatch spriteBatch, Tile tile)
         {
             if (tile.TileType == TileID.MatureHerbs)
             {
@@ -150,15 +156,15 @@ namespace Twaila.Util
                 {
                     mutableId = TileID.BloomingHerbs;
                 }
-                return GetImageFromTileObjectData(spriteBatch, mutableId, tile.TileFrameX, tile.TileFrameY, data);
+                return GetRenderFromTileObjectData(spriteBatch, mutableId, tile.TileFrameX, tile.TileFrameY, data);
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
         /*
             Christmas trees store extra data in the top left tile to account for decorations
         */
-        public static Texture2D GetImageForXmasTree(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForXmasTree(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.TileType == TileID.ChristmasTree)
             {
@@ -167,44 +173,45 @@ namespace Twaila.Util
                 {
                     mutableFrameY = 0; // sets the frameY to what it would be if it had no decorations
                 }
-                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
+                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForMannequins(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForMannequins(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.TileType == TileID.DisplayDoll)
             {
                 TileObjectData data = TileUtil.GetTileObjectData(tile);
-                return GetImageFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
+                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForSnakeRope(SpriteBatch spriteBatch, int tileId)
+        public static TwailaRender GetRenderForSnakeRope(SpriteBatch spriteBatch, int tileId)
         {
             if(tileId == TileID.MysticSnakeRope)
             {
-                TextureBuilder builder = new TextureBuilder();
+                RenderBuilder builder = new();
                 Texture2D texture = GetTileTexture(tileId);
                 int size = 16;
                 int padding = 2;
                 for(int i = 0; i < 3; ++i)
                 {
-                    builder.AddComponent(new Rectangle(size + padding, 0 + i * (size + padding), size, size), texture, 
-                        new Point(0, 0 + i * size));
+                    builder.AddImage(texture, 
+                        source: new Rectangle(size + padding, 0 + i * (size + padding), size, size), 
+                        position: new Point(0, 0 + i * size));
                 }
-                return builder.Build(spriteBatch.GraphicsDevice);
+                return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForCattail(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForCattail(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.TileType == TileID.Cattail)
             {
-                TextureBuilder builder = new TextureBuilder();
+                RenderBuilder builder = new();
                 Texture2D texture = GetTileTexture(tile.TileType);
                 int size = 16;
                 int padding = 2;
@@ -213,17 +220,17 @@ namespace Twaila.Util
                 int topStyle = 11;
 
                 Point drawPos = Point.Zero;
-                builder.AddComponent(new Rectangle((size + padding) * topStyle, tile.TileFrameY, size, size), texture, drawPos);
+                builder.AddImage(texture, source: new Rectangle((size + padding) * topStyle, tile.TileFrameY, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle((size + padding) * middleStyle, tile.TileFrameY, size, size), texture, drawPos);
+                builder.AddImage(texture, source: new Rectangle((size + padding) * middleStyle, tile.TileFrameY, size, size), position: drawPos);
                 drawPos.Y += size;
-                builder.AddComponent(new Rectangle((size + padding) * bottomStyle, tile.TileFrameY, size, size), texture, drawPos);
-                return builder.Build(spriteBatch.GraphicsDevice);
+                builder.AddImage(texture, source: new Rectangle((size + padding) * bottomStyle, tile.TileFrameY, size, size), position: drawPos);
+                return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForRelic(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForRelic(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.TileType == TileID.MasterTrophyBase)
             {
@@ -234,20 +241,20 @@ namespace Twaila.Util
                 int frameY = tile.TileFrameX / 54 * (size + padding);
 
                 Point drawPos = Point.Zero;
-                TextureBuilder builder = new TextureBuilder();
-                builder.AddComponent(new Rectangle(0, frameY, size, size), relicTexture, drawPos);
+                RenderBuilder builder = new();
+                builder.AddImage(relicTexture, source: new Rectangle(0, frameY, size, size), position: drawPos);
                 drawPos.Y += size;
                 for(int i = 0; i < 3; ++i)
                 {
-                    builder.AddComponent(new Rectangle(i * 18, 54, 16, 16), baseTexture, drawPos);
+                    builder.AddImage(baseTexture, source: new Rectangle(i * 18, 54, 16, 16), position: drawPos);
                     drawPos.X += 16;
                 }
-                return builder.Build(spriteBatch.GraphicsDevice);
+                return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForPylon(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForPylon(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.TileType == TileID.TeleportationPylon)
             {
@@ -258,47 +265,47 @@ namespace Twaila.Util
                 int frameX = 90 + (tile.TileFrameX / 54 * (pylonWidth + padding));
 
                 Point drawPos = Point.Zero;
-                TextureBuilder builder = new TextureBuilder();             
+                RenderBuilder builder = new();             
                 int startY = 18;
                 int startX = tile.TileFrameX / 54 * 54;
                 for (int row = 0; row < 3; ++row)
                 {
                     for (int col = 0; col < 3; ++col)
                     {
-                        builder.AddComponent(new Rectangle(startX + (col * 18), startY + (row * 18), 16, 16), baseTexture, new Point(16 * col, row * 16));
+                        builder.AddImage(baseTexture, source: new Rectangle(startX + (col * 18), startY + (row * 18), 16, 16), position: new Point(16 * col, row * 16));
                     }
                 }
                 drawPos.X += 10;
                 drawPos.Y -= 16;
-                builder.AddComponent(new Rectangle(frameX, 0, pylonWidth, pylonHeight), pylonTexture, drawPos);
-                return builder.Build(spriteBatch.GraphicsDevice);
+                builder.AddImage(pylonTexture, source: new Rectangle(frameX, 0, pylonWidth, pylonHeight), position: drawPos);
+                return builder.Build();
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForVoidVault(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForVoidVault(SpriteBatch spriteBatch, Tile tile)
         {
             if(tile.TileType == TileID.VoidVault)
             {
-                return GetImageFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
+                return GetRenderFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetImageForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
         {
             if(!tile.HasTile && tile.WallType == 0 && tile.LiquidAmount <= 0)
             {
                 if (tile.HasActuator)
                 {
-                    return GetItemTexture(ItemID.Actuator);
+                    return GetItemTexture(ItemID.Actuator).ToRender();
                 }
                 if (tile.YellowWire || tile.GreenWire || tile.BlueWire || tile.RedWire)
                 {
-                    return GetItemTexture(ItemID.Wire);
+                    return GetItemTexture(ItemID.Wire).ToRender();
                 } 
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
         public static TwailaRender GetRenderForPlate(int foodId)
@@ -323,21 +330,21 @@ namespace Twaila.Util
             return builder.Build();
         }
 
-        public static Texture2D GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
+        public static TwailaRender GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
         {
             Texture2D texture = GetItemTexture(itemId);
             DrawAnimation animation = Main.itemAnimations[itemId];
 
             if (animation != null)
             {
-                TextureBuilder builer = new TextureBuilder();
+                RenderBuilder builder = new();
                 Rectangle box = Main.itemAnimations[itemId].GetFrame(texture);
 
-                builer.AddComponent(box, texture, Point.Zero);
+                builder.AddImage(texture, source: box, position: Point.Zero);
 
-                return builer.Build(spriteBatch.GraphicsDevice);
+                return builder.Build();
             }
-            return texture;
+            return TwailaRender.Empty;
         }
 
         public static TwailaRender GetRenderForIconItem(int itemId)
@@ -423,7 +430,7 @@ namespace Twaila.Util
             return builer.Build();
         }
         
-        public static Texture2D GetImageForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetRenderForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
         {
             int width = 16;
             int height = 18;
@@ -435,27 +442,27 @@ namespace Twaila.Util
                 Texture2D texture = GetTileTexture(tile.TileType);
                 if (texture != null)
                 {
-                    TextureBuilder builder = new TextureBuilder();
+                    RenderBuilder builder = new();
                     for (int row = 0; row < 2; ++row)
                     {
                         for (int col = 0; col < 2; ++col)
                         {
                             Rectangle copyRectangle = new Rectangle(col * (width + paddingX), startY + row * (height + paddingY), width, height);
-                            builder.AddComponent(copyRectangle, texture, new Point(width * col, height * row));
+                            builder.AddImage(texture, source: copyRectangle, position: new Point(width * col, height * row));
                         }
                     }
-                    return builder.Build(spriteBatch.GraphicsDevice);
+                    return builder.Build();
                 }
             }
-            return null;
+            return TwailaRender.Empty;
         }
 
-        public static Texture2D GetDebugImage(SpriteBatch spriteBatch, Tile tile)
+        public static TwailaRender GetDebugRender(SpriteBatch spriteBatch, Tile tile)
         {
-            TextureBuilder builder = new TextureBuilder();
+            RenderBuilder builder = new();
             Texture2D texture = GetTileTexture(tile.TileType);
-            builder.AddComponent(new Rectangle(0, 0, texture.Width, texture.Height), texture, Point.Zero);
-            return builder.Build(spriteBatch.GraphicsDevice);
+            builder.AddImage(texture, source: new Rectangle(0, 0, texture.Width, texture.Height), position: Point.Zero);
+            return builder.Build();
         }
 
         public static Texture2D GetImageFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
