@@ -10,7 +10,7 @@ namespace Twaila.Util;
 
 public class TreeUtil
 {
-    public static TwailaRender GetRenderForVanillaTree(SpriteBatch spriteBatch, int woodType, int depth)
+    public static TwailaRender GetRenderForVanillaTree(int woodType, int depth)
     {
         int size = 20;
         Texture2D? topTexture = TextureAssets.TreeTop[0].ForceVanillaLoad();
@@ -53,11 +53,11 @@ public class TreeUtil
                 break;
         }
 
-        return BuildRenderForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-            bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+        return BuildRenderForTrees(topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle, bottomLeft,
+            bottomRight, topTexture, woodTexture, branchTexture);
     }
 
-    public static TwailaRender GetRenderForVanityTree(SpriteBatch spriteBatch, int tileId)
+    public static TwailaRender GetRenderForVanityTree(int tileId)
     {
         int size = 20;
         Texture2D topTexture;
@@ -95,11 +95,11 @@ public class TreeUtil
                 return TwailaRender.Empty;
         }
 
-        return BuildRenderForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-            bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+        return BuildRenderForTrees(topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle, bottomLeft,
+            bottomRight, topTexture, woodTexture, branchTexture);
     }
 
-    public static TwailaRender GetRenderForAshTree(SpriteBatch spriteBatch, int tileId)
+    public static TwailaRender GetRenderForAshTree(int tileId)
     {
         if(tileId == TileID.TreeAsh)
         {
@@ -119,13 +119,13 @@ public class TreeUtil
             int topOffsetX = 46;
             int topOffsetY = 94;
 
-            return BuildRenderForTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-                bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+            return BuildRenderForTrees(topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle, bottomLeft,
+                bottomRight, topTexture, woodTexture, branchTexture);
         }
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForGemTree(SpriteBatch spriteBatch, int tileId)
+    public static TwailaRender GetRenderForGemTree(int tileId)
     {
         int size = 20;
         Texture2D topTexture;
@@ -194,11 +194,11 @@ public class TreeUtil
             default:
                 return TwailaRender.Empty;
         }
-        return BuildRenderForGemTree(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, 
-            bottomMiddle, topTexture, woodTexture, branchTexture);
+        return BuildRenderForGemTree(topOffsetX, topOffsetY, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
+            topTexture, woodTexture, branchTexture);
     }
 
-    public static TwailaRender GetRenderForModdedTree(SpriteBatch spriteBatch, int treeDirt)
+    public static TwailaRender GetRenderForModdedTree(int treeDirt)
     {
         int size = 20;
         int frame = 0, fWidth = 80, fHeight = 80, xOffset = 30, yOffset = 78;
@@ -224,11 +224,11 @@ public class TreeUtil
         Rectangle bottomLeft = new Rectangle(44, 176, size, size);
         Rectangle bottomRight = new Rectangle(22, 154, size, size);
 
-        return BuildRenderForTrees(spriteBatch, xOffset, yOffset, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle,
-            bottomLeft, bottomRight, topTexture, woodTexture, branchTexture);
+        return BuildRenderForTrees(xOffset, yOffset, top, trunk1, trunk2, trunk3, leftBranch, rightBranch, bottomMiddle, bottomLeft,
+            bottomRight, topTexture, woodTexture, branchTexture);
     }
 
-    public static TwailaRender GetRenderForPalmTree(SpriteBatch spriteBatch, int palmTreeWood)
+    public static TwailaRender GetRenderForPalmTree(int palmTreeWood)
     {
         int size = 20;
         int palmTreeType = 0;
@@ -258,10 +258,10 @@ public class TreeUtil
         int topOffsetX = 30;
         int topOffsetY = 78;
 
-        return BuildRenderForPalmTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
+        return BuildRenderForPalmTrees(topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
     }
 
-    public static TwailaRender GetRenderForModdedPalmTree(SpriteBatch spriteBatch, int palmTreeSand)
+    public static TwailaRender GetRenderForModdedPalmTree(int palmTreeSand)
     {
         int size = 20;
 
@@ -283,10 +283,10 @@ public class TreeUtil
         int topOffsetX = 30;
         int topOffsetY = 78;
 
-        return BuildRenderForPalmTrees(spriteBatch, topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
+        return BuildRenderForPalmTrees(topOffsetX, topOffsetY, top, trunk1, trunk2, bottom, topTexture, woodTexture);
     }
 
-    public static TwailaRender GetRenderForMushroomTree(SpriteBatch spriteBatch)
+    public static TwailaRender GetRenderForMushroomTree()
     {
         Texture2D topTexture = TextureAssets.ShroomCap.ForceVanillaLoad();
         Texture2D? woodTexture = ImageUtil.GetTileTexture(TileID.MushroomTrees);
@@ -308,7 +308,7 @@ public class TreeUtil
         return builder.Build();
     }
 
-    public static TwailaRender GetRenderForCactus(SpriteBatch spriteBatch, int cactusSand, bool modded)
+    public static TwailaRender GetRenderForCactus(int cactusSand, bool modded)
     {
         int size = 16;
         int padding = 2;
@@ -352,7 +352,7 @@ public class TreeUtil
         return builder.Build();
     }
 
-    public static TwailaRender GetRenderForBamboo(SpriteBatch spriteBatch, int tileId)
+    public static TwailaRender GetRenderForBamboo(int tileId)
     {
         if(tileId == TileID.Bamboo)
         {
@@ -380,7 +380,7 @@ public class TreeUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForSeaweed(SpriteBatch spriteBatch, int tileId)
+    public static TwailaRender GetRenderForSeaweed(int tileId)
     {
         if (tileId == TileID.Seaweed)
         {
@@ -444,9 +444,9 @@ public class TreeUtil
         return wood;
     }
 
-    private static TwailaRender BuildRenderForTrees(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
-        Rectangle trunk2, Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle,
-        Rectangle bottomLeft, Rectangle bottomRight, Texture2D? topTexture, Texture2D? woodTexture, Texture2D? branchTexture)
+    private static TwailaRender BuildRenderForTrees(int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1, Rectangle trunk2,
+        Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle, Rectangle bottomLeft,
+        Rectangle bottomRight, Texture2D? topTexture, Texture2D? woodTexture, Texture2D? branchTexture)
     {
         int unit = 16;
         RenderBuilder builder = new();
@@ -468,8 +468,8 @@ public class TreeUtil
         return builder.Build();
     }
 
-    private static TwailaRender BuildRenderForGemTree(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
-        Rectangle trunk2, Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle, Texture2D? topTexture, Texture2D? woodTexture, Texture2D? branchTexture)
+    private static TwailaRender BuildRenderForGemTree(int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1, Rectangle trunk2,
+        Rectangle trunk3, Rectangle leftBranch, Rectangle rightBranch, Rectangle bottomMiddle, Texture2D? topTexture, Texture2D? woodTexture, Texture2D? branchTexture)
     {
         int unit = 16;
         RenderBuilder builder = new();
@@ -489,8 +489,8 @@ public class TreeUtil
         return builder.Build();
     }
 
-    private static TwailaRender BuildRenderForPalmTrees(SpriteBatch spriteBatch, int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1,
-        Rectangle trunk2, Rectangle bottom, Texture2D? topTexture, Texture2D? woodTexture)
+    private static TwailaRender BuildRenderForPalmTrees(int topOffsetX, int topOffsetY, Rectangle top, Rectangle trunk1, Rectangle trunk2,
+        Rectangle bottom, Texture2D? topTexture, Texture2D? woodTexture)
     {
         int unit = 16;
         RenderBuilder builder = new();

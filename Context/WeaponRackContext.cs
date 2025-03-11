@@ -71,7 +71,7 @@ public class WeaponRackContext : TileContext
     protected override TwailaRender TileImage(SpriteBatch spriteBatch)
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
-        return ImageUtil.GetRenderForWeaponRack(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
+        return ImageUtil.GetRenderForWeaponRack(tile, BestTilePos.X, BestTilePos.Y, ItemId);
     }
 
     public override bool ContextChanged(BaseContext? other)

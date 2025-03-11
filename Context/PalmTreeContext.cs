@@ -58,12 +58,12 @@ public class PalmTreeContext : TileContext
     {
         if (TileLoader.CanGrowModPalmTree(SandId))
         {
-            return TreeUtil.GetRenderForModdedPalmTree(spriteBatch, SandId);
+            return TreeUtil.GetRenderForModdedPalmTree(SandId);
         }
         int palmTreeWood = TreeUtil.GetTreeWood(SandId);
         if (palmTreeWood != -1)
         {
-            return TreeUtil.GetRenderForPalmTree(spriteBatch, palmTreeWood);
+            return TreeUtil.GetRenderForPalmTree(palmTreeWood);
         }
         return new TwailaRender();
     }

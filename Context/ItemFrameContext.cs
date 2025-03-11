@@ -71,7 +71,7 @@ public class ItemFrameContext : TileContext
     protected override TwailaRender TileImage(SpriteBatch spriteBatch)
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
-        return ImageUtil.GetRenderForItemFrame(spriteBatch, tile, BestTilePos.X, BestTilePos.Y, ItemId);
+        return ImageUtil.GetRenderForItemFrame(tile, BestTilePos.X, BestTilePos.Y, ItemId);
     }
 
     public override bool ContextChanged(BaseContext? other)

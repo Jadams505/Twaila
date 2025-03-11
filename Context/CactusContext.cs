@@ -58,9 +58,9 @@ public class CactusContext : TileContext
     {
         if (TileLoader.CanGrowModCactus(SandTileId))
         {
-            return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: true);
+            return TreeUtil.GetRenderForCactus(SandTileId, modded: true);
         }
-        return TreeUtil.GetRenderForCactus(spriteBatch, SandTileId, modded: false);
+        return TreeUtil.GetRenderForCactus(SandTileId, modded: false);
     }
 
     protected override TwailaRender ItemImage(SpriteBatch spriteBatch)

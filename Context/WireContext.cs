@@ -173,7 +173,7 @@ public class WireContext : BaseContext
 
     protected override TwailaRender GetImage(SpriteBatch spriteBatch)
     {
-        return ImageUtil.GetRenderForWireAndActuator(spriteBatch, Framing.GetTileSafely(BestTilePos));
+        return ImageUtil.GetRenderForWireAndActuator(Framing.GetTileSafely(BestTilePos));
     }
 
     protected override List<UITwailaElement> InfoElements()

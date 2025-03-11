@@ -16,7 +16,7 @@ namespace Twaila.Util;
 
 public static class ImageUtil
 {
-    public static TwailaRender GetRenderFromTile(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderFromTile(Tile tile)
     {
         int size = 16;
         int padding = 2;
@@ -88,27 +88,27 @@ public static class ImageUtil
         return new TwailaRender();
     }
 
-    public static TwailaRender GetRenderCustom(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderCustom(Tile tile)
     {
-        return GetRenderForCampfire(spriteBatch, tile)
-            .Coalesce(GetRenderForHerbs(spriteBatch, tile))
-            .Coalesce(GetRenderForXmasTree(spriteBatch, tile))
-            .Coalesce(TreeUtil.GetRenderForBamboo(spriteBatch, tile.TileType))
-            .Coalesce(TreeUtil.GetRenderForSeaweed(spriteBatch, tile.TileType))
-            .Coalesce(GetRenderForMannequins(spriteBatch, tile))
-            .Coalesce(GetRenderForSnakeRope(spriteBatch, tile.TileType))
-            .Coalesce(GetRenderForCattail(spriteBatch, tile))
-            .Coalesce(GetRenderForRelic(spriteBatch, tile))
-            .Coalesce(GetRenderForPylon(spriteBatch, tile))
-            .Coalesce(GetRenderForVoidVault(spriteBatch, tile))
-            .Coalesce(GetRenderForMarbleColumn(spriteBatch, tile));
+        return GetRenderForCampfire(tile)
+            .Coalesce(GetRenderForHerbs(tile))
+            .Coalesce(GetRenderForXmasTree(tile))
+            .Coalesce(TreeUtil.GetRenderForBamboo(tile.TileType))
+            .Coalesce(TreeUtil.GetRenderForSeaweed(tile.TileType))
+            .Coalesce(GetRenderForMannequins(tile))
+            .Coalesce(GetRenderForSnakeRope(tile.TileType))
+            .Coalesce(GetRenderForCattail(tile))
+            .Coalesce(GetRenderForRelic(tile))
+            .Coalesce(GetRenderForPylon(tile))
+            .Coalesce(GetRenderForVoidVault(tile))
+            .Coalesce(GetRenderForMarbleColumn(tile));
     }
 
     /*
         For some reason the frameY for campfires when they are turned off does not match the frameY on
         their spritesheet. It might have something to do with animation frames
     */
-    public static TwailaRender GetRenderForCampfire(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForCampfire(Tile tile)
     {
         if (tile.TileType == TileID.Campfire && !TwailaConfig.Instance.UseItemTextures)
         {
@@ -118,7 +118,7 @@ public static class ImageUtil
             {
                 mutableFrameY = 288; // this is the correct frameY for the campfire when it is turned off
             }
-            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, data);
+            return GetRenderFromTileObjectData(tile.TileType, tile.TileFrameX, mutableFrameY, data);
         }
         return TwailaRender.Empty;
     }
@@ -129,7 +129,7 @@ public static class ImageUtil
         mature or blooming
         Blinkroot and Shiverthorn are exceptions because once bloomed they never unbloom
     */
-    public static TwailaRender GetRenderForHerbs(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForHerbs(Tile tile)
     {
         if (tile.TileType == TileID.MatureHerbs)
         {
@@ -156,7 +156,7 @@ public static class ImageUtil
             {
                 mutableId = TileID.BloomingHerbs;
             }
-            return GetRenderFromTileObjectData(spriteBatch, mutableId, tile.TileFrameX, tile.TileFrameY, data);
+            return GetRenderFromTileObjectData(mutableId, tile.TileFrameX, tile.TileFrameY, data);
         }
         return TwailaRender.Empty;
     }
@@ -164,7 +164,7 @@ public static class ImageUtil
     /*
         Christmas trees store extra data in the top left tile to account for decorations
     */
-    public static TwailaRender GetRenderForXmasTree(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForXmasTree(Tile tile)
     {
         if(tile.TileType == TileID.ChristmasTree)
         {
@@ -173,22 +173,22 @@ public static class ImageUtil
             {
                 mutableFrameY = 0; // sets the frameY to what it would be if it had no decorations
             }
-            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
+            return GetRenderFromTileObjectData(tile.TileType, tile.TileFrameX, mutableFrameY, TileUtil.GetTileObjectData(tile));
         }
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForMannequins(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForMannequins(Tile tile)
     {
         if(tile.TileType == TileID.DisplayDoll)
         {
             TileObjectData data = TileUtil.GetTileObjectData(tile);
-            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
+            return GetRenderFromTileObjectData(tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
         }
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForSnakeRope(SpriteBatch spriteBatch, int tileId)
+    public static TwailaRender GetRenderForSnakeRope(int tileId)
     {
         if(tileId == TileID.MysticSnakeRope)
         {
@@ -207,7 +207,7 @@ public static class ImageUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForCattail(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForCattail(Tile tile)
     {
         if(tile.TileType == TileID.Cattail)
         {
@@ -230,7 +230,7 @@ public static class ImageUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForRelic(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForRelic(Tile tile)
     {
         if(tile.TileType == TileID.MasterTrophyBase)
         {
@@ -254,7 +254,7 @@ public static class ImageUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForPylon(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForPylon(Tile tile)
     {
         if(tile.TileType == TileID.TeleportationPylon)
         {
@@ -283,16 +283,16 @@ public static class ImageUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForVoidVault(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForVoidVault(Tile tile)
     {
         if(tile.TileType == TileID.VoidVault)
         {
-            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
+            return GetRenderFromTileObjectData(tile.TileType, 0, 0, TileUtil.GetTileObjectData(tile));
         }
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderForWireAndActuator(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForWireAndActuator(Tile tile)
     {
         if(!tile.HasTile && tile.WallType == 0 && tile.LiquidAmount <= 0)
         {
@@ -330,7 +330,7 @@ public static class ImageUtil
         return builder.Build();
     }
 
-    public static TwailaRender GetImageForIconItem(SpriteBatch spriteBatch, int itemId)
+    public static TwailaRender GetImageForIconItem(int itemId)
     {
         Texture2D? texture = GetItemTexture(itemId);
         DrawAnimation animation = Main.itemAnimations[itemId];
@@ -364,7 +364,7 @@ public static class ImageUtil
         return texture.ToRender();
     }
 
-    public static TwailaRender GetRenderForItemFrame(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
+    public static TwailaRender GetRenderForItemFrame(Tile tile, int posX, int posY, int itemId)
     {
         RenderBuilder builder = new();
 
@@ -372,7 +372,7 @@ public static class ImageUtil
         DrawAnimation itemAnimation = Main.itemAnimations[itemId];
         Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
 
-        TwailaRender frameRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
+        TwailaRender frameRender = GetRenderFromTileDrawing(tile, posX, posY);
         Rectangle frameBox = new(0, 0, (int)frameRender.Width, (int)frameRender.Height); // is casting a good idea?
 
         Vector2 drawPos = Vector2.Zero;
@@ -397,7 +397,7 @@ public static class ImageUtil
         return builder.Build();
     }
 
-    public static TwailaRender GetRenderForWeaponRack(SpriteBatch spriteBatch, Tile tile, int posX, int posY, int itemId)
+    public static TwailaRender GetRenderForWeaponRack(Tile tile, int posX, int posY, int itemId)
     {
         RenderBuilder builder = new();
 
@@ -405,7 +405,7 @@ public static class ImageUtil
         DrawAnimation itemAnimation = Main.itemAnimations[itemId];
         Rectangle itemBox = itemAnimation != null ? itemAnimation.GetFrame(itemTexture, 0) : itemTexture.Frame();
 
-        TwailaRender rackRender = GetRenderFromTileDrawing(spriteBatch, tile, posX, posY);
+        TwailaRender rackRender = GetRenderFromTileDrawing(tile, posX, posY);
         Rectangle rackBox = new(0, 0, (int)rackRender.Width, (int)rackRender.Height); // is casting a good idea
 
         Vector2 drawPos = Vector2.Zero;
@@ -430,7 +430,7 @@ public static class ImageUtil
         return builder.Build();
     }
     
-    public static TwailaRender GetRenderForMarbleColumn(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetRenderForMarbleColumn(Tile tile)
     {
         int width = 16;
         int height = 18;
@@ -457,7 +457,7 @@ public static class ImageUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetDebugRender(SpriteBatch spriteBatch, Tile tile)
+    public static TwailaRender GetDebugRender(Tile tile)
     {
         RenderBuilder builder = new();
         Texture2D? texture = GetTileTexture(tile.TileType);
@@ -465,7 +465,7 @@ public static class ImageUtil
         return builder.Build();
     }
 
-    public static TwailaRender GetRenderFromTileObjectData(SpriteBatch spriteBatch, int tileId, int frameX, int frameY, TileObjectData data)
+    public static TwailaRender GetRenderFromTileObjectData(int tileId, int frameX, int frameY, TileObjectData data)
     {
         if (data == null)
         {
@@ -496,7 +496,7 @@ public static class ImageUtil
         return TwailaRender.Empty;
     }
 
-    public static TwailaRender GetRenderFromTileDrawing(SpriteBatch spriteBatch, Tile tile, int posX, int posY)
+    public static TwailaRender GetRenderFromTileDrawing(Tile tile, int posX, int posY)
     {
         try
         {
@@ -526,7 +526,7 @@ public static class ImageUtil
                 tileFx += (short)addX;
                 tileFy += (short)addY;
             }
-            return GetRenderFromTileObjectData(spriteBatch, tile.TileType, tileFx, tileFy, data);
+            return GetRenderFromTileObjectData(tile.TileType, tileFx, tileFy, data);
         }
         catch (Exception e)
         {

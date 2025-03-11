@@ -61,18 +61,18 @@ public class TreeContext : TileContext
         {
             if (TileLoader.CanGrowModTree(DirtId))
             {
-                TwailaRender treeRender = TreeUtil.GetRenderForModdedTree(spriteBatch, DirtId);
+                TwailaRender treeRender = TreeUtil.GetRenderForModdedTree(DirtId);
                 return treeRender;
             }
             int treeWood = TreeUtil.GetTreeWood(DirtId);
             if (treeWood != -1)
             {
-                return TreeUtil.GetRenderForVanillaTree(spriteBatch, treeWood, BestTilePos.Y);
+                return TreeUtil.GetRenderForVanillaTree(treeWood, BestTilePos.Y);
             }
         }
         else if (TileId == TileID.MushroomTrees)
         {
-            return TreeUtil.GetRenderForMushroomTree(spriteBatch);
+            return TreeUtil.GetRenderForMushroomTree();
         }
         return new TwailaRender();
     }

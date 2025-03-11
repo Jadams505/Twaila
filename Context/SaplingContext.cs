@@ -57,7 +57,7 @@ public class SaplingContext : TileContext
     protected override TwailaRender TileImage(SpriteBatch spriteBatch)
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
-        return ImageUtil.GetRenderFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y);
+        return ImageUtil.GetRenderFromTileDrawing(tile, BestTilePos.X, BestTilePos.Y);
     }
 
     protected override TwailaRender ItemImage(SpriteBatch spriteBatch)

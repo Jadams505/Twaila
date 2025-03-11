@@ -191,17 +191,17 @@ public class TileContext : WireContext
     protected virtual TwailaRender TileImage(SpriteBatch spriteBatch)
     {
         Tile tile = Framing.GetTileSafely(BestTilePos);
-        TwailaRender treeRender = TreeUtil.GetRenderForVanityTree(spriteBatch, tile.TileType)
-            .Coalesce(TreeUtil.GetRenderForGemTree(spriteBatch, tile.TileType))
-            .Coalesce(TreeUtil.GetRenderForAshTree(spriteBatch, tile.TileType));
+        TwailaRender treeRender = TreeUtil.GetRenderForVanityTree(tile.TileType)
+            .Coalesce(TreeUtil.GetRenderForGemTree(tile.TileType))
+            .Coalesce(TreeUtil.GetRenderForAshTree(tile.TileType));
         if (treeRender.CanDraw())
         {
             return treeRender;
         }
 
-        TwailaRender render = ImageUtil.GetRenderCustom(spriteBatch, tile)
-            .Coalesce(ImageUtil.GetRenderFromTileDrawing(spriteBatch, tile, BestTilePos.X, BestTilePos.Y))
-            .Coalesce(ImageUtil.GetRenderFromTile(spriteBatch, tile));
+        TwailaRender render = ImageUtil.GetRenderCustom(tile)
+            .Coalesce(ImageUtil.GetRenderFromTileDrawing(tile, BestTilePos.X, BestTilePos.Y))
+            .Coalesce(ImageUtil.GetRenderFromTile(tile));
         return render;
     }
 
