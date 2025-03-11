@@ -221,7 +221,8 @@ public class ItemTilePairSystem : ModSystem
     // Assumes that modded doors do not wrap and that they follow the pattern of vanilla
     private static int GetPlaceStyleForDoor(Tile tile)
     {
-        TileObjectData data = TileUtil.GetTileObjectData(tile);
+        var data = TileUtil.GetTileObjectData(tile);
+        if (data is null) return -1;
 
         if (TileLoader.IsClosedDoor(tile))
         {

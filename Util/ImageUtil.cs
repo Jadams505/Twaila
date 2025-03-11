@@ -135,7 +135,7 @@ public static class ImageUtil
         {
             int mutableId = tile.TileType;
             int style = TileObjectData.GetTileStyle(tile);
-            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            var data = TileUtil.GetTileObjectData(tile);
             if (style == 0 && Main.dayTime) // daybloom
             {
                 mutableId = TileID.BloomingHerbs;
@@ -182,7 +182,9 @@ public static class ImageUtil
     {
         if(tile.TileType == TileID.DisplayDoll)
         {
-            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            var data = TileUtil.GetTileObjectData(tile);
+			if (data is null) return TwailaRender.Empty;
+
             return GetRenderFromTileObjectData(tile.TileType, tile.TileFrameX + data.CoordinateFullWidth * 4, tile.TileFrameY, TileUtil.GetTileObjectData(tile));
         }
         return TwailaRender.Empty;
@@ -465,7 +467,7 @@ public static class ImageUtil
         return builder.Build();
     }
 
-    public static TwailaRender GetRenderFromTileObjectData(int tileId, int frameX, int frameY, TileObjectData data)
+    public static TwailaRender GetRenderFromTileObjectData(int tileId, int frameX, int frameY, TileObjectData? data)
     {
         if (data == null)
         {
@@ -516,7 +518,7 @@ public static class ImageUtil
                     return TwailaRender.Empty;
             }
 
-            TileObjectData data = TileUtil.GetTileObjectData(tile);
+            var data = TileUtil.GetTileObjectData(tile);
             short tileFx = tile.TileFrameX, tileFy = tile.TileFrameY;
             Main.instance.TilesRenderer.GetTileDrawData(posX, posY, tile, tile.TileType,
                 ref tileFx, ref tileFy, out int width, out int height, out int top, out int h, out int addX, out int addY,

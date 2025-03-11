@@ -10,10 +10,10 @@ namespace Twaila.Systems;
 
 public class KeybindSystem : ModSystem
 {
-    public static ModKeybind ToggleUI { get; private set; }
-    public static ModKeybind NextContext { get; private set; }
-    public static ModKeybind PrevContext { get; private set; }
-    public static ModKeybind CycleContextMode { get; private set; }
+    public static ModKeybind ToggleUI { get; private set; } = null!;
+    public static ModKeybind NextContext { get; private set; } = null!;
+    public static ModKeybind PrevContext { get; private set; } = null!;
+    public static ModKeybind CycleContextMode { get; private set; } = null!;
 
 
     public override void Load()
@@ -26,10 +26,10 @@ public class KeybindSystem : ModSystem
 
     public override void Unload()
     {
-        ToggleUI = null;
-        NextContext = null;
-        PrevContext = null;
-        CycleContextMode = null;
+        ToggleUI = null!;
+        NextContext = null!;
+        PrevContext = null!;
+        CycleContextMode = null!;
     }
 
     public static void HandleKeys(TwailaPlayer player)

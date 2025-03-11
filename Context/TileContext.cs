@@ -146,7 +146,7 @@ public class TileContext : WireContext
 
     protected bool StyleChanged(TileContext other)
     {
-        TileObjectData oldData = TileUtil.GetTileObjectData(other.TileId, other.FrameX, other.FrameY),
+        TileObjectData? oldData = TileUtil.GetTileObjectData(other.TileId, other.FrameX, other.FrameY),
             newData = TileUtil.GetTileObjectData(TileId, FrameX, FrameY);
         if (newData == null || oldData == null)
         {

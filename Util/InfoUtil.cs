@@ -93,7 +93,7 @@ public class InfoUtil
         text = "";
         if (icon != -1)
         {
-            text = NameUtil.GetNameFromItem(icon);
+            text = NameUtil.GetNameFromItem(icon) ?? "";
             return true;
         }
         return false;
@@ -192,12 +192,12 @@ public class InfoUtil
             if (ill)
             {
                 illuminantIcon = ItemID.GlowPaint;
-                illuminantText = NameUtil.GetNameFromItem(illuminantIcon);
+                illuminantText = NameUtil.GetNameFromItem(illuminantIcon) ?? "";
             }
             if (echo)
             {
                 echoIcon = ItemID.EchoCoating;
-                echoText = NameUtil.GetNameFromItem(echoIcon);
+                echoText = NameUtil.GetNameFromItem(echoIcon) ?? "";
             }
             return true;
         }
@@ -285,7 +285,7 @@ public class InfoUtil
         };
     }
 
-    internal static PropertyInfo Player_talkNPC = typeof(Player).GetProperty("talkNPC", BindingFlags.Instance | BindingFlags.Public);
+    internal static PropertyInfo? Player_talkNPC = typeof(Player).GetProperty("talkNPC", BindingFlags.Instance | BindingFlags.Public);
 
     public static double GetNpcHappiness(NPC npc, out string asNumber, out string asText)
     {

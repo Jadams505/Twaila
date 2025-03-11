@@ -74,7 +74,7 @@ public class TreeContext : TileContext
         {
             return TreeUtil.GetRenderForMushroomTree();
         }
-        return new TwailaRender();
+        return TwailaRender.Empty;
     }
 
     protected override string GetName()

@@ -8,7 +8,7 @@ namespace Twaila.ObjectData;
 
 public class ExtraObjectData
 {
-    private static Dictionary<int, TileObjectData> _data;
+    private static Dictionary<int, TileObjectData> _data = [];
 
     public static void Initialize()
     {
@@ -24,7 +24,7 @@ public class ExtraObjectData
 
     public static void Unload()
     {
-        _data = null;
+        _data = null!;
     }
 
     private static void Add1x1()
@@ -161,20 +161,12 @@ public class ExtraObjectData
         _data.Add(tileId, new TileObjectData(copyFrom));
     }
 
-    public static TileObjectData GetData(Tile tile)
-    {
-        TileObjectData data = GetDataForPiles(tile.TileType, tile.TileFrameY) ?? GetDataForJungleFoilage(tile.TileType, tile.TileFrameY) ?? 
-            GetDataForStalactite(tile.TileType, tile.TileFrameY);
-        if(data == null)
-        {
-            _data.TryGetValue(tile.TileType, out data);
-        }  
-        return data;
-    }
+    public static TileObjectData? GetData(Tile tile) =>
+        GetData(tile.TileType, tile.TileFrameY);
 
-    public static TileObjectData GetData(int tileId, int frameY)
+    public static TileObjectData? GetData(int tileId, int frameY)
     {
-        TileObjectData data = GetDataForPiles(tileId, frameY) ?? GetDataForJungleFoilage(tileId, frameY) ?? GetDataForStalactite(tileId, frameY);
+        TileObjectData? data = GetDataForPiles(tileId, frameY) ?? GetDataForJungleFoilage(tileId, frameY) ?? GetDataForStalactite(tileId, frameY);
         if (data == null)
         {
             _data.TryGetValue(tileId, out data);
@@ -186,11 +178,11 @@ public class ExtraObjectData
         The top row of the spritesheet for piles are 1x1 in size while the
         next two rows are 2x1 in size
     */
-    private static TileObjectData GetDataForPiles(int tileId, int frameY)
+    private static TileObjectData? GetDataForPiles(int tileId, int frameY)
     {
         if (tileId == TileID.SmallPiles)
         {
-            TileObjectData data = new TileObjectData();
+            TileObjectData? data = new TileObjectData();
             if (frameY < 18)
             {
                 data.CopyFrom(TileObjectData.Style1x1);
@@ -216,11 +208,11 @@ public class ExtraObjectData
         The top half of the spritesheet for jungle foilage are 3x2 in size while the
         bottom half are 2x2 in size
     */
-    private static TileObjectData GetDataForJungleFoilage(int tileId, int frameY)
+    private static TileObjectData? GetDataForJungleFoilage(int tileId, int frameY)
     {
         if (tileId == TileID.PlantDetritus)
         {
-            TileObjectData data = new TileObjectData();
+            TileObjectData? data = new TileObjectData();
             if (frameY < 36)
             {
                 data.CopyFrom(TileObjectData.Style3x2);
@@ -246,11 +238,11 @@ public class ExtraObjectData
         The top half of the spritesheet for stalactites are 1x2 in size while the
         bottom half are 1x1 in size
     */
-    private static TileObjectData GetDataForStalactite(int tileId, int frameY)
+    private static TileObjectData? GetDataForStalactite(int tileId, int frameY)
     {
         if (tileId == TileID.Stalactite)
         {
-            TileObjectData data = new TileObjectData();
+            TileObjectData? data = new TileObjectData();
             if (frameY <= 69)
             {
                 data.CopyFrom(TileObjectData.Style1x2);

@@ -35,7 +35,7 @@ public class TextureBuilder
         _components.Add(comp);    
     }
 
-    public Texture2D Build(GraphicsDevice graphicsDevice)
+    public Texture2D? Build(GraphicsDevice graphicsDevice)
     {
         int smallestX = _components[0].Position.X, biggestX = smallestX + _components[0].BoundingBox.Width;
         int smallestY = _components[0].Position.Y, biggestY = smallestY + _components[0].BoundingBox.Height;

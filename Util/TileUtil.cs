@@ -14,40 +14,40 @@ namespace Twaila.Util;
 
 public class TileUtil
 {
-    public static TileObjectData GetTileObjectData(Tile tile)
+    public static TileObjectData? GetTileObjectData(Tile tile)
     {
-        TileObjectData data = ExtraObjectData.GetData(tile) ?? GetTileDataSafe(tile);
+        TileObjectData? data = ExtraObjectData.GetData(tile) ?? GetTileDataSafe(tile);
         return data;
     }
 
-    public static TileObjectData GetTileObjectData(int tileId, int frameX, int frameY, int style = 0)
+    public static TileObjectData? GetTileObjectData(int tileId, int frameX, int frameY, int style = 0)
     {
         TileObjectData data = ExtraObjectData.GetData(tileId, frameY) ??
             TileObjectData.GetTileData(tileId, style);
         return IsValidTileObjectData(data) ? data : null;
     }
 
-    public static bool IsValidTileObjectData(TileObjectData data)
+    public static bool IsValidTileObjectData(TileObjectData? data)
     {
         return data != null && data.CoordinateFullWidth > 0 && data.CoordinateFullHeight > 0 && data.StyleMultiplier > 0;
     }
 
-    public static TileObjectData GetTileDataSafe(Tile tile)
+    public static TileObjectData? GetTileDataSafe(Tile tile)
     {
-        TileObjectData data = GetRawData(tile);
+        TileObjectData? data = GetRawData(tile);
         return IsValidTileObjectData(data) ? TileObjectData.GetTileData(tile) : null;
     }
 
-    private static readonly FieldInfo _tileObjectDataValues = typeof(TileObjectData).GetField("_data", BindingFlags.Static | BindingFlags.NonPublic);
-    private static TileObjectData GetRawData(Tile tile)
+    private static readonly FieldInfo? _tileObjectDataValues = typeof(TileObjectData).GetField("_data", BindingFlags.Static | BindingFlags.NonPublic);
+    private static TileObjectData? GetRawData(Tile tile)
     {
-        List<TileObjectData> data = (List<TileObjectData>)_tileObjectDataValues.GetValue(null);
-        return data[tile.TileType];
+        List<TileObjectData>? data = _tileObjectDataValues?.GetValue(null) as List<TileObjectData>;
+        return data?[tile.TileType];
     }
 
     public static int GetTileStyle(Tile tile)
     {
-        TileObjectData data = GetTileObjectData(tile);
+        TileObjectData? data = GetTileObjectData(tile);
         if(data == null)
         {
             return -1;

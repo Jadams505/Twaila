@@ -13,9 +13,9 @@ namespace Twaila.UI;
 
 public class TwailaUI
 {
-    private static UserInterface _interface;
-    private static UIState _state;
-    private static TwailaPanel _panel;
+    private static UserInterface _interface = null!;
+    private static UIState _state = null!;
+    private static TwailaPanel _panel = null!;
 
     public static bool Enabled { get; private set; }
     public static void Initialize()
@@ -148,9 +148,9 @@ public class TwailaUI
 
     public static void Unload()
     {
-        _interface = null;
-        _panel = null;
-        _state = null;
+        _interface = null!;
+        _panel = null!;
+        _state = null!;
     }
 
     public static void Draw(GameTime time)

@@ -24,12 +24,12 @@ public class TownNpcContext : NpcContext
         HappinessGrid = new UIHappinessGrid(width: 4);
     }
 
-    public static TownNpcContext CreateTownNpcContext(TwailaPoint pos)
+    public static TownNpcContext? CreateTownNpcContext(TwailaPoint pos)
     {
         if (Main.mapFullscreen)
             return null;
 
-        if (IntersectsNPC(pos.MouseWorldPos, out var npc) && npc.townNPC)
+        if (IntersectsNPC(pos.MouseWorldPos, out var npc) && npc?.townNPC is true)
         {
             return new TownNpcContext(pos);
         }
@@ -37,7 +37,7 @@ public class TownNpcContext : NpcContext
         return null;
     }
 
-    private static readonly FieldInfo HappinessDatabase = typeof(ShopHelper).GetField("_database", BindingFlags.Instance | BindingFlags.NonPublic);
+    private static readonly FieldInfo? HappinessDatabase = typeof(ShopHelper).GetField("_database", BindingFlags.Instance | BindingFlags.NonPublic);
 
     public override void Update()
     {
@@ -62,9 +62,8 @@ public class TownNpcContext : NpcContext
         {
             InfoGrid.Add(new UITwailaText(text + $" ({Happiness:0.00})"));
         }
-        
-        var happiness = (PersonalityDatabase)HappinessDatabase?.GetValue(Main.ShopHelper);
-        if (happiness != null)
+
+        if (HappinessDatabase?.GetValue(Main.ShopHelper) is PersonalityDatabase happiness)
         {
             if (happiness.TryGetProfileByNPCID(Npc.type, out var profile))
             {
@@ -91,26 +90,26 @@ public class TownNpcContext : NpcContext
 
                 foreach (var preference in list)
                 {
-                    if(preference is BiomePreferenceListTrait biomeEntry)
+                    if (preference is BiomePreferenceListTrait biomeEntry)
                     {
-                        
-                        foreach(var biomePreference in biomeEntry.Preferences)
+
+                        foreach (var biomePreference in biomeEntry.Preferences)
                         {
                             string biomeText = $"{biomePreference.Affection}: {ShopHelper.BiomeNameByKey(biomePreference.Biome.NameKey)}";
-                            
-                            if(config.ShowBiomePreferences)
+
+                            if (config.ShowBiomePreferences)
                                 InfoGrid.Add(new UITwailaText(biomeText));
                         }
-                        
+
                     }
-                    else if(preference is NPCPreferenceTrait npcEntry)
+                    else if (preference is NPCPreferenceTrait npcEntry)
                     {
                         var innerNpc = new NPC();
                         innerNpc.SetDefaults(npcEntry.NpcId);
                         int index = TownNPCProfiles.GetHeadIndexSafe(innerNpc);
                         var render = index != -1 ? TextureAssets.NpcHead[index].Value.ToRender() : ImageUtil.GetRenderForNpc(innerNpc);
                         npcIconGrids[npcEntry.Level].AddIcon(render);
-                        
+
                         string npcText = $"{npcEntry.Level}: {innerNpc.TypeName}";
 
                         if (config.ShowNpcPreferences == TwailaConfig.DisplayType.Name || config.ShowNpcPreferences == TwailaConfig.DisplayType.Both)
@@ -118,7 +117,7 @@ public class TownNpcContext : NpcContext
                     }
                 }
 
-                if(config.ShowNpcPreferences == TwailaConfig.DisplayType.Icon || config.ShowNpcPreferences == TwailaConfig.DisplayType.Both)
+                if (config.ShowNpcPreferences == TwailaConfig.DisplayType.Icon || config.ShowNpcPreferences == TwailaConfig.DisplayType.Both)
                 {
                     foreach (var grid in npcIconGrids)
                     {
