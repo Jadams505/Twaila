@@ -1,4 +1,6 @@
 # Twaila
+
+![TWAILA Icon](icon_workshop.png)
  
 A Terraria mod that displays information about the tile you are hovering over in the world
 

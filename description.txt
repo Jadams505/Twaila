@@ -40,6 +40,9 @@ Jadams - Developer
 SweelLong - Chinese Translations
 
 [Changelog]
+v0.5.2.0 (3/11/2025)
+- Major performance improvements when drawing tiles
+- Fixed the panel disappearing with small UI scales
 v0.5.1.2 (12/5/2024)
 - Added "Hide UI When Talking To NPCs" and "Hide UI When Editing Signs" to the 'UI Display' config
 - Fixed bad IL code for displaying in the Fullscreen Map

@@ -2,6 +2,5 @@
 TWAILA v{ModVersion} has been published to {tMLBuildPurpose} tML v{tMLVersion}.
 Learn more at the [url={ModHomepage}]homepage[/url]
 
-- Added "Hide UI When Talking To NPCs" and "Hide UI When Editing Signs" to the 'UI Display' config
-- Fixed bad IL code for displaying in the Fullscreen Map
-- Fixed an issue with NPC happiness
+- Major performance improvements when drawing tiles
+- Fixed the panel disappearing with small UI scales
