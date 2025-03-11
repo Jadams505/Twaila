@@ -42,6 +42,10 @@ public class UITwailaImage : UITwailaElement
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
 
             base.DrawSelf(spriteBatch);
+
+            // restore old state taken from GameInterfaceLayer.Draw
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
         }
     }
 
