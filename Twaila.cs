@@ -45,7 +45,7 @@ public class Twaila : Mod
             return;
         }
 
-        MonoModHooks.DumpIL(this, il);
+        // MonoModHooks.DumpIL(this, il);
 
         cursor.Emit(OpCodes.Ldloc, mapXLocalIndex);    // ldloc.s num89
         cursor.Emit(OpCodes.Ldloc, mapYLocalIndex);    // ldloc.s num90

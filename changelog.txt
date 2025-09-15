@@ -2,5 +2,4 @@
 TWAILA v{ModVersion} has been published to {tMLBuildPurpose} tML v{tMLVersion}.
 Learn more at the [url={ModHomepage}]homepage[/url]
 
-- Major performance improvements when drawing tiles
-- Fixed the panel disappearing with small UI scales
+- Removed a debug IL dump
