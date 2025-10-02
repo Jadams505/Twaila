@@ -69,6 +69,8 @@ public static class NameUtil
     {
         switch (tile.TileType)
         {
+            case TileID.Dirt:
+                return GetNameFromItem(ItemID.DirtBlock);
             case TileID.Grass:
                 return Language.GetTextValue("Mods.Twaila.ManualNames.Tiles.Grass");
             case TileID.Plants:
@@ -601,5 +603,10 @@ public static class NameUtil
         if (labelMethod.Invoke(null, [wrapper]) is not string key || !Language.Exists(key)) return value.ToString();
 
         return Language.GetTextValue(key);
+    }
+
+    public static bool SameMod(ModType? first, ModType? second)
+    {
+        return first?.Mod?.Name == second?.Mod?.Name;
     }
 }

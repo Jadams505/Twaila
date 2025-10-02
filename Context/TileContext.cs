@@ -214,8 +214,11 @@ public class TileContext : WireContext
 
         if (displayName is null)
         {
-            string? dropName = NameUtil.GetNameFromItem(itemEntry.DropItem);
-            string? placedName = NameUtil.GetNameFromItem(itemEntry.PlaceItem);
+            var mTile = TileLoader.GetTile(TileId);
+            var mDrop = ItemLoader.GetItem(itemEntry.DropItem);
+            var mPlaced = ItemLoader.GetItem(itemEntry.PlaceItem);
+            string? dropName = NameUtil.SameMod(mTile, mDrop) ? NameUtil.GetNameFromItem(itemEntry.DropItem) : null;
+            string? placedName = NameUtil.SameMod(mTile, mPlaced) ? NameUtil.GetNameFromItem(itemEntry.PlaceItem) : null;
             string? mapName = NameUtil.GetNameFromMap(tile, BestTilePos.X, BestTilePos.Y);
             string? internalPrettyName = NameUtil.GetInternalTileName(TileId, fullName: false, pretty: true);
             displayName = NamingSystem.Instance.GetName(dropName, placedName, mapName, internalPrettyName);

@@ -149,8 +149,11 @@ public class WallContext : WireContext
         Tile tile = Framing.GetTileSafely(BestTilePos);
         var itemEntry = ItemTilePairSystem.GetItemEntry(tile, TileType.Wall);
 
-        string? dropName = NameUtil.GetNameFromItem(itemEntry.DropItem);
-        string? placeName = NameUtil.GetNameFromItem(itemEntry.PlaceItem);
+        var mWall = WallLoader.GetWall(WallId);
+        var mDrop = ItemLoader.GetItem(itemEntry.DropItem);
+        var mPlaced = ItemLoader.GetItem(itemEntry.PlaceItem);
+        string? dropName = NameUtil.SameMod(mWall, mDrop) ? NameUtil.GetNameFromItem(itemEntry.DropItem) : null;
+        string? placeName = NameUtil.SameMod(mWall, mPlaced) ? NameUtil.GetNameFromItem(itemEntry.PlaceItem) : null;
         string? internalPrettyName = NameUtil.GetInternalWallName(tile.WallType, fullName: false, pretty: true);
 
         string? displayName = NamingSystem.Instance.GetName(dropName, placeName, mapName: null, internalPrettyName); 
