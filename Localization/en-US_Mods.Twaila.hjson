@@ -312,45 +312,121 @@ Configs: {
 
 	NameType: {
 		Tooltip: ""
-		DisplayName.Label: Display Name
-		InternalName.Label: Internal Name
-		FullName.Label: Full Name
-		Off.Label: Off
+
+		DisplayName: {
+			Label: Display Name
+			Tooltip: ""
+		}
+
+		InternalName: {
+			Label: Internal Name
+			Tooltip: ""
+		}
+
+		FullName: {
+			Label: Full Name
+			Tooltip: ""
+		}
+
+		Off: {
+			Label: Off
+			Tooltip: ""
+		}
 	}
 
 	DisplayType: {
 		Tooltip: ""
-		Name.Label: Name
-		Icon.Label: Icon
-		Both.Label: Both
-		Off.Label: "{$NameType.Off.Label}"
+
+		Name: {
+			Label: Name
+			Tooltip: ""
+		}
+
+		Icon: {
+			Label: Icon
+			Tooltip: ""
+		}
+
+		Both: {
+			Label: Both
+			Tooltip: ""
+		}
+
+		Off: {
+			Label: "{$NameType.Off.Label}"
+			Tooltip: ""
+		}
 	}
 
 	HorizontalAnchor: {
 		Tooltip: ""
-		Left.Label: Left
-		Center.Label: Center
-		Right.Label: Right
+
+		Left: {
+			Label: Left
+			Tooltip: ""
+		}
+
+		Center: {
+			Label: Center
+			Tooltip: ""
+		}
+
+		Right: {
+			Label: Right
+			Tooltip: ""
+		}
 	}
 
 	VerticalAnchor: {
 		Tooltip: ""
-		Bottom.Label: Bottom
-		Center.Label: "{$HorizontalAnchor.Center.Label}"
-		Top.Label: Top
+
+		Bottom: {
+			Label: Bottom
+			Tooltip: ""
+		}
+
+		Center: {
+			Label: "{$HorizontalAnchor.Center.Label}"
+			Tooltip: ""
+		}
+
+		Top: {
+			Label: Top
+			Tooltip: ""
+		}
 	}
 
 	DrawMode: {
 		Tooltip: ""
-		Shrink.Label: Shrink
-		Trim.Label: Trim
-		Overflow.Label: Overflow
+
+		Shrink: {
+			Label: Shrink
+			Tooltip: ""
+		}
+
+		Trim: {
+			Label: Trim
+			Tooltip: ""
+		}
+
+		Overflow: {
+			Label: Overflow
+			Tooltip: ""
+		}
 	}
 
 	ContextUpdateMode: {
 		Tooltip: ""
-		Manual.Label: Manual
-		Automatic.Label: Automatic
+
+		Manual: {
+			Label: Manual
+			Tooltip: ""
+		}
+
+		Automatic: {
+			Label: Automatic
+			Tooltip: ""
+		}
 	}
 
 	DisplaySettings: {
@@ -384,9 +460,21 @@ Configs: {
 
 	DisplayMode: {
 		Tooltip: ""
-		On.Label: On
-		Off.Label: "{$NameType.Off.Label}"
-		Automatic.Label: "{$ContextUpdateMode.Automatic.Label}"
+
+		On: {
+			Label: On
+			Tooltip: ""
+		}
+
+		Off: {
+			Label: "{$NameType.Off.Label}"
+			Tooltip: ""
+		}
+
+		Automatic: {
+			Label: "{$ContextUpdateMode.Automatic.Label}"
+			Tooltip: ""
+		}
 	}
 
 	ColorWrapper: {
@@ -495,10 +583,26 @@ Configs: {
 
 	NumberType: {
 		Tooltip: ""
-		Number.Label: Number
-		Text.Label: Text
-		Both.Label: Both
-		Off.Label: Off
+
+		Number: {
+			Label: Number
+			Tooltip: ""
+		}
+
+		Text: {
+			Label: Text
+			Tooltip: ""
+		}
+
+		Both: {
+			Label: Both
+			Tooltip: ""
+		}
+
+		Off: {
+			Label: Off
+			Tooltip: ""
+		}
 	}
 
 	HappinessColors: {

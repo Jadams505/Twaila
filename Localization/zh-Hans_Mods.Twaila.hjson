@@ -316,45 +316,121 @@ Configs: {
 
 	NameType: {
 		// Tooltip: ""
-		DisplayName.Label: 显示名称
-		InternalName.Label: 内部名称
-		FullName.Label: 全部名称
-		Off.Label: 关闭
+
+		DisplayName: {
+			Label: 显示名称
+			// Tooltip: ""
+		}
+
+		InternalName: {
+			Label: 内部名称
+			// Tooltip: ""
+		}
+
+		FullName: {
+			Label: 全部名称
+			// Tooltip: ""
+		}
+
+		Off: {
+			Label: 关闭
+			// Tooltip: ""
+		}
 	}
 
 	DisplayType: {
 		// Tooltip: ""
-		Name.Label: 名字
-		Icon.Label: 图标
-		Both.Label: 全部
-		Off.Label: "{$NameType.Off}"
+
+		Name: {
+			Label: 名字
+			// Tooltip: ""
+		}
+
+		Icon: {
+			Label: 图标
+			// Tooltip: ""
+		}
+
+		Both: {
+			Label: 全部
+			// Tooltip: ""
+		}
+
+		Off: {
+			Label: "{$NameType.Off}"
+			// Tooltip: ""
+		}
 	}
 
 	HorizontalAnchor: {
 		// Tooltip: ""
-		Left.Label: 左边
-		Center.Label: 中部
-		Right.Label: 右边
+
+		Left: {
+			Label: 左边
+			// Tooltip: ""
+		}
+
+		Center: {
+			Label: 中部
+			// Tooltip: ""
+		}
+
+		Right: {
+			Label: 右边
+			// Tooltip: ""
+		}
 	}
 
 	VerticalAnchor: {
 		// Tooltip: ""
-		Bottom.Label: 底部
-		// Center.Label: "{$HorizontalAnchor.Center.Label}"
-		Top.Label: 顶部
+
+		Bottom: {
+			Label: 底部
+			// Tooltip: ""
+		}
+
+		Center: {
+			// Label: "{$HorizontalAnchor.Center.Label}"
+			// Tooltip: ""
+		}
+
+		Top: {
+			Label: 顶部
+			// Tooltip: ""
+		}
 	}
 
 	DrawMode: {
 		// Tooltip: ""
-		Shrink.Label: 缩小
-		Trim.Label: 修整
-		Overflow.Label: 溢出
+
+		Shrink: {
+			Label: 缩小
+			// Tooltip: ""
+		}
+
+		Trim: {
+			Label: 修整
+			// Tooltip: ""
+		}
+
+		Overflow: {
+			Label: 溢出
+			// Tooltip: ""
+		}
 	}
 
 	ContextUpdateMode: {
 		// Tooltip: ""
-		Manual.Label: 指南
-		Automatic.Label: 自动
+
+		Manual: {
+			Label: 指南
+			// Tooltip: ""
+		}
+
+		Automatic: {
+			Label: 自动
+			// Tooltip: ""
+		}
 	}
 
 	DisplaySettings: {
@@ -392,9 +468,21 @@ Configs: {
 
 	DisplayMode: {
 		// Tooltip: ""
-		On.Label: 打开
-		// Off.Label: "{$NameType.Off.Label}"
-		// Automatic.Label: "{$ContextUpdateMode.Automatic.Label}"
+
+		On: {
+			Label: 打开
+			// Tooltip: ""
+		}
+
+		Off: {
+			// Label: "{$NameType.Off.Label}"
+			// Tooltip: ""
+		}
+
+		Automatic: {
+			// Label: "{$ContextUpdateMode.Automatic.Label}"
+			// Tooltip: ""
+		}
 	}
 
 	ColorWrapper: {
@@ -503,10 +591,26 @@ Configs: {
 
 	NumberType: {
 		// Tooltip: ""
-		// Number.Label: Number
-		// Text.Label: Text
-		// Both.Label: Both
-		// Off.Label: Off
+
+		Number: {
+			// Label: Number
+			// Tooltip: ""
+		}
+
+		Text: {
+			// Label: Text
+			// Tooltip: ""
+		}
+
+		Both: {
+			// Label: Both
+			// Tooltip: ""
+		}
+
+		Off: {
+			// Label: Off
+			// Tooltip: ""
+		}
 	}
 
 	HappinessColors: {
