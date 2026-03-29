@@ -98,8 +98,7 @@ public class UITwailaText : UITwailaElement
                     snippetIndex--; // Non text snippets cannot be trimmed so the whole snippet must be removed
                 }    
             }
-            TextSnippet[] remainingSnippets = new TextSnippet[snippetIndex + 1];
-            snippets.CopyTo(0, remainingSnippets, 0, snippetIndex + 1);
+            var remainingSnippets = snippets[0..(snippetIndex + 1)];
 
             DrawText(spriteBatch, remainingSnippets, new Vector2(Scale, Scale));
         }
@@ -108,9 +107,14 @@ public class UITwailaText : UITwailaElement
     private TextSnippet GetSnippetToTrim(List<TextSnippet> snippets, out int index, out float trimWidth)
     {
         float len = 0;
+        
         for(int i = 0; i < snippets.Count; ++i)
         {
-            float snippetLength = snippets[i].GetStringLength(Font);
+            // 1.4.5 removed TextSnippet.GetStringLength()
+            // Is ChatManager.GetStringSize actually equivalent?
+            //float snippetLength = snippets[i].GetStringLength(Font);
+            var newStringSize = ChatManager.GetStringSize(Font, snippets, new(Scale, Scale));
+            float snippetLength = newStringSize.X;
             if (len + snippetLength > Width.Pixels)
             {
                 index = i;
@@ -120,34 +124,26 @@ public class UITwailaText : UITwailaElement
             len += snippetLength;
         }
         index = snippets.Count - 1;
-        trimWidth = snippets[index].GetStringLength(Font) - Width.Pixels;
+        //trimWidth = snippets[index].GetStringLength(Font) - Width.Pixels;
+        trimWidth = ChatManager.GetStringSize(Font, [snippets[index]], new(Scale, Scale)).X - Width.Pixels;
         return snippets[index];
     }
 
     protected override void DrawShrunk(SpriteBatch spriteBatch)
     {
         float scale = GetDrawScale() * Scale;
-        TextSnippet[] snippets = ChatManager.ParseMessage(Text, Color).ToArray();
-        
-        foreach(TextSnippet snippet in snippets)
-        {
-            if(snippet.GetType() != typeof(TextSnippet))
-            {
-                snippet.Scale = scale;
-            }
-        }
-
+        var snippets = ChatManager.ParseMessage(Text, Color);
         DrawText(spriteBatch, snippets, new Vector2(scale, scale));
     }
 
     protected override void DrawOverflow(SpriteBatch spriteBatch)
     {
-        TextSnippet[] snippets = ChatManager.ParseMessage(Text, Color).ToArray();
+        var snippets = ChatManager.ParseMessage(Text, Color);
         Vector2 scale = new Vector2(Scale, Scale);
         DrawText(spriteBatch, snippets, scale);
     }
 
-    private void DrawText(SpriteBatch spriteBatch, TextSnippet[] snippets, Vector2 scale)
+    private void DrawText(SpriteBatch spriteBatch, List<TextSnippet> snippets, Vector2 scale)
     {
         ChatManager.ConvertNormalSnippets(snippets);
 
