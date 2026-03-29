@@ -24,28 +24,33 @@ public class Twaila : Mod
         int mapYLocalIndex = -1;
         int flag2LocalIndex = -1;
 
-        cursor.DefineLabel();
-
         bool preSuccess = cursor.TryGotoNext(MoveType.After,
             x => x.MatchStloc(out flag2LocalIndex),             // stloc.s flag2
             x => x.MatchLdloc(flag2LocalIndex),                 // ldloc.s flag2
             x => x.MatchBrtrue(out _));                         // brtrue
-                                                                      
+
+        int index = cursor.Index;                                                             
 
         bool postSuccess = cursor.TryGotoNext(MoveType.Before,
             x => x.MatchLdsfld(typeof(Main), nameof(Main.Map)),         // ldsfld Main::Map
             x => x.MatchLdloc(out mapXLocalIndex),                      // ldloc.s num89
             x => x.MatchLdloc(out mapYLocalIndex));                     // ldloc.s num90
 
+        bool prevSuccess = cursor.TryGotoPrev(MoveType.After,
+            x => x.MatchCeq(),       
+            x => x.MatchStloc(out _),                     
+            x => x.MatchLdloc(out _),
+            x => x.MatchBrfalse(out _));                     
+
+        cursor.Index -= 2; // insert after the Stloc above.
+
         bool validIndexes = mapXLocalIndex != -1 && mapYLocalIndex != -1 && flag2LocalIndex != -1;
 
-        if (!preSuccess || !postSuccess || !validIndexes)
+        if (!preSuccess || !postSuccess || !prevSuccess || !validIndexes)
         {
             Logger.Warn("Failed to IL edit Main.DrawMap");
             return;
         }
-
-        // MonoModHooks.DumpIL(this, il);
 
         cursor.Emit(OpCodes.Ldloc, mapXLocalIndex);    // ldloc.s num89
         cursor.Emit(OpCodes.Ldloc, mapYLocalIndex);    // ldloc.s num90
