@@ -229,7 +229,7 @@ public class NpcContext : BaseContext
     {
         foreach(NPC npc in Main.npc)
         {
-            if (!npc.active || npc.GivenOrTypeName == "")
+            if (!npc.active || npc.type < 0 || npc.type >= NPCLoader.NPCCount || npc.GivenOrTypeName == "")
                 continue;
 
             Rectangle npcBox = new Rectangle((int)npc.Bottom.X - npc.frame.Width / 2, (int)npc.Bottom.Y - npc.frame.Height, npc.frame.Width, npc.frame.Height);
