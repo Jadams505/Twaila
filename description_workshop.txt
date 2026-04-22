@@ -44,3 +44,4 @@ Visit the Forum page for more details on config options
 [h1]Credits[/h1]
 Jadams - Developer
 SweelLong - Chinese Translations
+Zhuma5 - Contributor

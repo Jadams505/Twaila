@@ -38,6 +38,7 @@ Suggestions and Feedback are welcome
 [Credits]
 Jadams - Developer
 SweelLong - Chinese Translations
+Zhuma5 - Contributor
 
 [Changelog]
 v0.5.2.0 (3/11/2025)

@@ -227,9 +227,9 @@ public class NpcContext : BaseContext
 
     public static bool IntersectsNPC(Point pos, out NPC? target)
     {
-        foreach(NPC npc in Main.npc)
+        foreach(NPC npc in Main.ActiveNPCs)
         {
-            if (!npc.active || npc.type < 0 || npc.type >= NPCLoader.NPCCount || npc.GivenOrTypeName == "")
+            if (npc.type < 0 || npc.type >= NPCLoader.NPCCount)
                 continue;
 
             Rectangle npcBox = new Rectangle((int)npc.Bottom.X - npc.frame.Width / 2, (int)npc.Bottom.Y - npc.frame.Height, npc.frame.Width, npc.frame.Height);
@@ -237,7 +237,7 @@ public class NpcContext : BaseContext
             
             NPCLoader.ModifyHoverBoundingBox(npc, ref npcBox);
 
-            if (mouseHitbox.Intersects(npcBox))
+            if (mouseHitbox.Intersects(npcBox) && !string.IsNullOrEmpty(npc.GivenOrTypeName))
             {
                 target = npc;
                 return true;

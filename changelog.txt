@@ -2,4 +2,4 @@
 TWAILA v{ModVersion} has been published to {tMLBuildPurpose} tML v{tMLVersion}.
 Learn more at the [url={ModHomepage}]homepage[/url]
 
-- Fixed an issue where tiles could have illogical names
+- Fixed an issue related to invalid npcs (thanks Zhuma5)
