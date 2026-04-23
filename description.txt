@@ -41,6 +41,12 @@ SweelLong - Chinese Translations
 Zhuma5 - Contributor
 
 [Changelog]
+v0.5.2.3 (4/22/2026)
+- Fixed an issue related to invalid npcs (thanks Zhuma5)
+v0.5.2.2 (10/2/2025)
+- Fixed an issue where tiles could have illogical names
+v0.5.2.1 (9/14/2025)
+- Removed a debug IL dump
 v0.5.2.0 (3/11/2025)
 - Major performance improvements when drawing tiles
 - Fixed the panel disappearing with small UI scales
