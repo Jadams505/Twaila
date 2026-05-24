@@ -15,7 +15,8 @@ namespace Twaila.Context;
 
 public class DisplayDollContext : TileContext
 {
-    public const int MAX_ITEM_COUNT = 8;
+    // 1.4.5 increased from 8 to 9
+    public const int MAX_ITEM_COUNT = 9;
     protected int[] ItemIds { get; set; }
 
     public DisplayDollContext(TwailaPoint point) : base(point)
@@ -86,21 +87,19 @@ public class DisplayDollContext : TileContext
         }
     }
 
-    private static readonly FieldInfo? TEDisplayDoll_items = typeof(TEDisplayDoll).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-
     private void PopulateItems()
     {
         Point targetPos = TileUtil.TileEntityCoordinates(BestTilePos.X, BestTilePos.Y, width: 2, height: 3);
         int id = TEDisplayDoll.Find(targetPos.X, targetPos.Y);
         TEDisplayDoll instance = (TEDisplayDoll)TileEntity.ByID[id];
 
-        if (TEDisplayDoll_items?.GetValue(instance) is not Item[] items)
+        if (instance.Equipment is not Item[] items)
         {
-            Twaila.Instance.Logger.Warn(nameof(TEDisplayDoll_items) + " is null. Please Report");
+            Twaila.Instance.Logger.Warn(nameof(instance.Equipment) + " is null. Please Report");
             return;
         }
 
-        for (int i = 0; i < items.Length; ++i)
+        for (int i = 0; i < ItemIds.Length; ++i)
         {
             ItemIds[i] = items[i].type;
         }
