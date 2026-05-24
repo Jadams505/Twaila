@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Twaila.Config;
@@ -35,6 +36,8 @@ public class ContextSystem : ModSystem
         TileEntry.ApplicableContexts.Add(WeaponRackContext.CreateWeaponRackContext);
         TileEntry.ApplicableContexts.Add(HatRackContext.CreateHatRackContext);
         TileEntry.ApplicableContexts.Add(DisplayDollContext.CreateDisplayDollContext);
+        TileEntry.ApplicableContexts.Add(LeashedAnchorContext<TECritterAnchor>.CreateLeashedAnchorContext);
+        TileEntry.ApplicableContexts.Add(LeashedAnchorContext<TEKiteAnchor>.CreateLeashedAnchorContext);
         ContextEntries.Add(TileEntry);
 
         WallEntry = new ContextEntry(WallContext.CreateWallContext, Language.GetText("Mods.Twaila.Contexts.Wall"), 
